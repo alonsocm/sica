@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+    font-size: 17px;
+}
+
+hr.red {
+    margin: 10px 0 25px
+}
+
+.btn{
+    font-size: 17px;
+    padding: 10px 15px;
+}
+
+table thead tr th{
+    text-align: center;
+}
+
+.dvTable {
+    overflow-y: auto;
+    max-height: 600px;
+    margin: 20px 0px 10px 0px;
+}
+
+.dvTable tbody>tr:hover {
+    background-color: #DDDDDD;
+}

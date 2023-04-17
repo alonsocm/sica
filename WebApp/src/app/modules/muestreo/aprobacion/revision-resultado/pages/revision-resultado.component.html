@@ -1,0 +1,130 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container-fluid">
+    <h3>Aprobación de resultados</h3>
+    <hr class="red">
+    <div class="message-container">
+        <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
+            (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    </div>
+    <div class="row">
+
+      <div class="col-md-4">
+        <input type="file" style="display: none" (change)="cargarArchivo($event)" accept=".xls, .xlsx" #inputExcelResultados>
+        <button class="btn btn-primary" (click)="inputExcelResultados.click()">
+          <i class="bi bi-cloud-upload"></i>&nbsp;Seleccionar y cargar archivo...
+        </button>
+      </div>
+
+
+      <div class="col-md-3.5">
+        <button class="btn btn-secondary" type="button" style="margin-left: 10px;" (click)="DescargarResultados()">
+          <i class="bi bi-cloud-download"></i> Descarga de resultados con estatus
+        </button>
+      </div>
+
+      <div class="col-md-2">
+        <button class="btn btn-secondary" type="button" style="margin-left: 10px;" (click)="this.limpiarFiltros()">
+          <i class="bi bi-funnel"></i>
+          Limpiar filtros
+        </button>
+      </div>
+
+      <div class="col-md-2">
+        <button class="btn btn-secondary" type="button" style="margin-left: 10px;"
+                (click)="this.exportarResultados()">
+          <img width="20px" src="./assets/images/site/ionoexel.png" />
+          Descargar informaci&oacute;n
+        </button>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-responsive dvTable">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="checkBox-center">
+                            <label for="chckAll">SELECCIONAR TODOS</label>
+                            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                                (change)="seleccionarTodos()" />
+                        </th>
+                        <th *ngFor="let columna of this.Columnas">
+                            {{columna.etiqueta}}
+                            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                                (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
+                                [itemTemplate]="itemTemplate" placeholder="seleccione">
+                            </ng-autocomplete>
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item"></a>
+                            </ng-template>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody style="text-align:left;">
+                    <tr
+                        *ngFor="let revision of this.resultadosFiltrados| paginate: { itemsPerPage:10, currentPage: page }; let indice=index">
+                        <td class="checkBox-center">
+                            <input type="checkbox" [(ngModel)]="revision.isChecked">
+                        </td>
+                        <td style="text-align: center;">{{revision.noEntrega}}</td>
+                        <td style="text-align: center;">{{revision.claveUnica}}</td>
+                        <td style="text-align: center;">{{revision.claveSitio}}</td>
+                        <td style="text-align: center;">{{revision.claveMonitoreo}}</td>
+                        <td style="text-align: center;">{{revision.nombreSitio}}</td>
+                        <td style="text-align: center;">{{revision.claveParametro}}</td>
+                        <td style="text-align: center;">{{revision.laboratorio}}</td>
+                        <td style="text-align: center;">{{revision.tipoCuerpoAgua}}</td>
+                        <td style="text-align: center;">{{revision.tipoCuerpoAguaOriginal}}</td>
+                        <td style="text-align: center;">{{revision.resultado}}</td>
+                        <td style="text-align: center;">{{revision.esCorrectoOCDL}}</td>
+                        <td style="text-align: center;">{{revision.observacionOCDL}}</td>
+                        <td style="text-align: center;">{{revision.esCorrectoSECAIA}}</td>
+                        <td style="text-align: center;">{{revision.observacionSECAIA}}</td>
+                        <td style="text-align: center;">{{revision.clasificacionObservacion}}</td>
+                        <td style="text-align: center;">{{revision.apruebaResultado}}</td>
+                        <td style="text-align: center;">{{revision.comentariosAprobacionResultados}}</td>
+                        <td style="text-align: center;">{{revision.fechaAprobRechazo}}</td>
+                        <td style="text-align: center;">{{revision.usuarioRevision}}</td>
+                        <td style="text-align: center;">{{revision.estatusResultado}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="24">
+                            <div *ngIf="this.resultadosFiltrados.length==0" style="text-align: center;">
+                                No se
+                                encontraron registros
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
+        <div class="d-flex justify-content-between">
+            <div class="p-2">
+                <button class="btn btn-primary" type="button" style="margin-left: 10px; margin-top: 10px;"
+                    data-toggle="modal" (click)="AprobacionResultado()">
+                    <i class="bi bi-check-circle"></i>
+                    &nbsp;Aprobación resultado por bloque
+                </button>
+                <button class="btn btn-primary" type="button" style="margin-left: 10px; margin-top: 10px;"
+                    data-toggle="modal" (click)="RechazoResultado()">
+                    <i class="bi bi-x-circle"></i>
+                    &nbsp;Rechazo resultado por bloque
+                </button>
+            </div>
+            <div class="p-2">
+                <button class="btn btn-primary" style="margin-left: 10px; margin-top: 10px;" type="button"
+                    (click)="ResultadosAprovados()"><i class="bi bi-send"></i>&nbsp;Enviar a resultados aprobados
+                </button>
+                <button class="btn btn-primary" style="margin-left: 10px; margin-top: 10px;" type="button"
+                    (click)="Replicaresultados()"><i class="bi bi-send"></i>&nbsp;Enviar a réplica de resultados
+                </button>
+                <button class="btn btn-primary" style="margin-left: 10px;  margin-top: 10px;" type="button"
+                    (click)="Replicadiferente()"><i class="bi bi-send"></i>&nbsp;Enviar a réplica diferente dato
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

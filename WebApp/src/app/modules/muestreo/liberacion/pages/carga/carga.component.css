@@ -1,0 +1,19 @@
+.container-fluid {
+    margin-bottom: 10px;
+}
+
+.opciones-tabla {
+    margin: 2% 0px 0% 0px;
+}
+
+input[type='checkbox'] {
+    cursor: pointer;
+}
+
+.checkBox-center {
+    text-align: center;
+}
+
+.message-container {
+    min-width: 50%;
+}

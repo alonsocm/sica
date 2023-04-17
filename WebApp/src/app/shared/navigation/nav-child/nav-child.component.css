@@ -1,0 +1,51 @@
+.hide {
+    display: none;
+}
+
+.show {
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    background-clip: padding-box;
+    font-size: 18px;
+    background-color: #fff;
+    display: block;
+    position: absolute;
+    width: max-content;
+    padding: 5px 0;
+    margin: 2px 0 0;
+}
+
+.show li {
+    list-style: none;
+}
+
+.show li a {
+    display: block;
+    padding: 3px 20px;
+    line-height: 1.428571429;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.show li a:hover {
+    background-color: #f5f5f5;
+}
+
+.show a {
+    color: #333;
+}
+
+.primer-nivel {
+    left: 0%
+}
+
+.primer-nivel li {
+    position: relative;
+}
+
+.segundo-nivel {
+    top: 0%;
+    left: 100%
+}

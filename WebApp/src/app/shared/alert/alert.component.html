@@ -1,0 +1,4 @@
+<div *ngIf="this.mostrar" class="alert alert-{{type}} alert-dismissible">
+    <button type="button" class="close" aria-label="Close" (click)="ocultar()"><span aria-hidden="true">&times;</span></button>
+    <div [innerHtml]="this.sanitizer.bypassSecurityTrustHtml(this.message)"></div>
+</div>

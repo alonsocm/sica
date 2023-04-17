@@ -1,0 +1,34 @@
+.red {
+  margin-bottom: 50px;
+}
+
+.container-fluid {
+  margin-bottom: 10px;
+}
+
+.dvTable {
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.dvTable thead th {
+  position: sticky;
+  top: 0;
+  background: white;
+}
+
+.resumen {
+  margin: 1%;
+}
+
+.caption {
+  caption-side: top;
+}
+
+input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.checkBox-center {
+  text-align: center;
+}

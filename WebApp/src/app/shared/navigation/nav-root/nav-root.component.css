@@ -1,0 +1,40 @@
+.nav-menu {
+    z-index: 100;
+    position: relative;
+    width: auto;
+    margin-top: -1px;
+}
+
+.menu-container {
+    display: block;
+    color: white;
+    background-color: #13322B;
+    position: relative;
+}
+
+.menu-container li {
+    font-size: 16px;
+    font-weight: 300;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.menu-container li a {
+    text-decoration: none;
+    color: white;
+}
+
+.menu-container li:hover {
+    background-color: rgba(255, 255, 255, .15);
+    color: #D4C19C;
+}
+
+.menu-container a:hover {
+    background-color: rgba(255, 255, 255, .15);
+    color: white;
+    cursor: pointer;
+}
+
+.menu-container ul li {
+    position: relative;
+}

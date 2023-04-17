@@ -1,0 +1,42 @@
+﻿using Application.Features.Muestreos.Commands.Liberacion;
+using Application.Interfaces.IRepositories;
+using Application.Wrappers;
+using MediatR;
+using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
+{
+    public class EnviarAprobacionResultadosCommand : IRequest<Response<bool>>
+    {
+        public long ResultadoMuestreoId { get; set; }
+        public int? EstatusId { get; set; }
+    }
+
+    public class EnviarAprobacionResultadosHandler : IRequestHandler<EnviarAprobacionResultadosCommand, Response<bool>>
+    {
+        private readonly IResumenResRepository _resultadomuestreo;
+
+        public EnviarAprobacionResultadosHandler(IResumenResRepository repositoryAsync)
+        {
+            _resultadomuestreo = repositoryAsync;
+        }
+        public async Task<Response<bool>> Handle(EnviarAprobacionResultadosCommand request, CancellationToken cancellationToken)
+        {
+            var muestreo = await _resultadomuestreo.ObtenerElementoPorIdAsync(request.ResultadoMuestreoId);
+
+            if (muestreo != null)
+            {               
+                muestreo.EstatusResultado = (int)request.EstatusId;
+                _resultadomuestreo.Actualizar(muestreo);
+            }
+            return new Response<bool>(true);
+        }
+
+
+    }
+}

@@ -1,0 +1,66 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container">
+  <h3>Localidades</h3>
+  <hr class="red" />
+
+
+  <div class="form-group row">
+    <label for="Nombre" class="col-m-2 col-form-label">Estado:</label>
+    <div class="col-lg-3">
+      <!-- <ng-autocomplete 
+        [data]="Estados" 
+ 
+        (inputChanged)='onChangeSearch($event)'
+        (selected)='selectEvent($event)' 
+        placeholder="Ingresar nombre">
+      </ng-autocomplete> -->
+    </div>
+
+    <label for="Nombre" class="col-m-2 col-form-label">Municipio:</label>
+    <div class="col-lg-3">
+      <!-- <ng-autocomplete 
+        [data]="Estados" 
+      
+        (inputChanged)='onChangeSearchAbre($event)'
+        (selected)='selectEventAbre($event)' 
+        placeholder="Ingresar abreviatura">
+      </ng-autocomplete> -->
+    </div>
+
+    <label for="Nombre" class="col-m-2 col-form-label">Localidad:</label>
+    <div class="col-lg-3">
+      <!-- <ng-autocomplete 
+        [data]="Estados" 
+        [searchKeyword]="keyword" 
+        (inputChanged)='onChangeSearchAbre($event)'
+        (selected)='selectEventAbre($event)' 
+        placeholder="Ingresar abreviatura">
+      </ng-autocomplete> -->
+    </div>
+  </div>
+
+  <table id="tblLocalidad" class="table table-striped table-bordered dataTable" style="padding-top:15px;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Abreviatura</th>      
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let locali of _localidades | paginate: { itemsPerPage:10, currentPage: page };let indice=index  ">
+          <td>{{indice+1}}</td>
+          <td>{{locali.nombre}}</td>
+          <td>{{locali.abreviatura}}</td>
+      
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #falso>
+      <td>Inactivo</td>
+    </ng-template>
+  
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>

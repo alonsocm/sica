@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/0.5.26-alpha">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>dab8e3d5-77c7-43ad-8a2d-f605d7189bc1</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupCommand>npm start</StartupCommand>
+    <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="src\app\modules\catalogos\estados\services\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\replica-diferente\pages\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\replica-diferente\services\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\replica-resumen\services\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\replica-resumen\pages\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\replicas-total\services\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\replicas-total\pages\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\revision-resultado\services\" />
+    <Folder Include="src\app\modules\muestreo\aprobacion\revision-resultado\pages\" />
+    <Folder Include="src\app\modules\usuario\services\" />
+    <Folder Include="src\app\shared\tablaGral\" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties package_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <ItemGroup>
+    <TypeScriptConfiguration Remove="src\app\modules\liberacionSECAIAyOCDL\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\liberacionSECAIAyOCDL\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptConfiguration Remove="src\app\modules\muestreo\revision\resultados-resumen\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\muestreo\revision\resultados-resumen\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptConfiguration Remove="src\app\modules\muestreo\revision\resultados-total\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\muestreo\revision\resultados-total\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptConfiguration Remove="src\app\modules\muestreo\revision\resultados-total-SECAIA\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\app\modules\muestreo\revision\resultados-total-SECAIA\**" />
+  </ItemGroup>
+</Project>

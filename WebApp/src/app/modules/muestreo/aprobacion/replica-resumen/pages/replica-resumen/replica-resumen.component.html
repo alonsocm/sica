@@ -1,0 +1,82 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container-fluid">
+  <H3> Resumen</H3>
+  <hr class="red" />
+  <div class="message-container">
+    <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
+  <div class="d-flex flex-row-reverse opciones-tabla">
+    <div class="p-2">
+      <button class="btn btn-secondary" type="button" (click)="this.exportarResultados()">
+        <img width="20px" src="./assets/images/site/ionoexel.png" />
+        Descarga en formato Excel
+      </button>
+    </div>
+    <div class="p-2">
+      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltros()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="checkBox-center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <br>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                (change)="seleccionarTodos()" />
+            </th>
+            <th *ngFor="let columna of this.columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()" [itemTemplate]="itemTemplate"
+                placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let muestreo of this.resultadosFiltrados| paginate: { itemsPerPage:30, currentPage: page }">
+            <td class="checkBox-center">
+              <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()">
+            </td>
+            <td style="text-align: center;">{{muestreo.noEntrega}}</td>
+            <td style="text-align: center;">{{muestreo.claveUnica}}</td>
+            <td style="text-align: center;">{{muestreo.claveSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{muestreo.nombreSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveParametro}}</td>
+            <td style="text-align: center;">{{muestreo.laboratorio}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
+            <td style="text-align: center;">{{muestreo.resultado}}</td>
+            <td style="text-align: center;">{{muestreo.estatusResultado}}</td>
+          </tr>
+          <tr>
+            <td colspan="30">
+              <div *ngIf="this.resultadosFiltrados.length==0" style="text-align: center;">
+                No se encontraron registros
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row-group">
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+</div>
+<br />
+<br />

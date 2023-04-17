@@ -1,0 +1,70 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container">
+  <h3>Administración de Municipios</h3>
+  <hr class="red" />
+
+
+  <div class="form-group row">
+    <label for="estado" class="col-m-2 col-form-label">Estado:</label>
+    <div class="col-lg-3">
+      <ng-autocomplete 
+        [data]="municipio" 
+        [searchKeyword]="keyword" 
+        (inputChanged)='onChangeEstSearch($event)'
+        (selected)='selectEstEvent($event)' 
+        placeholder="Ingresar un estado"
+        id="autoEstado">
+      </ng-autocomplete>
+    </div>
+<!-- 
+    <ng-template #itemTemplate let-item>
+      <div class="item">
+        <img src="{{item.flag}}" height="25">
+        <span [innerHTML]="item.name"></span> &nbsp; | &nbsp;
+        <small>Population: {{item.population}}</small>
+      </div>
+    </ng-template>
+  
+    <ng-template #notFoundTemplate let-notFound>
+      <div [innerHTML]="notFound"></div>
+    </ng-template>
+     -->
+
+    <label for="Nombre" class="col-m-2 col-form-label">Municipio:</label>
+    <div class="col-lg-3">
+      <ng-autocomplete 
+        [data]="municipio" 
+        [searchKeyword]="keyword" 
+        (inputChanged)='onChangeSearch($event)'
+        (selected)='selectEvent($event)' 
+        placeholder="Ingresar un municipio">
+      </ng-autocomplete>
+    </div>
+  </div>
+
+    <table id="tblMunicipios" class="table table-striped table-bordered dataTable" style="padding-top:15px;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Estado</th>
+          <th>Municipio</th>     
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let munic of _municipio | paginate: { itemsPerPage:10, currentPage: page };let indice=index  ">
+          <td>{{indice+1}}</td>
+          <td>{{munic.estado.nombre}}</td>
+          <td>{{munic.nombre}}</td>  
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #falso>
+      <td>Inactivo</td>
+    </ng-template>
+
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+
+
+  </div>

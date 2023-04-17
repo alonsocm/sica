@@ -1,0 +1,127 @@
+<router-outlet name="menu"></router-outlet>
+<div *ngIf="loading">
+  <app-loading></app-loading>
+</div>
+<div class="container-fluid">
+  <h3>Env&iacute;o de monitoreos a revisi&oacute;n de SECAIA y OC/DL</h3>
+  <hr class="red">
+  <div class="message-container">
+    <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+      [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <input type="file" style="display: none" (change)="cargarArchivo($event)" accept=".xls, .xlsx" #inputArchivoMuestreos>
+      <button class="btn btn-primary" id="file" (click)="inputArchivoMuestreos.click()">
+        <i class="bi bi-cloud-upload"></i>
+        Seleccionar y cargar resultados validados por reglas</button>
+    </div>
+    <div class="col-md-4">
+      <input type="file" style="display: none" (change)="cargarEvidencias($event)" accept=".xls, .xlsx, .xlsm, .jpg, .pdf"
+        multiple #inputArchivoEvidencias>
+      <button class="btn btn-primary" id="file" (click)="inputArchivoEvidencias.click()" type="file">
+        <i class="bi bi-cloud-upload"></i>
+        Seleccionar y cargar evidencias</button>
+    </div>
+    <div class="col-md-4" style="text-align: right;">
+      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltros()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+      <button class="btn btn-secondary" type="button" (click)="exportarResultados()">
+        <i class="bi bi-cloud-download"></i>
+        Descargar informaci&oacute;n
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="checkBox-center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                (change)="seleccionarTodos()" />
+            </th>
+            <th *ngFor="let columna of this.columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()" [itemTemplate]="itemTemplate"
+                placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let muestreo of this.muestreosFiltrados| paginate: { itemsPerPage:30, currentPage: page }">
+            <td class="checkBox-center"><input type="checkbox" [(ngModel)]="muestreo.isChecked"
+                (change)="seleccionar()">
+            </td>
+            <td style="text-align: center;">{{muestreo.ocdl}}</td>
+            <td style="text-align: center;">{{muestreo.claveSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{muestreo.estado}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{muestreo.laboratorio}}</td>
+            <td style="text-align: center;">{{muestreo.fechaRealizacion}}</td>
+            <td style="text-align: center;">{{muestreo.fechaLimiteRevision}}</td>
+            <td style="text-align: center;">{{muestreo.numeroEntrega == '0' ? '' :
+              this.numberService.getOrdinal(muestreo.numeroEntrega) + ' Entrega'}}</td>
+            <td style="text-align: center;">{{muestreo.estatus}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCargaResultados}}</td>
+          </tr>
+          <tr>
+            <td colspan="12">
+              <div *ngIf="this.muestreosFiltrados.length==0" style="text-align: center;">No se
+                encontraron registros</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+  <div class="d-flex justify-content-between">
+    <div class="p2">
+      <button class="btn btn-secondary" type="button" (click)="confirmarEliminacion()"><i
+          class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
+      </button>
+      <button id="btnMdlConfirmacion" style="display:none" class="btn btn-primary rigth" type="button"
+        data-toggle="modal" data-target="#mdlConfirmacion"></button>
+    </div>
+    <div class="p2">
+      <label class="control-label" for="fechaRevision">*Seleccione fecha l&iacute;mite de
+        revisi&oacute;n:&nbsp;</label>
+      <input id="fechaRevision" type="date" min="{{fechaActual}}" [(ngModel)]="fechaLimiteRevision" (change)="seleccionar()" />
+      <button class="btn btn-primary" style="margin-left: 10px;" type="button" (click)="enviarMonitoreos()"><i
+          class="bi bi-send"></i>&nbsp;Enviar monitoreo(s) a revisión
+      </button>
+    </div>
+  </div>
+  <hr />
+  <app-muestreos-totales></app-muestreos-totales>
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar eliminación</h4>
+        </div>
+        <div class="modal-body">
+          <p>¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="eliminarMuestreos()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="d-flex justify-content-center">
+    <div class="resumen">
+        <table class="table table-striped">
+            <caption class="caption">Resumen por monitoreos:</caption>
+            <thead>
+                <tr>
+                    <th>
+                        <select class="form-control" [(ngModel)]="this.filtroResumen" (change)="filtrarResumen()">
+                            <option>Seleccionar filtro</option>
+                            <option>OC</option>
+                            <option>DL</option>
+                            <option>Estado</option>
+                            <option>Tipo cuerpo de agua</option>
+                            <option>Laboratorio</option>
+                            <option>Fecha realizaci&oacute;n</option>
+                        </select>
+                    </th>
+                    <th>No. Monitoreos</th>
+                </tr>
+            </thead>
+            <tbody style="text-align:center;">
+                <tr *ngFor="let resultado of this.resultadosFiltro">
+                    <td>{{resultado.nombre}}</td>
+                    <td>{{resultado.valor}}</td>
+                </tr>
+                <tr>
+                    <td><b>Total</b></td>
+                    <td><b>{{this.totalResultadosPorFiltro == 0 ? '' : this.totalResultadosPorFiltro}}</b></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="resumen">
+        <table class="table table-striped">
+            <caption class="caption">Resumen por resultados:</caption>
+            <thead>
+                <tr>
+                    <th>Grupo de par&aacute;metros</th>
+                    <th>No. Resultados</th>
+                </tr>
+            </thead>
+            <tbody style="text-align:center;">
+                <tr *ngFor="let grupoParametro of this.grupoParametros">
+                    <td>{{grupoParametro.grupo}}</td>
+                    <td>{{grupoParametro.cantidad}}</td>
+                </tr>
+                <tr>
+                    <td><b>Total</b></td>
+                    <td><b>{{this.totalResultadosParametros == 0 ? '' : this.totalResultadosParametros }}</b>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

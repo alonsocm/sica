@@ -1,0 +1,62 @@
+.red {
+  margin-bottom: 50px;
+}
+
+.container-fluid {
+  margin-bottom: 10px;
+}
+
+.opciones-tabla {
+  margin: 1% 0px 0% 0px;
+}
+
+.dvTable {
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+  .dvTable thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+  }
+
+  .dvTable tbody > tr:hover {
+    background-color: #DDDDDD;
+  }
+
+input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.checkBox-center {
+  text-align: center;
+}
+
+.message-container {
+  min-width: 50%;
+}
+
+.se-pre-con {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: #000000;
+  opacity: 0.85;
+}
+
+.caption {
+  caption-side: top;
+}
+
+.resumen {
+  margin: 1%;
+  max-width: 450px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+

@@ -1,0 +1,68 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container">
+  <h3>Localidades</h3>
+  <hr class="red" />
+
+
+  <div class="form-group row">
+    <label for="estado" class="col-m-2 col-form-label">Estado:</label>
+    <div class="col-lg-3">
+      <ng-autocomplete 
+        [data]="Localidades"         
+        (inputChanged)='onChangeEstSearch($event)'
+        (selected)='selectEstEvent($event)' 
+        placeholder="Ingresar un estado">
+      </ng-autocomplete>
+    </div>
+    
+    <ng-template #notFoundTemplate let-notFound>
+      <div [innerHTML]="notFound"></div>
+    </ng-template>
+
+    <label for="municipio" class="col-m-2 col-form-label">Municipio:</label>
+    <div class="col-lg-3">
+      <ng-autocomplete 
+        [data]="Localidades"     
+        (inputChanged)='onChangeMuniSearch($event)'
+        (selected)='selectMuniEvent($event)' 
+        placeholder="Ingresar un municipio">
+      </ng-autocomplete>
+    </div>
+
+    <label for="Localidad" class="col-m-2 col-form-label">Localidad:</label>
+    <div class="col-lg-3">
+      <ng-autocomplete 
+        [data]="Localidades"  
+        (inputChanged)='onChangeSearch($event)'
+        (selected)='selectEvent($event)' 
+        placeholder="Ingresar una localidad">
+      </ng-autocomplete>
+    </div>
+  </div>
+
+  <table id="tblLocalidad" class="table table-striped table-bordered dataTable" style="padding-top:15px;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Estado</th>
+          <th>Municipio</th>  
+          <th>Localidad</th>    
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let locali of _localidades | paginate: { itemsPerPage:10, currentPage: page };let indice=index  ">
+          <td>{{indice+1}}</td>
+          <td>{{locali.estado.nombre}}</td>
+          <td>{{locali.municipio.nombre}}</td>
+          <td>{{locali.nombre}}</td>      
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #falso>
+      <td>Inactivo</td>
+    </ng-template>
+  
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>

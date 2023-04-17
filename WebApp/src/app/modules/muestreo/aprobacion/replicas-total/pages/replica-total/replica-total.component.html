@@ -1,0 +1,159 @@
+<router-outlet name="menu"></router-outlet>
+<div *ngIf="loading">
+  <app-loading></app-loading>
+</div>
+<div class="container-fluid">
+  <H3> Réplicas de resultados en etapa de aprobación </H3>
+  <hr class="red" />
+  <div class="message-container">
+    <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
+  <div class="row" style="margin-bottom: 1%;">
+    <div class="col-md-6">
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="descargarResultadosParaReplicas()">
+        <i class="bi bi-cloud-download"></i>
+        Descarga de resultados para réplicas
+      </button>
+      <input type="file" style="display: none" accept=".xls, .xlsx" (change)="cargarArchivoRevisionReplicas($event)"
+        #inputExcelRevReplicas>
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="inputExcelRevReplicas.click()">
+        <i class="bi bi-cloud-upload"></i>
+        Cargar archivo de revisión de réplicas
+      </button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="descargarReplicasReplicasLNR(true)">
+        <i class="bi bi-cloud-download"></i>
+        Descargar archivo revisión LNR
+      </button>
+      <input type="file" style="display: none" accept=".xls, .xlsx" (change)="this.cargarArchivoRevisionLNR($event)"
+        #fileLNRUpload>
+      <button class="btn btn-secondary btnAcciones" (click)="fileLNRUpload.click()">
+        <i class="bi bi-cloud-upload"></i>
+        Carga archivo revisión LNR
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="this.enviarResultadosDiferenteDato()">
+        <i class="bi bi-send"></i>
+        Mandar a pantalla c/dif dato
+      </button>      
+      <input type="file" style="display: none" (change)="this.cargarEvidenciasReplicas($event)"
+      #evidenciasUpload>
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="evidenciasUpload.click()">
+        Cargar evidencias
+      </button>
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="descargarEvidenciasReplica()">
+        Descargar evidencias
+      </button>
+    </div>
+    <div class="col-6 text-right">
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="this.limpiarFiltros()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="this.descargarReplicasReplicasLNR(false)">
+        <img width="20px" src="./assets/images/site/ionoexel.png" />
+        Descargar
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="checkBox-center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                (change)="seleccionarTodos()" />
+            </th>
+            <th *ngFor="let columna of this.columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()" [itemTemplate]="itemTemplate"
+                placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let muestreo of this.resultadosFiltrados| paginate: { itemsPerPage:30, currentPage: page }">
+            <td class="checkBox-center">
+              <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()">
+            </td>
+            <td style="text-align: center;">{{muestreo.noEntrega}}</td>
+            <td style="text-align: center;">{{muestreo.claveUnica}}</td>
+            <td style="text-align: center;">{{muestreo.claveSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{muestreo.nombre}}</td>
+            <td style="text-align: center;">{{muestreo.claveParametro}}</td>
+            <td style="text-align: center;">{{muestreo.laboratorio}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
+            <td style="text-align: center;">{{muestreo.resultado}}</td>
+            <td style="text-align: center;">{{muestreo.esCorrectoOCDL}}</td>
+            <td style="text-align: center;">{{muestreo.observacionOCDL}}</td>
+            <td style="text-align: center;">{{muestreo.esCorrectoSECAIA}}</td>
+            <td style="text-align: center;">{{muestreo.observacionSECAIA}}</td>
+            <td style="text-align: center;">{{muestreo.clasificacionObservacion}}</td>
+            <td style="text-align: center;">{{muestreo.causaRechazo}}</td>
+            <td style="text-align: center;">{{muestreo.resultadoAceptado}}</td>
+            <td style="text-align: center;">{{muestreo.resultadoReplica}}</td>
+            <td style="text-align: center;">{{muestreo.esMismoResultado}}</td>
+            <td style="text-align: center;">{{muestreo.observacionLaboratorio}}</td>
+            <td style="text-align: center;">{{muestreo.fechaReplicaLaboratorio}}</td>
+            <td style="text-align: center;">{{muestreo.observacionSRNAMECA}}</td>
+            <td style="text-align: center;">{{muestreo.comentarios}}</td>
+            <td style="text-align: center;">{{muestreo.fechaObservacionRENAMECA}}</td>
+            <td style="text-align: center;">{{muestreo.resultadoAprobadoDespuesReplica}}</td>
+            <td style="text-align: center;">{{muestreo.fechaEstatusFinal}}</td>
+            <td style="text-align: center;">{{muestreo.usuarioRevisor}}</td>
+            <td style="text-align: center;">{{muestreo.estatusResultado}}</td>
+            <td style="text-align: center; cursor: pointer;" (click)="descargarEvidenciasReplica(muestreo.claveUnica)"><i class="bi bi-cloud-download"></i>Descargar evidencias</td>
+          </tr>
+          <tr>
+            <td colspan="30">
+              <div *ngIf="this.resultadosFiltrados.length==0" style="text-align: center;">
+                No se encontraron registros
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row-group">
+      <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+  </div>
+  <div class="row" style="margin-bottom: 1%;">
+    <div class="col-md-6">
+      <button class="btn btn-primary btnAcciones" (click)="this.enviarResultados(true)">
+        <i class="bi bi-check-circle"></i>
+        Enviar a resultados aprobados
+      </button>
+      <button class="btn btn-primary btnAcciones" type="button" (click)="this.enviarResultados(false)">
+        <i class="bi bi-x-circle"></i>
+        Enviar resultados rechazados a penalización
+      </button>
+    </div>
+    <div class="col-md-6 btnAprobacion">
+      <button class="btn btn-primary btnAcciones" (click)="this.aprobarResultadosBloque(true)">
+        <i class="bi bi-check-circle"></i>
+        Aprobación resultados por bloques
+      </button>
+      <button class="btn btn-primary btnAcciones" type="button" (click)="this.aprobarResultadosBloque(false)">
+        <i class="bi bi-x-circle"></i>
+        Rechazo resultados por bloques
+      </button>
+    </div>
+  </div>
+</div>
