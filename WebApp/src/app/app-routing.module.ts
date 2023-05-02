@@ -25,6 +25,7 @@ import { FormatoResultadoComponent } from './modules/muestreo/formatoResultado/p
 import { EvidenciasComponent } from './modules/muestreo/evidencias/pages/evidencias/evidencias.component';
 import { ConsultaResultadoComponent } from './modules/muestreo/originalesAprobados/consulta-resultado/pages/consulta-resultado.component';
 import { ConsultaEvidenciaComponent } from './modules/muestreo/originalesAprobados/consulta-evidencia/pages/consulta-evidencia.component';
+import { ValidacionReglasComponent } from './modules/muestreo/validacion/pages/validacion-reglas/validacion-reglas.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch:'full' },
@@ -50,6 +51,7 @@ const routes: Routes = [
   { path: 'evidencias', component: EvidenciasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
   { path: 'consulta-resultado', component: ConsultaResultadoComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
   { path: 'consulta-evidencia', component: ConsultaEvidenciaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
+  { path: 'validacion-reglas', component: ValidacionReglasComponent, children: [{path: '', outlet: 'menu', component: NavRootComponent}]},
   { path: '**', component: NotFoundComponent }
 
 ];
