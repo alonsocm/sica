@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Utilities.Services
 {
-    public class ReglaService : IRegla
+    public class ReglaService : IReglaService
     {
         public bool InCumpleReglaMinimoMaximo(string regla = "> 3", string valorParametro = "3")
         {            

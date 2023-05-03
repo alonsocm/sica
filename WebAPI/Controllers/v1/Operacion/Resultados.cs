@@ -519,5 +519,11 @@ namespace WebAPI.Controllers.v1.Operacion
                 Anio = anio
             }));
         }
+
+        [HttpPost("ValidarResultadosPorReglas")]
+        public async Task<IActionResult> Post([FromBody]ValidarResultadosPorReglasCommand request)
+        {
+            return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
+        }
     }
 }

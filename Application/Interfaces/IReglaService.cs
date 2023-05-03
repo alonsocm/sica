@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IRegla
+    public interface IReglaService
     {
         bool InCumpleReglaMinimoMaximo(string regla, string valorParametro);
     }
