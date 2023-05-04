@@ -19,6 +19,7 @@ namespace Persistence.Contexts
 
         public virtual DbSet<Accion> Accion { get; set; } = null!;
         public virtual DbSet<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = null!;
+        public virtual DbSet<BrigadaMuestreo> BrigadaMuestreo { get; set; } = null!;
         public virtual DbSet<CuencaDireccionesLocales> CuencaDireccionesLocales { get; set; } = null!;
         public virtual DbSet<CuerpoAgua> CuerpoAgua { get; set; } = null!;
         public virtual DbSet<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = null!;
@@ -38,6 +39,7 @@ namespace Persistence.Contexts
         public virtual DbSet<Perfil> Perfil { get; set; } = null!;
         public virtual DbSet<PerfilPagina> PerfilPagina { get; set; } = null!;
         public virtual DbSet<PerfilPaginaAccion> PerfilPaginaAccion { get; set; } = null!;
+        public virtual DbSet<ProgramaAnio> ProgramaAnio { get; set; } = null!;
         public virtual DbSet<ProgramaMuestreo> ProgramaMuestreo { get; set; } = null!;
         public virtual DbSet<ProgramaSitio> ProgramaSitio { get; set; } = null!;
         public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; } = null!;
@@ -58,7 +60,7 @@ namespace Persistence.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
+                optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnectionDev");
             }
         }
 
@@ -73,6 +75,10 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<AprobacionResultadoMuestreo>(entity =>
             {
+                entity.HasIndex(e => e.ResultadoMuestreoId, "IX_AprobacionResultadoMuestreo_ResultadoMuestreoId");
+
+                entity.HasIndex(e => e.UsuarioRevisionId, "IX_AprobacionResultadoMuestreo_UsuarioRevisionId");
+
                 entity.Property(e => e.FechaAprobRechazo).HasColumnType("datetime");
 
                 entity.HasOne(d => d.ResultadoMuestreo)
@@ -88,8 +94,17 @@ namespace Persistence.Contexts
                     .HasConstraintName("FK_AprobacionResultadoMuestreo_Usuario");
             });
 
+            modelBuilder.Entity<BrigadaMuestreo>(entity =>
+            {
+                entity.Property(e => e.Descripcion).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<CuencaDireccionesLocales>(entity =>
             {
+                entity.HasIndex(e => e.DlocalId, "IX_CuencaDireccionesLocales_DLocalId");
+
+                entity.HasIndex(e => e.OcuencaId, "IX_CuencaDireccionesLocales_OCuencaId");
+
                 entity.Property(e => e.DlocalId).HasColumnName("DLocalId");
 
                 entity.Property(e => e.OcuencaId).HasColumnName("OCuencaId");
@@ -113,6 +128,12 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<CuerpoTipoSubtipoAgua>(entity =>
             {
+                entity.HasIndex(e => e.CuerpoAguaId, "IX_CuerpoTipoSubtipoAgua_CuerpoAguaId");
+
+                entity.HasIndex(e => e.SubtipoCuerpoAguaId, "IX_CuerpoTipoSubtipoAgua_SubtipoCuerpoAguaId");
+
+                entity.HasIndex(e => e.TipoCuerpoAguaId, "IX_CuerpoTipoSubtipoAgua_TipoCuerpoAguaId");
+
                 entity.HasOne(d => d.CuerpoAgua)
                     .WithMany(p => p.CuerpoTipoSubtipoAgua)
                     .HasForeignKey(d => d.CuerpoAguaId)
@@ -161,6 +182,10 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<EvidenciaMuestreo>(entity =>
             {
+                entity.HasIndex(e => e.MuestreoId, "IX_EvidenciaMuestreo_MuestreoId");
+
+                entity.HasIndex(e => e.TipoEvidenciaMuestreoId, "IX_EvidenciaMuestreo_TipoEvidenciaMuestreoId");
+
                 entity.Property(e => e.NombreArchivo).IsUnicode(false);
 
                 entity.HasOne(d => d.Muestreo)
@@ -178,6 +203,8 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<EvidenciaReplica>(entity =>
             {
+                entity.HasIndex(e => e.ResultadoMuestreoId, "IX_EvidenciaReplica_ResultadoMuestreoId");
+
                 entity.Property(e => e.ClaveUnica)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -206,6 +233,10 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<Localidad>(entity =>
             {
+                entity.HasIndex(e => e.EstadoId, "IX_Localidad_EstadoId");
+
+                entity.HasIndex(e => e.MunicipioId, "IX_Localidad_MunicipioId");
+
                 entity.Property(e => e.Nombre)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -225,6 +256,20 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<Muestreo>(entity =>
             {
+                entity.HasIndex(e => e.EstatusId, "IX_Muestreo_EstatusId");
+
+                entity.HasIndex(e => e.EstatusOcdl, "IX_Muestreo_EstatusOCDL");
+
+                entity.HasIndex(e => e.EstatusSecaia, "IX_Muestreo_EstatusSECAIA");
+
+                entity.HasIndex(e => e.ProgramaMuestreoId, "IX_Muestreo_ProgramaMuestreoId");
+
+                entity.HasIndex(e => e.TipoAprobacionId, "IX_Muestreo_TipoAprobacionId");
+
+                entity.HasIndex(e => e.UsuarioRevisionOcdlid, "IX_Muestreo_UsuarioRevisionOCDLId");
+
+                entity.HasIndex(e => e.UsuarioRevisionSecaiaid, "IX_Muestreo_UsuarioRevisionSECAIAId");
+
                 entity.Property(e => e.EstatusOcdl).HasColumnName("EstatusOCDL");
 
                 entity.Property(e => e.EstatusSecaia).HasColumnName("EstatusSECAIA");
@@ -289,6 +334,8 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<Municipio>(entity =>
             {
+                entity.HasIndex(e => e.EstadoId, "IX_Municipio_EstadoId");
+
                 entity.Property(e => e.Nombre)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -316,6 +363,8 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<Pagina>(entity =>
             {
+                entity.HasIndex(e => e.IdPaginaPadre, "IX_Pagina_IdPaginaPadre");
+
                 entity.Property(e => e.Descripcion)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -330,6 +379,10 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<ParametrosGrupo>(entity =>
             {
+                entity.HasIndex(e => e.IdSubgrupo, "IX_ParametrosGrupo_IdSubgrupo");
+
+                entity.HasIndex(e => e.IdUnidadMedida, "IX_ParametrosGrupo_IdUnidadMedida");
+
                 entity.Property(e => e.ClaveParametro).HasMaxLength(30);
 
                 entity.Property(e => e.Descripcion).HasMaxLength(100);
@@ -355,6 +408,10 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<PerfilPagina>(entity =>
             {
+                entity.HasIndex(e => e.IdPagina, "IX_PerfilPagina_IdPagina");
+
+                entity.HasIndex(e => e.IdPerfil, "IX_PerfilPagina_IdPerfil");
+
                 entity.HasOne(d => d.IdPaginaNavigation)
                     .WithMany(p => p.PerfilPagina)
                     .HasForeignKey(d => d.IdPagina)
@@ -370,6 +427,10 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<PerfilPaginaAccion>(entity =>
             {
+                entity.HasIndex(e => e.IdAccion, "IX_PerfilPaginaAccion_IdAccion");
+
+                entity.HasIndex(e => e.IdPerfilPagina, "IX_PerfilPaginaAccion_IdPerfilPagina");
+
                 entity.HasOne(d => d.IdAccionNavigation)
                     .WithMany(p => p.PerfilPaginaAccion)
                     .HasForeignKey(d => d.IdAccion)
@@ -383,8 +444,15 @@ namespace Persistence.Contexts
                     .HasConstraintName("FK__PerfilPag__IdPer__3A81B327");
             });
 
+            modelBuilder.Entity<ProgramaAnio>(entity =>
+            {
+                entity.Property(e => e.Anio).HasMaxLength(4);
+            });
+
             modelBuilder.Entity<ProgramaMuestreo>(entity =>
             {
+                entity.HasIndex(e => e.ProgramaSitioId, "IX_ProgramaMuestreo_ProgramaSitioId");
+
                 entity.Property(e => e.DiaProgramado).HasColumnType("date");
 
                 entity.Property(e => e.DomingoSemanaProgramada).HasColumnType("date");
@@ -400,13 +468,24 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<ProgramaSitio>(entity =>
             {
+                entity.HasIndex(e => e.LaboratorioId, "IX_ProgramaSitio_LaboratorioId");
+
+                entity.HasIndex(e => e.SitioId, "IX_ProgramaSitio_SitioId");
+
+                entity.HasIndex(e => e.TipoSitioId, "IX_ProgramaSitio_TipoSitioId");
+
                 entity.Property(e => e.Observaciones).HasMaxLength(500);
 
                 entity.HasOne(d => d.Laboratorio)
                     .WithMany(p => p.ProgramaSitio)
                     .HasForeignKey(d => d.LaboratorioId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProgramaSitio_Laboratorio");
+
+                entity.HasOne(d => d.ProgramaAnio)
+                    .WithMany(p => p.ProgramaSitio)
+                    .HasForeignKey(d => d.ProgramaAnioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ProgramaSitio_ProgramaAnio");
 
                 entity.HasOne(d => d.Sitio)
                     .WithMany(p => p.ProgramaSitio)
@@ -423,6 +502,18 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<ResultadoMuestreo>(entity =>
             {
+                entity.HasIndex(e => e.EstatusResultado, "IX_ResultadoMuestreo_EstatusResultado");
+
+                entity.HasIndex(e => e.MuestreoId, "IX_ResultadoMuestreo_MuestreoId");
+
+                entity.HasIndex(e => e.ObservacionSrenamecaid, "IX_ResultadoMuestreo_ObservacionSRENAMECAId");
+
+                entity.HasIndex(e => e.ObservacionesOcdlid, "IX_ResultadoMuestreo_ObservacionesOCDLId");
+
+                entity.HasIndex(e => e.ObservacionesSecaiaid, "IX_ResultadoMuestreo_ObservacionesSECAIAId");
+
+                entity.HasIndex(e => e.ParametroId, "IX_ResultadoMuestreo_ParametroId");
+
                 entity.Property(e => e.CausaRechazo).IsUnicode(false);
 
                 entity.Property(e => e.Comentarios).IsUnicode(false);
@@ -502,6 +593,18 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<Sitio>(entity =>
             {
+                entity.HasIndex(e => e.CuencaDireccionesLocalesId, "IX_Sitio_CuencaDireccionesLocalesId");
+
+                entity.HasIndex(e => e.CuencaRevisionId, "IX_Sitio_CuencaRevisionId");
+
+                entity.HasIndex(e => e.CuerpoTipoSubtipoAguaId, "IX_Sitio_CuerpoTipoSubtipoAguaId");
+
+                entity.HasIndex(e => e.DireccionLrevisionId, "IX_Sitio_DireccionLRevisionId");
+
+                entity.HasIndex(e => e.EstadoId, "IX_Sitio_EstadoId");
+
+                entity.HasIndex(e => e.MunicipioId, "IX_Sitio_MunicipioId");
+
                 entity.Property(e => e.ClaveSitio).HasMaxLength(150);
 
                 entity.Property(e => e.DireccionLrevisionId).HasColumnName("DireccionLRevisionId");
@@ -562,6 +665,8 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<TipoCuerpoAgua>(entity =>
             {
+                entity.HasIndex(e => e.TipoHomologadoId, "IX_TipoCuerpoAgua_TipoHomologadoId");
+
                 entity.Property(e => e.Descripcion).HasMaxLength(50);
 
                 entity.HasOne(d => d.TipoHomologado)
@@ -608,6 +713,12 @@ namespace Persistence.Contexts
 
             modelBuilder.Entity<Usuario>(entity =>
             {
+                entity.HasIndex(e => e.CuencaId, "IX_Usuario_CuencaId");
+
+                entity.HasIndex(e => e.DireccionLocalId, "IX_Usuario_DireccionLocalId");
+
+                entity.HasIndex(e => e.PerfilId, "IX_Usuario_PerfilId");
+
                 entity.Property(e => e.ApellidoMaterno)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -645,88 +756,6 @@ namespace Persistence.Contexts
                     .HasForeignKey(d => d.PerfilId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Usuario_Perfil");
-            });
-
-            modelBuilder.Entity<VwClaveMuestreo>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("Vw_ClaveMuestreo");
-
-                entity.Property(e => e.ClaveMuestreo).HasMaxLength(4000);
-            });
-
-            modelBuilder.Entity<VwReplicaRevisionResultado>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToView("Vw_ReplicaRevisionResultado");
-
-                entity.Property(e => e.ClasificacionObservacion).IsUnicode(false);
-
-                entity.Property(e => e.ClaveMonitoreo).HasMaxLength(4000);
-
-                entity.Property(e => e.ClaveParametro).HasMaxLength(30);
-
-                entity.Property(e => e.ClaveSitio).HasMaxLength(150);
-
-                entity.Property(e => e.ClaveUnica).HasMaxLength(4000);
-
-                entity.Property(e => e.ComentariosReplicaDiferente).IsUnicode(false);
-
-                entity.Property(e => e.EsCorrectoOcdl).HasColumnName("EsCorrectoOCDL");
-
-                entity.Property(e => e.EsCorrectoSecaia).HasColumnName("EsCorrectoSECAIA");
-
-                entity.Property(e => e.Estatus)
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EstatusSecaia).HasColumnName("EstatusSECAIA");
-
-                entity.Property(e => e.FechaAprobRechazo).HasColumnType("datetime");
-
-                entity.Property(e => e.FechaEstatusFinal).HasColumnType("datetime");
-
-                entity.Property(e => e.FechaObservacionSrenameca)
-                    .HasColumnType("datetime")
-                    .HasColumnName("FechaObservacionSRENAMECA");
-
-                entity.Property(e => e.Laboratorio)
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NombreSitio).HasMaxLength(250);
-
-                entity.Property(e => e.NombreUsuario)
-                    .HasMaxLength(252)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NumeroEntrega)
-                    .HasMaxLength(13)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObservacionSrenameca)
-                    .IsUnicode(false)
-                    .HasColumnName("ObservacionSRENAMECA");
-
-                entity.Property(e => e.ObservacionesOcdl)
-                    .HasMaxLength(100)
-                    .HasColumnName("ObservacionesOCDL");
-
-                entity.Property(e => e.ObservacionesSecaia)
-                    .HasMaxLength(100)
-                    .HasColumnName("ObservacionesSECAIA");
-
-                entity.Property(e => e.Resultado)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ResultadoActualizadoReplica).IsUnicode(false);
-
-                entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(150);
-
-                entity.Property(e => e.TipoCuerpoAguaOriginal).HasMaxLength(150);
             });
 
             OnModelCreatingPartial(modelBuilder);
