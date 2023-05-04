@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'usuario', component: UsuarioComponent, children: [{path:'', outlet:'menu', component: NavRootComponent}], canActivate: [AuthGuardService] },
   { path: 'home', component: HomeComponent, children: [{path:'', outlet:'menu', component: NavRootComponent}], canActivate: [AuthGuardService] },
-  { path: 'carga-muestreo', component: CargaComponent, children: [{path:'', outlet:'menu', component: NavRootComponent}], canActivate: [AuthGuardService]},
+  { path: 'liberacion-muestreo', component: CargaComponent, children: [{path:'', outlet:'menu', component: NavRootComponent}], canActivate: [AuthGuardService]},
   { path: 'resumen', component: ResumenComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
   { path: 'validados-muestreo', component: ValidadosComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
   { path: 'revision-totales', component: TotalComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService]},
