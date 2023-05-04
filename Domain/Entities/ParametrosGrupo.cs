@@ -7,6 +7,7 @@ namespace Domain.Entities
     {
         public ParametrosGrupo()
         {
+            ReglasMinimoMaximo = new HashSet<ReglasMinimoMaximo>();
             ResultadoMuestreo = new HashSet<ResultadoMuestreo>();
         }
 
@@ -19,6 +20,7 @@ namespace Domain.Entities
 
         public virtual SubgrupoAnalitico IdSubgrupoNavigation { get; set; } = null!;
         public virtual UnidadMedida? IdUnidadMedidaNavigation { get; set; }
+        public virtual ICollection<ReglasMinimoMaximo> ReglasMinimoMaximo { get; set; }
         public virtual ICollection<ResultadoMuestreo> ResultadoMuestreo { get; set; }
     }
 }

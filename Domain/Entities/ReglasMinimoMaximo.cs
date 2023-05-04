@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class ReglasMinimoMaximo
+    public partial class ReglasMinimoMaximo
     {
-        public string ClaveRegla { get; set; } = string.Empty;
-        public string Clasificacion { get; set; } = string.Empty;
-        public string Tipo { get; set; } = string.Empty;
-        public string ClaveParametro { get; set; } = string.Empty;
-        public string MinimoMaximoIncumple { get; set; } = string.Empty;
+        public long Id { get; set; }
+        public string ClaveRegla { get; set; } = null!;
+        public long ClasificacionReglaId { get; set; }
+        public long TipoReglaId { get; set; }
+        public long ParametroId { get; set; }
         public bool Aplica { get; set; }
+        public string MinimoMaximo { get; set; } = null!;
+
+        public virtual ClasificacionRegla ClasificacionRegla { get; set; } = null!;
+        public virtual ParametrosGrupo Parametro { get; set; } = null!;
+        public virtual TipoRegla TipoRegla { get; set; } = null!;
     }
 }

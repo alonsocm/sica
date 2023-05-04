@@ -20,6 +20,7 @@ namespace Persistence.Contexts
         public virtual DbSet<Accion> Accion { get; set; } = null!;
         public virtual DbSet<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = null!;
         public virtual DbSet<BrigadaMuestreo> BrigadaMuestreo { get; set; } = null!;
+        public virtual DbSet<ClasificacionRegla> ClasificacionRegla { get; set; } = null!;
         public virtual DbSet<CuencaDireccionesLocales> CuencaDireccionesLocales { get; set; } = null!;
         public virtual DbSet<CuerpoAgua> CuerpoAgua { get; set; } = null!;
         public virtual DbSet<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = null!;
@@ -42,6 +43,8 @@ namespace Persistence.Contexts
         public virtual DbSet<ProgramaAnio> ProgramaAnio { get; set; } = null!;
         public virtual DbSet<ProgramaMuestreo> ProgramaMuestreo { get; set; } = null!;
         public virtual DbSet<ProgramaSitio> ProgramaSitio { get; set; } = null!;
+        public virtual DbSet<ReglasMinimoMaximo> ReglasMinimoMaximo { get; set; } = null!;
+        public virtual DbSet<ReglasRelacion> ReglasRelacion { get; set; } = null!;
         public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; } = null!;
         public virtual DbSet<Sitio> Sitio { get; set; } = null!;
         public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; } = null!;
@@ -50,11 +53,10 @@ namespace Persistence.Contexts
         public virtual DbSet<TipoCuerpoAgua> TipoCuerpoAgua { get; set; } = null!;
         public virtual DbSet<TipoEvidenciaMuestreo> TipoEvidenciaMuestreo { get; set; } = null!;
         public virtual DbSet<TipoHomologado> TipoHomologado { get; set; } = null!;
+        public virtual DbSet<TipoRegla> TipoRegla { get; set; } = null!;
         public virtual DbSet<TipoSitio> TipoSitio { get; set; } = null!;
         public virtual DbSet<UnidadMedida> UnidadMedida { get; set; } = null!;
         public virtual DbSet<Usuario> Usuario { get; set; } = null!;
-        public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; } = null!;
-        public virtual DbSet<VwReplicaRevisionResultado> VwReplicaRevisionResultado { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -97,6 +99,11 @@ namespace Persistence.Contexts
             modelBuilder.Entity<BrigadaMuestreo>(entity =>
             {
                 entity.Property(e => e.Descripcion).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<ClasificacionRegla>(entity =>
+            {
+                entity.Property(e => e.Descripcion).HasMaxLength(30);
             });
 
             modelBuilder.Entity<CuencaDireccionesLocales>(entity =>
@@ -500,6 +507,38 @@ namespace Persistence.Contexts
                     .HasConstraintName("FK_ProgramaSitio_TipoSitio");
             });
 
+            modelBuilder.Entity<ReglasMinimoMaximo>(entity =>
+            {
+                entity.Property(e => e.ClaveRegla).HasMaxLength(10);
+
+                entity.Property(e => e.MinimoMaximo).HasMaxLength(35);
+
+                entity.HasOne(d => d.ClasificacionRegla)
+                    .WithMany(p => p.ReglasMinimoMaximo)
+                    .HasForeignKey(d => d.ClasificacionReglaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasMinimoMaximo_ClasificacionRegla");
+
+                entity.HasOne(d => d.Parametro)
+                    .WithMany(p => p.ReglasMinimoMaximo)
+                    .HasForeignKey(d => d.ParametroId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasMinimoMaximo_ParametrosGrupo");
+
+                entity.HasOne(d => d.TipoRegla)
+                    .WithMany(p => p.ReglasMinimoMaximo)
+                    .HasForeignKey(d => d.TipoReglaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasMinimoMaximo_TipoRegla");
+            });
+
+            modelBuilder.Entity<ReglasRelacion>(entity =>
+            {
+                entity.Property(e => e.ClaveRegla).HasMaxLength(10);
+
+                entity.Property(e => e.RelacionRegla).HasMaxLength(200);
+            });
+
             modelBuilder.Entity<ResultadoMuestreo>(entity =>
             {
                 entity.HasIndex(e => e.EstatusResultado, "IX_ResultadoMuestreo_EstatusResultado");
@@ -696,6 +735,11 @@ namespace Persistence.Contexts
                 entity.Property(e => e.Descripcion)
                     .HasMaxLength(100)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<TipoRegla>(entity =>
+            {
+                entity.Property(e => e.Descripcion).HasMaxLength(10);
             });
 
             modelBuilder.Entity<TipoSitio>(entity =>
