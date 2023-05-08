@@ -57,6 +57,8 @@ namespace Persistence.Contexts
         public virtual DbSet<TipoSitio> TipoSitio { get; set; } = null!;
         public virtual DbSet<UnidadMedida> UnidadMedida { get; set; } = null!;
         public virtual DbSet<Usuario> Usuario { get; set; } = null!;
+        public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; } = null!;
+        public virtual DbSet<VwReplicaRevisionResultado> VwReplicaRevisionResultado { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -31,18 +31,18 @@ namespace Application.Features.Operacion.Resultados.Comands
                                                                                          request.NumeroEntrega.Contains((int)x.Muestreo.NumeroEntrega));
 
             /*Vamos por todas las reglas que apliquen a los resultados consultados*/
-            var reglasMinimoMaximo = await _reglasMinimoMaximoRepository.ObtenerElementosPorCriterioAsync(x => resultados.Select(s => s.Parametro.ClaveParametro).Contains(x.ClaveParametro));
+            var reglasMinimoMaximo = await _reglasMinimoMaximoRepository.ObtenerElementosPorCriterioAsync(x => resultados.Select(s => s.Parametro.Id).Contains(x.ParametroId));
 
             /*Recorremos la lista de resultados, y con el id de parámetro (o la clave) obtenemos la correspondiente*/
             foreach (var resultado in resultados) 
             {
                 /*Dentro del recorrido de los resultados, utilizamos la regla obtenida y el valor del resultado
                  para llamar a la interfaz IRegla y pasamos los argumentos al método*/
-                var reglaMinimoMaximo = reglasMinimoMaximo.FirstOrDefault(x => x.ClaveParametro == resultado.Parametro.ClaveParametro);
+                var reglaMinimoMaximo = reglasMinimoMaximo.FirstOrDefault(x => x.ParametroId == resultado.Parametro.Id);
 
                 if (reglaMinimoMaximo != null)
                 {
-                    var incumpleRegla = reglaMinimoMaximo.Aplica && _regla.InCumpleReglaMinimoMaximo(reglaMinimoMaximo.MinimoMaximoIncumple, resultado.Resultado);
+                    var incumpleRegla = reglaMinimoMaximo.Aplica && _regla.InCumpleReglaMinimoMaximo(reglaMinimoMaximo.MinimoMaximo, resultado.Resultado);
 
                     /*Al resultado le modificamos su valor en la columna ValidacionMinimoMaximo */
                 }
