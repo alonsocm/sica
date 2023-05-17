@@ -13,12 +13,14 @@ namespace Application.Features.Operacion.Resultados.Comands
 
     public class ValidarResultadosPorReglasCommandHandler : IRequestHandler<ValidarResultadosPorReglasCommand, Response<bool>>
     {
+        private readonly IMuestreoRepository _muestreoRepository;
         private readonly IResultado _resultadosRepository;
         private readonly IReglasMinimoMaximoRepository _reglasMinimoMaximoRepository;
         private readonly IReglaService _regla;
 
-        public ValidarResultadosPorReglasCommandHandler(IResultado resultadosRepository, IReglasMinimoMaximoRepository reglasMinimoMaximoRepository, IReglaService regla)
+        public ValidarResultadosPorReglasCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadosRepository, IReglasMinimoMaximoRepository reglasMinimoMaximoRepository, IReglaService regla)
         {
+            _muestreoRepository = muestreoRepository;
             _resultadosRepository=resultadosRepository;
             _reglasMinimoMaximoRepository=reglasMinimoMaximoRepository;
             _regla=regla;
@@ -26,35 +28,48 @@ namespace Application.Features.Operacion.Resultados.Comands
 
         public async Task<Response<bool>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
         {
-            /*Obtenemos la lista de resultados correspondientes a los muestreos que cumplan con la condición de año y número de entrega*/
-            var resultados = await _resultadosRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)x.Muestreo.AnioOperacion) &&
-                                                                                         request.NumeroEntrega.Contains((int)x.Muestreo.NumeroEntrega));
-            var parametrosIds = resultados.Select(s => s.ParametroId).Distinct();
-            /*Vamos por todas las reglas que apliquen a los resultados consultados*/
-            var reglasMinimoMaximo = await _reglasMinimoMaximoRepository.ObtenerElementosPorCriterioAsync(x => parametrosIds.Contains(x.ParametroId));
-            var resultadosNoValidos = new List<string>();
+            /*Las reglas se ejecutan (todas) por muestreo, entonces vamos por los muestreos que cumplan con los filtros proporcionados por el usuario*/
+            var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)x.AnioOperacion) &&
+                                                                                         request.NumeroEntrega.Contains((int)x.NumeroEntrega));
 
-            /*Recorremos la lista de resultados, y con el id de parámetro (o la clave) obtenemos la correspondiente*/
-            foreach (var resultado in resultados) 
+            /*validamos que exista por lo menos un muestreo*/
+            if (muestreos.Any())
             {
-                /*Dentro del recorrido de los resultados, utilizamos la regla obtenida y el valor del resultado
-                 para llamar a la interfaz IRegla y pasamos los argumentos al método*/
-                var reglaMinimoMaximo = reglasMinimoMaximo.FirstOrDefault(x => x.ParametroId == resultado.ParametroId);
+                /*Vamos por todas las reglas de minimo y máximo (Recordar que todas las reglas se aplican a nivel muestreo) */
+                var reglasMinimoMaximo = await _reglasMinimoMaximoRepository.ObtenerTodosElementosAsync();
+                var resultadosNoValidos = new List<string>();
 
-                if (reglaMinimoMaximo != null && reglaMinimoMaximo.Aplica && !resultado.Resultado.Contains('<') && !resultado.Resultado.Contains('>'))
+                /*Vamos a recorrer cada muestreo para aplicarle las reglas*/
+                foreach (var muestreo in muestreos)
                 {
-                    try
-                    {
-                        var incumpleRegla = _regla.InCumpleReglaMinimoMaximo(reglaMinimoMaximo.MinimoMaximo, resultado.Resultado);
-                    }
-                    catch (Exception ex)
-                    {
-                        resultadosNoValidos.Add($"La regla {reglaMinimoMaximo.MinimoMaximo} no pudo ser aplicada al resultado: {resultado.Resultado}, {ex.Message}");
-                    }
+                    /*Traemos todos los resultados correspondientes al muestreo que estamos revisando*/
+                    var resultadosMuestreo = await _resultadosRepository.ObtenerElementosPorCriterioAsync(x => x.MuestreoId == muestreo.Id);
 
-                    /*Al resultado le modificamos su valor en la columna ValidacionMinimoMaximo */
+                    /*Recorremos la lista de reglas (Todo muestreo debe cumplir con las reglas definidas)*/
+                    foreach (var regla in reglasMinimoMaximo)
+                    {
+                        /*Vamos por el resultadoParametro, asociado a la regla en la que estamos*/
+                        var resultadoParametro = resultadosMuestreo.FirstOrDefault(f => f.ParametroId == regla.ParametroId);
+
+                        if (resultadoParametro != null)
+                        {
+                            /*Primero evaluamos las reglas de las cuales si se conoce el minimo y máximo. Esto se sabe por la bandera 'Aplica' */
+                            if (regla.Aplica && !resultadoParametro.Resultado.Contains('<') && !resultadoParametro.Resultado.Contains('>'))
+                            {
+                                try
+                                {
+                                    var incumpleRegla = _regla.InCumpleReglaMinimoMaximo(regla.MinimoMaximo, resultadoParametro.Resultado);
+                                }
+                                catch (Exception ex)
+                                {
+                                    resultadosNoValidos.Add($"La regla {regla.MinimoMaximo} no pudo ser aplicada al resultado: {resultadoParametro.Resultado}, {ex.Message}");
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
 
             throw new NotImplementedException();
         }
