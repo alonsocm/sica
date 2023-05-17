@@ -54,16 +54,31 @@ namespace Application.Features.Operacion.Resultados.Comands
                         if (resultadoParametro != null)
                         {
                             /*Primero evaluamos las reglas de las cuales si se conoce el minimo y máximo. Esto se sabe por la bandera 'Aplica' */
-                            if (regla.Aplica && !resultadoParametro.Resultado.Contains('<') && !resultadoParametro.Resultado.Contains('>'))
+                            if (regla.Aplica)
                             {
-                                try
+                                /*Ahora, sabemos que aplica, pero debemos validar que el resultado es un valor númerico para poder hacer la comparación de minimoMaximo*/
+                                var esNumerico = Decimal.TryParse(resultadoParametro.Resultado, out decimal valor);
+
+                                if (esNumerico)
                                 {
-                                    var incumpleRegla = _regla.InCumpleReglaMinimoMaximo(regla.MinimoMaximo, resultadoParametro.Resultado);
+                                    try
+                                    {
+                                        var incumpleRegla = _regla.InCumpleReglaMinimoMaximo(regla.MinimoMaximo, resultadoParametro.Resultado);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        resultadosNoValidos.Add($"La regla {regla.MinimoMaximo} no pudo ser aplicada al resultado: {resultadoParametro.Resultado}, {ex.Message}");
+                                    }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    resultadosNoValidos.Add($"La regla {regla.MinimoMaximo} no pudo ser aplicada al resultado: {resultadoParametro.Resultado}, {ex.Message}");
+                                    /*Debemos ir al catálogo de reglas de reporte. Para validar en que casos el valor puede no ser un número*/
                                 }
+
+                            }
+                            else
+                            {
+                                /*Aquí iremos a buscar el minimoMaximo por parámetro y por laboratorio*/
                             }
                         }
                     }
