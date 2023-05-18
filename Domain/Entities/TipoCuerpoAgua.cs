@@ -8,6 +8,7 @@ namespace Domain.Entities
         public TipoCuerpoAgua()
         {
             CuerpoTipoSubtipoAgua = new HashSet<CuerpoTipoSubtipoAgua>();
+            ReglaReporteResultadoTca = new HashSet<ReglaReporteResultadoTca>();
         }
 
         public long Id { get; set; }
@@ -17,5 +18,6 @@ namespace Domain.Entities
 
         public virtual TipoHomologado? TipoHomologado { get; set; }
         public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; }
+        public virtual ICollection<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; }
     }
 }

@@ -7,7 +7,10 @@ namespace Domain.Entities
     {
         public ParametrosGrupo()
         {
+            ReglasLaboratorioLdmLpc = new HashSet<ReglasLaboratorioLdmLpc>();
             ReglasMinimoMaximo = new HashSet<ReglasMinimoMaximo>();
+            ReglasRelacionParametro = new HashSet<ReglasRelacionParametro>();
+            ReglasReporte = new HashSet<ReglasReporte>();
             ResultadoMuestreo = new HashSet<ResultadoMuestreo>();
         }
 
@@ -20,7 +23,10 @@ namespace Domain.Entities
 
         public virtual SubgrupoAnalitico IdSubgrupoNavigation { get; set; } = null!;
         public virtual UnidadMedida? IdUnidadMedidaNavigation { get; set; }
+        public virtual ICollection<ReglasLaboratorioLdmLpc> ReglasLaboratorioLdmLpc { get; set; }
         public virtual ICollection<ReglasMinimoMaximo> ReglasMinimoMaximo { get; set; }
+        public virtual ICollection<ReglasRelacionParametro> ReglasRelacionParametro { get; set; }
+        public virtual ICollection<ReglasReporte> ReglasReporte { get; set; }
         public virtual ICollection<ResultadoMuestreo> ResultadoMuestreo { get; set; }
     }
 }

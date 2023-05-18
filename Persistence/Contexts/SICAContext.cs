@@ -29,6 +29,7 @@ namespace Persistence.Contexts
         public virtual DbSet<EstatusMuestreo> EstatusMuestreo { get; set; } = null!;
         public virtual DbSet<EvidenciaMuestreo> EvidenciaMuestreo { get; set; } = null!;
         public virtual DbSet<EvidenciaReplica> EvidenciaReplica { get; set; } = null!;
+        public virtual DbSet<FormaReporte> FormaReporte { get; set; } = null!;
         public virtual DbSet<Laboratorios> Laboratorios { get; set; } = null!;
         public virtual DbSet<Localidad> Localidad { get; set; } = null!;
         public virtual DbSet<Muestreo> Muestreo { get; set; } = null!;
@@ -43,8 +44,13 @@ namespace Persistence.Contexts
         public virtual DbSet<ProgramaAnio> ProgramaAnio { get; set; } = null!;
         public virtual DbSet<ProgramaMuestreo> ProgramaMuestreo { get; set; } = null!;
         public virtual DbSet<ProgramaSitio> ProgramaSitio { get; set; } = null!;
+        public virtual DbSet<ReglaReporteFormaReporte> ReglaReporteFormaReporte { get; set; } = null!;
+        public virtual DbSet<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; } = null!;
+        public virtual DbSet<ReglasLaboratorioLdmLpc> ReglasLaboratorioLdmLpc { get; set; } = null!;
         public virtual DbSet<ReglasMinimoMaximo> ReglasMinimoMaximo { get; set; } = null!;
         public virtual DbSet<ReglasRelacion> ReglasRelacion { get; set; } = null!;
+        public virtual DbSet<ReglasRelacionParametro> ReglasRelacionParametro { get; set; } = null!;
+        public virtual DbSet<ReglasReporte> ReglasReporte { get; set; } = null!;
         public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; } = null!;
         public virtual DbSet<Sitio> Sitio { get; set; } = null!;
         public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; } = null!;
@@ -59,7 +65,7 @@ namespace Persistence.Contexts
         public virtual DbSet<Usuario> Usuario { get; set; } = null!;
         public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; } = null!;
         public virtual DbSet<VwReplicaRevisionResultado> VwReplicaRevisionResultado { get; set; } = null!;
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -227,6 +233,11 @@ namespace Persistence.Contexts
                     .HasForeignKey(d => d.ResultadoMuestreoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_EvidenciaReplica_ResultadoMuestreo");
+            });
+
+            modelBuilder.Entity<FormaReporte>(entity =>
+            {
+                entity.Property(e => e.Descripcion).HasMaxLength(60);
             });
 
             modelBuilder.Entity<Laboratorios>(entity =>
@@ -509,6 +520,65 @@ namespace Persistence.Contexts
                     .HasConstraintName("FK_ProgramaSitio_TipoSitio");
             });
 
+            modelBuilder.Entity<ReglaReporteFormaReporte>(entity =>
+            {
+                entity.HasOne(d => d.FormaReporte)
+                    .WithMany(p => p.ReglaReporteFormaReporte)
+                    .HasForeignKey(d => d.FormaReporteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglaReporteFormaReporte_FormaReporte");
+
+                entity.HasOne(d => d.ReglaReporte)
+                    .WithMany(p => p.ReglaReporteFormaReporte)
+                    .HasForeignKey(d => d.ReglaReporteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglaReporteFormaReporte_ReglasReporte");
+            });
+
+            modelBuilder.Entity<ReglaReporteResultadoTca>(entity =>
+            {
+                entity.ToTable("ReglaReporteResultadoTCA");
+
+                entity.HasOne(d => d.ReglaReporte)
+                    .WithMany(p => p.ReglaReporteResultadoTca)
+                    .HasForeignKey(d => d.ReglaReporteId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglaReporteResultadoTCA_ReglasReporte");
+
+                entity.HasOne(d => d.TipoCuerpoAgua)
+                    .WithMany(p => p.ReglaReporteResultadoTca)
+                    .HasForeignKey(d => d.TipoCuerpoAguaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ResultadoTCAReglaReporte_TipoCuerpoAgua");
+            });
+
+            modelBuilder.Entity<ReglasLaboratorioLdmLpc>(entity =>
+            {
+                entity.ToTable("ReglasLaboratorioLDM_LPC");
+
+                entity.Property(e => e.ClaveUnicaLabParametro).HasMaxLength(50);
+
+                entity.Property(e => e.Ldm)
+                    .HasMaxLength(20)
+                    .HasColumnName("LDM");
+
+                entity.Property(e => e.Lpc)
+                    .HasMaxLength(20)
+                    .HasColumnName("LPC");
+
+                entity.HasOne(d => d.Laboratorio)
+                    .WithMany(p => p.ReglasLaboratorioLdmLpc)
+                    .HasForeignKey(d => d.LaboratorioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasLaboratorioLDM_LPC_Laboratorios");
+
+                entity.HasOne(d => d.Parametro)
+                    .WithMany(p => p.ReglasLaboratorioLdmLpc)
+                    .HasForeignKey(d => d.ParametroId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasLaboratorioLDM_LPC_ParametrosGrupo");
+            });
+
             modelBuilder.Entity<ReglasMinimoMaximo>(entity =>
             {
                 entity.Property(e => e.ClaveRegla).HasMaxLength(10);
@@ -539,6 +609,52 @@ namespace Persistence.Contexts
                 entity.Property(e => e.ClaveRegla).HasMaxLength(10);
 
                 entity.Property(e => e.RelacionRegla).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<ReglasRelacionParametro>(entity =>
+            {
+                entity.HasOne(d => d.Parametro)
+                    .WithMany(p => p.ReglasRelacionParametro)
+                    .HasForeignKey(d => d.ParametroId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasRelacionParametro_ParametrosGrupo");
+
+                entity.HasOne(d => d.ReglasRelacion)
+                    .WithMany(p => p.ReglasRelacionParametro)
+                    .HasForeignKey(d => d.ReglasRelacionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasRelacionParametro_ReglasRelacion");
+            });
+
+            modelBuilder.Entity<ReglasReporte>(entity =>
+            {
+                entity.Property(e => e.ClaveRegla).HasMaxLength(10);
+
+                entity.Property(e => e.EsValidoResultadoIm).HasColumnName("EsValidoResultadoIM");
+
+                entity.Property(e => e.EsValidoResultadoMenorCmc).HasColumnName("EsValidoResultadoMenorCMC");
+
+                entity.Property(e => e.EsValidoResultadoMenorLd).HasColumnName("EsValidoResultadoMenorLD");
+
+                entity.Property(e => e.EsValidoResultadoMenorLpc).HasColumnName("EsValidoResultadoMenorLPC");
+
+                entity.Property(e => e.EsValidoResultadoNa).HasColumnName("EsValidoResultadoNA");
+
+                entity.Property(e => e.EsValidoResultadoNd).HasColumnName("EsValidoResultadoND");
+
+                entity.Property(e => e.EsValidoResultadoNe).HasColumnName("EsValidoResultadoNE");
+
+                entity.HasOne(d => d.ClasificacionRegla)
+                    .WithMany(p => p.ReglasReporte)
+                    .HasForeignKey(d => d.ClasificacionReglaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasReporte_ClasificacionRegla");
+
+                entity.HasOne(d => d.Parametro)
+                    .WithMany(p => p.ReglasReporte)
+                    .HasForeignKey(d => d.ParametroId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ReglasReporte_ParametrosGrupo");
             });
 
             modelBuilder.Entity<ResultadoMuestreo>(entity =>
