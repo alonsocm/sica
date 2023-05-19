@@ -93,6 +93,7 @@ namespace Persistence
             services.AddTransient<IVwReplicaRevisionResultadoRepository, VwReplicaRevisionResultadoRepository>();
             services.AddTransient<IEvidenciaReplicaRepository, EvidenciaReplicaRepository>();
             services.AddTransient<IReglasMinimoMaximoRepository, ReglasMinimoMaximoRepository>();
+            services.AddTransient<IReglasReporteRepository, ReglasReporteRepository>();
             #endregion
         }
     }

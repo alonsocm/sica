@@ -2,6 +2,7 @@
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
+using System.Linq.Expressions;
 
 namespace Application.Features.Operacion.Resultados.Comands
 {
@@ -17,13 +18,15 @@ namespace Application.Features.Operacion.Resultados.Comands
         private readonly IResultado _resultadosRepository;
         private readonly IReglasMinimoMaximoRepository _reglasMinimoMaximoRepository;
         private readonly IReglaService _regla;
+        private readonly IReglasReporteRepository _reglasReporteRepository;
 
-        public ValidarResultadosPorReglasCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadosRepository, IReglasMinimoMaximoRepository reglasMinimoMaximoRepository, IReglaService regla)
+        public ValidarResultadosPorReglasCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadosRepository, IReglasMinimoMaximoRepository reglasMinimoMaximoRepository, IReglaService regla, IReglasReporteRepository reglasReporteRepository)
         {
             _muestreoRepository = muestreoRepository;
             _resultadosRepository=resultadosRepository;
             _reglasMinimoMaximoRepository=reglasMinimoMaximoRepository;
             _regla=regla;
+            _reglasReporteRepository=reglasReporteRepository;
         }
 
         public async Task<Response<bool>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
@@ -72,9 +75,60 @@ namespace Application.Features.Operacion.Resultados.Comands
                                 }
                                 else
                                 {
-                                    /*Debemos ir al catálogo de reglas de reporte. Para validar en que casos el valor puede no ser un número*/
-                                }
+                                    /*Validamos la forma de reporte para cuando un valor no es númerico*/
+                                    var formasReporte = new List<string>() { "<0", "NA", "NE", "IM", "<LD", "<CMC", "ND", "<LPC" };
 
+                                    /*Buscamos si el valor del resultado corresponde con alguno de la lista de opciones*/
+                                    var formaReporte = formasReporte.FirstOrDefault(x => x == resultadoParametro.Resultado);
+
+                                    /*Si el valor corresponde con alguna forma de reporte, ahora necesitamos saber si es valida. Ocupamos la tabla, ReglasReporte*/
+                                    if (formaReporte != null)
+                                    {
+                                        var reglaReporte = _reglasReporteRepository.ObtenerElementosPorCriterioAsync(x => x.ParametroId == resultadoParametro.ParametroId).Result.FirstOrDefault();
+
+                                        if(reglaReporte != null)
+                                        {
+                                            bool esValido;
+
+                                            switch (formaReporte)
+                                            {
+                                                case "<0":
+                                                    esValido = reglaReporte.EsValidoMenorCero;
+                                                    break;
+                                                case "NA":
+                                                    esValido = reglaReporte.EsValidoResultadoNa;
+                                                    break;
+                                                case "NE":
+                                                    esValido = reglaReporte.EsValidoResultadoNe;
+                                                    break;
+                                                case "IM":
+                                                    esValido = reglaReporte.EsValidoResultadoIm;
+                                                    break;
+                                                case "<LD":
+                                                    esValido = reglaReporte.EsValidoResultadoMenorLd;
+                                                    break;
+                                                case "<CMC":
+                                                    esValido = reglaReporte.EsValidoResultadoMenorCmc;
+                                                    break;
+                                                case "ND":
+                                                    esValido = reglaReporte.EsValidoResultadoNd;
+                                                    break;
+                                                case "<LPC":
+                                                    esValido = reglaReporte.EsValidoResultadoMenorLpc;
+                                                    break;
+                                                default:
+                                                    resultadosNoValidos.Add($"El resultado: {resultadoParametro.Resultado} del parámetro {resultadoParametro.Parametro.ClaveParametro} no es válido");
+                                                    break;
+                                            }
+                                                                                       
+                                        }
+                                    }
+                                    else
+                                    {
+                                        /*Validamos si el parámetro cuenta con una forma especifica de reporte*/
+                                    }
+
+                                }
                             }
                             else
                             {
