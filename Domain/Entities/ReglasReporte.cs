@@ -7,7 +7,6 @@ namespace Domain.Entities
     {
         public ReglasReporte()
         {
-            ReglaReporteFormaReporte = new HashSet<ReglaReporteFormaReporte>();
             ReglaReporteResultadoTca = new HashSet<ReglaReporteResultadoTca>();
         }
 
@@ -28,7 +27,6 @@ namespace Domain.Entities
 
         public virtual ClasificacionRegla ClasificacionRegla { get; set; } = null!;
         public virtual ParametrosGrupo Parametro { get; set; } = null!;
-        public virtual ICollection<ReglaReporteFormaReporte> ReglaReporteFormaReporte { get; set; }
         public virtual ICollection<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; }
     }
 }
