@@ -3,6 +3,7 @@ using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Application.Features.Operacion.Resultados.Comands
 {
@@ -19,14 +20,22 @@ namespace Application.Features.Operacion.Resultados.Comands
         private readonly IReglasMinimoMaximoRepository _reglasMinimoMaximoRepository;
         private readonly IReglaService _regla;
         private readonly IReglasReporteRepository _reglasReporteRepository;
+        private readonly IFormaReporteEspecificaRepository _formaReporteEspecificaRepository;
 
-        public ValidarResultadosPorReglasCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadosRepository, IReglasMinimoMaximoRepository reglasMinimoMaximoRepository, IReglaService regla, IReglasReporteRepository reglasReporteRepository)
+        public ValidarResultadosPorReglasCommandHandler(
+            IMuestreoRepository muestreoRepository, 
+            IResultado resultadosRepository, 
+            IReglasMinimoMaximoRepository reglasMinimoMaximoRepository, 
+            IReglaService regla, 
+            IReglasReporteRepository reglasReporteRepository, 
+            IFormaReporteEspecificaRepository formaReporteEspecificaRepository)
         {
             _muestreoRepository = muestreoRepository;
             _resultadosRepository=resultadosRepository;
             _reglasMinimoMaximoRepository=reglasMinimoMaximoRepository;
             _regla=regla;
             _reglasReporteRepository=reglasReporteRepository;
+            _formaReporteEspecificaRepository=formaReporteEspecificaRepository;
         }
 
         public async Task<Response<bool>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
@@ -125,7 +134,13 @@ namespace Application.Features.Operacion.Resultados.Comands
                                     }
                                     else
                                     {
-                                        /*Validamos si el parámetro cuenta con una forma especifica de reporte*/
+                                        /*Validamos si el parámetro cuenta con una forma especifica de reporte. Buscaremos por medio del IdParametro del resultado*/
+                                        var aplicaFormaReporteEspecifica = await _formaReporteEspecificaRepository.ExisteElemento(x => x.ParametroId == resultadoParametro.ParametroId);
+
+                                        if (!aplicaFormaReporteEspecifica)
+                                        {
+                                            resultadosNoValidos.Add($"El valor: {resultadoParametro.Resultado} no corresponde con ninguna forma de reporte valida para el parámetro: {resultadoParametro.Parametro.ClaveParametro}");
+                                        }
                                     }
 
                                 }
