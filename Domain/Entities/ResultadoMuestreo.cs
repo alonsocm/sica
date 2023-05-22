@@ -35,6 +35,8 @@ namespace Domain.Entities
         public string? ObservacionLaboratorio { get; set; }
         public DateTime? FechaReplicaLaboratorio { get; set; }
         public string? Comentarios { get; set; }
+        public long? ReglaMinMaxId { get; set; }
+        public long? ReglaReporteId { get; set; }
 
         public virtual EstatusMuestreo? EstatusResultadoNavigation { get; set; }
         public virtual Muestreo Muestreo { get; set; } = null!;
@@ -42,6 +44,8 @@ namespace Domain.Entities
         public virtual Observaciones? ObservacionesOcdlNavigation { get; set; }
         public virtual Observaciones? ObservacionesSecaiaNavigation { get; set; }
         public virtual ParametrosGrupo Parametro { get; set; } = null!;
+        public virtual ReglasMinimoMaximo? ReglaMinMax { get; set; }
+        public virtual ReglasReporte? ReglaReporte { get; set; }
         public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; }
         public virtual ICollection<EvidenciaReplica> EvidenciaReplica { get; set; }
     }

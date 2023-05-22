@@ -129,7 +129,6 @@ namespace Application.Features.Operacion.Resultados.Comands
                                                     resultadosNoValidos.Add($"El resultado: {resultadoParametro.Resultado} del parámetro {resultadoParametro.Parametro.ClaveParametro} no es válido");
                                                     break;
                                             }
-                                                                                       
                                         }
                                     }
                                     else
@@ -139,10 +138,9 @@ namespace Application.Features.Operacion.Resultados.Comands
 
                                         if (!aplicaFormaReporteEspecifica)
                                         {
-                                            resultadosNoValidos.Add($"El valor: {resultadoParametro.Resultado} no corresponde con ninguna forma de reporte valida para el parámetro: {resultadoParametro.Parametro.ClaveParametro}");
+                                            resultadosNoValidos.Add($"El valor: {resultadoParametro.Resultado} no corresponde con ninguna forma de reporte valida para el parámetro con id: {resultadoParametro.ParametroId}");
                                         }
                                     }
-
                                 }
                             }
                             else

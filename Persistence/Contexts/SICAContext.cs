@@ -736,6 +736,16 @@ namespace Persistence.Contexts
                     .HasForeignKey(d => d.ParametroId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ResultadoMuestreo_Parametro");
+
+                entity.HasOne(d => d.ReglaMinMax)
+                    .WithMany(p => p.ResultadoMuestreo)
+                    .HasForeignKey(d => d.ReglaMinMaxId)
+                    .HasConstraintName("FK_ResultadoMuestreo_ReglasMinMax");
+
+                entity.HasOne(d => d.ReglaReporte)
+                    .WithMany(p => p.ResultadoMuestreo)
+                    .HasForeignKey(d => d.ReglaReporteId)
+                    .HasConstraintName("FK_ResultadoMuestreo_ReglasReporte");
             });
 
             modelBuilder.Entity<Sitio>(entity =>
