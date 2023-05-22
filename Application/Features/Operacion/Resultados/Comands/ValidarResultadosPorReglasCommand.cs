@@ -138,6 +138,9 @@ namespace Application.Features.Operacion.Resultados.Comands
 
                                         if (!aplicaFormaReporteEspecifica)
                                         {
+                                            /*En este punto el valor reportado por el laboratorio no coincide, es momento de reportarlo como error*/
+                                            resultadoParametro.ReglaMinMaxId = regla.Id;
+                                            _resultadosRepository.Actualizar(resultadoParametro);
                                             resultadosNoValidos.Add($"El valor: {resultadoParametro.Resultado} no corresponde con ninguna forma de reporte valida para el parámetro con id: {resultadoParametro.ParametroId}");
                                         }
                                     }
