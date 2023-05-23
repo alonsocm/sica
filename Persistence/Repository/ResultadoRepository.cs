@@ -67,5 +67,28 @@ namespace Persistence.Repository
                 throw;
             }
         }
+
+        public async Task<List<ResultadoValidacionReglasDto>> ObtenerResultadosValidacion(List<long> muestreosId)
+        {
+            var resultados = await (from r in _dbContext.ResultadoMuestreo
+                                    where muestreosId.Contains((Int64)r.MuestreoId)
+                                    select new ResultadoValidacionReglasDto
+                                    {
+                                        Anio = (int)r.Muestreo.AnioOperacion,
+                                        NoEntrega = (int)r.Muestreo.NumeroEntrega,
+                                        TipoSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1??string.Empty,
+                                        ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo}{r.Parametro.ClaveParametro}",
+                                        ClaveSitio = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}",
+                                        ClaveMonitoreo = r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo,
+                                        FechaRealizacion = r.Muestreo.FechaRealVisita.ToString()??string.Empty,
+                                        Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? string.Empty : r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura?? string.Empty,
+                                        ClaveParametro = r.Parametro.ClaveParametro,
+                                        Resultado = r.Resultado,
+                                        ValidacionPorReglas = r.ReglaMinMaxId == null && r.ReglaReporteId == null ? "OK" : r.ReglaMinMax.ClaveRegla,
+                                        FechaAplicacionReglas = DateTime.Now.ToString(),
+                                    }).ToListAsync();
+
+            return resultados;
+        }
     }
 }

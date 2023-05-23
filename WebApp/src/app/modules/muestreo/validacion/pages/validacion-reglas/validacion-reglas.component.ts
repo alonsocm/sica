@@ -25,29 +25,24 @@ export class ValidacionReglasComponent extends BaseService implements OnInit {
     laboratorio: string;
     claveParametro: string;
     resultado: string;
-    validacionReglas: string;
-    fechaReglas: string;
-  }> = [
-    {
-      anio: '2012',
-      noEntrega: '1',
-      tipoSitio: 'LÉNTICO',
-      claveSitio: 'DLAGU19',
-      claveUnica: 'DLAGU19-CR_TOT',
-      claveMonitoreo: 'DLAGU19-210822',
-      fechaRealizacion: '19/08/2022',
-      laboratorio: 'LABORATORIO',
-      claveParametro: 'CR_TOT',
-      resultado: '<0.005',
-      validacionReglas: '',
-      fechaReglas: '27/04/23',
-    },
-  ];
+    validacionPorReglas: string;
+    fechaAplicacionReglas: string;
+  }> = [];
 
   ngOnInit(): void {
     this.validacionService.obtenerMuestreos().subscribe({
       next: (response: any) => {
         this.anios = response.data;
+      },
+      error: (error) => {},
+    });
+
+    let anios = [2022];
+    let numeroEntrega = [0];
+
+    this.validacionService.obtenerResultadosValidadosPorReglas(anios, numeroEntrega).subscribe({
+      next: (response: any) => {
+        this.registros = response.data;
       },
       error: (error) => {},
     });

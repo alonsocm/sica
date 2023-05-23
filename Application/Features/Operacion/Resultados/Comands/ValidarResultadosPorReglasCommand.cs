@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs;
+using Application.Interfaces;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
@@ -7,13 +8,13 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Application.Features.Operacion.Resultados.Comands
 {
-    public class ValidarResultadosPorReglasCommand : IRequest<Response<bool>>
+    public class ValidarResultadosPorReglasCommand : IRequest<Response<List<ResultadoValidacionReglasDto>>>
     {
         public List<int> Anios { get; set; } = new List<int>();
         public List<int> NumeroEntrega { get; set; } = new List<int>();
     }
 
-    public class ValidarResultadosPorReglasCommandHandler : IRequestHandler<ValidarResultadosPorReglasCommand, Response<bool>>
+    public class ValidarResultadosPorReglasCommandHandler : IRequestHandler<ValidarResultadosPorReglasCommand, Response<List<ResultadoValidacionReglasDto>>>
     {
         private readonly IMuestreoRepository _muestreoRepository;
         private readonly IResultado _resultadosRepository;
@@ -38,8 +39,10 @@ namespace Application.Features.Operacion.Resultados.Comands
             _formaReporteEspecificaRepository=formaReporteEspecificaRepository;
         }
 
-        public async Task<Response<bool>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
+        public async Task<Response<List<ResultadoValidacionReglasDto>>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
         {
+            /*Creamos la lista que regresaremos al cliente*/
+            List<ResultadoValidacionReglasDto> resultadosValidacion = new List<ResultadoValidacionReglasDto>();
             /*Las reglas se ejecutan (todas) por muestreo, entonces vamos por los muestreos que cumplan con los filtros proporcionados por el usuario*/
             var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)x.AnioOperacion) &&
                                                                                          request.NumeroEntrega.Contains((int)x.NumeroEntrega));
@@ -153,10 +156,11 @@ namespace Application.Features.Operacion.Resultados.Comands
                         }
                     }
                 }
+
+                resultadosValidacion = await _resultadosRepository.ObtenerResultadosValidacion(muestreos.Select(x => x.Id).ToList());
             }
 
-
-            throw new NotImplementedException();
+            return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion.Take(100).ToList());
         }
     }
 }

@@ -520,8 +520,8 @@ namespace WebAPI.Controllers.v1.Operacion
             }));
         }
 
-        [HttpPost("ValidarResultadosPorReglas")]
-        public async Task<IActionResult> Post([FromBody]ValidarResultadosPorReglasCommand request)
+        [HttpGet("ValidarResultadosPorReglas")]
+        public async Task<IActionResult> Get([FromQuery]ValidarResultadosPorReglasCommand request)
         {
             return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
         }

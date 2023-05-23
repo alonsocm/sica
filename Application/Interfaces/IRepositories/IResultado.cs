@@ -11,5 +11,6 @@ namespace Application.Interfaces.IRepositories
     public interface IResultado : IRepository<ResultadoMuestreo>
     {
         Task<IEnumerable<ReplicaResultadoDto>> ObtenerReplicasResultados();
+        Task<List<ResultadoValidacionReglasDto>> ObtenerResultadosValidacion(List<long> muestreosId);
     }
 }
