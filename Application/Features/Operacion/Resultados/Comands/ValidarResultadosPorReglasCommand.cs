@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
@@ -76,13 +77,27 @@ namespace Application.Features.Operacion.Resultados.Comands
 
                                 if (esNumerico)
                                 {
-                                    try
+                                    if (resultadoParametro.Resultado == "0")
                                     {
-                                        var incumpleRegla = _regla.InCumpleReglaMinimoMaximo(regla.MinimoMaximo, resultadoParametro.Resultado);
+                                        var reglaReporte = _reglasReporteRepository.ObtenerElementosPorCriterioAsync(x => x.ParametroId == resultadoParametro.ParametroId).Result.FirstOrDefault();
+
+                                        if (reglaReporte != null && !reglaReporte.EsValidoResultadoCero)
+                                        {
+                                            resultadoParametro.ReglaReporteId = reglaReporte.Id;
+                                            _resultadosRepository.Actualizar(resultadoParametro);
+                                            resultadosNoValidos.Add($"El valor: {resultadoParametro.Resultado} no corresponde con ninguna forma de reporte valida para el parámetro con id: {resultadoParametro.ParametroId}");
+                                        }
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        resultadosNoValidos.Add($"La regla {regla.MinimoMaximo} no pudo ser aplicada al resultado: {resultadoParametro.Resultado}, {ex.Message}");
+                                        try
+                                        {
+                                            var incumpleRegla = _regla.InCumpleReglaMinimoMaximo(regla.MinimoMaximo, resultadoParametro.Resultado);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            resultadosNoValidos.Add($"La regla {regla.MinimoMaximo} no pudo ser aplicada al resultado: {resultadoParametro.Resultado}, {ex.Message}");
+                                        }
                                     }
                                 }
                                 else
@@ -151,7 +166,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                             }
                             else
                             {
-                                /*Aquí iremos a buscar el minimoMaximo por parámetro y por laboratorio*/
+                                /*Aquí iremos a buscar el minimoMaximo por parámetro y por laboratorio. Lo haremos por el idParametro y idLaboratorio*/
                             }
                         }
                     }

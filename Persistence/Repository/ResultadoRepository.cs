@@ -84,7 +84,7 @@ namespace Persistence.Repository
                                         Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? string.Empty : r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura?? string.Empty,
                                         ClaveParametro = r.Parametro.ClaveParametro,
                                         Resultado = r.Resultado,
-                                        ValidacionPorReglas = r.ReglaMinMaxId == null && r.ReglaReporteId == null ? "OK" : r.ReglaMinMax.ClaveRegla,
+                                        ValidacionPorReglas = r.ReglaMinMaxId == null && r.ReglaReporteId == null ? "OK" : $"{r.ReglaMinMax.ClaveRegla}{r.ReglaReporte.ClaveRegla}",
                                         FechaAplicacionReglas = DateTime.Now.ToString(),
                                     }).ToListAsync();
 
