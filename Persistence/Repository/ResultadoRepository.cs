@@ -80,12 +80,12 @@ namespace Persistence.Repository
                                         ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo}{r.Parametro.ClaveParametro}",
                                         ClaveSitio = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}",
                                         ClaveMonitoreo = r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo,
-                                        FechaRealizacion = r.Muestreo.FechaRealVisita.ToString()??string.Empty,
+                                        FechaRealizacion = r.Muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy"),
                                         Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? string.Empty : r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura?? string.Empty,
                                         ClaveParametro = r.Parametro.ClaveParametro,
                                         Resultado = r.Resultado,
                                         ValidacionPorReglas = r.ReglaMinMaxId == null && r.ReglaReporteId == null ? "OK" : $"{r.ReglaMinMax.ClaveRegla}{r.ReglaReporte.ClaveRegla}",
-                                        FechaAplicacionReglas = DateTime.Now.ToString(),
+                                        FechaAplicacionReglas = DateTime.Now.ToString("dd-MM-yyyy"),
                                     }).ToListAsync();
 
             return resultados;

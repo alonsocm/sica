@@ -13,7 +13,7 @@ hr.red {
 }
 
 table thead tr th{
-    text-align: center;
+    text-align: left;
 }
 
 .dvTable {
@@ -22,6 +22,6 @@ table thead tr th{
     margin: 20px 0px 10px 0px;
 }
 
-.dvTable tbody>tr:hover {
+/* .dvTable tbody>tr:hover {
     background-color: #DDDDDD;
-}
+} */

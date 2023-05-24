@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Resultados.Comands;
+using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
 using Application.Features.Resultados.Comands;
@@ -524,6 +525,21 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> Get([FromQuery]ValidarResultadosPorReglasCommand request)
         {
             return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
+        }
+
+        [HttpGet("ExportarResumenValidacion")]
+        public async Task<IActionResult> Get([FromQuery] GetResumenValidacionReglas request)
+        {
+            var registros = await Mediator.Send(new GetResumenValidacionReglas { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega });
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ResumenValidacionReglas");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportToExcel(registros.Data, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
     }
 }

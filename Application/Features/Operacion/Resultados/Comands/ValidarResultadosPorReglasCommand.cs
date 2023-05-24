@@ -175,7 +175,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                 resultadosValidacion = await _resultadosRepository.ObtenerResultadosValidacion(muestreos.Select(x => x.Id).ToList());
             }
 
-            return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion.Take(100).ToList());
+            return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion);
         }
     }
 }
