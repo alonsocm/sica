@@ -177,5 +177,112 @@ namespace Application.Features.Operacion.Resultados.Comands
 
             return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion);
         }
+
+        public void AplicarReglasDeRelacion(List<ResultadoMuestreo> resultadosMuestreo)
+        {
+            /*Se iran ejecutando una a una las reglas de relación*/
+            List<string> errores = new();
+
+            /*COLI_FEC > COLI_TOT */
+            var valorCOLI_FEC = ObtenerResultadoParametro(resultadosMuestreo, "COLI_FEC");
+            var valorCOLI_TOT = ObtenerResultadoParametro(resultadosMuestreo, "COLI_TOT");
+
+            if (Convert.ToDecimal(valorCOLI_FEC) > Convert.ToDecimal(valorCOLI_TOT))
+            {
+                errores.Add("RR-1");
+            }
+
+            /*E_COLI > COLI_FEC*/
+            var valorE_COLI = ObtenerResultadoParametro(resultadosMuestreo, "E_COLI");
+
+            if (Convert.ToDecimal(valorE_COLI) > Convert.ToDecimal(valorCOLI_FEC))
+            {
+                errores.Add("RR-2");
+            }
+
+            /*DBO_SOL > DBO_TOT*/
+            var valorDBO_SOL = ObtenerResultadoParametro(resultadosMuestreo, "DBO_SOL");
+            var valorDBO_TOT = ObtenerResultadoParametro(resultadosMuestreo, "DBO_TOT");
+
+            if (Convert.ToDecimal(valorDBO_SOL) > Convert.ToDecimal(valorDBO_TOT))
+            {
+                errores.Add("RR-3");
+            }
+            
+            /*COT_SOL > COT*/
+            var valorCOT_SOL = ObtenerResultadoParametro(resultadosMuestreo, "COT_SOL");
+            var valorCOT = ObtenerResultadoParametro(resultadosMuestreo, "COT");
+
+            if (Convert.ToDecimal(valorCOT_SOL) > Convert.ToDecimal(valorCOT))
+            {
+                errores.Add("RR-4");
+            }
+
+            /*AOXF > AOXT*/
+            var valorAOXF = ObtenerResultadoParametro(resultadosMuestreo, "AOXF");
+            var valorAOXT = ObtenerResultadoParametro(resultadosMuestreo, "AOXT");
+
+            if (Convert.ToDecimal(valorAOXF) > Convert.ToDecimal(valorAOXT))
+            {
+                errores.Add("RR-5");
+            }
+
+            /*AOXP > AOXT*/
+            var valorAOXP = ObtenerResultadoParametro(resultadosMuestreo, "AOXP");
+
+            if (Convert.ToDecimal(valorAOXP) > Convert.ToDecimal(valorAOXT))
+            {
+                errores.Add("RR-6");
+            }
+
+            /*DBO_TOT > DQO_TOT*/
+            var valorDQO_TOT = ObtenerResultadoParametro(resultadosMuestreo, "DQO_TOT");
+
+            if (Convert.ToDecimal(valorDBO_TOT) > Convert.ToDecimal(valorDQO_TOT))
+            {
+                errores.Add("RR-7");
+            }
+
+            /*DBO_TOT > DQO_TOT*/
+            var valorDQO_SOL = ObtenerResultadoParametro(resultadosMuestreo, "DQO_SOL");
+
+            if (Convert.ToDecimal(valorDQO_SOL) > Convert.ToDecimal(valorDQO_TOT))
+            {
+                errores.Add("RR-8");
+            }
+
+            /*P_TOT <> P_ORG + P_INORG*/
+            var valorP_TOT = ObtenerResultadoParametro(resultadosMuestreo, "P_TOT");
+            var valorP_ORG = ObtenerResultadoParametro(resultadosMuestreo, "P_ORG");
+            var valorP_INORG = ObtenerResultadoParametro(resultadosMuestreo, "P_INORG");
+
+            if (Convert.ToDecimal(valorP_TOT) != (Convert.ToDecimal(valorP_ORG) + Convert.ToDecimal(valorP_INORG)))
+            {
+                errores.Add("RR-15");
+            }
+
+            /*N_NH3 > N_TOTK*/
+            var valorN_NH3 = ObtenerResultadoParametro(resultadosMuestreo, "N_NH3");
+            var valorN_TOTK = ObtenerResultadoParametro(resultadosMuestreo, "N_TOTK");
+
+            if (Convert.ToDecimal(valorN_NH3) > Convert.ToDecimal(valorN_TOTK))
+            {
+                errores.Add("RR-16");
+            }
+
+            /*NTK <> (N_NH3 + N_ORG)*/
+            var valorNTK = ObtenerResultadoParametro(resultadosMuestreo, "NTK");
+            var valorN_ORG = ObtenerResultadoParametro(resultadosMuestreo, "N_ORG");
+
+            if (Convert.ToDecimal(valorNTK) != (Convert.ToDecimal(valorN_NH3) + Convert.ToDecimal(valorN_ORG)))
+            {
+                errores.Add("RR-17");
+            }
+        }
+
+        public static string ObtenerResultadoParametro(List<ResultadoMuestreo> resultadosMuestreo, string claveParametro)
+        {
+            return resultadosMuestreo.Where(x => x.Parametro.ClaveParametro.Equals(claveParametro)).FirstOrDefault().Resultado;
+        }
     }
 }
