@@ -251,8 +251,28 @@ namespace Application.Features.Operacion.Resultados.Comands
                 errores.Add("RR-8");
             }
 
-            /*P_TOT <> P_ORG + P_INORG*/
+            /*PO4_TOT / P_TOT  < 2.6 ó > 3.6*/
+            var valorPO4_TOT = ObtenerResultadoParametro(resultadosMuestreo, "PO4_TOT");
             var valorP_TOT = ObtenerResultadoParametro(resultadosMuestreo, "P_TOT");
+
+            if ((Convert.ToDecimal(valorPO4_TOT) / Convert.ToDecimal(valorP_TOT)) < 2.6M || (Convert.ToDecimal(valorPO4_TOT) / Convert.ToDecimal(valorP_TOT)) < 3.6M)
+            {
+                errores.Add("RR-11");
+            }
+
+            /*N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)*/
+            var valorN_TOT = ObtenerResultadoParametro(resultadosMuestreo, "N_TOT");
+            var valorN_NO2 = ObtenerResultadoParametro(resultadosMuestreo, "N_NO2");
+            var valorN_NO3 = ObtenerResultadoParametro(resultadosMuestreo, "N_NO3");
+            var valorN_NH3 = ObtenerResultadoParametro(resultadosMuestreo, "N_NH3");
+            var valorNORG = ObtenerResultadoParametro(resultadosMuestreo, "NORG");/*TODO:Validar el párametro NORG, se revisó en la BD y no existe*/
+
+            if (Convert.ToDecimal(valorN_TOT) != (Convert.ToDecimal(valorN_NO2) + Convert.ToDecimal(valorN_NO3) + Convert.ToDecimal(valorN_NH3) + Convert.ToDecimal(valorNORG)))
+            {
+                errores.Add("RR-13");
+            }
+
+            /*P_TOT <> P_ORG + P_INORG*/
             var valorP_ORG = ObtenerResultadoParametro(resultadosMuestreo, "P_ORG");
             var valorP_INORG = ObtenerResultadoParametro(resultadosMuestreo, "P_INORG");
 
@@ -262,7 +282,6 @@ namespace Application.Features.Operacion.Resultados.Comands
             }
 
             /*N_NH3 > N_TOTK*/
-            var valorN_NH3 = ObtenerResultadoParametro(resultadosMuestreo, "N_NH3");
             var valorN_TOTK = ObtenerResultadoParametro(resultadosMuestreo, "N_TOTK");
 
             if (Convert.ToDecimal(valorN_NH3) > Convert.ToDecimal(valorN_TOTK))
@@ -375,6 +394,233 @@ namespace Application.Features.Operacion.Resultados.Comands
             if (Convert.ToDecimal(valorTOX_FIS_SUP_15_UT) != (100M / Convert.ToDecimal(valorTOX_FIS_SUP_15_EC50)))
             {
                 errores.Add("RR-31");
+            }
+
+            /*TOX_FIS_SUP_30_UT  <> 100/ TOX_FIS_SUP_30_EC50*/
+            var valorTOX_FIS_SUP_30_UT = ObtenerResultadoParametro(resultadosMuestreo, "TOX_FIS_SUP_30_UT");
+            var valorTOX_FIS_SUP_30_EC50 = ObtenerResultadoParametro(resultadosMuestreo, "TOX_FIS_SUP_30_EC50");
+
+            if (Convert.ToDecimal(valorTOX_FIS_SUP_30_UT) != (100M / Convert.ToDecimal(valorTOX_FIS_SUP_30_EC50)))
+            {
+                errores.Add("RR-32");
+            }
+
+            /*TOX_FIS_SUP_5_UT <> 100/ TOX_FIS_SUP_5_EC50*/
+            var valorTOX_FIS_SUP_5_UT = ObtenerResultadoParametro(resultadosMuestreo, "TOX_FIS_SUP_5_UT");
+            var valorTOX_FIS_SUP_5_EC50 = ObtenerResultadoParametro(resultadosMuestreo, "TOX_FIS_SUP_5_EC50");
+
+            if (Convert.ToDecimal(valorTOX_FIS_SUP_5_UT) != (100M / Convert.ToDecimal(valorTOX_FIS_SUP_5_EC50)))
+            {
+                errores.Add("RR-33");
+            }
+
+            /*SI OD_% >50% ENTONCES POT_REDOX_CAMPO < 0*/
+            var valorOD = ObtenerResultadoParametro(resultadosMuestreo, "OD_%");
+            var valorPOT_REDOX_CAMPO = ObtenerResultadoParametro(resultadosMuestreo, "POT_REDOX_CAMPO");
+
+            if (Convert.ToDecimal(valorOD) > 50)
+            {
+                if (Convert.ToDecimal(valorPOT_REDOX_CAMPO) < 0)
+                {
+                    errores.Add("RR-34");
+                }
+            }
+
+            /*SI OD_%_FON >50% ENTONCES POT_REDOX_CAMPO_FON < 0*/
+            var valorOD_FON = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_FON");
+            var valorPOT_REDOX_CAMPO_FON = ObtenerResultadoParametro(resultadosMuestreo, "POT_REDOX_CAMPO_FON");
+
+            if (Convert.ToDecimal(valorOD_FON) > 50)
+            {
+                if (Convert.ToDecimal(valorPOT_REDOX_CAMPO_FON) < 0)
+                {
+                    errores.Add("RR-35");
+                }
+            }
+
+            /*SI OD_%_MED >50% ENTONCES POT_REDOX_CAMPO_MED < 0*/
+            var valorOD_MED = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_MED");
+            var valorPOT_REDOX_CAMPO_MED = ObtenerResultadoParametro(resultadosMuestreo, "POT_REDOX_CAMPO_MED");
+
+            if (Convert.ToDecimal(valorOD_MED) > 50)
+            {
+                if (Convert.ToDecimal(valorPOT_REDOX_CAMPO_MED) < 0)
+                {
+                    errores.Add("RR-36");
+                }
+            }
+
+            /*SI OD_%_SUP >50% POT_REDOX_CAMPO_SUP < 0*/
+            var valorOD_SUP = ObtenerResultadoParametro(resultadosMuestreo, "OD_%SUP");
+            var valorPOT_REDOX_CAMPO_SUP = ObtenerResultadoParametro(resultadosMuestreo, "POT_REDOX_CAMPO_SUP");
+
+            if (Convert.ToDecimal(valorOD_SUP) > 50)
+            {
+                if (Convert.ToDecimal(valorPOT_REDOX_CAMPO_SUP) < 0)
+                {
+                    errores.Add("RR-37");
+                }
+            }
+
+            /*TRANSPARENCIA > PROFUNDIDAD*/
+            var valorTRANSPARENCIA = ObtenerResultadoParametro(resultadosMuestreo, "TRANSPARENCIA");
+            var valorPROFUNDIDAD = ObtenerResultadoParametro(resultadosMuestreo, "PROFUNDIDAD");
+
+            if (Convert.ToDecimal(valorTRANSPARENCIA) > Convert.ToDecimal(valorPROFUNDIDAD))
+            {
+                errores.Add("RR-42");
+            }
+
+            /*TEMP_AGUA_MED > TEMP_AGUA_SUP*/
+            var valorTEMP_AGUA_MED = ObtenerResultadoParametro(resultadosMuestreo, "TEMP_AGUA_MED");
+            var valorTEMP_AGUA_SUP = ObtenerResultadoParametro(resultadosMuestreo, "TEMP_AGUA_SUP");
+
+            if (Convert.ToDecimal(valorTEMP_AGUA_MED) > Convert.ToDecimal(valorTEMP_AGUA_SUP))
+            {
+                errores.Add("RR-43");
+            }
+
+            /*TEMP_AGUA_FON > TEMP_AGUA_MED*/
+            var valorTEMP_AGUA_FON = ObtenerResultadoParametro(resultadosMuestreo, "TEMP_AGUA_FON");
+
+            if (Convert.ToDecimal(valorTEMP_AGUA_FON) > Convert.ToDecimal(valorTEMP_AGUA_MED))
+            {
+                errores.Add("RR-44");
+            }
+
+            /*DBO_SOL > DQO_SOL*/
+            if (Convert.ToDecimal(valorDBO_SOL) > Convert.ToDecimal(valorDQO_SOL))
+            {
+                errores.Add("RR-45");
+            }
+
+            /*COP > COT*/
+            var valorCOP = ObtenerResultadoParametro(resultadosMuestreo, "COP");
+
+            if (Convert.ToDecimal(valorCOP) > Convert.ToDecimal(valorCOT))
+            {
+                errores.Add("RR-46");
+            }
+
+            /*N_ORG > N_TOTK*/
+            var valorN_TOKT = ObtenerResultadoParametro(resultadosMuestreo, "N_TOTK");
+
+            if (Convert.ToDecimal(valorN_ORG) > Convert.ToDecimal(valorN_TOKT))
+            {
+                errores.Add("RR-47");
+            }
+
+            /*P_INORG > P_TOT*/
+            if (Convert.ToDecimal(valorP_INORG) > Convert.ToDecimal(valorP_TOT))
+            {
+                errores.Add("RR-48");
+            }
+
+            /*E_COLI > COLI_TOT*/
+            if (Convert.ToDecimal(valorE_COLI) > Convert.ToDecimal(valorCOLI_TOT))
+            {
+                errores.Add("RR-49");
+            }
+
+            /*DQO_TOT > COT*/
+            if (Convert.ToDecimal(valorDQO_TOT) > Convert.ToDecimal(valorCOT))
+            {
+                errores.Add("RR-50");
+            }
+
+            /*ALC_FEN > ALC_TOT*/
+            var valorALC_FEN = ObtenerResultadoParametro(resultadosMuestreo, "ALC_FEN");
+            var valorALC_TOT = ObtenerResultadoParametro(resultadosMuestreo, "ALC_TOT");
+
+            if (Convert.ToDecimal(valorALC_FEN) > Convert.ToDecimal(valorALC_TOT))
+            {
+                errores.Add("RR-51");
+            }
+
+            /*SI OD_% = "<10" Y OD_mg/L <> "<1"*/
+            var valorOD_mgL = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L");
+
+            if (valorOD == "<10" && valorOD_mgL != "<1")
+            {
+                errores.Add("RR-61");
+            }
+
+            /*OD_%_SUP = "<10" Y OD_mg/L_SUP <> "<1"*/
+            var valorOD_mgL_SUP = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_SUP");
+
+            if (valorOD_SUP == "<10" && valorOD_mgL_SUP != "<1")
+            {
+                errores.Add("RR-62");
+            }
+
+            /*OD_%_MED = "<10" Y OD_mg/L_MED <> "<1"*/
+            var valorOD_mgL_MED = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_MED");
+
+            if (valorOD_MED == "<10" && valorOD_mgL_MED != "<1")
+            {
+                errores.Add("RR-63");
+            }
+
+            /*OD_%_FON = "<10" Y OD_mg/L_FON <> "<1"*/
+            var valorOD_mgL_FON = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_FON");
+
+            if (valorOD_FON == "<10" && valorOD_mgL_FON != "<1")
+            {
+                errores.Add("RR-64");
+            }
+
+            /*OD_%_S1 = "<10" Y OD_mg/L_S1 <> "<1"*/
+            var valorOD_S1 = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_S1");
+            var valorOD_mgL_S1 = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_S1");
+
+            if (valorOD_S1 == "<10" && valorOD_mgL_S1 != "<1")
+            {
+                errores.Add("RR-65");
+            }
+
+            /*OD_%_S2 = "<10" Y OD_mg/L_S2 <> "<1"*/
+            var valorOD_S2 = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_S2");
+            var valorOD_mgL_S2 = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_S2");
+
+            if (valorOD_S2 == "<10" && valorOD_mgL_S2 != "<1")
+            {
+                errores.Add("RR-66");
+            }
+
+            /*OD_%_S3 = "<10" Y OD_mg/L_S3 <> "<1"*/
+            var valorOD_S3 = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_S3");
+            var valorOD_mgL_S3 = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_S3");
+
+            if (valorOD_S3 == "<10" && valorOD_mgL_S3 != "<1")
+            {
+                errores.Add("RR-67");
+            }
+
+            /*OD_%_S4 = "<10" Y OD_mg/L_S4 <> "<1"*/
+            var valorOD_S4 = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_S4");
+            var valorOD_mgL_S4 = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_S4");
+
+            if (valorOD_S4 == "<10" && valorOD_mgL_S4 != "<1")
+            {
+                errores.Add("RR-68");
+            }
+
+            /*OD_%_S5 = "<10" Y OD_mg/L_S5 <> "<1"*/
+            var valorOD_S5 = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_S5");
+            var valorOD_mgL_S5 = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_S5");
+
+            if (valorOD_S5 == "<10" && valorOD_mgL_S5 != "<1")
+            {
+                errores.Add("RR-69");
+            }
+
+            /*OD_%_S6 = "<10" Y OD_mg/L_S6 <> "<1"*/
+            var valorOD_S6 = ObtenerResultadoParametro(resultadosMuestreo, "OD_%_S6");
+            var valorOD_mgL_S6 = ObtenerResultadoParametro(resultadosMuestreo, "OD_mg/L_S6");
+
+            if (valorOD_S6 == "<10" && valorOD_mgL_S6 != "<1")
+            {
+                errores.Add("RR-70");
             }
         }
 
