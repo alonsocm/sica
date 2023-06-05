@@ -55,6 +55,10 @@ export class ValidacionReglasComponent extends BaseService implements OnInit {
     this.validacionService.obtenerResultadosValidadosPorReglas(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
       next: (response: any) => {
         this.registros = response.data;
+         this.mostrarMensaje(
+      'Se aplicaron las reglas de validación correctamente',
+      TIPO_MENSAJE.exito
+      );
         this.loading = false;
       },
       error: (error) => {
