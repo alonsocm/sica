@@ -59,7 +59,8 @@ namespace Application.Features.Operacion.Resultados.Comands
                 foreach (var muestreo in muestreos)
                 {
                     /*Traemos todos los resultados correspondientes al muestreo que estamos revisando*/
-                    var resultadosMuestreo = await _resultadosRepository.ObtenerElementosPorCriterioAsync(x => x.MuestreoId == muestreo.Id);
+                    //var resultadosMuestreo = await _resultadosRepository.ObtenerElementosPorCriterioAsync(x => x.MuestreoId == muestreo.Id);
+                    var resultadosMuestreo = _resultadosRepository.ObtenerElementoConInclusiones(x => x.MuestreoId == muestreo.Id, y => y.Parametro);
 
                     /*Recorremos la lista de reglas (Todo muestreo debe cumplir con las reglas definidas)*/
                     foreach (var regla in reglasMinimoMaximo)
@@ -170,6 +171,10 @@ namespace Application.Features.Operacion.Resultados.Comands
                             }
                         }
                     }
+
+                    /*Ahora vamos con las reglas de relación. Aquí ejecutamos el método que contiene todas las reglas*/
+                    //AplicarReglasDeRelacion(resultadosMuestreo.ToList());
+                    
                 }
 
                 resultadosValidacion = await _resultadosRepository.ObtenerResultadosValidacion(muestreos.Select(x => x.Id).ToList());

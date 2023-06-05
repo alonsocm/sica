@@ -123,5 +123,17 @@ namespace Persistence.Repository
         {
             return await _dbContext.Set<T>().AnyAsync(predicado);
         }
+
+        public virtual IQueryable<T> ObtenerElementoConInclusiones(Expression<Func<T, bool>> predicado, params Expression<Func<T, object>>[] propiedades)
+        {
+            IQueryable<T> queryable = _dbContext.Set<T>().Where(predicado ?? (p => true)).AsQueryable();
+
+            foreach (Expression<Func<T, object>> includeProperty in propiedades)
+            {
+                queryable = queryable.Include<T, object>(includeProperty);
+            }
+
+            return queryable;
+        }
     }
 }

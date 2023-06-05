@@ -21,6 +21,6 @@ namespace Application.Interfaces.IRepositories
         IEnumerable<T> ObtenerElementosPorCriterio(Expression<Func<T, bool>> predicado);
         Task<IEnumerable<T>> ObtenerElementosPorCriterioAsync(Expression<Func<T, bool>> predicado);
         Task<bool> ExisteElemento(Expression<Func<T, bool>> predicado);
-
+        IQueryable<T> ObtenerElementoConInclusiones(Expression<Func<T, bool>> predicado, params Expression<Func<T, object>>[] propiedades);
     }
 }
