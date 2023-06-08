@@ -69,7 +69,7 @@ namespace Persistence.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnectionDev");
+                optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
             }
         }
 
@@ -547,6 +547,8 @@ namespace Persistence.Contexts
                 entity.ToTable("ReglasLaboratorioLDM_LPC");
 
                 entity.Property(e => e.ClaveUnicaLabParametro).HasMaxLength(50);
+
+                entity.Property(e => e.EsLdm).HasColumnName("EsLDM");
 
                 entity.Property(e => e.Ldm)
                     .HasMaxLength(20)

@@ -20,16 +20,12 @@ namespace Persistence
     {
         public static void AddPersistenceInfrastructure(this IServiceCollection services, IConfiguration configuration, string environment)
         {
-            if (environment == "Development")
+            services.AddDbContext<SICAContext>(options => options.UseSqlServer(
+            configuration.GetConnectionString("DbConnection"),
+            sqlServerOptionsAction: sqlOptions =>
             {
-                services.AddDbContext<SICAContext>(options => options.UseSqlServer(
-                configuration.GetConnectionString("DbConnectionDev")));
-            }
-            else
-            {
-                services.AddDbContext<SICAContext>(options => options.UseSqlServer(
-                configuration.GetConnectionString("DbConnection")));
-            }
+                sqlOptions.EnableRetryOnFailure(maxRetryCount: 5);
+            }));
 
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
 

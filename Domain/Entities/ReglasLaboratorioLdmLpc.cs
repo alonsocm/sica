@@ -11,6 +11,7 @@ namespace Domain.Entities
         public long ParametroId { get; set; }
         public string Ldm { get; set; } = null!;
         public string Lpc { get; set; } = null!;
+        public bool? EsLdm { get; set; }
 
         public virtual Laboratorios Laboratorio { get; set; } = null!;
         public virtual ParametrosGrupo Parametro { get; set; } = null!;
