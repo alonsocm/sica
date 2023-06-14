@@ -71,6 +71,7 @@ namespace Application.Features.Operacion.Resultados.Comands
 
             return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion);
         }
+
         public void AplicarReglasDeRelacion(IEnumerable<ResultadoMuestreo> resultadosMuestreo)
         {
             /*Se iran ejecutando una a una las reglas de relación*/
@@ -202,6 +203,32 @@ namespace Application.Features.Operacion.Resultados.Comands
             /*TOX_FIS_SUP_5_UT <> 100/TOX_FIS_SUP_5_EC50*/
             ReglaTOX("TOX_FIS_SUP_5_UT", "TOX_FIS_SUP_5_EC50", "RR-33 - TOX_FIS_SUP_5_UT <> 100/TOX_FIS_SUP_5_EC50", resultadosMuestreo, errores);
 
+            /*SI OD_% >50% ENTONCES POT_REDOX_CAMPO < 0*/
+            ReglaODPOT("OD_%", "POT_REDOX_CAMPO", "RR-34 - SI OD_% >50% ENTONCES POT_REDOX_CAMPO < 0", resultadosMuestreo, errores);
+
+            /*SI OD_%_FON >50% ENTONCES POT_REDOX_CAMPO_FON < 0*/
+            ReglaODPOT("OD_%_FON", "POT_REDOX_CAMPO_FON", "RR-35 - SI OD_%_FON >50% ENTONCES POT_REDOX_CAMPO_FON < 0", resultadosMuestreo, errores);
+
+            /*SI OD_%_MED >50% ENTONCES POT_REDOX_CAMPO_MED < 0*/
+            ReglaODPOT("OD_%_MED", "POT_REDOX_CAMPO_MED", "RR-36 - SI OD_%_MED >50% ENTONCES POT_REDOX_CAMPO_MED < 0", resultadosMuestreo, errores);
+
+            /*SI OD_%_SUP >50% POT_REDOX_CAMPO_SUP < 0*/
+            ReglaODPOT("OD_%_SUP", "POT_REDOX_CAMPO_SUP", "RR-37 - SI OD_%_SUP >50% POT_REDOX_CAMPO_SUP < 0", resultadosMuestreo, errores);
+
+            /*P_TOT <> P_ORG + P_INORG*/
+            ReglaPTOT("P_TOT", "P_ORG", "P_INORG", "RR-15 - P_TOT <> P_ORG + P_INORG", resultadosMuestreo, errores);
+
+            /*NTK <> (N_NH3 + N_ORG)*/
+            ReglaNTK("NTK", "N_NH3", "N_ORG", "RR-17 - NTK <> (N_NH3 + N_ORG)", resultadosMuestreo, errores);
+
+            /*ORTO_PO4 / 3.06 > P_TOT*/
+            ReglaORTOPTOT("ORTO_PO4", "P_TOT", "RR-18 - ORTO_PO4 / 3.06 > P_TOT", resultadosMuestreo, errores);
+
+            /*PO4_TOT / P_TOT < 2.6 ó > 3.6*/
+            ReglaPOTOT("PO4_TOT", "P_TOT", "RR-11 - PO4_TOT / P_TOT < 2.6 ó > 3.6", resultadosMuestreo, errores);
+
+            /*N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)*/
+            ReglaNTOT("N_TOT", "N_NO2", "N_NO3", "N_NH3", "NORG", "RR-13 - N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)", resultadosMuestreo, errores);
         }
 
         public LimiteDeteccion ObtenerValoresMinMax(ResultadoDto resultado)
@@ -291,7 +318,6 @@ namespace Application.Features.Operacion.Resultados.Comands
             public string Minimo { get; set; }
             public string Maximo { get; set; }
         }
-
 
         public ResultadoDto? ObtenerResultadoParametro(IEnumerable<ResultadoMuestreo> resultadosMuestreo, string claveParametro)
         {
@@ -476,6 +502,433 @@ namespace Application.Features.Operacion.Resultados.Comands
                         if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
                         {
                             errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                        }
+                    }
+                }
+            }
+
+            return errores;
+        }
+
+        public List<string> ReglaODPOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        {
+            var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
+            var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
+
+            if (resultadoParametro1 == null || resultadoParametro2 == null)
+            {
+                errores.Add($"Grupo incompleto - {regla}");
+            }
+            else
+            {
+                var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
+                var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
+
+                if (esNumeroParametro1 && esNumeroParametro2)
+                {
+                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
+                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
+
+                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    {
+                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
+                        if (!cumpleLimitesParametro1)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
+                        if (!cumpleLimitesParametro2)
+                            errores.Add("Error: Límites de detección");
+                    }
+
+                    if (Convert.ToDecimal(valorParametro1) > 50)
+                    {
+                        if (Convert.ToDecimal(valorParametro2) < 0)
+                        {
+                            errores.Add($"{regla}");
+                        }
+                    }
+                }
+                else
+                {
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                        }
+                    }
+                }
+            }
+
+            return errores;
+        }
+
+        /*RR-15*/
+        public List<string> ReglaPTOT(string parametro1, string parametro2, string parametro3, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        {
+            var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
+            var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
+            var resultadoParametro3 = ObtenerResultadoParametro(resultadosMuestreo, parametro3);
+
+            if (resultadoParametro1 == null || resultadoParametro2 == null || resultadoParametro3 == null)
+            {
+                errores.Add($"Grupo incompleto - {regla}");
+            }
+            else
+            {
+                var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
+                var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
+                var esNumeroParametro3 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro3);
+
+                if (esNumeroParametro1 && esNumeroParametro2 && esNumeroParametro3)
+                {
+                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
+                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
+                    var minMaxParametro3 = ObtenerValoresMinMax(resultadoParametro3);
+
+                    if (minMaxParametro1 != null && minMaxParametro2 != null && minMaxParametro3 != null)
+                    {
+                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
+                        if (!cumpleLimitesParametro1)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
+                        if (!cumpleLimitesParametro2)
+                            errores.Add("Error: Límites de detección");
+                        
+                        var cumpleLimitesParametro3 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro3);
+                        if (!cumpleLimitesParametro3)
+                            errores.Add("Error: Límites de detección");
+                    }
+
+                    if (Convert.ToDecimal(valorParametro1) != (Convert.ToDecimal(valorParametro2) + Convert.ToDecimal(valorParametro3)))
+                    {
+                        errores.Add($"{regla}");
+                    }
+                }
+                else
+                {
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro3.Valor}");
+                        }
+                    }
+                }
+            }
+
+            return errores;
+        }
+
+        /*RR-17*/
+        public List<string> ReglaNTK(string parametro1, string parametro2, string parametro3, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        {
+            var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
+            var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
+            var resultadoParametro3 = ObtenerResultadoParametro(resultadosMuestreo, parametro3);
+
+            if (resultadoParametro1 == null || resultadoParametro2 == null || resultadoParametro3 == null)
+            {
+                errores.Add($"Grupo incompleto - {regla}");
+            }
+            else
+            {
+                var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
+                var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
+                var esNumeroParametro3 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro3);
+
+                if (esNumeroParametro1 && esNumeroParametro2 && esNumeroParametro3)
+                {
+                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
+                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
+                    var minMaxParametro3 = ObtenerValoresMinMax(resultadoParametro3);
+
+                    if (minMaxParametro1 != null && minMaxParametro2 != null && minMaxParametro3 != null)
+                    {
+                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
+                        if (!cumpleLimitesParametro1)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
+                        if (!cumpleLimitesParametro2)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro3 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro3);
+                        if (!cumpleLimitesParametro3)
+                            errores.Add("Error: Límites de detección");
+                    }
+
+                    if (Convert.ToDecimal(valorParametro1) != (Convert.ToDecimal(valorParametro2) + Convert.ToDecimal(valorParametro3)))
+                    {
+                        errores.Add($"{regla}");
+                    }
+                }
+                else
+                {
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro3.Valor}");
+                        }
+                    }
+                }
+            }
+
+            return errores;
+        }
+
+        /*RR-18*/
+        public List<string> ReglaORTOPTOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        {
+            var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
+            var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
+
+            if (resultadoParametro1 == null || resultadoParametro2 == null)
+            {
+                errores.Add($"Grupo incompleto - {regla}");
+            }
+            else
+            {
+                var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
+                var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
+
+                if (esNumeroParametro1 && esNumeroParametro2)
+                {
+                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
+                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
+
+                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    {
+                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
+                        if (!cumpleLimitesParametro1)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
+                        if (!cumpleLimitesParametro2)
+                            errores.Add("Error: Límites de detección");
+                    }
+
+                    if ((Convert.ToDecimal(valorParametro1) / 3.06M) > Convert.ToDecimal(valorParametro2))
+                        errores.Add($"{regla}");
+                }
+                else
+                {
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                        }
+                    }
+                }
+            }
+
+            return errores;
+        }
+
+        /*RR-11*/
+        public List<string> ReglaPOTOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        {
+            var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
+            var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
+
+            if (resultadoParametro1 == null || resultadoParametro2 == null)
+            {
+                errores.Add($"Grupo incompleto - {regla}");
+            }
+            else
+            {
+                var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
+                var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
+
+                if (esNumeroParametro1 && esNumeroParametro2)
+                {
+                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
+                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
+
+                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    {
+                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
+                        if (!cumpleLimitesParametro1)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
+                        if (!cumpleLimitesParametro2)
+                            errores.Add("Error: Límites de detección");
+                    }
+
+                    if ((valorParametro1 / valorParametro2) < 2.6M || (valorParametro1 / valorParametro2) < 3.6M)
+                        errores.Add($"{regla}");
+                }
+                else
+                {
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                        }
+                    }
+                }
+            }
+
+            return errores;
+        }
+
+        /*RR-13*/
+        public List<string> ReglaNTOT(string parametro1, string parametro2, string parametro3, string parametro4, string parametro5, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        {
+            var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
+            var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
+            var resultadoParametro3 = ObtenerResultadoParametro(resultadosMuestreo, parametro3);
+            var resultadoParametro4 = ObtenerResultadoParametro(resultadosMuestreo, parametro4);
+            var resultadoParametro5 = ObtenerResultadoParametro(resultadosMuestreo, parametro5);
+
+            if (resultadoParametro1 == null || resultadoParametro2 == null || resultadoParametro3 == null || resultadoParametro4 == null || resultadoParametro5 == null)
+            {
+                errores.Add($"Grupo incompleto - {regla}");
+            }
+            else
+            {
+                var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
+                var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
+                var esNumeroParametro3 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro3);
+                var esNumeroParametro4 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro4);
+                var esNumeroParametro5 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro5);
+
+                if (esNumeroParametro1 && esNumeroParametro2 && esNumeroParametro3 && esNumeroParametro4 && esNumeroParametro5)
+                {
+                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
+                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
+                    var minMaxParametro3 = ObtenerValoresMinMax(resultadoParametro3);
+                    var minMaxParametro4 = ObtenerValoresMinMax(resultadoParametro4);
+                    var minMaxParametro5 = ObtenerValoresMinMax(resultadoParametro5);
+
+                    if (minMaxParametro1 != null && minMaxParametro2 != null && minMaxParametro3 != null && minMaxParametro4 != null && minMaxParametro5 != null)
+                    {
+                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
+                        if (!cumpleLimitesParametro1)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
+                        if (!cumpleLimitesParametro2)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro3 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro3);
+                        if (!cumpleLimitesParametro3)
+                            errores.Add("Error: Límites de detección");
+
+                        var cumpleLimitesParametro4 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro4);
+                        if (!cumpleLimitesParametro4)
+                            errores.Add("Error: Límites de detección");
+                        
+                        var cumpleLimitesParametro5 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro5);
+                        if (!cumpleLimitesParametro5)
+                            errores.Add("Error: Límites de detección");
+                    }
+
+                    if (valorParametro1 != (valorParametro2 + valorParametro3 + valorParametro4 + valorParametro5))
+                    {
+                        errores.Add($"{regla}");
+                    }
+                }
+                else
+                {
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro3.Valor}");
+                        }
+                    }
+                    
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro4.Valor, resultadoParametro4.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro4.Valor, resultadoParametro4.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro4.Valor}");
+                        }
+                    }
+
+                    if (!CumpleFormaReporteEspecifica(resultadoParametro5.Valor, resultadoParametro5.IdParametro))
+                    {
+                        if (!CumpleReglaReporte(resultadoParametro5.Valor, resultadoParametro5.IdParametro))
+                        {
+                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro5.Valor}");
                         }
                     }
                 }
