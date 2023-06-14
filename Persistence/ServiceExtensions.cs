@@ -91,6 +91,7 @@ namespace Persistence
             services.AddTransient<IReglasMinimoMaximoRepository, ReglasMinimoMaximoRepository>();
             services.AddTransient<IReglasReporteRepository, ReglasReporteRepository>();
             services.AddTransient<IFormaReporteEspecificaRepository, FormaReporteEspecificaRepository>();
+            services.AddTransient<IReglasLaboratorioLDMRepository, ReglasLaboratorioLDMRepository>();
             #endregion
         }
     }

@@ -37,6 +37,7 @@ namespace Domain.Entities
         public string? Comentarios { get; set; }
         public long? ReglaMinMaxId { get; set; }
         public long? ReglaReporteId { get; set; }
+        public string? ResultadoReglas { get; set; }
 
         public virtual EstatusMuestreo? EstatusResultadoNavigation { get; set; }
         public virtual Muestreo Muestreo { get; set; } = null!;

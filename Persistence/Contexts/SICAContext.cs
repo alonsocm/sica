@@ -748,6 +748,10 @@ namespace Persistence.Contexts
                     .WithMany(p => p.ResultadoMuestreo)
                     .HasForeignKey(d => d.ReglaReporteId)
                     .HasConstraintName("FK_ResultadoMuestreo_ReglasReporte");
+
+                entity.Property(e => e.ResultadoReglas)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Sitio>(entity =>
