@@ -69,7 +69,7 @@ namespace Persistence.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnectionDev");
+                optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
             }
         }
 
@@ -548,6 +548,8 @@ namespace Persistence.Contexts
 
                 entity.Property(e => e.ClaveUnicaLabParametro).HasMaxLength(50);
 
+                entity.Property(e => e.EsLdm).HasColumnName("EsLDM");
+
                 entity.Property(e => e.Ldm)
                     .HasMaxLength(20)
                     .HasColumnName("LDM");
@@ -746,6 +748,10 @@ namespace Persistence.Contexts
                     .WithMany(p => p.ResultadoMuestreo)
                     .HasForeignKey(d => d.ReglaReporteId)
                     .HasConstraintName("FK_ResultadoMuestreo_ReglasReporte");
+
+                entity.Property(e => e.ResultadoReglas)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Sitio>(entity =>
