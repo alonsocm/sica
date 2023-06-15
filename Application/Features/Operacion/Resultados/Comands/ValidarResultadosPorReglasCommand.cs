@@ -5,6 +5,7 @@ using Application.Wrappers;
 using Domain.Entities;
 using MediatR;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Application.Features.Operacion.Resultados.Comands
@@ -60,6 +61,26 @@ namespace Application.Features.Operacion.Resultados.Comands
                 {
                     var resultadosMuestreo = await _resultadosRepository.ObtenerResultadosParaReglas(muestreo.Id);
                     AplicarReglasDeRelacion(resultadosMuestreo);
+
+                    resultadosMuestreo.Where(x => !x.Validado).ToList().ForEach(resultado =>
+                    {
+                        try
+                        {
+                            var esNumero = decimal.TryParse(resultado.Valor, out decimal valorResultado);
+
+                            if (esNumero)
+                                ValidarLimitesDeteccion(resultado, valorResultado);
+                            else
+                                ValidarFormaReglaReporte(resultado);
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw;
+                        }
+                    });
+
+                    _resultadosRepository.ActualizarResultadosValidadosPorReglas(resultadosMuestreo.ToList());
                 }
 
                 resultadosValidacion = await _resultadosRepository.ObtenerResultadosValidacion(muestreos.Select(x => x.Id).ToList());
@@ -229,24 +250,31 @@ namespace Application.Features.Operacion.Resultados.Comands
 
         public LimiteDeteccion? ObtenerValoresMinMax(ResultadoParametroReglasDto resultado)
         {
-            var regla = _reglasMinimoMaximoRepository.ObtenerElementosPorCriterio(x => x.ParametroId == resultado.IdParametro);
+            var reglas = _reglasMinimoMaximoRepository.ObtenerElementosPorCriterio(x => x.ParametroId == resultado.IdParametro);
 
-            if (regla.Any())
+            if (reglas.Any())
             {
-                if (regla.First().Aplica)
+                if (reglas.First().Aplica)
                 {
-                    LimiteDeteccion limites = new()
+                    LimiteDeteccion limites = new();
+
+                    if (reglas.Where(x => x.ClasificacionReglaId == 2).Any())
                     {
-                        Maximo = regla.Where(x => x.ClasificacionReglaId == 2).First().MinimoMaximo,
-                        Minimo = regla.Where(x => x.ClasificacionReglaId == 3).First().MinimoMaximo
-                    };
+                        limites.Maximo = reglas.Where(x => x.ClasificacionReglaId == 2).First().MinimoMaximo.Replace(">", string.Empty);
+                    }
+
+                    if (reglas.Where(x => x.ClasificacionReglaId == 3).Any())
+                    {
+                        limites.Minimo = reglas.Where(x => x.ClasificacionReglaId == 3).First().MinimoMaximo.Replace("<", string.Empty);
+                    }
+
                     return limites;
                 }
                 else
                 {
                     var reglaLdmLpc = _ldmLpcLaboratorio.ObtenerElementosPorCriterio(x => x.ParametroId == resultado.IdParametro && x.LaboratorioId == resultado.IdLaboratorio);
 
-                    if (reglaLdmLpc != null)
+                    if (reglaLdmLpc.Any())
                     {
                         LimiteDeteccion limites = new()
                         {
@@ -328,6 +356,35 @@ namespace Application.Features.Operacion.Resultados.Comands
 
             return resultadoParametro;
         }
+        private void ValidarFormaReglaReporte(ResultadoParametroReglasDto resultadoParametro)
+        {
+            if (!CumpleFormaReporteEspecifica(resultadoParametro.Valor, resultadoParametro.IdParametro))
+            {
+                if (!CumpleReglaReporte(resultadoParametro.Valor, resultadoParametro.IdParametro))
+                {
+                    resultadoParametro.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro.Valor}";
+                }
+            }
+        }
+
+        private void ValidarLimitesDeteccion(ResultadoParametroReglasDto resultadoParametro, decimal valorParametro1)
+        {
+            var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro);
+
+            if (minMaxParametro1 != null)
+            {
+                try
+                {
+                    var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
+                    if (!cumpleLimitesParametro1)
+                        resultadoParametro.ResultadoReglas = "Error: Límites de detección";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+        }
 
         public List<string> ReglaMayorQue(string parametro1, string parametro2, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
@@ -343,55 +400,27 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
                 if (esNumeroParametro1 && esNumeroParametro2)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-
-                    if (minMaxParametro1 != null)
-                    {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
-                    }
-
-                    if (minMaxParametro2 != null)
-                    {
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
-                    }
-
                     if (valorParametro1 > valorParametro2)
                     {
                         resultadoParametro1.ResultadoReglas += regla;
                         resultadoParametro2.ResultadoReglas += regla;
                     }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
                 }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            resultadoParametro1.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro1.Valor}";
-                        }
-                    }
 
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            resultadoParametro2.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro2.Valor}";
-                        }
-                    }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
-                }
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
             }
 
             return errores;
@@ -411,55 +440,27 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
 
-                if (esNumeroParametro1 && esNumeroParametro2)
-                {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-
-                    if (minMaxParametro1 != null)
-                    {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
-                    }
-
-                    if (minMaxParametro2 != null)
-                    {
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
-                    }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
-                }
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
                 else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
+                if (!esNumeroParametro1 && !esNumeroParametro2)
                 {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            resultadoParametro1.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro1.Valor}";
-                        }
-                    }
-
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            resultadoParametro2.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro2.Valor}";
-                        }
-                    }
-
                     if (resultadoParametro1.Valor == "<10" && resultadoParametro2.Valor != "<1")
                     {
                         resultadoParametro1.ResultadoReglas += regla;
                         resultadoParametro2.ResultadoReglas += regla;
                     }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
                 }
+
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
             }
 
             return errores;
@@ -479,55 +480,27 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
                 if (esNumeroParametro1 && esNumeroParametro2)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-
-                    if (minMaxParametro1 != null)
-                    {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
-                    }
-
-                    if (minMaxParametro2 != null)
-                    {
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
-                    }
-
                     if (valorParametro1 != (100 / valorParametro2))
                     {
                         resultadoParametro1.ResultadoReglas += regla;
                         resultadoParametro2.ResultadoReglas += regla;
                     }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
                 }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            resultadoParametro1.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro1.Valor}";
-                        }
-                    }
 
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            resultadoParametro2.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro2.Valor}";
-                        }
-                    }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
-                }
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
             }
 
             return errores;
@@ -547,55 +520,27 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
                 if (esNumeroParametro1 && esNumeroParametro2)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-
-                    if (minMaxParametro1 != null)
-                    {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
-                    }
-
-                    if (minMaxParametro2 != null)
-                    { 
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
-                    }
-
                     if (valorParametro1 > 50 && valorParametro2 < 0)
                     {
                         resultadoParametro1.ResultadoReglas += regla;
                         resultadoParametro2.ResultadoReglas += regla;
                     }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
                 }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            resultadoParametro1.ResultadoReglas = "No se reconoce la forma de reporte";
-                        }
-                    }
 
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            resultadoParametro2.ResultadoReglas = "No se reconoce la forma de reporte";
-                        }
-                    }
-
-                    resultadoParametro1.Validado = true;
-                    resultadoParametro2.Validado = true;
-                }
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
             }
 
             return errores;
@@ -618,58 +563,34 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
                 var esNumeroParametro3 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro3);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
+                if (esNumeroParametro3)
+                    ValidarLimitesDeteccion(resultadoParametro3, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro3);
+
                 if (esNumeroParametro1 && esNumeroParametro2 && esNumeroParametro3)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-                    var minMaxParametro3 = ObtenerValoresMinMax(resultadoParametro3);
-
-                    if (minMaxParametro1 != null && minMaxParametro2 != null && minMaxParametro3 != null)
+                    if (valorParametro1 != (valorParametro2 + valorParametro3))
                     {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
-                        
-                        var cumpleLimitesParametro3 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro3);
-                        if (!cumpleLimitesParametro3)
-                            errores.Add("Error: Límites de detección");
-                    }
-
-                    if (Convert.ToDecimal(valorParametro1) != (Convert.ToDecimal(valorParametro2) + Convert.ToDecimal(valorParametro3)))
-                    {
-                        errores.Add($"{regla}");
+                        resultadoParametro1.ResultadoReglas = regla;
+                        resultadoParametro2.ResultadoReglas = regla;
+                        resultadoParametro3.ResultadoReglas = regla;
                     }
                 }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
-                        }
-                    }
 
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
-                        }
-                    }
-
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro3.Valor}");
-                        }
-                    }
-                }
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
+                resultadoParametro3.Validado = true;
             }
 
             return errores;
@@ -692,58 +613,34 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
                 var esNumeroParametro3 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro3);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
+                if (esNumeroParametro3)
+                    ValidarLimitesDeteccion(resultadoParametro3, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro3);
+
                 if (esNumeroParametro1 && esNumeroParametro2 && esNumeroParametro3)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-                    var minMaxParametro3 = ObtenerValoresMinMax(resultadoParametro3);
-
-                    if (minMaxParametro1 != null && minMaxParametro2 != null && minMaxParametro3 != null)
+                    if (valorParametro1 != (valorParametro2 + valorParametro3))
                     {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro3 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro3);
-                        if (!cumpleLimitesParametro3)
-                            errores.Add("Error: Límites de detección");
-                    }
-
-                    if (Convert.ToDecimal(valorParametro1) != (Convert.ToDecimal(valorParametro2) + Convert.ToDecimal(valorParametro3)))
-                    {
-                        errores.Add($"{regla}");
+                        resultadoParametro1.ResultadoReglas = regla;
+                        resultadoParametro2.ResultadoReglas = regla;
+                        resultadoParametro3.ResultadoReglas = regla;
                     }
                 }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
-                        }
-                    }
 
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
-                        }
-                    }
-
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro3.Valor}");
-                        }
-                    }
-                }
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
+                resultadoParametro3.Validado = true;
             }
 
             return errores;
@@ -764,43 +661,27 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
                 if (esNumeroParametro1 && esNumeroParametro2)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-
-                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    if ((valorParametro1 / 3.06M) > valorParametro2)
                     {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
-                    }
-
-                    if ((Convert.ToDecimal(valorParametro1) / 3.06M) > Convert.ToDecimal(valorParametro2))
-                        errores.Add($"{regla}");
-                }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
-                        }
-                    }
-
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
-                        }
+                        resultadoParametro1.ResultadoReglas = regla;
+                        resultadoParametro2.ResultadoReglas = regla;
                     }
                 }
+
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
             }
 
             return errores;
@@ -821,43 +702,27 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro1 = decimal.TryParse(resultadoParametro1.Valor, out decimal valorParametro1);
                 var esNumeroParametro2 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro2);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
                 if (esNumeroParametro1 && esNumeroParametro2)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-
-                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    if ((valorParametro1 / valorParametro2) < 2.6M || (valorParametro1 / valorParametro2) > 3.6M)
                     {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
-                    }
-
-                    if ((valorParametro1 / valorParametro2) < 2.6M || (valorParametro1 / valorParametro2) < 3.6M)
-                        errores.Add($"{regla}");
-                }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
-                        }
-                    }
-
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
-                        }
+                        resultadoParametro1.ResultadoReglas = regla;
+                        resultadoParametro2.ResultadoReglas = regla;
                     }
                 }
+
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
             }
 
             return errores;
@@ -884,88 +749,51 @@ namespace Application.Features.Operacion.Resultados.Comands
                 var esNumeroParametro4 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro4);
                 var esNumeroParametro5 = decimal.TryParse(resultadoParametro2.Valor, out decimal valorParametro5);
 
+                if (esNumeroParametro1)
+                    ValidarLimitesDeteccion(resultadoParametro1, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro1);
+
+                if (esNumeroParametro2)
+                    ValidarLimitesDeteccion(resultadoParametro2, valorParametro1);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro2);
+
+                if (esNumeroParametro3)
+                    ValidarLimitesDeteccion(resultadoParametro3, valorParametro3);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro3);
+
+                if (esNumeroParametro4)
+                    ValidarLimitesDeteccion(resultadoParametro4, valorParametro4);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro4);
+
+                if (esNumeroParametro5)
+                    ValidarLimitesDeteccion(resultadoParametro5, valorParametro5);
+                else
+                    ValidarFormaReglaReporte(resultadoParametro5);
+
                 if (esNumeroParametro1 && esNumeroParametro2 && esNumeroParametro3 && esNumeroParametro4 && esNumeroParametro5)
                 {
-                    var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
-                    var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
-                    var minMaxParametro3 = ObtenerValoresMinMax(resultadoParametro3);
-                    var minMaxParametro4 = ObtenerValoresMinMax(resultadoParametro4);
-                    var minMaxParametro5 = ObtenerValoresMinMax(resultadoParametro5);
-
-                    if (minMaxParametro1 != null && minMaxParametro2 != null && minMaxParametro3 != null && minMaxParametro4 != null && minMaxParametro5 != null)
-                    {
-                        var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                        if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
-                        if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro3 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro3);
-                        if (!cumpleLimitesParametro3)
-                            errores.Add("Error: Límites de detección");
-
-                        var cumpleLimitesParametro4 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro4);
-                        if (!cumpleLimitesParametro4)
-                            errores.Add("Error: Límites de detección");
-                        
-                        var cumpleLimitesParametro5 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro5);
-                        if (!cumpleLimitesParametro5)
-                            errores.Add("Error: Límites de detección");
-                    }
-
                     if (valorParametro1 != (valorParametro2 + valorParametro3 + valorParametro4 + valorParametro5))
                     {
-                        errores.Add($"{regla}");
+                        resultadoParametro1.ResultadoReglas = regla;
+                        resultadoParametro2.ResultadoReglas = regla;
+                        resultadoParametro3.ResultadoReglas = regla;
+                        resultadoParametro4.ResultadoReglas = regla;
+                        resultadoParametro5.ResultadoReglas = regla;
                     }
                 }
-                else
-                {
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
-                        }
-                    }
 
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
-                        }
-                    }
-
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro3.Valor, resultadoParametro3.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro3.Valor}");
-                        }
-                    }
-                    
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro4.Valor, resultadoParametro4.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro4.Valor, resultadoParametro4.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro4.Valor}");
-                        }
-                    }
-
-                    if (!CumpleFormaReporteEspecifica(resultadoParametro5.Valor, resultadoParametro5.IdParametro))
-                    {
-                        if (!CumpleReglaReporte(resultadoParametro5.Valor, resultadoParametro5.IdParametro))
-                        {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro5.Valor}");
-                        }
-                    }
-                }
+                resultadoParametro1.Validado = true;
+                resultadoParametro2.Validado = true;
+                resultadoParametro3.Validado = true;
+                resultadoParametro4.Validado = true;
+                resultadoParametro5.Validado = true;
             }
 
             return errores;
         }
-
     }
 }

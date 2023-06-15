@@ -13,5 +13,6 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<ReplicaResultadoDto>> ObtenerReplicasResultados();
         Task<List<ResultadoValidacionReglasDto>> ObtenerResultadosValidacion(List<long> muestreosId);
         Task<IEnumerable<ResultadoParametroReglasDto>> ObtenerResultadosParaReglas(long muestreoId);
+        void ActualizarResultadosValidadosPorReglas(List<ResultadoParametroReglasDto> resultadosDto);
     }
 }

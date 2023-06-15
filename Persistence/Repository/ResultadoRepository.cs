@@ -85,7 +85,7 @@ namespace Persistence.Repository
                                         Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? string.Empty : r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura?? string.Empty,
                                         ClaveParametro = r.Parametro.ClaveParametro,
                                         Resultado = r.Resultado,
-                                        ValidacionPorReglas = r.ReglaMinMaxId == null && r.ReglaReporteId == null ? "OK" : $"{r.ReglaMinMax.ClaveRegla}{r.ReglaReporte.ClaveRegla}",
+                                        ValidacionPorReglas = r.ResultadoReglas,
                                         FechaAplicacionReglas = DateTime.Now.ToString("dd-MM-yyyy"),
                                     }).ToListAsync();
 
@@ -109,6 +109,20 @@ namespace Persistence.Repository
                                     }).ToListAsync();
 
             return resultados;
+        }
+
+        public void ActualizarResultadosValidadosPorReglas(List<ResultadoParametroReglasDto> resultadosDto)
+        {
+            resultadosDto.ForEach(resultadoDto =>
+            {
+                var resultado = _dbContext.ResultadoMuestreo.Where(x => x.Id == resultadoDto.IdResultado).FirstOrDefault();
+
+                if (resultado != null)
+                {
+                    resultado.ResultadoReglas = resultadoDto.ResultadoReglas != string.Empty ? resultadoDto.ResultadoReglas : "OK";
+                    Actualizar(resultado);
+                }
+            });
         }
     }    
 }

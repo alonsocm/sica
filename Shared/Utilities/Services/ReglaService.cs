@@ -15,16 +15,22 @@ namespace Shared.Utilities.Services
         public bool CumpleLimitesDeteccion(LimiteDeteccion limites, decimal valorParametro)
         {            
             var target = new Interpreter();
-            bool incumpleMinimo = target.Eval<bool>($"{valorParametro}<{limites.Minimo}");
-            bool incumpleMaximo = target.Eval<bool>($"{valorParametro}>{limites.Maximo}");
 
-            if (incumpleMinimo && incumpleMaximo)
-            {
+            bool incumpleMinimo = false;
+            bool incumpleMaximo = false;
+
+            if (limites.Minimo != null)
+                incumpleMinimo = target.Eval<bool>($"{valorParametro}<{limites.Minimo}");
+
+            if (limites.Maximo != null)
+                incumpleMaximo = target.Eval<bool>($"{valorParametro}>{limites.Maximo}");
+
+            if (incumpleMinimo || incumpleMaximo)
                 return false;
-            }
 
             return true;
         }
+
         public bool InCumpleReglaMinimoMaximo(string regla = "> 3", string valorParametro = "3")
         {            
             var target = new Interpreter();
