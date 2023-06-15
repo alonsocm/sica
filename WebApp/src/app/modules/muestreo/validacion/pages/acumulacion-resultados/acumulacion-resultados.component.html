@@ -1,0 +1,25 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container-fluid">
+  <h3>Acumulacion Resultados</h3>
+  <hr class="red">
+  <div class="message-container">
+    <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
+               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
+  <div class="d-flex flex-row-reverse opciones-tabla">
+    <div class="p-2">
+      <button class="btn btn-secondary" type="button" (click)="onDownload()">
+        <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+      </button>
+    </div>
+    <div class="p-2">
+      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltrosn()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
