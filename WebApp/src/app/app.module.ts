@@ -43,6 +43,10 @@ import { EvidenciasComponent } from './modules/muestreo/evidencias/pages/evidenc
 import { ConsultaEvidenciaComponent } from './modules/muestreo/originalesAprobados/consulta-evidencia/pages/consulta-evidencia.component';
 import { ConsultaResultadoComponent } from './modules/muestreo/originalesAprobados/consulta-resultado/pages/consulta-resultado.component';
 import { ValidacionReglasComponent } from './modules/muestreo/validacion/pages/validacion-reglas/validacion-reglas.component';
+import { InicialReglasComponent } from './modules/muestreo/validacion/pages/inicial-reglas/inicial-reglas.component';
+import { AcumulacionResultadosComponent } from './modules/muestreo/validacion/pages/acumulacion-resultados/acumulacion-resultados.component';
+import { ReglasValidarComponent } from './modules/muestreo/validacion/pages/reglas-validar/reglas-validar.component';
+import { ResumenReglasComponent } from './modules/muestreo/validacion/pages/resumen-reglas/resumen-reglas.component';
 
 
 @NgModule({
@@ -78,7 +82,11 @@ import { ValidacionReglasComponent } from './modules/muestreo/validacion/pages/v
     EvidenciasComponent,
     ConsultaEvidenciaComponent,
     ConsultaResultadoComponent,
-    ValidacionReglasComponent
+    ValidacionReglasComponent,
+    InicialReglasComponent,
+    AcumulacionResultadosComponent,
+    ReglasValidarComponent,
+    ResumenReglasComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
