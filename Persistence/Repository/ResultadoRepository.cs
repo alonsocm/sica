@@ -8,6 +8,7 @@ using Persistence.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -90,5 +91,24 @@ namespace Persistence.Repository
 
             return resultados;
         }
-    }
+
+        public async Task<IEnumerable<ResultadoParametroReglasDto>> ObtenerResultadosParaReglas(long muestreoId)
+        {
+            var resultados = await (from r in _dbContext.ResultadoMuestreo
+                                    join p in _dbContext.ParametrosGrupo on r.ParametroId equals p.Id
+                                    where r.MuestreoId == muestreoId
+                                    select new ResultadoParametroReglasDto
+                                    {
+                                        IdMuestreo = r.MuestreoId,
+                                        IdResultado = r.Id,
+                                        IdParametro = r.ParametroId,
+                                        ClaveParametro = p.ClaveParametro,
+                                        Valor = r.Resultado,
+                                        ResultadoReglas = r.ResultadoReglas??string.Empty,
+                                        Validado = false
+                                    }).ToListAsync();
+
+            return resultados;
+        }
+    }    
 }

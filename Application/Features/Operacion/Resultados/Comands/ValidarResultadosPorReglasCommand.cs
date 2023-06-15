@@ -49,20 +49,16 @@ namespace Application.Features.Operacion.Resultados.Comands
         public async Task<Response<List<ResultadoValidacionReglasDto>>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
         {
             /*Creamos la lista que regresaremos al cliente*/
-            List<ResultadoValidacionReglasDto> resultadosValidacion = new List<ResultadoValidacionReglasDto>();
-            /*Las reglas se ejecutan (todas) por muestreo, entonces vamos por los muestreos que cumplan con los filtros proporcionados por el usuario*/
+            List<ResultadoValidacionReglasDto> resultadosValidacion = new();
+
             var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)x.AnioOperacion) &&
                                                                                          request.NumeroEntrega.Contains((int)x.NumeroEntrega));
 
-            /*validamos que exista por lo menos un muestreo*/
             if (muestreos.Any())
             {
-                var resultadosNoValidos = new List<string>();
-
-                /*Vamos a recorrer cada muestreo para aplicarle las reglas*/
                 foreach (var muestreo in muestreos)
                 {
-                    var resultadosMuestreo = await _resultadosRepository.ObtenerElementosPorCriterioAsync(x => x.MuestreoId == muestreo.Id);
+                    var resultadosMuestreo = await _resultadosRepository.ObtenerResultadosParaReglas(muestreo.Id);
                     AplicarReglasDeRelacion(resultadosMuestreo);
                 }
 
@@ -72,7 +68,7 @@ namespace Application.Features.Operacion.Resultados.Comands
             return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion);
         }
 
-        public void AplicarReglasDeRelacion(IEnumerable<ResultadoMuestreo> resultadosMuestreo)
+        public void AplicarReglasDeRelacion(IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo)
         {
             /*Se iran ejecutando una a una las reglas de relación*/
             List<string> errores = new();
@@ -231,17 +227,20 @@ namespace Application.Features.Operacion.Resultados.Comands
             ReglaNTOT("N_TOT", "N_NO2", "N_NO3", "N_NH3", "NORG", "RR-13 - N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)", resultadosMuestreo, errores);
         }
 
-        public LimiteDeteccion ObtenerValoresMinMax(ResultadoDto resultado)
+        public LimiteDeteccion? ObtenerValoresMinMax(ResultadoParametroReglasDto resultado)
         {
-            LimiteDeteccion limites = new();
             var regla = _reglasMinimoMaximoRepository.ObtenerElementosPorCriterio(x => x.ParametroId == resultado.IdParametro);
 
-            if (regla != null)
+            if (regla.Any())
             {
                 if (regla.First().Aplica)
                 {
-                    limites.Maximo = regla.Where(x => x.ClasificacionReglaId == 2).First().MinimoMaximo;
-                    limites.Minimo = regla.Where(x => x.ClasificacionReglaId == 3).First().MinimoMaximo;
+                    LimiteDeteccion limites = new()
+                    {
+                        Maximo = regla.Where(x => x.ClasificacionReglaId == 2).First().MinimoMaximo,
+                        Minimo = regla.Where(x => x.ClasificacionReglaId == 3).First().MinimoMaximo
+                    };
+                    return limites;
                 }
                 else
                 {
@@ -249,13 +248,17 @@ namespace Application.Features.Operacion.Resultados.Comands
 
                     if (reglaLdmLpc != null)
                     {
-                        limites.Minimo = (bool)reglaLdmLpc.FirstOrDefault().EsLdm ? reglaLdmLpc.FirstOrDefault().Ldm : reglaLdmLpc.FirstOrDefault().Lpc;
+                        LimiteDeteccion limites = new()
+                        {
+                            Minimo = (bool)reglaLdmLpc.FirstOrDefault().EsLdm ? reglaLdmLpc.FirstOrDefault().Ldm : reglaLdmLpc.FirstOrDefault().Lpc
+                        };
                         limites.Maximo = (Convert.ToInt64(limites.Minimo) * 100).ToString();
+                        return limites;
                     }
                 }
             }
 
-            return limites;
+            return null;
         }
 
         public bool CumpleFormaReporteEspecifica(string valor, long parametroId)
@@ -319,30 +322,14 @@ namespace Application.Features.Operacion.Resultados.Comands
             public string Maximo { get; set; }
         }
 
-        public ResultadoDto? ObtenerResultadoParametro(IEnumerable<ResultadoMuestreo> resultadosMuestreo, string claveParametro)
+        public ResultadoParametroReglasDto ObtenerResultadoParametro(IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, string claveParametro)
         {
-            var parametroId = _parametroRepository.ObtenerElementosPorCriterio(x => x.ClaveParametro == claveParametro);
-            var resultadoParametro = resultadosMuestreo.Where(x => x.ParametroId.Equals(parametroId)).FirstOrDefault();
+            var resultadoParametro = resultadosMuestreo.Where(x => x.ClaveParametro.Equals(claveParametro)).FirstOrDefault();           
 
-            if (resultadoParametro == null)
-                return null;
-
-            return new ResultadoDto()
-            {
-                IdParametro = resultadoParametro.Id,
-                Valor = resultadoParametro.Resultado,
-                IdLaboratorio = 1
-            };
+            return resultadoParametro;
         }
 
-        public class ResultadoDto
-        {
-            public long IdParametro { get; set; }
-            public string Valor { get; set; }
-            public long IdLaboratorio { get; set; }
-        }
-
-        public List<string> ReglaMayorQue(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaMayorQue(string parametro1, string parametro2, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -361,19 +348,28 @@ namespace Application.Features.Operacion.Resultados.Comands
                     var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
                     var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
 
-                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    if (minMaxParametro1 != null)
                     {
                         var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
                         if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
+                    }
 
+                    if (minMaxParametro2 != null)
+                    {
                         var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
                         if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
                     }
 
                     if (valorParametro1 > valorParametro2)
-                        errores.Add($"{regla}");
+                    {
+                        resultadoParametro1.ResultadoReglas += regla;
+                        resultadoParametro2.ResultadoReglas += regla;
+                    }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
                 else
                 {
@@ -381,7 +377,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                            resultadoParametro1.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro1.Valor}";
                         }
                     }
 
@@ -389,16 +385,19 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                            resultadoParametro2.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro2.Valor}";
                         }
                     }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
             }
 
             return errores;
         }
 
-        public List<string> ReglaOD(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaOD(string parametro1, string parametro2, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -417,16 +416,22 @@ namespace Application.Features.Operacion.Resultados.Comands
                     var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
                     var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
 
-                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    if (minMaxParametro1 != null)
                     {
                         var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
                         if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
+                    }
 
+                    if (minMaxParametro2 != null)
+                    {
                         var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
                         if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
                     }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
                 else
                 {
@@ -434,7 +439,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                            resultadoParametro1.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro1.Valor}";
                         }
                     }
 
@@ -442,19 +447,25 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                            resultadoParametro2.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro2.Valor}";
                         }
                     }
 
                     if (resultadoParametro1.Valor == "<10" && resultadoParametro2.Valor != "<1")
-                        errores.Add($"{regla}");
+                    {
+                        resultadoParametro1.ResultadoReglas += regla;
+                        resultadoParametro2.ResultadoReglas += regla;
+                    }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
             }
 
             return errores;
         }
 
-        public List<string> ReglaTOX(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaTOX(string parametro1, string parametro2, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -473,19 +484,28 @@ namespace Application.Features.Operacion.Resultados.Comands
                     var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
                     var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
 
-                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    if (minMaxParametro1 != null)
                     {
                         var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
                         if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
+                    }
 
+                    if (minMaxParametro2 != null)
+                    {
                         var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
                         if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
                     }
 
                     if (valorParametro1 != (100 / valorParametro2))
-                        errores.Add($"{regla}");
+                    {
+                        resultadoParametro1.ResultadoReglas += regla;
+                        resultadoParametro2.ResultadoReglas += regla;
+                    }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
                 else
                 {
@@ -493,7 +513,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                            resultadoParametro1.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro1.Valor}";
                         }
                     }
 
@@ -501,16 +521,19 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                            resultadoParametro2.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro2.Valor}";
                         }
                     }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
             }
 
             return errores;
         }
 
-        public List<string> ReglaODPOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaODPOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -529,24 +552,28 @@ namespace Application.Features.Operacion.Resultados.Comands
                     var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro1);
                     var minMaxParametro2 = ObtenerValoresMinMax(resultadoParametro2);
 
-                    if (minMaxParametro1 != null && minMaxParametro2 != null)
+                    if (minMaxParametro1 != null)
                     {
                         var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
                         if (!cumpleLimitesParametro1)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro1.ResultadoReglas = "Error: Límites de detección";
+                    }
 
+                    if (minMaxParametro2 != null)
+                    { 
                         var cumpleLimitesParametro2 = _regla.CumpleLimitesDeteccion(minMaxParametro2, valorParametro2);
                         if (!cumpleLimitesParametro2)
-                            errores.Add("Error: Límites de detección");
+                            resultadoParametro2.ResultadoReglas = "Error: Límites de detección";
                     }
 
-                    if (Convert.ToDecimal(valorParametro1) > 50)
+                    if (valorParametro1 > 50 && valorParametro2 < 0)
                     {
-                        if (Convert.ToDecimal(valorParametro2) < 0)
-                        {
-                            errores.Add($"{regla}");
-                        }
+                        resultadoParametro1.ResultadoReglas += regla;
+                        resultadoParametro2.ResultadoReglas += regla;
                     }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
                 else
                 {
@@ -554,7 +581,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro1.Valor, resultadoParametro1.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro1.Valor}");
+                            resultadoParametro1.ResultadoReglas = "No se reconoce la forma de reporte";
                         }
                     }
 
@@ -562,9 +589,12 @@ namespace Application.Features.Operacion.Resultados.Comands
                     {
                         if (!CumpleReglaReporte(resultadoParametro2.Valor, resultadoParametro2.IdParametro))
                         {
-                            errores.Add($"No se reconoce la forma de reporte: {resultadoParametro2.Valor}");
+                            resultadoParametro2.ResultadoReglas = "No se reconoce la forma de reporte";
                         }
                     }
+
+                    resultadoParametro1.Validado = true;
+                    resultadoParametro2.Validado = true;
                 }
             }
 
@@ -572,7 +602,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         }
 
         /*RR-15*/
-        public List<string> ReglaPTOT(string parametro1, string parametro2, string parametro3, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaPTOT(string parametro1, string parametro2, string parametro3, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -646,7 +676,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         }
 
         /*RR-17*/
-        public List<string> ReglaNTK(string parametro1, string parametro2, string parametro3, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaNTK(string parametro1, string parametro2, string parametro3, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -720,7 +750,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         }
 
         /*RR-18*/
-        public List<string> ReglaORTOPTOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaORTOPTOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -777,7 +807,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         }
 
         /*RR-11*/
-        public List<string> ReglaPOTOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaPOTOT(string parametro1, string parametro2, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
@@ -834,7 +864,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         }
 
         /*RR-13*/
-        public List<string> ReglaNTOT(string parametro1, string parametro2, string parametro3, string parametro4, string parametro5, string regla, IEnumerable<ResultadoMuestreo> resultadosMuestreo, List<string> errores)
+        public List<string> ReglaNTOT(string parametro1, string parametro2, string parametro3, string parametro4, string parametro5, string regla, IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, List<string> errores)
         {
             var resultadoParametro1 = ObtenerResultadoParametro(resultadosMuestreo, parametro1);
             var resultadoParametro2 = ObtenerResultadoParametro(resultadosMuestreo, parametro2);
