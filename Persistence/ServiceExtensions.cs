@@ -92,6 +92,7 @@ namespace Persistence
             services.AddTransient<IReglasReporteRepository, ReglasReporteRepository>();
             services.AddTransient<IFormaReporteEspecificaRepository, FormaReporteEspecificaRepository>();
             services.AddTransient<IReglasLaboratorioLDMRepository, ReglasLaboratorioLDMRepository>();
+            services.AddTransient<ILaboratorioRepository, LaboratorioRepository>();
             #endregion
         }
     }

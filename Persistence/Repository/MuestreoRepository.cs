@@ -98,11 +98,14 @@ namespace Persistence.Repository
 
             var resultados = (from cm in cargaMuestreoDto
                               join p in _dbContext.ParametrosGrupo on cm.ClaveParametro equals p.ClaveParametro
+                              join l in _dbContext.Laboratorios on cm.LaboratorioRealizoMuestreo equals l.Nomenclatura
                               where cm.Muestreo == claveMuestreo
                               select new ResultadoMuestreo
                               {
                                   ParametroId = p.Id,
-                                  Resultado = cm.Resultado??string.Empty
+                                  Resultado = cm.Resultado??string.Empty,
+                                  LaboratorioId = l.Id
+                                  
                               }).ToList();
 
             return resultados;
