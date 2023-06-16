@@ -2,11 +2,7 @@
 using Application.Interfaces;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
-using Domain.Entities;
 using MediatR;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Application.Features.Operacion.Resultados.Comands
 {
@@ -25,17 +21,15 @@ namespace Application.Features.Operacion.Resultados.Comands
         private readonly IReglasReporteRepository _reglasReporteRepository;
         private readonly IFormaReporteEspecificaRepository _formaReporteEspecificaRepository;
         private readonly IReglasLaboratorioLDMRepository _ldmLpcLaboratorio;
-        private readonly IParametroRepository _parametroRepository;
 
         public ValidarResultadosPorReglasCommandHandler(
-            IMuestreoRepository muestreoRepository, 
+            IMuestreoRepository muestreoRepository,
             IResultado resultadosRepository,
             IReglasMinimoMaximoRepository reglasMinimoMaximoRepository,
             IReglaService regla,
             IReglasReporteRepository reglasReporteRepository,
             IFormaReporteEspecificaRepository formaReporteEspecificaRepository,
-            IReglasLaboratorioLDMRepository ldmLpcLaboratorio,
-            IParametroRepository parametroRepository)
+            IReglasLaboratorioLDMRepository ldmLpcLaboratorio)
         {
             _muestreoRepository = muestreoRepository;
             _resultadosRepository=resultadosRepository;
@@ -44,7 +38,6 @@ namespace Application.Features.Operacion.Resultados.Comands
             _reglasReporteRepository=reglasReporteRepository;
             _formaReporteEspecificaRepository=formaReporteEspecificaRepository;
             _ldmLpcLaboratorio=ldmLpcLaboratorio;
-            _parametroRepository=parametroRepository;
         }
 
         public async Task<Response<List<ResultadoValidacionReglasDto>>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
@@ -248,7 +241,7 @@ namespace Application.Features.Operacion.Resultados.Comands
             ReglaNTOT("N_TOT", "N_NO2", "N_NO3", "N_NH3", "NORG", "RR-13 - N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)", resultadosMuestreo, errores);
         }
 
-        public LimiteDeteccion? ObtenerValoresMinMax(ResultadoParametroReglasDto resultado)
+        public LimiteDeteccionDto? ObtenerValoresMinMax(ResultadoParametroReglasDto resultado)
         {
             var reglas = _reglasMinimoMaximoRepository.ObtenerElementosPorCriterio(x => x.ParametroId == resultado.IdParametro);
 
@@ -256,7 +249,7 @@ namespace Application.Features.Operacion.Resultados.Comands
             {
                 if (reglas.First().Aplica)
                 {
-                    LimiteDeteccion limites = new();
+                    LimiteDeteccionDto limites = new();
 
                     if (reglas.Where(x => x.ClasificacionReglaId == 2).Any())
                     {
@@ -276,7 +269,7 @@ namespace Application.Features.Operacion.Resultados.Comands
 
                     if (reglaLdmLpc.Any())
                     {
-                        LimiteDeteccion limites = new()
+                        LimiteDeteccionDto limites = new()
                         {
                             Minimo = (bool)reglaLdmLpc.FirstOrDefault().EsLdm ? reglaLdmLpc.FirstOrDefault().Ldm : reglaLdmLpc.FirstOrDefault().Lpc
                         };
@@ -293,7 +286,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         {
             var existe = _formaReporteEspecificaRepository.ExisteElemento(x => x.ParametroId == parametroId && x.Descripcion == valor).Result;
             return existe;
-        } 
+        }
 
         public bool CumpleReglaReporte(string valor, long parametroId)
         {
@@ -344,15 +337,9 @@ namespace Application.Features.Operacion.Resultados.Comands
             return cumpleReglaReporte;
         }
 
-        public class LimiteDeteccion
-        {
-            public string Minimo { get; set; }
-            public string Maximo { get; set; }
-        }
-
         public ResultadoParametroReglasDto ObtenerResultadoParametro(IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, string claveParametro)
         {
-            var resultadoParametro = resultadosMuestreo.Where(x => x.ClaveParametro.Equals(claveParametro)).FirstOrDefault();           
+            var resultadoParametro = resultadosMuestreo.Where(x => x.ClaveParametro.Equals(claveParametro)).FirstOrDefault();
 
             return resultadoParametro;
         }

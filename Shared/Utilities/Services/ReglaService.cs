@@ -1,18 +1,12 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs;
+using Application.Interfaces;
 using DynamicExpresso;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static Application.Features.Operacion.Resultados.Comands.ValidarResultadosPorReglasCommandHandler;
 
 namespace Shared.Utilities.Services
 {
     public class ReglaService : IReglaService
     {
-        public bool CumpleLimitesDeteccion(LimiteDeteccion limites, decimal valorParametro)
+        public bool CumpleLimitesDeteccion(LimiteDeteccionDto limites, decimal valorParametro)
         {            
             var target = new Interpreter();
 

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Application.Features.Operacion.Resultados.Comands.ValidarResultadosPorReglasCommandHandler;
+﻿using Application.DTOs;
 
 namespace Application.Interfaces
 {
     public interface IReglaService
     {
         bool InCumpleReglaMinimoMaximo(string regla, string valorParametro);
-        bool CumpleLimitesDeteccion(LimiteDeteccion limites, decimal valorParametro);
+        bool CumpleLimitesDeteccion(LimiteDeteccionDto limites, decimal valorParametro);
     }
 }
