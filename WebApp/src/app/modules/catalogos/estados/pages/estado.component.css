@@ -1,0 +1,12 @@
+#add-success,
+#update-success,
+#change-success {
+  display: none;
+}
+
+#add-success,
+#update-success,
+#change-success {
+  animation-name: fadeInAndOut;
+  animation-duration: 3s;
+}

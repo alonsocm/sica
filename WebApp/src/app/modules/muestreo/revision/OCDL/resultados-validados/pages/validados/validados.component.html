@@ -1,0 +1,202 @@
+<router-outlet name="menu"></router-outlet>
+<form>
+  <div class="form-group  d-flex justify-content-center">
+    <app-loading *ngIf="loading"></app-loading>
+  </div>
+</form>
+<div class="container-fluid">
+  <H3>Resultados validados por OC/DL</H3>
+  <hr class="red" />
+  <div class="message-container">
+    <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
+               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
+  <div class="row">
+    <div style="text-align:right" class="col-md-9">
+      <button class="btn btn-primary" type="button" (click)="exportarResultados()">
+        <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+      </button>
+    </div>
+    <div style="text-align:left" class="col-md-1">
+      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltrosn()">
+        <i class="bi bi-funnel"></i>Limpiar filtros
+      </button>
+    </div>
+  </div>
+  <br />
+  <div class="row-group">
+    <div class="col-md-12 table-responsive  dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="checkBox-center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                     (change)="seleccionarAll(this.resultadosFiltradosn)" />
+            </th>
+            <th *ngFor="let columna of columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                               (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+                               placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+        </thead>
+        <tbody style="text-align:center;">
+          <tr *ngFor="let validados of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }">
+            <td class="checkBox-center">
+              <input type="checkbox" [(ngModel)]="validados.isChecked"
+                     (change)="seleccionar()">
+            </td>
+            <td style="text-align: center;">{{validados.noEntregaOCDL}}</td>
+            <td style="text-align: center;">{{validados.claveUnica}}</td>
+            <td style="text-align: center;">{{validados.claveSitio}}</td>
+            <td style="text-align: center;">{{validados.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{validados.nombreSitio}}</td>
+            <td style="text-align: center;">{{validados.claveParametro}}</td>
+            <td style="text-align: center;">{{validados.laboratorio}}</td>
+            <td style="text-align: center;">{{validados.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{validados.tipoCuerpoAguaOriginal}}</td>
+            <td style="text-align: center;">{{validados.resultado}}</td>
+            <td style="text-align: center;">{{validados.tipoAprobacion}}</td>
+            <td style="text-align: center;">{{validados.esCorrectoResultado}}</td>
+            <td style="text-align: center;">{{validados.observaciones}}</td>
+            <td style="text-align: center;">{{validados.fechaLimiteRevision}}</td>
+            <td style="text-align: center;">{{validados.nombreUsuario}}</td>
+            <td style="text-align: center;">{{validados.fechaRealizacion}}</td>
+            <td style="text-align: center;">{{validados.estatusResultado}}</td>
+          </tr>
+          <tr>
+            <td colspan="18">
+              <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">{{noRegistro}}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row-group">
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+  <br />
+  <div class="d-flex justify-content-between">
+
+    <div class="p-2">
+      <button class="btn btn-secondary pull-left" type="button" data-toggle="modal" data-target="#modalregreso"
+              (click)="consultarMonitoreosmuestreo()">
+        <i class="bi bi-box-arrow-left"></i> Regresar a total de resultados a revisar
+      </button>
+    </div>
+    <div class="p-2">
+      <button class="btn btn-primary rigth" type="button" (click)="enviarMonitoreos()">
+        <i class="bi bi-send"></i> Enviar a aprobación final
+      </button>
+      <button id="btnMuestraModal" style="display:none" class="btn btn-primary rigth" type="button" data-toggle="modal"
+              data-target="#modalavance"></button>
+    </div>
+  </div>
+  <div *ngIf="this.isModal==true" class="modal fade modal-dialog-centered" id="modalregreso" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">{{modalTitle}}</h4>
+        </div>
+        <div class="row-group">
+          <div class="col-md-12 table-responsive  dvTable">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="checkBox-center">
+                    <label for="chckAllmodal">Seleccionar todos</label>
+                    <input type="checkbox" id="chckAllmodal" [(ngModel)]="this.seleccionarTodosChckmodal"
+                           (change)="seleccionarTodosmodal()" />
+                  </th>
+                  <th class="text-center">
+                    No.Entrega OC/DL
+                  </th>
+                  <th class="text-center">
+                    Clave Sitio
+                  </th>
+                  <th class="text-center">
+                    Clave Monitoreo
+                  </th>
+                  <th class="text-center">
+                    Nombre Sitio
+                  </th>
+                  <th class="text-center">
+                    Tipo Cuerpo deAgua
+                  </th>
+                  <th class="text-center">
+                    Fecha de Realización
+                  </th>
+                  <th class="text-center">
+                    Nombre del trabajador
+                  </th>
+                </tr>
+              </thead>
+              <tbody style="text-align:center;">
+                <tr *ngFor="let validados of this.muestreosagrupados| paginate: { itemsPerPage:NoPage, currentPage: page }">
+                  <td class="checkBox-center">
+                    <input type="checkbox" [(ngModel)]="validados.isCheckedmodal"
+                           (change)="seleccionarmodal()">
+                  </td>
+                  <td>{{validados.noEntregaOCDL}}</td>
+                  <td>{{validados.clavesitio}}</td>
+                  <td>{{validados.clavemonitoreo}}</td>
+                  <td>{{validados.nomnresitio}}</td>
+                  <td>{{validados.tipocuerpoagua}}</td>
+                  <td>{{validados.fecharealizacion}}</td>
+                  <td>{{validados.nombreusuario}}</td>
+                </tr>
+                <tr>
+                  <td colspan="18">
+                    <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">{{noRegistro}}</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br />
+          <div class="row-group">
+            <div>
+              <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+              </pagination-controls>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal"
+                      (click)="cambiarEstatusMuestreo(2)">
+                Aceptar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade modal-dialog-centered" id="modalavance" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">{{modalTitle}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>¿Está seguro de enviar los monitoreos seleccionados a la aprobación final?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button id="btnAceptar" type="button" class="btn btn-primary" data-dismiss="modal"
+                  (click)="cambiarEstatusMuestreo(5)">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

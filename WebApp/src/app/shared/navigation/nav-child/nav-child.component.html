@@ -1,0 +1,9 @@
+<ul *ngIf="this.paginasHijo.length > 0" id="elemento-hijo{{this.idPagina}}" class="hide">
+    <li *ngFor="let pagina of this.paginasHijo" (mouseover)="mouseOver(pagina.id)" (mouseleave)="mouseLeave(pagina.id)">
+        <a *ngIf="pagina.url != ''; else elseBlock" routerLink="{{pagina.url}}">{{pagina.descripcion}}</a>
+        <ng-template #elseBlock>
+            <a class="dropdown-toggle">{{pagina.descripcion}}</a>
+            <app-child-menu [nivel]=2 [idPagina]="pagina.id" [paginas]="this.paginas"></app-child-menu>
+        </ng-template>
+    </li>
+</ul>

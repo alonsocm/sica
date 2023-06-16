@@ -1,0 +1,25 @@
+<nav class="nav-menu">
+  <div class="menu-container">
+    <ul class="list-inline">
+      <ng-container *ngFor="let pagina of this.paginasRoot">
+        <li class="list-inline-item" *ngIf="pagina.url != ''; else elseBlock">
+          <a routerLink="{{pagina.url}}">{{pagina.descripcion}}</a>
+        </li>
+        <ng-template #elseBlock>
+          <li class="list-inline-item" (mouseover)="mostrar(pagina.id)" (mouseleave)="ocultar(pagina.id)">
+            <a class="dropdown-toggle">{{pagina.descripcion}}</a>
+            <app-child-menu [idPagina]="pagina.id" [paginas]="this.paginas"></app-child-menu>
+          </li>
+        </ng-template>
+      </ng-container>
+      <div class="pull-right" style="margin: 10px;">
+        <i class="bi bi-person-circle"></i>
+        &nbsp;
+        <span>{{this.usuario.nombreUsuario}}-&nbsp;{{this.usuario.nombrePerfil}}</span>
+        &nbsp;
+        &nbsp;
+        <a (click)="cerrarSesion()">Cerrar sesión</a>
+      </div>
+    </ul>
+  </div>
+</nav>

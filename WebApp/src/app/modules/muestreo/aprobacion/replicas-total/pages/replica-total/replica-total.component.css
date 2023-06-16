@@ -1,0 +1,19 @@
+.dvTable {
+    overflow-y: auto;
+    max-height: 400px;
+    margin: 1% 0 1% 0;
+}
+
+.btnAcciones {
+    margin-left: 1%;
+}
+
+.btnAprobacion{
+    text-align: right;
+}
+
+@media all and (max-width: 800px) {
+    .btnAprobacion {
+        text-align: left;
+    }
+}

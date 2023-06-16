@@ -1,0 +1,362 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container-fluid">
+  <H3>R&eacute;plicas con diferente resultado en etapa de aprobaci&oacute;n</H3>
+  <hr class="red" />
+  <div class="message-container">
+    <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <input type="file" style="display: none" (change)="cargarArchivo($event)" accept=".xls, .xlsx" #inputExcelResultados>
+      <button class="btn btn-primary" (click)="inputExcelResultados.click()">
+        <i class="bi bi-cloud-upload"></i>&nbsp;Seleccionar y cargar archivo...
+      </button>
+    </div>
+
+    <div style="text-align:right" class="col-md-2">
+      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltros()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+    </div>
+
+    <div style="text-align:left" class="col-md-2">
+      <button class="btn btn-secondary" type="button" (click)="this.exportarResultadosGeneral()">
+        <img width="20px" src="./assets/images/site/ionoexel.png" />
+        Descarga en formato Excel
+      </button>
+    </div>
+
+    <div style="text-align:left" class="col-md-2">
+      <button class="btn btn-secondary" type="button" (click)="this.exportarResultados()">
+        <img width="20px" src="./assets/images/site/ionoexel.png" />
+        Descarga Archivo Revision LNR
+      </button>
+    </div>
+  </div>
+  <div class="row-group">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="checkBox-center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                (change)="seleccionarTodos()" />
+            </th>
+            <th class="text-center">
+              N° ENTREGA
+              <ng-autocomplete #noEntrega [data]="this.filtronoEntrega.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtronoEntrega.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtronoEntrega.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" (inputChanged)="this.limpiarFiltros()" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              CLAVE &Uacute;NICA
+              <ng-autocomplete #claveUnica [data]="this.filtroclaveUnica.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroclaveUnica.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroclaveUnica.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              CLAVE SITIO
+              <ng-autocomplete #claveSitio [data]="this.filtroclaveSitio.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroclaveSitio.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroclaveSitio.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              CLAVE MONITOREO
+              <ng-autocomplete #claveMonitoreo [data]="this.filtroclaveMonitoreo.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroclaveMonitoreo.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroclaveMonitoreo.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              NOMBRE SITIO
+              <ng-autocomplete #nombreSitio [data]="this.filtronombreSitio.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtronombreSitio.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtronombreSitio.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              CLAVE PAR&Aacute;METRO
+              <ng-autocomplete #claveParametro [data]="this.filtroclaveParametro.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroclaveParametro.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroclaveParametro.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              LABORATORIO
+              <ng-autocomplete #laboratorio [data]="this.filtrolaboratorio.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtrolaboratorio.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtrolaboratorio.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              TIPO CUERPO AGUA
+              <ng-autocomplete #cuerpoAgua [data]="this.filtrocuerpoAgua.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtrocuerpoAgua.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtrocuerpoAgua.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              TIPO CUERPO AGUA ORIGINAL
+              <ng-autocomplete #cuerpoAguaO [data]="this.filtrocuerpoAguaO.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtrocuerpoAguaO.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtrocuerpoAguaO.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              RESULTADO ACTUALIZADO POR R&Eacute;PLICA
+              <ng-autocomplete #resultadoAR [data]="this.filtroresultadoAR.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroresultadoAR.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroresultadoAR.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              RESULTADO CORRECTO POR OC/DL
+              <ng-autocomplete #escorrectoROCDL [data]="this.filtroescorrectoROCDL.values"
+                [searchKeyword]="this.keyword" (selected)="this.filtroescorrectoROCDL.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroescorrectoROCDL.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              OBSERVACI&Oacute;N OC/DL
+              <ng-autocomplete #observacionesOCDL [data]="this.filtroobservacionesOCDL.values"
+                [searchKeyword]="this.keyword"
+                (selected)="this.filtroobservacionesOCDL.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroobservacionesOCDL.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              RESULTADO CORRECTO POR SECAIA
+              <ng-autocomplete #esCorectoresultado [data]="this.filtroesCorectoresultado.values"
+                [searchKeyword]="this.keyword"
+                (selected)="this.filtroesCorectoresultado.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroesCorectoresultado.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              OBSERVAC&Oacute;N SECAIA
+              <ng-autocomplete #observacionSecaia [data]="this.filtroobservacionSecaia.values"
+                [searchKeyword]="this.keyword"
+                (selected)="this.filtroobservacionSecaia.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroobservacionSecaia.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              CLASIFICACI&Oacute;N OBSERVACI&Oacute;N
+              <ng-autocomplete #clasificaObserva [data]="this.filtroclasificaObserva.values"
+                [searchKeyword]="this.keyword"
+                (selected)="this.filtroclasificaObserva.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroclasificaObserva.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              OBSERVACI&Oacute;N SRENAMECA
+              <ng-autocomplete #observacionSRE [data]="this.filtroobservacionSRE.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroobservacionSRE.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroobservacionSRE.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              COMENTARIOS
+              <ng-autocomplete #comentarios [data]="this.filtrocomentarios.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtrocomentarios.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtrocomentarios.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              FECHA OBSERVACI&Oacute;N SRENAMECA
+              <ng-autocomplete #fechaObservaSRE [data]="this.filtrofechaObservaSRE.values"
+                [searchKeyword]="this.keyword" (selected)="this.filtrofechaObservaSRE.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtrofechaObservaSRE.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              RESULTADO APROBADO DESPU&Eacute;S DE R&Eacute;PLICA
+              <ng-autocomplete #seaprueba [data]="this.filtroseaprueba.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroseaprueba.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroseaprueba.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              FECHA ESTATUS FINAL
+              <ng-autocomplete #fechaEstatus [data]="this.filtrofechaEstatus.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtrofechaEstatus.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtrofechaEstatus.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              NOMBRE USUARIO QUE REVIS&Oacute;
+              <ng-autocomplete #nombreUsuario [data]="this.filtronombreUsuario.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtronombreUsuario.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtronombreUsuario.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th class="text-center">
+              ESTATUS DEL RESULTADO
+              <ng-autocomplete #estatus [data]="this.filtroestatus.values" [searchKeyword]="this.keyword"
+                (selected)="this.filtroestatus.selectedValue = $event; filtrar()"
+                (inputCleared)="this.filtroestatus.selectedValue = 'Seleccione'; filtrar()"
+                [itemTemplate]="itemTemplate" placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let muestreo of this.muestreosFiltrados| paginate: { itemsPerPage:30, currentPage: page }">
+            <td class="checkBox-center">
+              <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()">
+            </td>
+            <td style="text-align: center;">{{muestreo.noEntrega}}</td>
+            <td style="text-align: center;">{{muestreo.claveUnica}}</td>
+            <td style="text-align: center;">{{muestreo.claveSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{muestreo.nombreSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveParametro}}</td>
+            <td style="text-align: center;">{{muestreo.laboratorio}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
+            <td style="text-align: center;">{{muestreo.resultadoActualizadoporReplica}}</td>
+            <td style="text-align: center;">{{muestreo.esCorrectoOCDL}}</td>
+            <td style="text-align: center;">{{muestreo.observacionOCDL}}</td>
+            <td style="text-align: center;">{{muestreo.esCorrectoSECAIA}}</td>
+            <td style="text-align: center;">{{muestreo.observacionSECAIA}}</td>
+            <td style="text-align: center;">{{muestreo.clasificacionObservacion}}</td>
+            <td style="text-align: center;">{{muestreo.observacionSRENAMECA}}</td>
+            <td style="text-align: center;">{{muestreo.comentariosAprobacionResultados}}</td>
+            <td style="text-align: center;">{{muestreo.fechaObservacionSRENAMECA}}</td>
+            <td style="text-align: center;">{{muestreo.seApruebaResultadodespuesdelaReplica}}</td>
+            <td style="text-align: center;">{{muestreo.fechaEstatusFinal}}</td>
+            <td style="text-align: center;">{{muestreo.usuarioRevision}}</td>
+            <td style="text-align: center;">{{muestreo.estatusResultado}}</td>
+          </tr>
+          <tr>
+            <td colspan="24">
+              <div *ngIf="this.muestreosFiltrados.length==0" style="text-align: center;">
+                No se
+                encontraron registros
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row-group">
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+  <div class="d-flex justify-content-between">
+    <div class="p-2">
+      <button class="btn btn-primary" (click)="this.AprobacionResultadoBloque(true)" type="button"
+        style="margin-left: 10px; margin-top: 10px;" data-toggle="modal" data-target="#modalDetalleParametros">
+        <i class="bi bi-check-circle"></i>
+        &nbsp;Aprobación resultado por bloque
+      </button>
+      <button class="btn btn-primary" type="button" (click)="this.AprobacionResultadoBloque(false)"
+        style="margin-left: 10px; margin-top: 10px;" data-toggle="modal" data-target="#modalDetalleParametros">
+        <i class="bi bi-x-circle"></i>  
+        &nbsp;Rechazo resultado por blorque
+      </button>
+    </div>
+    <div class="p-2">
+      <button class="btn btn-primary" style="margin-left: 10px; margin-top: 10px;"(click)="this.EnviosAprobados(18)" type="button">
+        <i class="bi bi-send"></i>&nbsp;Envia resultados rechazados a penalización
+      </button>
+      <button class="btn btn-primary" style="margin-left: 10px; margin-top: 10px;"(click)="this.EnviosAprobados(19)" type="button">
+        <i class="bi bi-send"></i>&nbsp;Enviar a resultados aprobados
+      </button>
+    </div>
+  </div>
+</div>

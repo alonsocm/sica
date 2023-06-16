@@ -1,0 +1,133 @@
+<router-outlet name="menu"></router-outlet>
+<div *ngIf="loading"> <!-- spiner de carga -->
+    <app-loading></app-loading>
+</div>
+<div class="container-fluid">
+    <H3> Evidencias originales aprobados</H3>
+    <hr class="red" />
+    <div class="message-container">
+        <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
+            (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    </div>
+    <div class="d-flex flex-row-reverse opciones-tabla">
+        <div class="p-2">
+            <button class="btn btn-secondary" type="button"
+                (click)="this.descargarEvidencias();this.exportarEvidencias()">
+                <i class="bi bi-cloud-download"></i>
+                Descarga de evidencias
+            </button>
+
+        </div>
+        <div class="p-2">
+            <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltros()">
+                <i class="bi bi-funnel"></i>
+                Limpiar filtros
+            </button>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12 table-responsive dvTable">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="checkBox-center">
+                            <label for="chckAll">SELECCIONAR TODOS</label>
+                            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                                (change)="seleccionarTodos()" />
+                        </th>
+                        <ng-container *ngFor="let columna of this.columnas">
+                            <th>
+                                {{columna.etiqueta}}
+                                <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                                    (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                                    (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
+                                    [itemTemplate]="itemTemplate" placeholder="seleccione">
+                                </ng-autocomplete>
+                                <ng-template #itemTemplate let-item>
+                                    <a [innerHTML]="item"></a>
+                                </ng-template>
+                            </th>
+                        </ng-container>
+                        <th>BITÁCORA</th>
+                        <th>FOTO MUESTREO</th>
+                        <th>FOTO MUESTRA</th>
+                        <th>CADENA CUSTODIA</th>
+                        <th>TRACK</th>
+                        <th>FORMATO CAUDAL</th>
+                        <TH>FOTO CAUDAL</TH>
+                        <th>FORMATO EVENTUALIDAD</th>
+                        <th>MÁSCARA CAMPO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let evidencia of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
+                        <td class="checkBox-center">
+                            <input type="checkbox" [(ngModel)]="evidencia.isChecked" (change)="seleccionar()">
+                        </td>
+                        <td>{{evidencia.claveSitioOriginal}}</td>
+                        <td>{{evidencia.claveSitio}}</td>
+                        <td>{{evidencia.claveMonitoreo}}</td>
+                        <td>{{evidencia.nombreSitio}}</td>
+                        <td>{{evidencia.organismoCuenca}}</td>
+                        <td>{{evidencia.direccionLocal}}</td>
+                        <td>{{evidencia.cuerpoAgua}}</td>
+                        <td>{{evidencia.tipoCuerpoAguaOriginal}}</td>
+                        <td>{{evidencia.tipoSitio}}</td>
+                        <td>{{evidencia.laboratorio}}</td>
+                        <td>{{evidencia.laboratorioSubrogado}}</td>
+                        <td>{{evidencia.fechaProgramada}}</td>
+                        <td>{{evidencia.fechaRealizacion}}</td>
+                        <td>{{evidencia.programaAnual}}</td>
+                        <td>{{evidencia.horaInicio}}</td>
+                        <td>{{evidencia.horaFin}}</td>
+                        <td>{{evidencia.observaciones}}</td>
+                        <td>{{evidencia.horaCargaEvidencias}}</td>
+                        <td>{{evidencia.numeroCargaEvidencias}}</td>
+                        <ng-container *ngFor="let sufijo of sufijos;">
+                            <td *ngIf="existeEvidencia(evidencia.evidencias, sufijo) else elseBlock">
+                                <div [ngSwitch]="sufijo">
+                                    <img *ngSwitchCase="'R'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/ionoexel.png" />
+                                    <img *ngSwitchCase="'M'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                    <img *ngSwitchCase="'S'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                    <img *ngSwitchCase="'E'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                    <img *ngSwitchCase="'D'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/iconoPDF.png" />
+                                    <img *ngSwitchCase="'A'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                    <img *ngSwitchCase="'O'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/ionoexel.png" />
+                                    <img *ngSwitchCase="'v'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                    <img *ngSwitchCase="'c'"
+                                        (click)="this.descargarEvidencia(evidencia.claveMonitoreo, sufijo)" width="60px"
+                                        style="cursor:pointer" src="./assets/images/site/ionoexel.png" />
+                                </div>
+                            </td>
+                            <ng-template #elseBlock>
+                                <td>-</td>
+                            </ng-template>
+                        </ng-container>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row-group">
+        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
+    </div>
+</div>

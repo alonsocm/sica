@@ -1,0 +1,92 @@
+<router-outlet name="menu"></router-outlet>
+<div class="container">
+  <h3>Administración de Estados</h3>
+  <hr class="red" />
+
+
+  <div class="form-group row">
+    <label for="Nombre" class="col-m-2 col-form-label">Nombre:</label>
+    <div class="col-lg-3">
+      <ng-autocomplete 
+        [data]="Estados" 
+        [searchKeyword]="keyword" 
+        (inputChanged)='onChangeSearch($event)'
+        (selected)='selectEvent($event)' 
+        placeholder="Ingresar nombre">
+      </ng-autocomplete>
+    </div>
+
+    <label for="Nombre" class="col-m-2 col-form-label">Abreviatura:</label>
+    <div class="col-lg-3">
+      <ng-autocomplete 
+        [data]="Estados" 
+        [searchKeyword]="keyword" 
+        (inputChanged)='onChangeSearchAbre($event)'
+        (selected)='selectEventAbre($event)' 
+        placeholder="Ingresar abreviatura">
+      </ng-autocomplete>
+
+    </div>
+  </div>
+    <!-- 
+    <button type="button" class="btn btn-primary btn-xs pull-right" data-toggle="modal" title="Agregar"
+      data-target="#modalregistro" (click)="AddEstado()">
+      <i class="bi bi-person-plus-fill pull-right" data-toggle="modal" data-target="#modalregistro"></i>
+    </button> -->
+
+
+
+
+
+    <div class="alert alert-success" role="alert" id="add-success">
+      <strong>¡Felicidades!</strong>
+      Estado registrado exitosamente
+    </div>
+    <div class="alert alert-success" role="alert" id="update-success">
+      <strong>¡Felicidades!</strong>
+      Estado actualizado exitosmente
+    </div>
+    <div class="alert alert-success" role="alert" id="change-success">
+      <strong>¡Felicidades!</strong>
+      Se a eliminado el estado
+    </div>
+
+    <table id="tblEstados" class="table table-striped table-bordered dataTable" style="padding-top:15px;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Abreviatura</th>
+          <!-- <th>Opciones</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let est of _estados | paginate: { itemsPerPage:10, currentPage: page };let indice=index  ">
+          <td>{{indice+1}}</td>
+          <td>{{est.nombre}}</td>
+          <td>{{est.abreviatura}}</td>
+          <!-- <td>
+          <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" title="Editar"
+            data-target="#modalregistro" (click)="EditEstado(est)">
+            <i class="bi bi-file-person"></i>
+          </button>&nbsp;
+          <button type="button" class="btn btn-secondary btn-xs" data-toggle="modal" title="Estatus"
+            data-target="#modalstatus" (click)="DeleteEstado(est)">
+            <i class="bi bi-power" style="font-weight: 500; "></i>
+          </button>
+        </td> -->
+        </tr>
+      </tbody>
+    </table>
+
+    <!--Template para el cambio de estado-->
+    <ng-template #falso>
+      <td>Inactivo</td>
+    </ng-template>
+
+    <!--Controlador de la paginacion-->
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+
+
+  </div>

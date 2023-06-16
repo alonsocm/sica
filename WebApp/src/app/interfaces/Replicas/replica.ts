@@ -1,0 +1,32 @@
+export interface Replica {
+  noEntrega: string;
+  claveUnica: string;
+  claveSitio: string;
+  claveMonitoreo: string;
+  nombre: string;
+  claveParametro: string;
+  laboratorio: string;
+  tipoCuerpoAgua: string;
+  tipoCuerpoAguaOriginal: string;
+  resultado: string;
+  esCorrectoOCDL: string;
+  observacionOCDL: string;
+  esCorrectoSECAIA: string;
+  observacionSECAIA: string;
+  clasificacionObservacion: string;
+  causaRechazo: string;
+  resultadoAceptado: string;
+  resultadoReplica: string;
+  esMismoResultado: string;
+  observacionLaboratorio: string;
+  fechaReplicaLaboratorio: string;
+  observacionSRNAMECA: string;
+  comentarios: string;
+  fechaObservacionRENAMECA: string;
+  resultadoAprobadoDespuesReplica: string;
+  fechaEstatusFinal: string;
+  usuarioRevisor: string;
+  estatusResultado: string;
+  nombreArchivoEvidencias: string;
+  isChecked: boolean;
+}

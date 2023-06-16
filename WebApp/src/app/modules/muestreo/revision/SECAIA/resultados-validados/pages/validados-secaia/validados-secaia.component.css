@@ -1,0 +1,5 @@
+.dvTable{
+    overflow-y: auto;
+    max-height: 400px;
+    margin: 1% 0 1% 0;
+}
