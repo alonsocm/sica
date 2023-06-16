@@ -5,11 +5,6 @@ namespace Domain.Entities
 {
     public partial class ReglasMinimoMaximo
     {
-        public ReglasMinimoMaximo()
-        {
-            ResultadoMuestreo = new HashSet<ResultadoMuestreo>();
-        }
-
         public long Id { get; set; }
         public string ClaveRegla { get; set; } = null!;
         public long ClasificacionReglaId { get; set; }
@@ -17,10 +12,10 @@ namespace Domain.Entities
         public long ParametroId { get; set; }
         public bool Aplica { get; set; }
         public string MinimoMaximo { get; set; } = null!;
+        public string Leyenda { get; set; } = null!;
 
         public virtual ClasificacionRegla ClasificacionRegla { get; set; } = null!;
         public virtual ParametrosGrupo Parametro { get; set; } = null!;
         public virtual TipoRegla TipoRegla { get; set; } = null!;
-        public virtual ICollection<ResultadoMuestreo> ResultadoMuestreo { get; set; }
     }
 }

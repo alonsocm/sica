@@ -38,6 +38,8 @@ namespace Persistence.Contexts
         public virtual DbSet<OrganismoCuenca> OrganismoCuenca { get; set; } = null!;
         public virtual DbSet<Pagina> Pagina { get; set; } = null!;
         public virtual DbSet<ParametrosGrupo> ParametrosGrupo { get; set; } = null!;
+        public virtual DbSet<ParametrosReglasNoRelacion> ParametrosReglasNoRelacion { get; set; } = null!;
+        public virtual DbSet<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; } = null!;
         public virtual DbSet<Perfil> Perfil { get; set; } = null!;
         public virtual DbSet<PerfilPagina> PerfilPagina { get; set; } = null!;
         public virtual DbSet<PerfilPaginaAccion> PerfilPaginaAccion { get; set; } = null!;
@@ -50,6 +52,7 @@ namespace Persistence.Contexts
         public virtual DbSet<ReglasRelacion> ReglasRelacion { get; set; } = null!;
         public virtual DbSet<ReglasRelacionParametro> ReglasRelacionParametro { get; set; } = null!;
         public virtual DbSet<ReglasReporte> ReglasReporte { get; set; } = null!;
+        public virtual DbSet<ReglasReporteLeyendas> ReglasReporteLeyendas { get; set; } = null!;
         public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; } = null!;
         public virtual DbSet<Sitio> Sitio { get; set; } = null!;
         public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; } = null!;
@@ -424,6 +427,30 @@ namespace Persistence.Contexts
                     .HasConstraintName("FK_ParametrosGrupo_UnidadMedida");
             });
 
+            modelBuilder.Entity<ParametrosReglasNoRelacion>(entity =>
+            {
+                entity.HasOne(d => d.Parametro)
+                    .WithMany(p => p.ParametrosReglasNoRelacion)
+                    .HasForeignKey(d => d.ParametroId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParametrosReglasNORelacion_ParametrosGrupo");
+            });
+
+            modelBuilder.Entity<ParametrosSitioTipoCuerpoAgua>(entity =>
+            {
+                entity.HasOne(d => d.Parametro)
+                    .WithMany(p => p.ParametrosSitioTipoCuerpoAgua)
+                    .HasForeignKey(d => d.ParametroId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParametrosSitioTipoCuerpoAgua_ParametrosGrupo");
+
+                entity.HasOne(d => d.TipoCuerpoAgua)
+                    .WithMany(p => p.ParametrosSitioTipoCuerpoAgua)
+                    .HasForeignKey(d => d.TipoCuerpoAguaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ParametrosSitioTipoCuerpoAgua_TipoCuerpoAgua");
+            });
+
             modelBuilder.Entity<Perfil>(entity =>
             {
                 entity.Property(e => e.Nombre)
@@ -575,6 +602,8 @@ namespace Persistence.Contexts
             {
                 entity.Property(e => e.ClaveRegla).HasMaxLength(10);
 
+                entity.Property(e => e.Leyenda).HasMaxLength(80);
+
                 entity.Property(e => e.MinimoMaximo).HasMaxLength(35);
 
                 entity.HasOne(d => d.ClasificacionRegla)
@@ -599,6 +628,8 @@ namespace Persistence.Contexts
             modelBuilder.Entity<ReglasRelacion>(entity =>
             {
                 entity.Property(e => e.ClaveRegla).HasMaxLength(10);
+
+                entity.Property(e => e.Leyenda).HasMaxLength(110);
 
                 entity.Property(e => e.RelacionRegla).HasMaxLength(200);
             });
@@ -647,6 +678,13 @@ namespace Persistence.Contexts
                     .HasForeignKey(d => d.ParametroId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ReglasReporte_ParametrosGrupo");
+            });
+
+            modelBuilder.Entity<ReglasReporteLeyendas>(entity =>
+            {
+                entity.Property(e => e.Leyenda).HasMaxLength(50);
+
+                entity.Property(e => e.ReglaReporte).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ResultadoMuestreo>(entity =>
@@ -705,12 +743,22 @@ namespace Persistence.Contexts
 
                 entity.Property(e => e.ResultadoActualizadoReplica).IsUnicode(false);
 
+                entity.Property(e => e.ResultadoReglas)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.ResultadoReplica).IsUnicode(false);
 
                 entity.HasOne(d => d.EstatusResultadoNavigation)
                     .WithMany(p => p.ResultadoMuestreo)
                     .HasForeignKey(d => d.EstatusResultado)
                     .HasConstraintName("FK_ResultadoMuestreo_EstatusMuestreo");
+
+                entity.HasOne(d => d.Laboratorio)
+                    .WithMany(p => p.ResultadoMuestreo)
+                    .HasForeignKey(d => d.LaboratorioId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ResultadoMuestreo_Laboratorio");
 
                 entity.HasOne(d => d.Muestreo)
                     .WithMany(p => p.ResultadoMuestreo)
@@ -738,20 +786,6 @@ namespace Persistence.Contexts
                     .HasForeignKey(d => d.ParametroId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ResultadoMuestreo_Parametro");
-
-                entity.HasOne(d => d.ReglaMinMax)
-                    .WithMany(p => p.ResultadoMuestreo)
-                    .HasForeignKey(d => d.ReglaMinMaxId)
-                    .HasConstraintName("FK_ResultadoMuestreo_ReglasMinMax");
-
-                entity.HasOne(d => d.ReglaReporte)
-                    .WithMany(p => p.ResultadoMuestreo)
-                    .HasForeignKey(d => d.ReglaReporteId)
-                    .HasConstraintName("FK_ResultadoMuestreo_ReglasReporte");
-
-                entity.Property(e => e.ResultadoReglas)
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Sitio>(entity =>

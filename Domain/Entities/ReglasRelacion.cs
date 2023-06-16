@@ -15,6 +15,7 @@ namespace Domain.Entities
         public long ClasificacionReglaId { get; set; }
         public long TipoReglaId { get; set; }
         public string RelacionRegla { get; set; } = null!;
+        public string Leyenda { get; set; } = null!;
 
         public virtual ICollection<ReglasRelacionParametro> ReglasRelacionParametro { get; set; }
     }

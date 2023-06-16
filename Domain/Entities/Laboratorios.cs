@@ -9,6 +9,7 @@ namespace Domain.Entities
         {
             ProgramaSitio = new HashSet<ProgramaSitio>();
             ReglasLaboratorioLdmLpc = new HashSet<ReglasLaboratorioLdmLpc>();
+            ResultadoMuestreo = new HashSet<ResultadoMuestreo>();
         }
 
         public long Id { get; set; }
@@ -17,5 +18,6 @@ namespace Domain.Entities
 
         public virtual ICollection<ProgramaSitio> ProgramaSitio { get; set; }
         public virtual ICollection<ReglasLaboratorioLdmLpc> ReglasLaboratorioLdmLpc { get; set; }
+        public virtual ICollection<ResultadoMuestreo> ResultadoMuestreo { get; set; }
     }
 }

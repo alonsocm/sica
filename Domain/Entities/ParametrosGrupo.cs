@@ -8,6 +8,8 @@ namespace Domain.Entities
         public ParametrosGrupo()
         {
             FormaReporteEspecifica = new HashSet<FormaReporteEspecifica>();
+            ParametrosReglasNoRelacion = new HashSet<ParametrosReglasNoRelacion>();
+            ParametrosSitioTipoCuerpoAgua = new HashSet<ParametrosSitioTipoCuerpoAgua>();
             ReglasLaboratorioLdmLpc = new HashSet<ReglasLaboratorioLdmLpc>();
             ReglasMinimoMaximo = new HashSet<ReglasMinimoMaximo>();
             ReglasRelacionParametro = new HashSet<ReglasRelacionParametro>();
@@ -25,6 +27,8 @@ namespace Domain.Entities
         public virtual SubgrupoAnalitico IdSubgrupoNavigation { get; set; } = null!;
         public virtual UnidadMedida? IdUnidadMedidaNavigation { get; set; }
         public virtual ICollection<FormaReporteEspecifica> FormaReporteEspecifica { get; set; }
+        public virtual ICollection<ParametrosReglasNoRelacion> ParametrosReglasNoRelacion { get; set; }
+        public virtual ICollection<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; }
         public virtual ICollection<ReglasLaboratorioLdmLpc> ReglasLaboratorioLdmLpc { get; set; }
         public virtual ICollection<ReglasMinimoMaximo> ReglasMinimoMaximo { get; set; }
         public virtual ICollection<ReglasRelacionParametro> ReglasRelacionParametro { get; set; }

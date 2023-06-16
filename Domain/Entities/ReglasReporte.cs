@@ -8,7 +8,6 @@ namespace Domain.Entities
         public ReglasReporte()
         {
             ReglaReporteResultadoTca = new HashSet<ReglaReporteResultadoTca>();
-            ResultadoMuestreo = new HashSet<ResultadoMuestreo>();
         }
 
         public long Id { get; set; }
@@ -29,6 +28,5 @@ namespace Domain.Entities
         public virtual ClasificacionRegla ClasificacionRegla { get; set; } = null!;
         public virtual ParametrosGrupo Parametro { get; set; } = null!;
         public virtual ICollection<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; }
-        public virtual ICollection<ResultadoMuestreo> ResultadoMuestreo { get; set; }
     }
 }
