@@ -116,13 +116,10 @@ namespace Persistence.Repository
         {
             resultadosDto.ForEach(resultadoDto =>
             {
-                var resultado = _dbContext.ResultadoMuestreo.Where(x => x.Id == resultadoDto.IdResultado).FirstOrDefault();
+                var resultadoRegla = (resultadoDto.ResultadoReglas == null || resultadoDto.ResultadoReglas == string.Empty) ? "OK" : resultadoDto.ResultadoReglas;
 
-                if (resultado != null)
-                {
-                    resultado.ResultadoReglas = resultadoDto.ResultadoReglas != string.Empty ? resultadoDto.ResultadoReglas : "OK";
-                    Actualizar(resultado);
-                }
+                var resultado = _dbContext.ResultadoMuestreo.Where(x => x.Id == resultadoDto.IdResultado)
+                                                            .ExecuteUpdate(s => s.SetProperty(e => e.ResultadoReglas, resultadoRegla));
             });
         }
     }

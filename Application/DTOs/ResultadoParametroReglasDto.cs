@@ -14,7 +14,7 @@ namespace Application.DTOs
         public long IdLaboratorio { get; set; }
         public string ClaveParametro { get; set; }
         public string Valor { get; set; }
-        public string ResultadoReglas { get; set; }
+        public string? ResultadoReglas { get; set; }
         public bool Validado { get; set; }
     }
 }
