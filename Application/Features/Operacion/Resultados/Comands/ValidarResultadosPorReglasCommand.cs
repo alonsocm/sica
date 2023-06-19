@@ -87,158 +87,155 @@ namespace Application.Features.Operacion.Resultados.Comands
             /*Se iran ejecutando una a una las reglas de relación*/
             List<string> errores = new();
 
-            /*COLI_FEC > COLI_TOT */
-            ReglaMayorQue("COLI_FEC", "COLI_TOT", "RR-1 - COLI_FEC > COLI_TOT", resultadosMuestreo, errores);
+            /*RR-1 COLI_FEC > COLI_TOT */
+            ReglaMayorQue("COLI_FEC", "COLI_TOT", "SE RECHAZA-ABSOLUTA-COLI_FEC > COLI_TOT", resultadosMuestreo, errores);
 
-            /*E_COLI > COLI_FEC*/
-            ReglaMayorQue("E_COLI", "COLI_FEC", "RR-2 - E_COLI > COLI_FEC", resultadosMuestreo, errores);
+            /*RR-2 E_COLI > COLI_FEC*/
+            ReglaMayorQue("E_COLI", "COLI_FEC", "SE RECHAZA-ABSOLUTA-E_COLI > COLI_FEC", resultadosMuestreo, errores);
 
-            /*DBO_SOL > DBO_TOT*/
-            ReglaMayorQue("DBO_SOL", "DBO_TOT", "RR-3 - DBO_SOL > DBO_TOT", resultadosMuestreo, errores);
+            /*RR-3 DBO_SOL > DBO_TOT*/
+            ReglaMayorQue("DBO_SOL", "DBO_TOT", "SE RECHAZA-ABSOLUTA-DBO_SOL > DBO_TOT", resultadosMuestreo, errores);
 
-            /*COT_SOL > COT*/
-            ReglaMayorQue("COT_SOL", "COT", "RR-4 - COT_SOL > COT", resultadosMuestreo, errores);
+            /*RR-4 COT_SOL > COT*/
+            ReglaMayorQue("COT_SOL", "COT", "SE RECHAZA-ABSOLUTA-COT_SOL > COT", resultadosMuestreo, errores);
 
-            /*AOXF > AOXT*/
-            ReglaMayorQue("AOXF", "AOXT", "RR-5 - AOXF > AOXT", resultadosMuestreo, errores);
+            /*RR-5 AOXF > AOXT*/
+            ReglaMayorQue("AOXF", "AOXT", "SE RECHAZA-ABSOLUTA-CAOXF > AOXT", resultadosMuestreo, errores);
 
-            /*AOXP > AOXT*/
-            ReglaMayorQue("AOXP", "AOXT", "RR-6 - AOXP > AOXT", resultadosMuestreo, errores);
+            /*RR-6 AOXP > AOXT*/
+            ReglaMayorQue("AOXP", "AOXT", "SE RECHAZA-ABSOLUTA-CAOXP > AOXT", resultadosMuestreo, errores);
 
-            /*DBO_TOT > DQO_TOT*/
-            ReglaMayorQue("DBO_TOT", "DQO_TOT", "RR-7 - DBO_TOT > DQO_TOT", resultadosMuestreo, errores);
+            /*RR-7 DBO_TOT > DQO_TOT*/
+            ReglaMayorQue("DBO_TOT", "DQO_TOT", "ALERTA-INCUMPLE CON DBO_TOT > DQO_TOT", resultadosMuestreo, errores);
 
-            /*DQO_SOL > DQO_TOT*/
-            ReglaMayorQue("DQO_SOL", "DQO_TOT", "RR-8 - DQO_SOL > DQO_TOT", resultadosMuestreo, errores);
+            /*RR-8 DQO_SOL > DQO_TOT*/
+            ReglaMayorQue("DQO_SOL", "DQO_TOT", "SE RECHAZA-ABSOLUTA-DQO_SOL > DQO_TOT", resultadosMuestreo, errores);
 
-            /*N_NH3 > N_TOTK*/
-            ReglaMayorQue("N_NH3", "N_TOTK", "RR-16 - N_NH3 > N_TOTK", resultadosMuestreo, errores);
+            /*RR-16 N_NH3 > N_TOTK*/
+            ReglaMayorQue("N_NH3", "N_TOTK", "SE RECHAZA-ABSOLUTA-N_NH3 > N_TOTK", resultadosMuestreo, errores);
 
-            /*TRANSPARENCIA > PROFUNDIDAD*/
-            ReglaMayorQue("TRANSPARENCIA", "PROFUNDIDAD", "RR-42 - TRANSPARENCIA > PROFUNDIDAD", resultadosMuestreo, errores);
+            /*RR-42 TRANSPARENCIA > PROFUNDIDAD*/
+            ReglaMayorQue("TRANSPARENCIA", "PROFUNDIDAD", "SE RECHAZA-ABSOLUTA-TRANSPARENCIA > PROFUNDIDAD", resultadosMuestreo, errores);
 
-            /*TEMP_AGUA_MED > TEMP_AGUA_SUP*/
-            ReglaMayorQue("TEMP_AGUA_MED", "TEMP_AGUA_SUP", "RR-43 - TEMP_AGUA_MED > TEMP_AGUA_SUP", resultadosMuestreo, errores);
+            /*RR-43 TEMP_AGUA_MED > TEMP_AGUA_SUP*/
+            ReglaMayorQue("TEMP_AGUA_MED", "TEMP_AGUA_SUP", "ALERTA-INCUMPLE CON TEMP_AGUA_MED > TEMP_AGUA_SUP", resultadosMuestreo, errores);
 
-            /*TEMP_AGUA_FON > TEMP_AGUA_MED*/
-            ReglaMayorQue("TEMP_AGUA_FON", "TEMP_AGUA_MED", "RR-44 - TEMP_AGUA_FON > TEMP_AGUA_MED", resultadosMuestreo, errores);
+            /*RR-44 TEMP_AGUA_FON > TEMP_AGUA_MED*/
+            ReglaMayorQue("TEMP_AGUA_FON", "TEMP_AGUA_MED", "ALERTA-INCUMPLE CON TEMP_AGUA_FON > TEMP_AGUA_MED", resultadosMuestreo, errores);
 
-            /*DBO_SOL > DQO_SOL*/
-            ReglaMayorQue("DBO_SOL", "DQO_SOL", "RR-45 - DBO_SOL > DQO_SOL", resultadosMuestreo, errores);
+            /*RR-45 DBO_SOL > DQO_SOL*/
+            ReglaMayorQue("DBO_SOL", "DQO_SOL", "ALERTA-INCUMPLE CON DBO_SOL > DQO_SOL", resultadosMuestreo, errores);
 
-            /*COP > COT*/
-            ReglaMayorQue("COP", "COT", "RR-46 - COP > COT", resultadosMuestreo, errores);
+            /*RR-46 COP > COT*/
+            ReglaMayorQue("COP", "COT", "SE RECHAZA-ABSOLUTA-COP > COT", resultadosMuestreo, errores);
 
-            /*N_ORG > N_TOTK*/
-            ReglaMayorQue("N_ORG", "N_TOTK", "RR-47 - N_ORG > N_TOTK", resultadosMuestreo, errores);
+            /*RR-47 N_ORG > N_TOTK*/
+            ReglaMayorQue("N_ORG", "N_TOTK", "SE RECHAZA-ABSOLUTA-N_ORG > N_TOTK", resultadosMuestreo, errores);
 
-            /*P_INORG > P_TOT*/
-            ReglaMayorQue("P_INORG", "P_TOT", "RR-48 - P_INORG > P_TOT", resultadosMuestreo, errores);
+            /*RR-48 P_INORG > P_TOT*/
+            ReglaMayorQue("P_INORG", "P_TOT", "SE RECHAZA-ABSOLUTA-P_INORG > P_TOT", resultadosMuestreo, errores);
 
-            /*E_COLI > COLI_TOT*/
-            ReglaMayorQue("E_COLI", "COLI_TOT", "RR-49 - E_COLI > COLI_TOT", resultadosMuestreo, errores);
+            /*RR-49 E_COLI > COLI_TOT*/
+            ReglaMayorQue("E_COLI", "COLI_TOT", "SE RECHAZA-ABSOLUTA-E_COLI > COLI_TOT", resultadosMuestreo, errores);
 
-            /*DQO_TOT > COT*/
-            ReglaMayorQue("DQO_TOT", "COT", "RR-50 - DQO_TOT > COT", resultadosMuestreo, errores);
+            /*RR-50 DQO_TOT > COT*/
+            ReglaMayorQue("DQO_TOT", "COT", "ALERTA- INCUMPLE CON DQO_TOT > COT", resultadosMuestreo, errores);
 
-            /*ALC_FEN > ALC_TOT*/
-            ReglaMayorQue("ALC_FEN", "ALC_TOT", "RR-51 - ALC_FEN > ALC_TOT", resultadosMuestreo, errores);
+            /*RR-51 ALC_FEN > ALC_TOT*/
+            ReglaMayorQue("ALC_FEN", "ALC_TOT", "SE RECHAZA-ABSOLUTA-ALC_FEN > ALC_TOT", resultadosMuestreo, errores);
 
-            /*SI OD_% = "<10" Y OD_mg/L <> "<1"*/
-            ReglaOD("OD_%", "OD_mg/L", "RR-61 - SI OD_% = \"<10\" Y OD_mg/L <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-61 SI OD_% = "<10" Y OD_mg/L <> "<1"*/
+            ReglaOD("OD_%", "OD_mg/L", "SE RECHAZA-ABSOLUTA-OD_% = \"<10\" Y OD_mg/L <> \"<1\"", resultadosMuestreo, errores);
 
-            /*SI OD_% = "<10" Y OD_mg/L <> "<1"*/
-            ReglaOD("OD_%", "OD_mg/L", "RR-61 - SI OD_% = \"<10\" Y OD_mg/L <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-62 OD_%_SUP = "<10" Y OD_mg/L_SUP <> "<1"*/
+            ReglaOD("OD_%_SUP", "OD_mg/L_SUP", "SE RECHAZA-ABSOLUTA-OD_%_SUP = \"<10\" Y OD_mg/L_SUP <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_SUP = "<10" Y OD_mg/L_SUP <> "<1"*/
-            ReglaOD("OD_%_SUP", "OD_mg/L_SUP", "RR-62 - OD_%_SUP = \"<10\" Y OD_mg/L_SUP <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-63 OD_%_MED = "<10" Y OD_mg/L_MED <> "<1"*/
+            ReglaOD("OD_%_MED", "OD_mg/L_MED", "SE RECHAZA-ABSOLUTA-OD_%_MED = \"<10\" Y OD_mg/L_MED <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_MED = "<10" Y OD_mg/L_MED <> "<1"*/
-            ReglaOD("OD_%_MED", "OD_mg/L_MED", "RR-63 - OD_%_MED = \"<10\" Y OD_mg/L_MED <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-64 OD_%_FON = "<10" Y OD_mg/L_FON <> "<1"*/
+            ReglaOD("OD_%_FON", "OD_mg/L_FON", "SE RECHAZA-ABSOLUTA-OD_%_FON = \"<10\" Y OD_mg/L_FON <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_FON = "<10" Y OD_mg/L_FON <> "<1"*/
-            ReglaOD("OD_%_FON", "OD_mg/L_FON", "RR-64 - OD_%_FON = \"<10\" Y OD_mg/L_FON <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-65 OD_%_S1 = "<10" Y OD_mg/L_S1 <> "<1"*/
+            ReglaOD("OD_%_S1", "OD_mg/L_S1", "SE RECHAZA-ABSOLUTA-OD_%_S1 = \"<10\" Y OD_mg/L_S1 <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_S1 = "<10" Y OD_mg/L_S1 <> "<1"*/
-            ReglaOD("OD_%_S1", "OD_mg/L_S1", "RR-65 - OD_%_S1 = \"<10\" Y OD_mg/L_S1 <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-66 OD_%_S2 = "<10" Y OD_mg/L_S2 <> "<1"*/
+            ReglaOD("OD_%_S2", "OD_mg/L_S2", "SE RECHAZA-ABSOLUTA-OD_%_S2 = \"<10\" Y OD_mg/L_S2 <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_S2 = "<10" Y OD_mg/L_S2 <> "<1"*/
-            ReglaOD("OD_%_S2", "OD_mg/L_S2", "RR-66 - OD_%_S2 = \"<10\" Y OD_mg/L_S2 <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-67 OD_%_S3 = "<10" Y OD_mg/L_S3 <> "<1"*/
+            ReglaOD("OD_%_S3", "OD_mg/L_S3", "SE RECHAZA-ABSOLUTA-OD_%_S3 = \"<10\" Y OD_mg/L_S3 <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_S3 = "<10" Y OD_mg/L_S3 <> "<1"*/
-            ReglaOD("OD_%_S3", "OD_mg/L_S3", "RR-67 - OD_%_S3 = \"<10\" Y OD_mg/L_S3 <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-68 OD_%_S4 = "<10" Y OD_mg/L_S4 <> "<1"*/
+            ReglaOD("OD_%_S4", "OD_mg/L_S4", "SE RECHAZA-ABSOLUTA-OD_%_S4 = \"<10\" Y OD_mg/L_S4 <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_S4 = "<10" Y OD_mg/L_S4 <> "<1"*/
-            ReglaOD("OD_%_S4", "OD_mg/L_S4", "RR-68 - OD_%_S4 = \"<10\" Y OD_mg/L_S4 <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-69 OD_%_S5 = "<10" Y OD_mg/L_S5 <> "<1"*/
+            ReglaOD("OD_%_S5", "OD_mg/L_S5", "SE RECHAZA-ABSOLUTA-OD_%_S5 = \"<10\" Y OD_mg/L_S5 <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_S5 = "<10" Y OD_mg/L_S5 <> "<1"*/
-            ReglaOD("OD_%_S5", "OD_mg/L_S5", "RR-69 - OD_%_S5 = \"<10\" Y OD_mg/L_S5 <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-70 OD_%_S6 = "<10" Y OD_mg/L_S6 <> "<1"*/
+            ReglaOD("OD_%_S6", "OD_mg/L_S6", "SE RECHAZA-ABSOLUTA-OD_%_S6 = \"<10\" Y OD_mg/L_S6 <> \"<1\"", resultadosMuestreo, errores);
 
-            /*OD_%_S6 = "<10" Y OD_mg/L_S6 <> "<1"*/
-            ReglaOD("OD_%_S6", "OD_mg/L_S6", "RR-70 - OD_%_S6 = \"<10\" Y OD_mg/L_S6 <> \"<1\"", resultadosMuestreo, errores);
+            /*RR-22 TOX_D_48_UT <> 100/TOX_D_48_EC50*/
+            ReglaTOX("TOX_D_48_UT", "TOX_D_48_EC50", "SE RECHAZA-ABSOLUTA-TOX_D_48_UT <> 100/TOX_D_48_EC50", resultadosMuestreo, errores);
 
-            /*TOX_D_48_UT <> 100/TOX_D_48_EC50*/
-            ReglaTOX("TOX_D_48_UT", "TOX_D_48_EC50", "RR-22 - TOX_D_48_UT <> 100/TOX_D_48_EC50", resultadosMuestreo, errores);
+            /*RR-23 TOX_D_48_FON_UT <> 100/ TOX_D_48_FON_EC50*/
+            ReglaTOX("TOX_D_48_FON_UT", "TOX_D_48_FON_EC50", "SE RECHAZA-ABSOLUTA-TOX_D_48_FON_UT  <> 100/ TOX_D_48_FON_EC50", resultadosMuestreo, errores);
 
-            /*TOX_D_48_FON_UT <> 100/ TOX_D_48_FON_EC50*/
-            ReglaTOX("TOX_D_48_FON_UT", "TOX_D_48_FON_EC50", "RR-23 - TOX_D_48_FON_UT  <> 100/ TOX_D_48_FON_EC50", resultadosMuestreo, errores);
+            /*RR-24 TOX_D_48_SUP_UT <> 100/ TOX_D_48_SUP_EC50*/
+            ReglaTOX("TOX_D_48_SUP_UT", "TOX_D_48_SUP_EC50", "SE RECHAZA-ABSOLUTA-TOX_D_48_SUP_UT <> 100/ TOX_D_48_SUP_EC50", resultadosMuestreo, errores);
 
-            /*TOX_D_48_SUP_UT <> 100/ TOX_D_48_SUP_EC50*/
-            ReglaTOX("TOX_D_48_SUP_UT", "TOX_D_48_SUP_EC50", "RR-24 - TOX_D_48_SUP_UT <> 100/ TOX_D_48_SUP_EC50", resultadosMuestreo, errores);
+            /*RR-25 TOX_V_15_UT <> 100/TOX_V15_EC50*/
+            ReglaTOX("TOX_V_15_UT", "TOX_V15_EC50", "SE RECHAZA-ABSOLUTA-TOX_V_15_UT <> 100/TOX_V15_EC50", resultadosMuestreo, errores);
 
-            /*TOX_V_15_UT <> 100/TOX_V15_EC50*/
-            ReglaTOX("TOX_V_15_UT", "TOX_V15_EC50", "RR-25 - TOX_V_15_UT <> 100/TOX_V15_EC50", resultadosMuestreo, errores);
+            /*RR-26 TOX_V_30_UT <> 100/TOX_V30_EC50*/
+            ReglaTOX("TOX_V_30_UT", "TOX_V30_EC50", "SE RECHAZA-ABSOLUTA-TOX_V_30_UT <> 100/TOX_V30_EC50", resultadosMuestreo, errores);
 
-            /*TOX_V_30_UT <> 100/TOX_V30_EC50*/
-            ReglaTOX("TOX_V_30_UT", "TOX_V30_EC50", "RR-26 - TOX_V_30_UT <> 100/TOX_V30_EC50", resultadosMuestreo, errores);
+            /*RR-27 TOX_V_5_UT <> 100/TOX_V5_EC50*/
+            ReglaTOX("TOX_V_5_UT", "TOX_V5_EC50", "SE RECHAZA-ABSOLUTA-TOX_V_5_UT <> 100/TOX_V5_EC50", resultadosMuestreo, errores);
 
-            /*TOX_V_5_UT <> 100/TOX_V5_EC50*/
-            ReglaTOX("TOX_V_5_UT", "TOX_V5_EC50", "RR-27 - TOX_V_5_UT <> 100/TOX_V5_EC50", resultadosMuestreo, errores);
+            /*RR-28 TOX_FIS_FON_15_UT <> 100/TOX_FIS_FON_15_EC50*/
+            ReglaTOX("TOX_FIS_FON_15_UT", "TOX_FIS_FON_15_EC50", "SE RECHAZA-ABSOLUTA-TOX_FIS_FON_15_UT <> 100/TOX_FIS_FON_15_EC50", resultadosMuestreo, errores);
 
-            /*TOX_FIS_FON_15_UT <> 100/TOX_FIS_FON_15_EC50*/
-            ReglaTOX("TOX_FIS_FON_15_UT", "TOX_FIS_FON_15_EC50", "RR-28 - TOX_FIS_FON_15_UT <> 100/TOX_FIS_FON_15_EC50", resultadosMuestreo, errores);
+            /*RR-29 TOX_FIS_FON_30_UT <> 100/ TOX_FIS_FON_30_EC50*/
+            ReglaTOX("TOX_FIS_FON_30_UT", "TOX_FIS_FON_30_EC50", "SE RECHAZA-ABSOLUTA-TOX_FIS_FON_30_UT <> 100/ TOX_FIS_FON_30_EC50", resultadosMuestreo, errores);
 
-            /*TOX_FIS_FON_30_UT <> 100/ TOX_FIS_FON_30_EC50*/
-            ReglaTOX("TOX_FIS_FON_30_UT", "TOX_FIS_FON_30_EC50", "RR-29 - TOX_FIS_FON_30_UT <> 100/ TOX_FIS_FON_30_EC50", resultadosMuestreo, errores);
+            /*RR-30 TOX_FIS_FON_5_UT <> 100/TOX_FIS_FON_5_EC50*/
+            ReglaTOX("TOX_FIS_FON_5_UT", "TOX_FIS_FON_5_EC50", "SE RECHAZA-ABSOLUTA-TOX_FIS_FON_5_UT <> 100/TOX_FIS_FON_5_EC50", resultadosMuestreo, errores);
 
-            /*TOX_FIS_FON_5_UT <> 100/TOX_FIS_FON_5_EC50*/
-            ReglaTOX("TOX_FIS_FON_5_UT", "TOX_FIS_FON_5_EC50", "RR-30 - TOX_FIS_FON_5_UT <> 100/TOX_FIS_FON_5_EC50", resultadosMuestreo, errores);
+            /*RR-31 TOX_FIS_SUP_15_UT <> 100/TOX_FIS_SUP_15_EC50*/
+            ReglaTOX("TOX_FIS_SUP_15_UT", "TOX_FIS_SUP_15_EC50", "SE RECHAZA-ABSOLUTA-TOX_FIS_SUP_15_UT <> 100/TOX_FIS_SUP_15_EC50", resultadosMuestreo, errores);
 
-            /*TOX_FIS_SUP_15_UT <> 100/TOX_FIS_SUP_15_EC50*/
-            ReglaTOX("TOX_FIS_SUP_15_UT", "TOX_FIS_SUP_15_EC50", "RR-31 - TOX_FIS_SUP_15_UT <> 100/TOX_FIS_SUP_15_EC50", resultadosMuestreo, errores);
+            /*RR-32 TOX_FIS_SUP_30_UT <> 100/TOX_FIS_SUP_30_EC50*/
+            ReglaTOX("TOX_FIS_SUP_30_UT", "TOX_FIS_SUP_30_EC50", "SE RECHAZA-ABSOLUTA-TOX_FIS_SUP_30_UT <> 100/TOX_FIS_SUP_30_EC50", resultadosMuestreo, errores);
 
-            /*TOX_FIS_SUP_30_UT <> 100/TOX_FIS_SUP_30_EC50*/
-            ReglaTOX("TOX_FIS_SUP_30_UT", "TOX_FIS_SUP_30_EC50", "RR-32 - TOX_FIS_SUP_30_UT <> 100/TOX_FIS_SUP_30_EC50", resultadosMuestreo, errores);
+            /*RR-33 TOX_FIS_SUP_5_UT <> 100/TOX_FIS_SUP_5_EC50*/
+            ReglaTOX("TOX_FIS_SUP_5_UT", "TOX_FIS_SUP_5_EC50", "SE RECHAZA-ABSOLUTA-TOX_FIS_SUP_5_UT <> 100/TOX_FIS_SUP_5_EC50", resultadosMuestreo, errores);
 
-            /*TOX_FIS_SUP_5_UT <> 100/TOX_FIS_SUP_5_EC50*/
-            ReglaTOX("TOX_FIS_SUP_5_UT", "TOX_FIS_SUP_5_EC50", "RR-33 - TOX_FIS_SUP_5_UT <> 100/TOX_FIS_SUP_5_EC50", resultadosMuestreo, errores);
+            /*RR-34 SI OD_% >50% ENTONCES POT_REDOX_CAMPO < 0*/
+            ReglaODPOT("OD_%", "POT_REDOX_CAMPO", "ALERTA- INCUMPLE CON SI OD_% >50% ENTONCES POT_REDOX_CAMPO < 0", resultadosMuestreo, errores);
 
-            /*SI OD_% >50% ENTONCES POT_REDOX_CAMPO < 0*/
-            ReglaODPOT("OD_%", "POT_REDOX_CAMPO", "RR-34 - SI OD_% >50% ENTONCES POT_REDOX_CAMPO < 0", resultadosMuestreo, errores);
+            /*RR-35 SI OD_%_FON >50% ENTONCES POT_REDOX_CAMPO_FON < 0*/
+            ReglaODPOT("OD_%_FON", "POT_REDOX_CAMPO_FON", "ALERTA- INCUMPLE CON SI OD_%_FON >50% ENTONCES POT_REDOX_CAMPO_FON < 0", resultadosMuestreo, errores);
 
-            /*SI OD_%_FON >50% ENTONCES POT_REDOX_CAMPO_FON < 0*/
-            ReglaODPOT("OD_%_FON", "POT_REDOX_CAMPO_FON", "RR-35 - SI OD_%_FON >50% ENTONCES POT_REDOX_CAMPO_FON < 0", resultadosMuestreo, errores);
+            /*RR-36 SI OD_%_MED >50% ENTONCES POT_REDOX_CAMPO_MED < 0*/
+            ReglaODPOT("OD_%_MED", "POT_REDOX_CAMPO_MED", "ALERTA- INCUMPLE CON SI OD_%_MED >50% ENTONCES POT_REDOX_CAMPO_MED < 0", resultadosMuestreo, errores);
 
-            /*SI OD_%_MED >50% ENTONCES POT_REDOX_CAMPO_MED < 0*/
-            ReglaODPOT("OD_%_MED", "POT_REDOX_CAMPO_MED", "RR-36 - SI OD_%_MED >50% ENTONCES POT_REDOX_CAMPO_MED < 0", resultadosMuestreo, errores);
+            /*RR-37 SI OD_%_SUP >50% POT_REDOX_CAMPO_SUP < 0*/
+            ReglaODPOT("OD_%_SUP", "POT_REDOX_CAMPO_SUP", "ALERTA- INCUMPLE CON SI OD_%_SUP >50% POT_REDOX_CAMPO_SUP < 0", resultadosMuestreo, errores);
 
-            /*SI OD_%_SUP >50% POT_REDOX_CAMPO_SUP < 0*/
-            ReglaODPOT("OD_%_SUP", "POT_REDOX_CAMPO_SUP", "RR-37 - SI OD_%_SUP >50% POT_REDOX_CAMPO_SUP < 0", resultadosMuestreo, errores);
+            /*RR-15 P_TOT <> P_ORG + P_INORG*/
+            ReglaPTOT("P_TOT", "P_ORG", "P_INORG", "SE RECHAZA-ABSOLUTA-P_TOT <> P_ORG + P_INORG", resultadosMuestreo, errores);
 
-            /*P_TOT <> P_ORG + P_INORG*/
-            ReglaPTOT("P_TOT", "P_ORG", "P_INORG", "RR-15 - P_TOT <> P_ORG + P_INORG", resultadosMuestreo, errores);
+            /*RR-17 NTK <> (N_NH3 + N_ORG)*/
+            ReglaNTK("NTK", "N_NH3", "N_ORG", "SE RECHAZA-ABSOLUTA-NTK <> (N_NH3 + N_ORG)", resultadosMuestreo, errores);
 
-            /*NTK <> (N_NH3 + N_ORG)*/
-            ReglaNTK("NTK", "N_NH3", "N_ORG", "RR-17 - NTK <> (N_NH3 + N_ORG)", resultadosMuestreo, errores);
+            /*RR-18 ORTO_PO4 / 3.06 > P_TOT*/
+            ReglaORTOPTOT("ORTO_PO4", "P_TOT", "SE RECHAZA-ABSOLUTA-ORTO_PO4 / 3.06 > P_TOT", resultadosMuestreo, errores);
 
-            /*ORTO_PO4 / 3.06 > P_TOT*/
-            ReglaORTOPTOT("ORTO_PO4", "P_TOT", "RR-18 - ORTO_PO4 / 3.06 > P_TOT", resultadosMuestreo, errores);
+            /*RR-11 PO4_TOT / P_TOT < 2.6 ó > 3.6*/
+            ReglaPOTOT("PO4_TOT", "P_TOT", "ALERTA- INCUMPLE CON PO4_TOT / P_TOT < 2.6 ó > 3.6", resultadosMuestreo, errores);
 
-            /*PO4_TOT / P_TOT < 2.6 ó > 3.6*/
-            ReglaPOTOT("PO4_TOT", "P_TOT", "RR-11 - PO4_TOT / P_TOT < 2.6 ó > 3.6", resultadosMuestreo, errores);
-
-            /*N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)*/
-            ReglaNTOT("N_TOT", "N_NO2", "N_NO3", "N_NH3", "NORG", "RR-13 - N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)", resultadosMuestreo, errores);
+            /*RR-13 N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)*/
+            ReglaNTOT("N_TOT", "N_NO2", "N_NO3", "N_NH3", "NORG", "SE RECHAZA-ABSOLUTA-N_TOT <> N_NO2 + N_NO3 + (N_NH3 + NORG)", resultadosMuestreo, errores);
         }
 
         public LimiteDeteccionDto? ObtenerValoresMinMax(ResultadoParametroReglasDto resultado)
