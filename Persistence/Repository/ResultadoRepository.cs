@@ -102,6 +102,7 @@ namespace Persistence.Repository
                                         IdMuestreo = r.MuestreoId,
                                         IdResultado = r.Id,
                                         IdParametro = r.ParametroId,
+                                        IdLaboratorio = r.LaboratorioId,
                                         ClaveParametro = p.ClaveParametro,
                                         Valor = r.Resultado,
                                         ResultadoReglas = r.ResultadoReglas??string.Empty,
@@ -124,5 +125,5 @@ namespace Persistence.Repository
                 }
             });
         }
-    }    
+    }
 }

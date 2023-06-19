@@ -10,5 +10,6 @@ namespace Application.DTOs
     {
         public string Minimo { get; set; }
         public string Maximo { get; set; }
+        public string Leyenda { get; set; }
     }
 }

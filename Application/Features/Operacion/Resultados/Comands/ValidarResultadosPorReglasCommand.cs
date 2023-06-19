@@ -249,7 +249,10 @@ namespace Application.Features.Operacion.Resultados.Comands
             {
                 if (reglas.First().Aplica)
                 {
-                    LimiteDeteccionDto limites = new();
+                    LimiteDeteccionDto limites = new()
+                    {
+                        Leyenda = reglas.First().Leyenda
+                    };
 
                     if (reglas.Where(x => x.ClasificacionReglaId == 2).Any())
                     {
@@ -273,7 +276,8 @@ namespace Application.Features.Operacion.Resultados.Comands
                         {
                             Minimo = (bool)reglaLdmLpc.FirstOrDefault().EsLdm ? reglaLdmLpc.FirstOrDefault().Ldm : reglaLdmLpc.FirstOrDefault().Lpc
                         };
-                        limites.Maximo = (Convert.ToInt64(limites.Minimo) * 100).ToString();
+                        limites.Maximo = limites.Minimo;
+
                         return limites;
                     }
                 }
@@ -354,17 +358,18 @@ namespace Application.Features.Operacion.Resultados.Comands
             }
         }
 
-        private void ValidarLimitesDeteccion(ResultadoParametroReglasDto resultadoParametro, decimal valorParametro1)
+        private void ValidarLimitesDeteccion(ResultadoParametroReglasDto resultadoParametro, decimal valorParametro)
         {
-            var minMaxParametro1 = ObtenerValoresMinMax(resultadoParametro);
+            var minMaxParametro = ObtenerValoresMinMax(resultadoParametro);
 
-            if (minMaxParametro1 != null)
+            if (minMaxParametro != null && (decimal.TryParse(minMaxParametro.Maximo, out _) || decimal.TryParse(minMaxParametro.Minimo, out _)))
             {
                 try
                 {
-                    var cumpleLimitesParametro1 = _regla.CumpleLimitesDeteccion(minMaxParametro1, valorParametro1);
-                    if (!cumpleLimitesParametro1)
-                        resultadoParametro.ResultadoReglas = "Error: Límites de detección";
+                    var cumpleLimitesParametro = _regla.CumpleLimitesDeteccion(minMaxParametro, valorParametro);
+
+                    if (!cumpleLimitesParametro)
+                        resultadoParametro.ResultadoReglas = minMaxParametro.Leyenda;
                 }
                 catch (Exception ex)
                 {
