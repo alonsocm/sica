@@ -541,5 +541,18 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
+
+        [HttpGet("ResultadosAcumuladosParametros")]
+        public async Task<IActionResult> GetActionAsync(int estatusId)
+        {
+            Response<List<AcumuladosResultadoDto>> lstResultados = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoQuery 
+            {
+                estatusId = estatusId
+                
+            });
+
+            return Ok(lstResultados);
+
+        }
     }
 }

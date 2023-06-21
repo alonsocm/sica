@@ -32,4 +32,15 @@ export class ValidacionReglasService {
   exportarResultadosAcumuladosExcel(muestreos: Array<any> = []) {
     return this.http.post(environment.apiUrl + '/Replicas/ExportarExcelReplica', muestreos, { responseType: 'blob' });
   }
+
+  getResultadosAcumuladosParametros(estatusId: number) {
+    let params = new HttpParams({
+      fromObject: { estatusId: estatusId},
+    });
+    return this.http.get(environment.apiUrl + '/Resultados/ResultadosAcumuladosParametros', { params });
+  }
+
+
+
+  
 }

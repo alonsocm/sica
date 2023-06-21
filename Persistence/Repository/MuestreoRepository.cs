@@ -53,7 +53,7 @@ namespace Persistence.Repository
                                        TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty
-                                   }).ToListAsync();
+                                   }).ToListAsync();         
 
             var evidencias = await (from e in _dbContext.EvidenciaMuestreo
                                     where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
@@ -170,5 +170,58 @@ namespace Persistence.Repository
             
             return lista;
         }
+
+        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(long estatusId)
+        {
+            var muestreos = await (from m in _dbContext.Muestreo
+                                   join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
+                                   join resMuestreo in _dbContext.ResultadoMuestreo on m.Id equals resMuestreo.MuestreoId                                    
+                                   where m.Id  == estatusId
+                                   select new AcumuladosResultadoDto
+                                   {
+                                       MuestreoId = m.Id,                                                                             
+                                       ClaveUnica = $"{vpm.ClaveMuestreo}{resMuestreo.Parametro.ClaveParametro}",
+                                       ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
+                                       ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                       NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
+                                       FechaProgramada = m.ProgramaMuestreo.DiaProgramado.ToString(),
+                                       FechaRealizacion = m.FechaRealVisita.ToString() ?? string.Empty,
+                                       HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
+                                       HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
+                                       TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                       SubTipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion,
+                                       Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
+                                       laboratorioRealizoMuestreo = resMuestreo.Laboratorio.Descripcion,
+                                       LaboratorioSubrogado = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
+                                       SubGrupo = resMuestreo.Parametro.IdSubgrupoNavigation.Descripcion, 
+                                       claveParametro = resMuestreo.Parametro.ClaveParametro,
+                                       Parametro = resMuestreo.Parametro.Descripcion,
+                                       UnidadMedida = resMuestreo.Parametro.IdUnidadMedidaNavigation.Descripcion,
+                                       Resultado = resMuestreo.Resultado,
+                                       ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,                                       
+                                       Estatus = m.Estatus.Descripcion,
+                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1.ToString() ?? string.Empty,
+                                       
+                                       DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
+                                       OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty
+                                   }).ToListAsync();
+
+            var evidencias = await (from e in _dbContext.EvidenciaMuestreo
+                                    where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
+                                    select new
+                                    {
+                                        e.MuestreoId,
+                                        e.NombreArchivo,
+                                        e.TipoEvidenciaMuestreo.Sufijo
+                                    }).ToListAsync();
+
+            muestreos.ForEach(f =>
+            {
+                f.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == f.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo }).ToList());
+            });
+
+            return muestreos;
+        }
+
     }
 }

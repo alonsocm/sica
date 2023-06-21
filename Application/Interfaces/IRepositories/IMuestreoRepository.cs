@@ -17,5 +17,6 @@ namespace Application.Interfaces.IRepositories
         List<Muestreo> ConvertMuestreosParamsList(List<UpdateMuestreoExcelDto> updateMuestreoExcelDtoList);
         string GetTipoCuerpoAguaHomologado(string claveMuestreo);
         Task<List<int?>> GetListAniosConRegistro();
+        Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(long estatusId);
     }
 }
