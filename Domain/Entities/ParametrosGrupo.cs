@@ -23,6 +23,8 @@ public partial class ParametrosGrupo
 
     public virtual UnidadMedida? IdUnidadMedidaNavigation { get; set; }
 
+    public virtual ICollection<ParametrosCostos> ParametrosCostos { get; set; } = new List<ParametrosCostos>();
+
     public virtual ICollection<ParametrosReglasNoRelacion> ParametrosReglasNoRelacion { get; set; } = new List<ParametrosReglasNoRelacion>();
 
     public virtual ICollection<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; } = new List<ParametrosSitioTipoCuerpoAgua>();

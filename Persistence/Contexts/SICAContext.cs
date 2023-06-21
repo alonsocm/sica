@@ -56,6 +56,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<Pagina> Pagina { get; set; }
 
+    public virtual DbSet<ParametrosCostos> ParametrosCostos { get; set; }
+
     public virtual DbSet<ParametrosGrupo> ParametrosGrupo { get; set; }
 
     public virtual DbSet<ParametrosReglasNoRelacion> ParametrosReglasNoRelacion { get; set; }
@@ -115,6 +117,8 @@ public partial class SicaContext : DbContext
     public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; }
 
     public virtual DbSet<VwReplicaRevisionResultado> VwReplicaRevisionResultado { get; set; }
+
+    public virtual DbSet<VwResultadosInicialReglas> VwResultadosInicialReglas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
@@ -412,6 +416,21 @@ public partial class SicaContext : DbContext
             entity.HasOne(d => d.IdPaginaPadreNavigation).WithMany(p => p.InverseIdPaginaPadreNavigation)
                 .HasForeignKey(d => d.IdPaginaPadre)
                 .HasConstraintName("FK_Pagina_Pagina");
+        });
+
+        modelBuilder.Entity<ParametrosCostos>(entity =>
+        {
+            entity.Property(e => e.Precio).HasColumnType("decimal(6, 2)");
+
+            entity.HasOne(d => d.Parametro).WithMany(p => p.ParametrosCostos)
+                .HasForeignKey(d => d.ParametroId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ParametrosCostos_ParametrosGrupo");
+
+            entity.HasOne(d => d.ProgramaAnio).WithMany(p => p.ParametrosCostos)
+                .HasForeignKey(d => d.ProgramaAnioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ParametrosCostos_ProgramaAnio");
         });
 
         modelBuilder.Entity<ParametrosGrupo>(entity =>
@@ -967,6 +986,45 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(150);
 
             entity.Property(e => e.TipoCuerpoAguaOriginal).HasMaxLength(150);
+        });
+
+            modelBuilder.Entity<VwResultadosInicialReglas>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VwResultadosInicialReglas");
+
+            entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
+            entity.Property(e => e.ClaveSitio).HasMaxLength(150);
+            entity.Property(e => e.CuerpoDeAgua)
+                .HasMaxLength(150)
+                .HasColumnName("Cuerpo de agua");
+            entity.Property(e => e.DiferenciaEnDias).HasColumnName("Diferencia en dias");
+            entity.Property(e => e.FechaEntregaTeorica)
+                .HasColumnType("date")
+                .HasColumnName("Fecha entrega teorica");
+            entity.Property(e => e.FechaProgramada)
+                .HasColumnType("date")
+                .HasColumnName("Fecha programada");
+            entity.Property(e => e.FechaRealizacion)
+                .HasColumnType("date")
+                .HasColumnName("Fecha Realizacion");
+            entity.Property(e => e.Laboratorio)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.MuestreoCompletoPorResultados)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("Muestreo Completo por resultados");
+            entity.Property(e => e.NombreSitio).HasMaxLength(250);
+            entity.Property(e => e.NumDatosEsperados).HasColumnName("Num datos esperados");
+            entity.Property(e => e.NumDatosReportados).HasColumnName("Num datos reportados");
+            entity.Property(e => e.SubtipoCuerpoDeAgua)
+                .HasMaxLength(50)
+                .HasColumnName("Subtipo cuerpo de agua");
+            entity.Property(e => e.TipoCuerpoAgua)
+                .HasMaxLength(50)
+                .HasColumnName("Tipo cuerpo agua");
         });
 
         OnModelCreatingPartial(modelBuilder);
