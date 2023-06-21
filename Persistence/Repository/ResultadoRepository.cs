@@ -16,7 +16,7 @@ namespace Persistence.Repository
 {
     public class ResultadoRepository : Repository<ResultadoMuestreo>, IResultado
     {
-        public ResultadoRepository(SICAContext context) : base(context)
+        public ResultadoRepository(SicaContext context) : base(context)
         {
         }
 

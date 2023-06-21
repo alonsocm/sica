@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class EvidenciaReplicaRepository : Repository<EvidenciaReplica>, IEvidenciaReplicaRepository
     {
-        public EvidenciaReplicaRepository(SICAContext dbContext) : base(dbContext)
+        public EvidenciaReplicaRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

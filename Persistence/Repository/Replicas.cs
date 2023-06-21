@@ -16,7 +16,7 @@ namespace Persistence.Repository
 {
     public class Replicas : Repository<AprobacionResultadoMuestreo>, IReplicas
     {
-        public Replicas(SICAContext context) : base(context)
+        public Replicas(SicaContext context) : base(context)
         {
 
         }

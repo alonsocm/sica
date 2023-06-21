@@ -12,9 +12,9 @@ namespace Persistence.Repository
 {
     public class MyRepositoryAsync<T> : RepositoryBase<T>, IRepositoryAsync<T> where T : class
     {
-        private readonly SICAContext dbContext;
+        private readonly SicaContext dbContext;
 
-        public MyRepositoryAsync(SICAContext dbContext) : base(dbContext)
+        public MyRepositoryAsync(SicaContext dbContext) : base(dbContext)
         {
             this.dbContext = dbContext;
         }

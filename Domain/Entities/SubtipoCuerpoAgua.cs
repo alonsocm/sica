@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public partial class SubtipoCuerpoAgua
 {
-    public partial class SubtipoCuerpoAgua
-    {
-        public SubtipoCuerpoAgua()
-        {
-            CuerpoTipoSubtipoAgua = new HashSet<CuerpoTipoSubtipoAgua>();
-        }
+    public long Id { get; set; }
 
-        public long Id { get; set; }
-        public string Descripcion { get; set; } = null!;
-        public bool Activo { get; set; }
+    public string Descripcion { get; set; } = null!;
 
-        public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; }
-    }
+    public bool Activo { get; set; }
+
+    public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = new List<CuerpoTipoSubtipoAgua>();
 }

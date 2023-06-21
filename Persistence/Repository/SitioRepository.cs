@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class SitioRepository : Repository<Sitio>, ISitioRepository
     {
-        public SitioRepository(SICAContext dbContext) : base(dbContext)
+        public SitioRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

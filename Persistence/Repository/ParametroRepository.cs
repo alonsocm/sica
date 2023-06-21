@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     internal class ParametroRepository : Repository<ParametrosGrupo>, IParametroRepository
     {
-        public ParametroRepository(SICAContext dbContext) : base(dbContext)
+        public ParametroRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

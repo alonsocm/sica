@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public partial class TipoCuerpoAgua
 {
-    public partial class TipoCuerpoAgua
-    {
-        public TipoCuerpoAgua()
-        {
-            CuerpoTipoSubtipoAgua = new HashSet<CuerpoTipoSubtipoAgua>();
-            ParametrosSitioTipoCuerpoAgua = new HashSet<ParametrosSitioTipoCuerpoAgua>();
-            ReglaReporteResultadoTca = new HashSet<ReglaReporteResultadoTca>();
-        }
+    public long Id { get; set; }
 
-        public long Id { get; set; }
-        public string Descripcion { get; set; } = null!;
-        public long? TipoHomologadoId { get; set; }
-        public bool Activo { get; set; }
+    public string Descripcion { get; set; } = null!;
 
-        public virtual TipoHomologado? TipoHomologado { get; set; }
-        public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; }
-        public virtual ICollection<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; }
-        public virtual ICollection<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; }
-    }
+    public long? TipoHomologadoId { get; set; }
+
+    public bool Activo { get; set; }
+
+    public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = new List<CuerpoTipoSubtipoAgua>();
+
+    public virtual ICollection<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; } = new List<ParametrosSitioTipoCuerpoAgua>();
+
+    public virtual ICollection<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; } = new List<ReglaReporteResultadoTca>();
+
+    public virtual TipoHomologado? TipoHomologado { get; set; }
 }

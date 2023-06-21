@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class TipoEvidenciaMuestreoRepository : Repository<TipoEvidenciaMuestreo>, ITipoEvidenciaMuestreoRepository
     {
-        public TipoEvidenciaMuestreoRepository(SICAContext dbContext) : base(dbContext)
+        public TipoEvidenciaMuestreoRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

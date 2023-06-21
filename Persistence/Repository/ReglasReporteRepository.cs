@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class ReglasReporteRepository : Repository<ReglasReporte>, IReglasReporteRepository
     {
-        public ReglasReporteRepository(SICAContext dbContext) : base(dbContext)
+        public ReglasReporteRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

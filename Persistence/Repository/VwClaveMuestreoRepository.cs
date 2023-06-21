@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class VwClaveMuestreoRepository : Repository<VwClaveMuestreo>, IVwClaveMonitoreo
     {
-        public VwClaveMuestreoRepository(SICAContext context) : base(context)
+        public VwClaveMuestreoRepository(SicaContext context) : base(context)
         {
         }
     }

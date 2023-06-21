@@ -12,9 +12,9 @@ namespace Persistence.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        public readonly SICAContext _dbContext;
+        public readonly SicaContext _dbContext;
 
-        public Repository(SICAContext dbContext)
+        public Repository(SicaContext dbContext)
         {
             _dbContext=dbContext;
         }

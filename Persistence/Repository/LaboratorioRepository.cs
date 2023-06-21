@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class LaboratorioRepository : Repository<Laboratorios>, ILaboratorioRepository
     {
-        public LaboratorioRepository(SICAContext dbContext) : base(dbContext)
+        public LaboratorioRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

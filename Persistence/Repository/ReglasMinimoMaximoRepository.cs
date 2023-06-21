@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class ReglasMinimoMaximoRepository : Repository<ReglasMinimoMaximo>, IReglasMinimoMaximoRepository
     {
-        public ReglasMinimoMaximoRepository(SICAContext dbContext) : base(dbContext)
+        public ReglasMinimoMaximoRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

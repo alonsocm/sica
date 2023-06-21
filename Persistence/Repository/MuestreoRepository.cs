@@ -15,7 +15,7 @@ namespace Persistence.Repository
 {
     public class MuestreoRepository : Repository<Muestreo>, IMuestreoRepository
     {
-        public MuestreoRepository(SICAContext context) : base(context)
+        public MuestreoRepository(SicaContext context) : base(context)
         {
         }
 
@@ -104,8 +104,9 @@ namespace Persistence.Repository
                               {
                                   ParametroId = p.Id,
                                   Resultado = cm.Resultado??string.Empty,
-                                  LaboratorioId = l.Id
-                                  
+                                  LaboratorioId = l.Id,
+                                  FechaEntrega = cm.FechaEntrega,
+                                  IdResultadoLaboratorio = Convert.ToInt64(cm.IdResultado)
                               }).ToList();
 
             return resultados;

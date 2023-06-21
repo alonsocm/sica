@@ -11,7 +11,7 @@ namespace Persistence.Repository
 {
     public class FormaReporteEspecificaRepository : Repository<FormaReporteEspecifica>, IFormaReporteEspecificaRepository
     {
-        public FormaReporteEspecificaRepository(SICAContext dbContext) : base(dbContext)
+        public FormaReporteEspecificaRepository(SicaContext dbContext) : base(dbContext)
         {
         }
     }

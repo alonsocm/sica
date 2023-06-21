@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Entities
+namespace Domain.Entities;
+
+public partial class TipoEvidenciaMuestreo
 {
-    public partial class TipoEvidenciaMuestreo
-    {
-        public TipoEvidenciaMuestreo()
-        {
-            EvidenciaMuestreo = new HashSet<EvidenciaMuestreo>();
-        }
+    public long Id { get; set; }
 
-        public long Id { get; set; }
-        public string Descripcion { get; set; } = null!;
-        public string Sufijo { get; set; } = null!;
-        public string Extension { get; set; } = null!;
+    public string Descripcion { get; set; } = null!;
 
-        public virtual ICollection<EvidenciaMuestreo> EvidenciaMuestreo { get; set; }
-    }
+    public string Sufijo { get; set; } = null!;
+
+    public string Extension { get; set; } = null!;
+
+    public virtual ICollection<EvidenciaMuestreo> EvidenciaMuestreo { get; set; } = new List<EvidenciaMuestreo>();
 }

@@ -15,7 +15,7 @@ namespace Persistence.Repository
 {
     public class VwReplicaRevisionResultadoRepository : Repository<VwReplicaRevisionResultado>, IVwReplicaRevisionResultadoRepository
     {
-        public VwReplicaRevisionResultadoRepository(SICAContext context) : base(context)
+        public VwReplicaRevisionResultadoRepository(SicaContext context) : base(context)
         {
         }
 

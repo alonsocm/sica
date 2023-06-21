@@ -20,7 +20,7 @@ namespace Persistence
     {
         public static void AddPersistenceInfrastructure(this IServiceCollection services, IConfiguration configuration, string environment)
         {
-            services.AddDbContext<SICAContext>(options => options.UseSqlServer(
+            services.AddDbContext<SicaContext>(options => options.UseSqlServer(
             configuration.GetConnectionString("DbConnection"),
             sqlServerOptionsAction: sqlOptions =>
             {

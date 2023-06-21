@@ -14,7 +14,7 @@ namespace Persistence.Repository
         const int estatusExtensionFecha = (int)Application.Enums.EstatusMuestreo.EnviadoConExtensionFecha;
         const int estatusVencido = (int)Application.Enums.EstatusMuestreo.PendienteDeEnvioAprobacionFinal;
 
-        public ResumenResMuestreosRepository(SICAContext context) : base(context) { }
+        public ResumenResMuestreosRepository(SicaContext context) : base(context) { }
 
         public async Task<IEnumerable<ResultadoMuestreoDto>> GetResumenResultadosMuestreoAsync(int estatusId, int userId, bool isOCDL)
         {
