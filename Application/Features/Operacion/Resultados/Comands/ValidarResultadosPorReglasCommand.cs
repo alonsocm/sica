@@ -283,14 +283,25 @@ namespace Application.Features.Operacion.Resultados.Comands
             return null;
         }
 
-        public bool CumpleFormaReporteEspecifica(string valor, long parametroId)
+        public bool CumpleFormaReporteEspecifica(string valor, long parametroId, out string leyenda)
         {
-            var existe = _formaReporteEspecificaRepository.ExisteElemento(x => x.ParametroId == parametroId && x.Descripcion == valor).Result;
-            return existe;
+            leyenda = string.Empty;
+            var formaReporteEspecifica = _formaReporteEspecificaRepository.ObtenerElementosPorCriterio(x => x.ParametroId == parametroId && x.Descripcion == valor);
+
+            if (formaReporteEspecifica.Any())
+            {
+                if (valor != formaReporteEspecifica.FirstOrDefault().Descripcion)
+                {
+                    leyenda = "NO CUMPLE CON LA FORMA DE REPORTE ESPECIFICO";
+                }
+            }
+
+            return formaReporteEspecifica.Any();
         }
 
-        public bool CumpleReglaReporte(string valor, long parametroId)
+        public bool CumpleReglaReporte(string valor, long parametroId, out string leyenda)
         {
+            leyenda = string.Empty;
             bool cumpleReglaReporte = false;
             /*Validamos la forma de reporte para cuando un valor no es númerico*/
             var formasReporte = new List<string>() { "<0", "NA", "NE", "IM", "<LD", "<CMC", "ND", "<LPC" };
@@ -311,27 +322,35 @@ namespace Application.Features.Operacion.Resultados.Comands
             {
                 case "<0":
                     cumpleReglaReporte = reglaReporte.EsValidoMenorCero;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"<0\"";
                     break;
                 case "NA":
                     cumpleReglaReporte = reglaReporte.EsValidoResultadoNa;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"NA\"";
                     break;
                 case "NE":
                     cumpleReglaReporte = reglaReporte.EsValidoResultadoNe;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"NE\"";
                     break;
                 case "IM":
                     cumpleReglaReporte = reglaReporte.EsValidoResultadoIm;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"IM\"";
                     break;
                 case "<LD":
                     cumpleReglaReporte = reglaReporte.EsValidoResultadoMenorLd;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"<LD\"";
                     break;
                 case "<CMC":
                     cumpleReglaReporte = reglaReporte.EsValidoResultadoMenorCmc;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"<CMC\"";
                     break;
                 case "ND":
                     cumpleReglaReporte = reglaReporte.EsValidoResultadoNd;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"ND\"";
                     break;
                 case "<LPC":
                     cumpleReglaReporte = reglaReporte.EsValidoResultadoMenorLpc;
+                    leyenda = cumpleReglaReporte ? string.Empty : "RECHAZA RESULTADO \"<LPC\"";
                     break;
             }
 
@@ -346,11 +365,15 @@ namespace Application.Features.Operacion.Resultados.Comands
         }
         private void ValidarFormaReglaReporte(ResultadoParametroReglasDto resultadoParametro)
         {
-            if (!CumpleFormaReporteEspecifica(resultadoParametro.Valor, resultadoParametro.IdParametro))
+            if (!CumpleFormaReporteEspecifica(resultadoParametro.Valor, resultadoParametro.IdParametro, out string leyendaRE) && leyendaRE != string.Empty)
             {
-                if (!CumpleReglaReporte(resultadoParametro.Valor, resultadoParametro.IdParametro))
+                resultadoParametro.ResultadoReglas = leyendaRE;
+            }
+            else
+            {
+                if (!CumpleReglaReporte(resultadoParametro.Valor, resultadoParametro.IdParametro, out string leyendaReporte) && leyendaRE != string.Empty)
                 {
-                    resultadoParametro.ResultadoReglas = $"No se reconoce la forma de reporte: {resultadoParametro.Valor}";
+                    resultadoParametro.ResultadoReglas = leyendaReporte;
                 }
             }
         }
