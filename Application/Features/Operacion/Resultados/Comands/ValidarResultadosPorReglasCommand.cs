@@ -42,15 +42,15 @@ namespace Application.Features.Operacion.Resultados.Comands
             _regla=regla;
             _reglasReporteRepository=reglasReporteRepository;
             _formaReporteEspecificaRepository=formaReporteEspecificaRepository;
-            _ldmLpcLaboratorio=ldmLpcLaboratorio;            
+            _ldmLpcLaboratorio=ldmLpcLaboratorio;
         }
 
         public async Task<Response<List<ResultadoValidacionReglasDto>>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
         {
             List<ResultadoValidacionReglasDto> resultadosValidacion = new();
 
-            var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)x.AnioOperacion) &&
-                                                                                         request.NumeroEntrega.Contains((int)x.NumeroEntrega));
+            var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)(x.AnioOperacion != null ? x.AnioOperacion : 0)) &&
+                                                                                         request.NumeroEntrega.Contains((int)(x.NumeroEntrega != null ? x.NumeroEntrega : 0)));
 
             if (muestreos.Any())
             {
@@ -58,7 +58,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                 reglasReporte = _reglasReporteRepository.ObtenerTodosElementosAsync().Result;
                 formaReporteEspecifico = _formaReporteEspecificaRepository.ObtenerTodosElementosAsync().Result;
                 ldmLpcLab = _ldmLpcLaboratorio.ObtenerTodosElementosAsync().Result;
-                
+
                 foreach (var muestreo in muestreos)
                 {
                     var resultadosMuestreo = await _resultadosRepository.ObtenerResultadosParaReglas(muestreo.Id);
@@ -66,20 +66,12 @@ namespace Application.Features.Operacion.Resultados.Comands
 
                     resultadosMuestreo.Where(x => !x.Validado).ToList().ForEach(resultado =>
                     {
-                        try
-                        {
-                            var esNumero = decimal.TryParse(resultado.Valor, out decimal valorResultado);
+                        var esNumero = decimal.TryParse(resultado.Valor, out decimal valorResultado);
 
-                            if (esNumero)
-                                ValidarLimitesDeteccion(resultado, valorResultado);
-                            else
-                                ValidarFormaReglaReporte(resultado);
-                        }
-                        catch (Exception ex)
-                        {
-
-                            throw;
-                        }
+                        if (esNumero)
+                            ValidarLimitesDeteccion(resultado, valorResultado);
+                        else
+                            ValidarFormaReglaReporte(resultado);
                     });
 
                     _resultadosRepository.ActualizarResultadosValidadosPorReglas(resultadosMuestreo.ToList());
@@ -274,17 +266,22 @@ namespace Application.Features.Operacion.Resultados.Comands
                 }
                 else
                 {
-                    var reglaLdmLpc = ldmLpcLab.Where(x => x.ParametroId == resultado.IdParametro && x.LaboratorioId == resultado.IdLaboratorio);
+                    var reglasLdmLpc = ldmLpcLab.Where(x => x.ParametroId == resultado.IdParametro && x.LaboratorioId == resultado.IdLaboratorio);
 
-                    if (reglaLdmLpc.Any())
+                    if (reglasLdmLpc.Any())
                     {
-                        LimiteDeteccionDto limites = new()
-                        {
-                            Minimo = (bool)reglaLdmLpc.FirstOrDefault().EsLdm ? reglaLdmLpc.FirstOrDefault().Ldm : reglaLdmLpc.FirstOrDefault().Lpc
-                        };
-                        limites.Maximo = limites.Minimo;
+                        var regla = reglasLdmLpc.FirstOrDefault();
 
-                        return limites;
+                        if (regla != null)
+                        {
+                            LimiteDeteccionDto limites = new()
+                            {
+                                Minimo = (regla.EsLdm != null && (bool)regla.EsLdm) ? regla.Ldm : regla.Lpc
+                            };
+                            limites.Maximo = limites.Minimo??string.Empty;
+
+                            return limites;
+                        }
                     }
                 }
             }
@@ -299,7 +296,7 @@ namespace Application.Features.Operacion.Resultados.Comands
 
             if (formaReporteEspecifica.Any())
             {
-                if (valor != formaReporteEspecifica.FirstOrDefault().Descripcion)
+                if (valor != formaReporteEspecifica.FirstOrDefault()?.Descripcion)
                 {
                     leyenda = "NO CUMPLE CON LA FORMA DE REPORTE ESPECIFICO";
                 }
@@ -366,7 +363,7 @@ namespace Application.Features.Operacion.Resultados.Comands
             return cumpleReglaReporte;
         }
 
-        public ResultadoParametroReglasDto ObtenerResultadoParametro(IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, string claveParametro)
+        public static ResultadoParametroReglasDto? ObtenerResultadoParametro(IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo, string claveParametro)
         {
             var resultadoParametro = resultadosMuestreo.Where(x => x.ClaveParametro.Equals(claveParametro)).FirstOrDefault();
 

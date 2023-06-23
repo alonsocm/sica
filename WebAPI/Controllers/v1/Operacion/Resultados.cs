@@ -182,7 +182,7 @@ namespace WebAPI.Controllers.v1.Operacion
         public IActionResult ResultadosValidados(List<ResultadoMuestreoDto> muestreos)
         {
             var dataMuestreo = muestreos.OrderBy(x => x.ClaveUnica);
-            List<ExcelValidadosOCDL> muestreosExcel = new List<ExcelValidadosOCDL>();
+            List<ExcelValidadosOCDL> muestreosExcel = new();
             int indice = 0;
 
             foreach (var datomuestreo in dataMuestreo)
@@ -190,21 +190,21 @@ namespace WebAPI.Controllers.v1.Operacion
                 ExcelValidadosOCDL datoresumen = new()
                 {
                     NumeroEntrega = datomuestreo.NoEntregaOCDL,
-                    ClaveUnica = datomuestreo.ClaveUnica,
-                    ClaveSitio = datomuestreo.ClaveSitio,
-                    ClaveMonitoreo = datomuestreo.ClaveMonitoreo,
+                    ClaveUnica = datomuestreo.ClaveUnica??string.Empty,
+                    ClaveSitio = datomuestreo.ClaveSitio??string.Empty,
+                    ClaveMonitoreo = datomuestreo.ClaveMonitoreo ?? string.Empty,
                     Nombre = datomuestreo.NombreSitio,
-                    ClaveParametro = datomuestreo.ClaveParametro,
-                    Laboratorio = datomuestreo.Laboratorio,
+                    ClaveParametro = datomuestreo.ClaveParametro ?? string.Empty,
+                    Laboratorio = datomuestreo.Laboratorio ?? string.Empty,
                     TipoCuerpoAgua = datomuestreo.TipoCuerpoAgua,
                     TipoCuerpoAguaOriginal = datomuestreo.TipoCuerpoAguaOriginal,
-                    Resultado = datomuestreo.Resultado,
+                    Resultado = datomuestreo.Resultado ?? string.Empty,
                     TipoAprobacion = datomuestreo.TipoAprobacion,
-                    ResultadoCorrecto = datomuestreo.EsCorrectoResultado,
+                    ResultadoCorrecto = datomuestreo.EsCorrectoResultado ?? string.Empty,
                     ObservacionOCDL = datomuestreo.Observaciones,
-                    FechaLimite = datomuestreo.FechaLimiteRevision,
+                    FechaLimite = datomuestreo.FechaLimiteRevision ?? string.Empty,
                     Usuario = datomuestreo.NombreUsuario,
-                    FechaRealizacion = datomuestreo.FechaRealizacion,
+                    FechaRealizacion = datomuestreo.FechaRealizacion ?? string.Empty,
                     Estatus = datomuestreo.EstatusResultado
                 };
                 muestreosExcel.Add(datoresumen);
@@ -328,8 +328,8 @@ namespace WebAPI.Controllers.v1.Operacion
             List<TabResumenExcel> resTabResultados = new() {
               new TabResumenExcel() {
                 Parametro = "TODOS",
-                Resultados_Aprobados = muestreos.Where(x => x.EsCorrectoResultado.Equals("SI")).Count(),
-                Resultados_Rechazados = muestreos.Where(z => z.EsCorrectoResultado.Equals("NO")).Count()
+                Resultados_Aprobados = muestreos.Where(x => (x.EsCorrectoResultado ?? string.Empty).Equals("SI")).Count(),
+                Resultados_Rechazados = muestreos.Where(z => (z.EsCorrectoResultado ?? string.Empty).Equals("NO")).Count()
               }
             };
 
@@ -414,27 +414,27 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("ExportToExcelTwoSheets")]
-        public async Task<IActionResult> ActionResultAsync(List<ResultadoMuestreoDto> resultados)
+        public IActionResult ActionResult(List<ResultadoMuestreoDto> resultados)
         {
             List<ResumenExcel> resumenExcel = new();
 
             List<TabResumenExcel> resTabResultados = new() {
               new TabResumenExcel() {
                 Parametro = "TODOS",
-                Resultados_Aprobados = resultados.Where(x => x.EsCorrectoResultado.Equals("SI")).Count(),
-                Resultados_Rechazados = resultados.Where(z => z.EsCorrectoResultado.Equals("NO")).Count()
+                Resultados_Aprobados = resultados.Where(x => (x.EsCorrectoResultado ?? string.Empty).Equals("SI")).Count(),
+                Resultados_Rechazados = resultados.Where(z => (z.EsCorrectoResultado ?? string.Empty).Equals("NO")).Count()
               }
             };
 
             List<TabResumenExcel> resTabParamRes = new();
-            foreach(var item in resultados)
+            foreach (var item in resultados)
             {
                 TabResumenExcel dato = new()
-               {
-                   Parametro = item.ClaveParametro,
-                   Resultados_Aprobados = resultados.Where(x => x.ClaveParametro == item.ClaveParametro).Where(f => f.EsCorrectoResultado == "SI").Count(),
-                   Resultados_Rechazados = resultados.Where(x => x.ClaveParametro == item.ClaveParametro).Where(f => f.EsCorrectoResultado == "NO").Count()
-               };
+                {
+                    Parametro = item.ClaveParametro,
+                    Resultados_Aprobados = resultados.Where(x => x.ClaveParametro == item.ClaveParametro).Where(f => f.EsCorrectoResultado == "SI").Count(),
+                    Resultados_Rechazados = resultados.Where(x => x.ClaveParametro == item.ClaveParametro).Where(f => f.EsCorrectoResultado == "NO").Count()
+                };
                 resTabParamRes.Add(dato);
             }
 
@@ -466,7 +466,7 @@ namespace WebAPI.Controllers.v1.Operacion
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
-            
+
         }
 
         // ACTUALIZAR 

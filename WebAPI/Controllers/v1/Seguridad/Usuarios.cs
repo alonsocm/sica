@@ -30,7 +30,6 @@ namespace WebAPI.Controllers.v1.Seguridad
             if (await IsExist(request.UserName.ToLower()))
                 return BadRequest("Usuario ya existe");
 
-            var origin = Request.Headers["origin"];
             return Ok(await Mediator.Send(new RegisterCommand
             {
                 Nombre = request.Nombre,
@@ -83,7 +82,7 @@ namespace WebAPI.Controllers.v1.Seguridad
             }
             else
             {
-                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+                return HttpContext.Connection.RemoteIpAddress != null ? HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString() : string.Empty;
             }
         }
 

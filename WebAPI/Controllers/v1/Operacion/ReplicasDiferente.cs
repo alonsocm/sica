@@ -35,7 +35,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("ExportarExcelReplicaDiferente")]
-        public async Task<IActionResult> ExportarExcelReplicaDiferente(List<GeneralDescargaDiferenteDto> muestreos)
+        public IActionResult ExportarExcelReplicaDiferente(List<GeneralDescargaDiferenteDto> muestreos)
         {
             List<GeneralDescargaDiferenteExcel> muestreosExcel = new();
 
