@@ -6,9 +6,28 @@
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
                (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
+
+  <!--<div class="row">
+    <div class="col-md-2">
+      <label for="anios">Seleccionar año(s):*</label>
+      <select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados" [size]="this.anios.length">
+        <option *ngFor="let anio of anios" value="{{anio}}">{{anio}}</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label for="entrega">Seleccionar número(s) de entrega:*</label>
+      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas" [size]="this.entregas.length">
+        <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
+      </select>
+    </div>
+    <div class="col-md-4 align-self-end">
+      <input class="btn btn-primary" type="button" value="Aplicar reglas de validación" (click)="this.validarMuestreosPorReglas()">
+    </div>
+  </div>-->
+
   <div class="d-flex flex-row-reverse opciones-tabla">
     <div class="p-2">
-     <button class="btn btn-secondary" type="button" (click)="onDownload()">
+      <button class="btn btn-secondary" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
     </div>
@@ -20,5 +39,5 @@
     </div>
   </div>
 
-  </div>
+</div>
 

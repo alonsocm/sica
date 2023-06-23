@@ -11,11 +11,9 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Resultados.Queries
 {
-    //GetResultadosMuestreoEstatusMuestreoAsync
     public class GetResultadosMuestreoEstatusMuestreoQuery : IRequest<Response<List<AcumuladosResultadoDto>>>
     {
-        public long estatusId { get; set; }
-        
+        public int estatusId { get; set; }
 
     }
 
@@ -27,10 +25,9 @@ namespace Application.Features.Operacion.Resultados.Queries
         {
             _repositoryAsync = repository;
         }
-
         public async Task<Response<List<AcumuladosResultadoDto>>> Handle(GetResultadosMuestreoEstatusMuestreoQuery request, CancellationToken cancellationToken)
         {
-            var datos = await _repositoryAsync.GetResultadosMuestreoEstatusMuestreoAsync(request.estatusId); ;
+            var datos = await _repositoryAsync.GetResultadosMuestreoEstatusMuestreoAsync(request.estatusId);
             if (datos == null)
             {
                 throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");

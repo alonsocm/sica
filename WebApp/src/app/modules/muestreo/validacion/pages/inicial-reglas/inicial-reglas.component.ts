@@ -3,6 +3,7 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from 'src/app/interfaces/filtro.interface';
+import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
 
 @Component({
   selector: 'app-inicial-reglas',
@@ -12,11 +13,13 @@ import { Filter } from 'src/app/interfaces/filtro.interface';
 export class InicialReglasComponent extends BaseService implements OnInit {
   
   constructor(private validacionService: ValidacionReglasService) { super(); }
-
+  resultadosMuestreo: Array<acumuladosMuestreo> = [];
+  resultadosFiltrados: Array<acumuladosMuestreo> = [];
+  aniosSeleccionados: Array<number> = [];
+  entregasSeleccionadas: Array<number> = [];
   ngOnInit(): void {
-	
 
-
+    console.log("entro");
     this.columnas = [
       { nombre: 'claveSitio', etiqueta: 'CLAVE SITIO', orden: 0, filtro: new Filter() },
       { nombre: 'claveMuestreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
@@ -41,8 +44,15 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
    
     ];
-  }
 
+    this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
+      next: (response: any) => {
+        this.resultadosMuestreo = response.data;
+        this.resultadosFiltrados = this.resultadosMuestreo;
+      },
+      error: (error) => { },
+    });
+  }
 
   onDownload(): void {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);

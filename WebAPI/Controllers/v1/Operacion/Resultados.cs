@@ -10,6 +10,7 @@ using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
 using Application.Models;
 using Application.Wrappers;
+using Azure.Core;
 using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
@@ -554,5 +555,13 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(lstResultados);
 
         }
+
+        [HttpGet("ResultadosporMuestreo")]
+        public async Task<IActionResult> GetActionAsync([FromQuery] GetResultadosporMuestreoQuery request)
+        {
+            return Ok(await Mediator.Send(new GetResultadosporMuestreoQuery { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
+        }
+
+
     }
 }

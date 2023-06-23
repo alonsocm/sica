@@ -1,3 +1,5 @@
+
+
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './modules/login/pages/login.component';
@@ -26,6 +28,10 @@ import { EvidenciasComponent } from './modules/muestreo/evidencias/pages/evidenc
 import { ConsultaResultadoComponent } from './modules/muestreo/originalesAprobados/consulta-resultado/pages/consulta-resultado.component';
 import { ConsultaEvidenciaComponent } from './modules/muestreo/originalesAprobados/consulta-evidencia/pages/consulta-evidencia.component';
 import { ValidacionReglasComponent } from './modules/muestreo/validacion/pages/validacion-reglas/validacion-reglas.component';
+import { AcumulacionResultadosComponent } from './modules/muestreo/validacion/pages/acumulacion-resultados/acumulacion-resultados.component';
+import { ResumenReglasComponent } from './modules/muestreo/validacion/pages/resumen-reglas/resumen-reglas.component';
+import { InicialReglasComponent } from './modules/muestreo/validacion/pages/inicial-reglas/inicial-reglas.component';
+import { ReglasValidarComponent } from './modules/muestreo/validacion/pages/reglas-validar/reglas-validar.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch:'full' },
@@ -51,7 +57,11 @@ const routes: Routes = [
   { path: 'evidencias', component: EvidenciasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
   { path: 'consulta-resultado', component: ConsultaResultadoComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
   { path: 'consulta-evidencia', component: ConsultaEvidenciaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'validacion-reglas', component: ValidacionReglasComponent, children: [{path: '', outlet: 'menu', component: NavRootComponent}]},
+  { path: 'validacion-reglas', component: ValidacionReglasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
+  { path: 'acumulacion-resultados', component: AcumulacionResultadosComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
+  { path: 'resumen-validacion', component: ResumenReglasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
+  { path: 'inicial-reglas', component: InicialReglasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
+  { path: 'reglas-validar', component: ReglasValidarComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
   { path: '**', component: NotFoundComponent }
 
 ];

@@ -34,7 +34,7 @@ export class ValidacionReglasComponent extends BaseService implements OnInit {
   }> = [];
 
   ngOnInit(): void {
-    this.validacionService.getResultadosAcumuladosParametros(26).subscribe({
+    this.validacionService.obtenerMuestreos().subscribe({    
       next: (response: any) => {
         this.anios = response.data;
       },

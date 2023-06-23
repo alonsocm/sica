@@ -171,16 +171,16 @@ namespace Persistence.Repository
             return lista;
         }
 
-        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(long estatusId)
+        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId)
         {
             var muestreos = await (from m in _dbContext.Muestreo
                                    join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
                                    join resMuestreo in _dbContext.ResultadoMuestreo on m.Id equals resMuestreo.MuestreoId                                    
-                                   where m.Id  == estatusId
+                                   where m.EstatusId  == estatusId
                                    select new AcumuladosResultadoDto
                                    {
                                        MuestreoId = m.Id,                                                                             
-                                       ClaveUnica = $"{vpm.ClaveMuestreo}{resMuestreo.Parametro.ClaveParametro}",
+                                       claveUnica = $"{vpm.ClaveMuestreo}{resMuestreo.Parametro.ClaveParametro}",
                                        ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
                                        ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                        NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
@@ -191,17 +191,16 @@ namespace Persistence.Repository
                                        TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
                                        SubTipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion,
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
-                                       laboratorioRealizoMuestreo = resMuestreo.Laboratorio.Descripcion,
+                                       laboratorioRealizoMuestreo = resMuestreo.Laboratorio.Descripcion ?? string.Empty,
                                        LaboratorioSubrogado = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
-                                       SubGrupo = resMuestreo.Parametro.IdSubgrupoNavigation.Descripcion, 
+                                       subGrupo = resMuestreo.Parametro.IdSubgrupoNavigation.Descripcion,
                                        claveParametro = resMuestreo.Parametro.ClaveParametro,
-                                       Parametro = resMuestreo.Parametro.Descripcion,
-                                       UnidadMedida = resMuestreo.Parametro.IdUnidadMedidaNavigation.Descripcion,
-                                       Resultado = resMuestreo.Resultado,
+                                       parametro = resMuestreo.Parametro.Descripcion,
+                                       unidadMedida = resMuestreo.Parametro.IdUnidadMedidaNavigation.Descripcion,
+                                       resultado = resMuestreo.Resultado,
                                        ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,                                       
                                        Estatus = m.Estatus.Descripcion,
                                        TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1.ToString() ?? string.Empty,
-                                       
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty
                                    }).ToListAsync();
@@ -222,6 +221,31 @@ namespace Persistence.Repository
 
             return muestreos;
         }
+
+        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga)
+        {
+            var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas                                   
+                                   
+                                   select new AcumuladosResultadoDto
+                                   {
+                                       ClaveSitio = resultados.ClaveSitio,
+                                       ClaveMonitoreo = resultados.ClaveMuestreo,                                                                            
+                                       NombreSitio = resultados.NombreSitio,
+                                       FechaRealizacion = resultados.FechaRealizacion.ToString() ?? string.Empty,
+                                       FechaProgramada = resultados.FechaProgramada.ToString(),
+                                       diferenciaDias = Convert.ToInt32(resultados.DiferenciaEnDias.ToString()),
+                                       fechaEntregaTeorica= resultados.FechaEntregaTeorica.ToString() ?? string.Empty,
+                                       laboratorioRealizoMuestreo = resultados.Laboratorio ?? string.Empty,
+                                       CuerpoAgua = resultados.CuerpoDeAgua,
+                                       TipoCuerpoAgua = resultados.TipoCuerpoAgua,
+                                       SubTipoCuerpoAgua = resultados.SubtipoCuerpoDeAgua,
+                                       numParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
+                                       numParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados)                                      
+                                       
+                                   }).ToListAsync();
+            return muestreos.ToList();
+        }
+
 
     }
 }

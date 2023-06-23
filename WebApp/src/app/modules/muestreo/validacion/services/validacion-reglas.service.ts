@@ -40,6 +40,12 @@ export class ValidacionReglasService {
     return this.http.get(environment.apiUrl + '/Resultados/ResultadosAcumuladosParametros', { params });
   }
 
+  getResultadosporMonitoreo(anios: Array<number>, numeroEntrega: Array<number>) {
+    let params = new HttpParams({
+      fromObject: { anios: anios, numeroEntrega: numeroEntrega },
+    });
+    return this.http.get(environment.apiUrl + '/Resultados/ResultadosporMuestreo', { params });
+  }
 
 
   
