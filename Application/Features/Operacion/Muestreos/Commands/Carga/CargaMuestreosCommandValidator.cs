@@ -66,6 +66,10 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
                                                   .WithMessage(muestreo => $"El laboratorio {{PropertyValue}} no se encontró en la BD. Linea:{muestreo.Linea}");
 
                 muestreo.RuleFor(x => x.Resultado).NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}");
+
+                muestreo.RuleFor(x => x.IdResultado).NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}");
+
+                muestreo.RuleFor(x => x.FechaEntrega).NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}");
             });
         }
 

@@ -26,7 +26,7 @@ namespace Persistence.Repository
             {
                 var estatus = new List<int>() { 10, 12, 17, 14, 15 };
                 var registros = await (from r in _dbContext.ResultadoMuestreo
-                                       where estatus.Contains((int)r.EstatusResultado)
+                                       where estatus.Contains((int)(r.EstatusResultado != null ? r.EstatusResultado : 0))
                                        select new ReplicaResultadoDto
                                        {
                                            NoEntrega = r.Muestreo.NumeroEntrega.ToString()??string.Empty,
@@ -35,7 +35,7 @@ namespace Persistence.Repository
                                            ClaveMonitoreo = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}-{r.Muestreo.ProgramaMuestreo.DiaProgramado:ddMMyyyy}",
                                            Nombre = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
                                            ClaveParametro = r.Parametro.ClaveParametro,
-                                           Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion??string.Empty,
+                                           Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio != null ? (r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion??string.Empty) : string.Empty,
                                            TipoCuerpoAgua = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                            TipoCuerpoAguaOriginal = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion,
                                            Resultado = r.Resultado,
@@ -56,7 +56,7 @@ namespace Persistence.Repository
                                            ResultadoAprobadoDespuesReplica = r.SeApruebaResultadoReplica == null ? string.Empty : (bool)r.SeApruebaResultadoReplica ? "SI" : "NO",//TODO: Se debería agregar nueva tabla?
                                            FechaEstatusFinal = DateTime.Now.ToString("dd/MM/yy"),//TODO: En qué momento se registrará esta fecha?
                                            UsuarioRevisor = string.Empty,//TODO: Se refiere al usuario revisor RENAMECA?
-                                           EstatusResultado = r.EstatusResultadoNavigation.Descripcion??string.Empty,
+                                           EstatusResultado = r.EstatusResultadoNavigation != null ? r.EstatusResultadoNavigation.Descripcion : string.Empty,
                                            NombreArchivoEvidencias = string.Empty,
                                        }
                                        ).ToListAsync();
@@ -72,20 +72,20 @@ namespace Persistence.Repository
         public async Task<List<ResultadoValidacionReglasDto>> ObtenerResultadosValidacion(List<long> muestreosId)
         {
             var resultados = await (from r in _dbContext.ResultadoMuestreo
-                                    where muestreosId.Contains((Int64)r.MuestreoId)
+                                    where muestreosId.Contains(r.MuestreoId)
                                     select new ResultadoValidacionReglasDto
                                     {
-                                        Anio = (int)r.Muestreo.AnioOperacion,
-                                        NoEntrega = (int)r.Muestreo.NumeroEntrega,
+                                        Anio = (int)(r.Muestreo.AnioOperacion != null ? r.Muestreo.AnioOperacion : 0),
+                                        NoEntrega = (int)(r.Muestreo.NumeroEntrega != null ? r.Muestreo.NumeroEntrega : 0),
                                         TipoSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1??string.Empty,
                                         ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo}{r.Parametro.ClaveParametro}",
                                         ClaveSitio = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}",
                                         ClaveMonitoreo = r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo,
-                                        FechaRealizacion = r.Muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy"),
+                                        FechaRealizacion = r.Muestreo.FechaRealVisita != null ? r.Muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy") : string.Empty,
                                         Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? string.Empty : r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura?? string.Empty,
                                         ClaveParametro = r.Parametro.ClaveParametro,
                                         Resultado = r.Resultado,
-                                        ValidacionPorReglas = r.ResultadoReglas,
+                                        ValidacionPorReglas = r.ResultadoReglas??string.Empty,
                                         FechaAplicacionReglas = DateTime.Now.ToString("dd-MM-yyyy"),
                                     }).ToListAsync();
 

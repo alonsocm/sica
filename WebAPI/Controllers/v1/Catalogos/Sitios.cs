@@ -23,7 +23,7 @@ namespace WebAPI.Controllers.v1.Catalogos
         [HttpGet()]
         public async Task<IActionResult> Get([FromQuery] GetAllSitiosParameters filter)
         {
-            return Ok(await Mediator.Send(new GetAllSitiosQuery { Nombre = filter.Nombre, Clave = filter.Nombre, PageNumber = filter.PageNumber, PageSize = filter.PageSize }));
+            return Ok(await Mediator.Send(new GetAllSitiosQuery { Nombre = filter.Nombre ?? string.Empty, Clave = filter.Nombre ?? string.Empty, PageNumber = filter.PageNumber, PageSize = filter.PageSize }));
         }
 
         //POST api/<controller>

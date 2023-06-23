@@ -22,7 +22,7 @@ namespace WebAPI.Middlewares
             {
                 var response = context.Response;
                 response.ContentType = "application/json";
-                var responseModel = new Response<string>() { Succeded = false, Message = error?.Message };
+                var responseModel = new Response<string>() { Succeded = false, Message = error.Message };
 
                 switch (error)
                 {

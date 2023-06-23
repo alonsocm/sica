@@ -10,26 +10,26 @@ namespace Application.DTOs
         public string? Resultado { get; set; }
         //Observaciones se utiliza para observaciones de ocdl
         public string? Observaciones { get; set; }
-        public string NoEntregaOCDL { get; set; }
+        public string NoEntregaOCDL { get; set; } = string.Empty;
         public string? ClaveUnica { get; set; }
-        public string ClaveSitio { get; set; }
-        public string ClaveMonitoreo { get; set; }
-        public string NombreSitio { get; set; }
+        public string ClaveSitio { get; set; } = string.Empty;
+        public string ClaveMonitoreo { get; set; } = string.Empty;
+        public string NombreSitio { get; set; } = string.Empty;
         public string? ClaveParametro { get; set; }
-        public string Laboratorio { get; set; }
+        public string Laboratorio { get; set; } = string.Empty;
         //public string? TipoCuerpoAgua{ get; set; }
         public string? TipoCuerpoAguaOriginal { get; set; }
-        public string TipoAprobacion { get; set; }
+        public string TipoAprobacion { get; set; } = string.Empty;
         public string? EsCorrectoResultado { get; set; }
         public string? FechaRevision { get; set; }
         public string? FechaLimiteRevision { get; set; }
         public DateTime? fechaLimiteRevisionVencidos { get; set; }
-        public string NombreUsuario { get; set; }
-        public string EstatusResultado { get; set; }
+        public string NombreUsuario { get; set; } = string.Empty;
+        public string EstatusResultado { get; set; } = string.Empty;
         public int EstatusId { get; set; }
         public long CuerpoTipoSubtipo { get; set; }
-        public string OrganismoCuenca { get; set; }
-        public string DireccionLocal { get; set; }
+        public string OrganismoCuenca { get; set; } = string.Empty;
+        public string DireccionLocal { get; set; } = string.Empty;
         public string? FechaRealizacion { get; set; }
 
         //se agrego para observaciones secaia
@@ -59,19 +59,19 @@ namespace Application.DTOs
             lstParametros = new List<ParametrosDto>();
             lstEvidencias = new List<EvidenciaDto>();
             lstParametrosTotalResultado = new List<string>();
-            this.EstatusOCDL = null;
-            this.EstatusSECAIA = null;
-            this.ObservacionSECAIAId = null;
-            this.TipoSitio = string.Empty;
-            this.TipoSitioId = 0;
-            this.CuerpoAguaId = null;
-            this.CuerpoAgua = null;
-            this.TipoCuerpoAgua = null;
-            this.TipoCuerpoAguaId = null;
-            this.TipoHomologadoId = 0;
-            this.TipoHomologado = string.Empty;
-            this.ClaveSitioOriginal = string.Empty;
-            this.fechaLimiteRevisionVencidos = null;
+            EstatusOCDL = null;
+            EstatusSECAIA = null;
+            ObservacionSECAIAId = null;
+            TipoSitio = string.Empty;
+            TipoSitioId = 0;
+            CuerpoAguaId = null;
+            CuerpoAgua = null;
+            TipoCuerpoAgua = null;
+            TipoCuerpoAguaId = null;
+            TipoHomologadoId = 0;
+            TipoHomologado = string.Empty;
+            ClaveSitioOriginal = string.Empty;
+            fechaLimiteRevisionVencidos = null;
         }
     }
 
@@ -94,20 +94,20 @@ namespace Application.DTOs
 
         public ResultadoDescargaDto()
         {
-            this.noEntregaOCDL = string.Empty;
-            this.ocdl = string.Empty;
-            this.nombreSitio = string.Empty;
-            this.claveMonitoreo = string.Empty;
-            this.fechaRealizacion = string.Empty;
-            this.laboratorio = string.Empty;
-            this.CuerpoAgua = string.Empty;
-            this.tipoCuerpoAgua = string.Empty;
-            this.tipoHomologado = string.Empty;
-            this.tipoSitio = string.Empty;
-            this.claveSitio = string.Empty;
-            this.claveSitioOriginal = string.Empty;
-            this.lstParametros = new List<ParametrosDto>();
-            this.lstParametrosOrden = new List<ColumnaDto>();
+            noEntregaOCDL = string.Empty;
+            ocdl = string.Empty;
+            nombreSitio = string.Empty;
+            claveMonitoreo = string.Empty;
+            fechaRealizacion = string.Empty;
+            laboratorio = string.Empty;
+            CuerpoAgua = string.Empty;
+            tipoCuerpoAgua = string.Empty;
+            tipoHomologado = string.Empty;
+            tipoSitio = string.Empty;
+            claveSitio = string.Empty;
+            claveSitioOriginal = string.Empty;
+            lstParametros = new List<ParametrosDto>();
+            lstParametrosOrden = new List<ColumnaDto>();
         }
     }
 
@@ -118,9 +118,9 @@ namespace Application.DTOs
         public long orden { get; set; }
         public ColumnaDto()
         {
-            this.nombre = string.Empty;
-            this.etiqueta = string.Empty;
-            this.orden = 0;
+            nombre = string.Empty;
+            etiqueta = string.Empty;
+            orden = 0;
         }
     }
 }

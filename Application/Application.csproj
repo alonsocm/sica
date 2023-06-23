@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="Features\PerfilPaginas\**" />
+    <Compile Remove="Filters\**" />
     <EmbeddedResource Remove="Features\PerfilPaginas\**" />
+    <EmbeddedResource Remove="Filters\**" />
     <None Remove="Features\PerfilPaginas\**" />
+    <None Remove="Filters\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +28,6 @@
   <ItemGroup>
     <Folder Include="Features\Catalogos\Perfiles\Commands\" />
     <Folder Include="Features\Seguridad\Usuarios\Commands\AuthenticateUsuario\" />
-    <Folder Include="Filters\" />
   </ItemGroup>
 
   <ItemGroup>

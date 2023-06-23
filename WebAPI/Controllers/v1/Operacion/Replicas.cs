@@ -36,7 +36,7 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> Get(int userId)
         {
             return Ok(await Mediator.Send(new GetReplicaRevicionResultados
-            {             
+            {
                 UserId = userId
             }));
         }
@@ -48,28 +48,30 @@ namespace WebAPI.Controllers.v1.Operacion
             int indice = 0;
             foreach (var datomuestreo in muestreos)
             {
-                GeneralDescarga datoresumen = new GeneralDescarga();               
-                datoresumen.No_Entrega = datomuestreo.NoEntrega;
-                datoresumen.Clave_Unica = datomuestreo.ClaveUnica;
-                datoresumen.Clave_Sitio = datomuestreo.ClaveSitio;
-                datoresumen.Clave_Monitoreo = datomuestreo.ClaveMonitoreo;
-                datoresumen.Nombre_Sitio = datomuestreo.NombreSitio;
-                datoresumen.Clave_Parametro = datomuestreo.ClaveParametro;
-                datoresumen.Laboratorio = datomuestreo.Laboratorio;
-                datoresumen.Tipo_Cuerpo_Agua = datomuestreo.TipoCuerpoAgua;
-                datoresumen.Tipo_Cuerpo_Agua_Original = datomuestreo.TipoCuerpoAguaOriginal;
-                datoresumen.Resultado = datomuestreo.Resultado;
-                datoresumen.Es_Correcto_OCDL = datomuestreo.EsCorrectoOCDL;
-                datoresumen.Observacion_OCDL = datomuestreo.ObservacionOCDL;
-                datoresumen.Es_Correcto_SECAIA = datomuestreo.EsCorrectoSECAIA;
-                datoresumen.Observacion_SECAIA = datomuestreo.ObservacionSECAIA;
-                datoresumen.Clasificacion_Observacion = datomuestreo.ClasificacionObservacion;
-                datoresumen.Aprueba_Resultado = datomuestreo.ApruebaResultado;
-                datoresumen.Comentarios_Aprobacion_Resultados = datomuestreo.ComentariosAprobacionResultados;
-                datoresumen.Usuario = datomuestreo.UsuarioRevision;
-                datoresumen.estatusResultado = datomuestreo.estatusResultado;
+                GeneralDescarga datoresumen = new()
+                {
+                    No_Entrega = datomuestreo.NoEntrega,
+                    Clave_Unica = datomuestreo.ClaveUnica,
+                    Clave_Sitio = datomuestreo.ClaveSitio,
+                    Clave_Monitoreo = datomuestreo.ClaveMonitoreo,
+                    Nombre_Sitio = datomuestreo.NombreSitio,
+                    Clave_Parametro = datomuestreo.ClaveParametro,
+                    Laboratorio = datomuestreo.Laboratorio,
+                    Tipo_Cuerpo_Agua = datomuestreo.TipoCuerpoAgua,
+                    Tipo_Cuerpo_Agua_Original = datomuestreo.TipoCuerpoAguaOriginal,
+                    Resultado = datomuestreo.Resultado,
+                    Es_Correcto_OCDL = datomuestreo.EsCorrectoOCDL??string.Empty,
+                    Observacion_OCDL = datomuestreo.ObservacionOCDL,
+                    Es_Correcto_SECAIA = datomuestreo.EsCorrectoSECAIA,
+                    Observacion_SECAIA = datomuestreo.ObservacionSECAIA,
+                    Clasificacion_Observacion = datomuestreo.ClasificacionObservacion,
+                    Aprueba_Resultado = datomuestreo.ApruebaResultado,
+                    Comentarios_Aprobacion_Resultados = datomuestreo.ComentariosAprobacionResultados,
+                    Usuario = datomuestreo.UsuarioRevision,
+                    estatusResultado = datomuestreo.estatusResultado
+                };
                 muestreosExcel.Add(datoresumen);
-                indice++;                
+                indice++;
             }
             var rootPath = _env.WebRootPath;
             if (rootPath == null)
@@ -93,7 +95,7 @@ namespace WebAPI.Controllers.v1.Operacion
             System.IO.File.Copy(filePath, tempFilePath, true);
             FileInfo fileInfo = new(tempFilePath);
             ExcelService.ExportToExcel(muestreosExcel, fileInfo, true);
-           
+
 
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(tempFilePath, out var contentType))
@@ -127,14 +129,14 @@ namespace WebAPI.Controllers.v1.Operacion
                     datoresumen.Tipo_Cuerpo_Agua = datomuestreo.TipoCuerpoAgua;
                     datoresumen.Tipo_Cuerpo_Agua_Original = datomuestreo.TipoCuerpoAguaOriginal;
                     datoresumen.Resultado = datomuestreo.Resultado;
-                    datoresumen.Es_Correcto_OCDL = datomuestreo.EsCorrectoOCDL;
+                    datoresumen.Es_Correcto_OCDL = datomuestreo.EsCorrectoOCDL??string.Empty;
                     datoresumen.Observacion_OCDL = datomuestreo.ObservacionOCDL;
                     datoresumen.Es_Correcto_SECAIA = datomuestreo.EsCorrectoSECAIA;
                     datoresumen.Observacion_SECAIA = datomuestreo.ObservacionSECAIA;
                     datoresumen.Clasificacion_Observacion = datomuestreo.ClasificacionObservacion;
                     datoresumen.Aprueba_Resultado = datomuestreo.ApruebaResultado;
-                    datoresumen.Comentarios_Aprobacion_Resultados = datomuestreo.ComentariosAprobacionResultados;                
-                    muestreosExcel.Add(datoresumen);                    
+                    datoresumen.Comentarios_Aprobacion_Resultados = datomuestreo.ComentariosAprobacionResultados;
+                    muestreosExcel.Add(datoresumen);
                     indice++;
                 }
             }
@@ -169,18 +171,18 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return File(bytes, contentType, Path.GetFileName(tempFilePath));
         }
-              
+
         [HttpPut("AutorizarRechaMuestreo")]
         public async Task<IActionResult> AutorizarRechaMuestreo(List<AprobacionResultadoMuestreoDto> muestreos)
         {
-            foreach (var item in muestreos)
+            foreach (var muestreo in muestreos)
             {
                 await Mediator.Send(new updateAutorRechaAprobacionCommand
                 {
-                    MuestreoId = item.MuestreoId,
-                    UserId = (long)item.UsuarioRevisionId,
-                    ResultadoMuestreoId = item.ResultadoMuestreoId,
-                    ApruebaResultado = item.ApruebaResultado == "SI" ? true : false                 
+                    MuestreoId = muestreo.MuestreoId,
+                    UserId = (long)(muestreo.UsuarioRevisionId != null ? muestreo.UsuarioRevisionId : 0),
+                    ResultadoMuestreoId = muestreo.ResultadoMuestreoId,
+                    ApruebaResultado = muestreo.ApruebaResultado == "SI"
                 });
             }
             return Ok();
@@ -194,7 +196,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 await Mediator.Send(new EnviarAprobacionResultadosCommand
                 {
                     ResultadoMuestreoId = item.ResultadoMuestreoId,
-                    EstatusId = item.EstatusResultadoId                   
+                    EstatusId = item.EstatusResultadoId
                 });
             }
             return Ok();
@@ -300,7 +302,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("CargarRevisionLNR")]
-        public async Task<IActionResult> Post([FromForm]RevisionLNRForm revisionLNRForm)
+        public async Task<IActionResult> Post([FromForm] RevisionLNRForm revisionLNRForm)
         {
             string filePath = string.Empty;
 
@@ -329,13 +331,13 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new AprobarResultadosBloque { Aprobado = aprobarResultadosBloque.Aprobado, ClavesUnicas = aprobarResultadosBloque.ClavesUnicas, UsuarioId = aprobarResultadosBloque.UsuarioId }));
         }
-        
+
         [HttpPut("EnviarResultados")]
         public async Task<IActionResult> Put(EnviarResultados resultadosEnviar)
         {
             return Ok(await Mediator.Send(new EnviarResultados { Aprobado = resultadosEnviar.Aprobado, ClavesUnicas = resultadosEnviar.ClavesUnicas, UsuarioId = resultadosEnviar.UsuarioId }));
         }
-        
+
         [HttpPut("EnviarResultadosDifDato")]
         public async Task<IActionResult> Put(EnviarResultadoDifDato resultadosEnviar)
         {
@@ -361,7 +363,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             throw new ApiException();
         }
-        
+
         [HttpPost("CargarEvidenciasReplica")]
         public async Task<IActionResult> Post(List<IFormFile> archivos)
         {
@@ -374,7 +376,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ObtenerEvidencias")]
-        public async Task<ActionResult> Get([FromQuery]List<string> clavesUnicas)
+        public async Task<ActionResult> Get([FromQuery] List<string> clavesUnicas)
         {
             if (!clavesUnicas.Any())
             {
