@@ -16,7 +16,12 @@ export interface acumuladosMuestreo extends Muestreo {
   nuevoResultadoReplica: string,
   replica: boolean,
   cambioResultado: boolean,
-  fechaEntrega: string
+  fechaEntrega: string,
+  diferenciaDias :number,
+  fechaEntregaTeorica: string,
+  numParametrosEsperados: number,
+  numParametrosCargados: number,
+  muestreoCompletoPorResultados: boolean 
 
 
 }

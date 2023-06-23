@@ -19,21 +19,20 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   entregasSeleccionadas: Array<number> = [];
   ngOnInit(): void {
 
-    console.log("entro");
     this.columnas = [
       { nombre: 'claveSitio', etiqueta: 'CLAVE SITIO', orden: 0, filtro: new Filter() },
-      { nombre: 'claveMuestreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
+      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
       { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 0, filtro: new Filter() },
       { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 0, filtro: new Filter() },
-      { nombre: 'fechaVisita', etiqueta: 'FECHA PROGRAMADA', orden: 0, filtro: new Filter() },
-      { nombre: 'diferencia', etiqueta: 'DIFERENCIA EN DÍAS', orden: 0, filtro: new Filter() },
-      { nombre: 'fechaTeorica', etiqueta: 'FECHA DE ENTREGA TEORICA', orden: 0, filtro: new Filter() },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO BASE DE DATOS', orden: 0, filtro: new Filter() },
+      { nombre: 'fechaVisifechaProgramadata', etiqueta: 'FECHA PROGRAMADA', orden: 0, filtro: new Filter() },
+      { nombre: 'diferenciaDias', etiqueta: 'DIFERENCIA EN DÍAS', orden: 0, filtro: new Filter() },
+      { nombre: 'fechaEntregaTeorica', etiqueta: 'FECHA DE ENTREGA TEORICA', orden: 0, filtro: new Filter() },
+      { nombre: 'laboratorioRealizoMuestreo', etiqueta: 'LABORATORIO BASE DE DATOS', orden: 0, filtro: new Filter() },
       { nombre: 'cuerpoAgua', etiqueta: 'CUERPO DE AGUA', orden: 0, filtro: new Filter() },
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 0, filtro: new Filter() },
       { nombre: 'subtipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO AGUA', orden: 0, filtro: new Filter() },
-      { nombre: 'totalDatos', etiqueta: 'NÚMERO DE DATOS ESPERADOS', orden: 0, filtro: new Filter() },
-      { nombre: 'totalRegistrados', etiqueta: 'NÚMERO DE DATOS REPORTADOS', orden: 0, filtro: new Filter() },
+      { nombre: 'numParametrosEsperados', etiqueta: 'NÚMERO DE DATOS ESPERADOS', orden: 0, filtro: new Filter() },
+      { nombre: 'numParametrosCargados', etiqueta: 'NÚMERO DE DATOS REPORTADOS', orden: 0, filtro: new Filter() },
       { nombre: 'muestreoCompleto', etiqueta: 'MUESTREO COMPLETO POR RESULTADOS', orden: 0, filtro: new Filter() },
       { nombre: 'cumpleReglas', etiqueta: '¿CUMPLE CON LA REGLAS CONDICIONANTES?', orden: 0, filtro: new Filter() },
       { nombre: 'obsCondicionantes', etiqueta: 'OBSERVACIONES CONDICIONANTES', orden: 0, filtro: new Filter() },
@@ -48,7 +47,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
       next: (response: any) => {
         this.resultadosMuestreo = response.data;
-        this.resultadosFiltrados = this.resultadosMuestreo;
+        //this.resultadosFiltrados = this.resultadosMuestreo;
       },
       error: (error) => { },
     });
@@ -85,5 +84,36 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         },
       });
   }
+
+  filtrarColumnas() {
+    //this.resultadosFiltrados = this.datosAcumualdos;
+    console.log(this.resultadosFiltrados);
+    this.columnas.forEach((columna) => {
+      this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
+        return columna.filtro.selectedValue == 'Seleccione'
+          ? true
+          : f[columna.nombre] == columna.filtro.selectedValue;
+      });
+    });
+    this.establecerValores();
+  };
+  establecerValores() {
+    this.columnas.forEach((f) => {
+      f.filtro.values = [
+        ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
+      ];
+      this.page = 1;
+    });
+  };
+
+  limpiarFiltros() {
+    this.columnas.forEach((f) => {
+      f.filtro.selectedValue = 'Seleccione';
+    });
+    this.filtrarn();
+    document.getElementById('dvMessage')?.click();
+    this.establecerValores();
+  };
+
 
 }

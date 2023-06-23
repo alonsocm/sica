@@ -32,12 +32,71 @@
       </button>
     </div>
     <div class="p-2">
-      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltrosn()">
+      <button class="btn btn-secondary" type="button">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+
+            <th *ngFor="let columna of columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                               (selected)="columna.filtro.selectedValue = $event; filtrarColumnas()"
+                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarColumnas()" [itemTemplate]="itemTemplate"
+                               placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let dato of this.resultadosMuestreo| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+
+            <td style="text-align: center;">{{dato.claveSitio}}</td>
+            <td style="text-align: center;">{{dato.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{dato.nombreSitio}}</td>
+            <td style="text-align: center;">{{dato.fechaRealizacion}}</td>
+            <td style="text-align: center;">{{dato.fechaProgramada}}</td>
+            <td style="text-align: center;">{{dato.diferenciaDias}}</td>
+            <td style="text-align: center;">{{dato.fechaEntregaTeorica}}</td>
+            <td style="text-align: center;">{{dato.laboratorioRealizoMuestreo}}</td>
+            <td style="text-align: center;">{{dato.cuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.subTipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.numParametrosEsperados}}</td>
+            <td style="text-align: center;">{{dato.numParametrosCargados}}</td>
+            <td style="text-align: center;"></td>
+
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+          </tr>
+          <tr>
+            <td colspan="20">
+              <div *ngIf="this.resultadosMuestreo.length==0" style="text-align: center;">
+                No se encontraron registros
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+
 
 </div>
 
