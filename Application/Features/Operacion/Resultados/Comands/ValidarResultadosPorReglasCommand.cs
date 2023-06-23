@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Operacion.Resultados.Comands
@@ -21,6 +22,10 @@ namespace Application.Features.Operacion.Resultados.Comands
         private readonly IReglasReporteRepository _reglasReporteRepository;
         private readonly IFormaReporteEspecificaRepository _formaReporteEspecificaRepository;
         private readonly IReglasLaboratorioLDMRepository _ldmLpcLaboratorio;
+        private IEnumerable<ReglasMinimoMaximo> reglasMinimoMaximos = new List<ReglasMinimoMaximo>();
+        private IEnumerable<ReglasReporte> reglasReporte = new List<ReglasReporte>();
+        private IEnumerable<FormaReporteEspecifica> formaReporteEspecifico = new List<FormaReporteEspecifica>();
+        private IEnumerable<ReglasLaboratorioLdmLpc> ldmLpcLab = new List<ReglasLaboratorioLdmLpc>();
 
         public ValidarResultadosPorReglasCommandHandler(
             IMuestreoRepository muestreoRepository,
@@ -37,12 +42,11 @@ namespace Application.Features.Operacion.Resultados.Comands
             _regla=regla;
             _reglasReporteRepository=reglasReporteRepository;
             _formaReporteEspecificaRepository=formaReporteEspecificaRepository;
-            _ldmLpcLaboratorio=ldmLpcLaboratorio;
+            _ldmLpcLaboratorio=ldmLpcLaboratorio;            
         }
 
         public async Task<Response<List<ResultadoValidacionReglasDto>>> Handle(ValidarResultadosPorReglasCommand request, CancellationToken cancellationToken)
         {
-            /*Creamos la lista que regresaremos al cliente*/
             List<ResultadoValidacionReglasDto> resultadosValidacion = new();
 
             var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)x.AnioOperacion) &&
@@ -50,6 +54,11 @@ namespace Application.Features.Operacion.Resultados.Comands
 
             if (muestreos.Any())
             {
+                reglasMinimoMaximos = _reglasMinimoMaximoRepository.ObtenerTodosElementosAsync().Result;
+                reglasReporte = _reglasReporteRepository.ObtenerTodosElementosAsync().Result;
+                formaReporteEspecifico = _formaReporteEspecificaRepository.ObtenerTodosElementosAsync().Result;
+                ldmLpcLab = _ldmLpcLaboratorio.ObtenerTodosElementosAsync().Result;
+                
                 foreach (var muestreo in muestreos)
                 {
                     var resultadosMuestreo = await _resultadosRepository.ObtenerResultadosParaReglas(muestreo.Id);
@@ -240,7 +249,7 @@ namespace Application.Features.Operacion.Resultados.Comands
 
         public LimiteDeteccionDto? ObtenerValoresMinMax(ResultadoParametroReglasDto resultado)
         {
-            var reglas = _reglasMinimoMaximoRepository.ObtenerElementosPorCriterio(x => x.ParametroId == resultado.IdParametro);
+            var reglas = reglasMinimoMaximos.Where(x => x.ParametroId == resultado.IdParametro);
 
             if (reglas.Any())
             {
@@ -265,7 +274,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                 }
                 else
                 {
-                    var reglaLdmLpc = _ldmLpcLaboratorio.ObtenerElementosPorCriterio(x => x.ParametroId == resultado.IdParametro && x.LaboratorioId == resultado.IdLaboratorio);
+                    var reglaLdmLpc = ldmLpcLab.Where(x => x.ParametroId == resultado.IdParametro && x.LaboratorioId == resultado.IdLaboratorio);
 
                     if (reglaLdmLpc.Any())
                     {
@@ -286,7 +295,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         public bool CumpleFormaReporteEspecifica(string valor, long parametroId, out string leyenda)
         {
             leyenda = string.Empty;
-            var formaReporteEspecifica = _formaReporteEspecificaRepository.ObtenerElementosPorCriterio(x => x.ParametroId == parametroId && x.Descripcion == valor);
+            var formaReporteEspecifica = formaReporteEspecifico.Where(x => x.ParametroId == parametroId && x.Descripcion == valor);
 
             if (formaReporteEspecifica.Any())
             {
@@ -313,7 +322,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                 return cumpleReglaReporte;
 
             /*Si el valor corresponde con alguna forma de reporte, ahora necesitamos saber si es valida. Ocupamos la tabla, ReglasReporte*/
-            var reglaReporte = _reglasReporteRepository.ObtenerElementosPorCriterioAsync(x => x.ParametroId == parametroId).Result.FirstOrDefault();
+            var reglaReporte = reglasReporte.Where(x => x.ParametroId == parametroId).FirstOrDefault();
 
             if (reglaReporte is null)
                 return cumpleReglaReporte;
