@@ -21,7 +21,7 @@ export interface acumuladosMuestreo extends Muestreo {
   fechaEntregaTeorica: string,
   numParametrosEsperados: number,
   numParametrosCargados: number,
-  muestreoCompletoPorResultados: boolean 
+  muestreoCompletoPorResultados: string 
 
 
 }

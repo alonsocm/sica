@@ -20,6 +20,71 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+
+            <th *ngFor="let columna of columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                               (selected)="columna.filtro.selectedValue = $event; filtrarColumnas();"
+                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarColumnas()" [itemTemplate]="itemTemplate"
+                               placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let dato of this.datosAcumualdos| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+
+            <td style="text-align: center;">ENTREGA-0</td>
+            <td style="text-align: center;">{{dato.claveUnica}}</td>
+            <td style="text-align: center;">{{dato.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{dato.claveSitio}}</td>
+            <td style="text-align: center;">{{dato.nombreSitio}}</td>
+            <td style="text-align: center;">{{dato.fechaProgramada}}</td>
+            <td style="text-align: center;">{{dato.fechaRealizacion}}</td>
+            <td style="text-align: center;">{{dato.horaInicio}}</td>
+            <td style="text-align: center;">{{dato.horaFin}}</td>
+            <td style="text-align: center;">{{dato.zonaEstrategica}}</td>
+            <td style="text-align: center;">{{dato.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.subTipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.laboratorio}}</td>
+            <td style="text-align: center;">{{dato.laboratorioRealizoMuestreo}}</td>
+            <td style="text-align: center;">{{dato.laboratorioSubrogado}}</td>
+
+            <td style="text-align: center;">{{dato.grupoParametro}}</td>
+            <td style="text-align: center;">{{dato.subGrupo}}</td>
+            <td style="text-align: center;">{{dato.claveParametro}}</td>
+            <td style="text-align: center;">{{dato.parametro}}</td>
+            <td style="text-align: center;">{{dato.unidadMedida}}</td>
+            <td style="text-align: center;">{{dato.resultado}}</td>
+            <td style="text-align: center;">{{dato.nuevoResultadoReplica}}</td>
+            <td style="text-align: center;">{{dato.programaAnual}}</td>
+            <td style="text-align: center;">{{dato.idResultadoLaboratorio}}</td>
+            <td style="text-align: center;">{{dato.fechaEntrega}}</td>
+            <td style="text-align: center;">{{dato.replica}}</td>
+            <td style="text-align: center;">{{dato.cambioResultado}}</td>
+          </tr>
+          <tr>
+            <td colspan="24">
+              <div *ngIf="this.datosAcumualdos.length==0" style="text-align: center;">
+                No se encontraron registros
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+
 </div>
 
 

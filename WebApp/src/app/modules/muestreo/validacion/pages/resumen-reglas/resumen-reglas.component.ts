@@ -3,6 +3,8 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from 'src/app/interfaces/filtro.interface';
+import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interface';
+import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
 
 
 @Component({
@@ -13,39 +15,47 @@ import { Filter } from 'src/app/interfaces/filtro.interface';
 export class ResumenReglasComponent extends BaseService implements OnInit {
 
   constructor(private validacionService: ValidacionReglasService ) { super(); }
-
+  datosAcumualdos: Array<acumuladosMuestreo> = [];
+  resultadosFiltrados: Array<acumuladosMuestreo> = [];
   ngOnInit(): void {
     this.columnas = [
+      { nombre: 'numEntrega', etiqueta: 'NÚMERO DE ENTREGA', orden: 0, filtro: new Filter() },
       { nombre: 'claveUnica', etiqueta: 'CLAVE ÚNICA', orden: 0, filtro: new Filter() },
-      { nombre: 'claveMuestreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
-      { nombre: 'claveCONALAB', etiqueta: 'CLAVE CONALAB', orden: 0, filtro: new Filter() },
+      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
+      { nombre: 'claveSitio', etiqueta: 'CLAVE CONALAB', orden: 0, filtro: new Filter() },
       { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 0, filtro: new Filter() },
-      { nombre: 'fechaVisita', etiqueta: 'FECHA PROGRAMADA VISITA', orden: 0, filtro: new Filter() },
-      { nombre: 'fechaRealVisita', etiqueta: 'FECHA REAL VISITA', orden: 0, filtro: new Filter() },
-      { nombre: 'horaInicioMuestreo', etiqueta: 'HORA INICIO MUESTREO', orden: 0, filtro: new Filter() },
-      { nombre: 'horaFincioMuestreo', etiqueta: 'HORA FIN MUESTREO', orden: 0, filtro: new Filter() },
+      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMADA VISITA', orden: 0, filtro: new Filter() },
+      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REAL VISITA', orden: 0, filtro: new Filter() },
+      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 0, filtro: new Filter() },
+      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 0, filtro: new Filter() },
       { nombre: 'zonaEstrategica', etiqueta: 'ZONA ESTRATEGICA', orden: 0, filtro: new Filter() },
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 0, filtro: new Filter() },
       { nombre: 'subtipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO AGUA', orden: 0, filtro: new Filter() },
       { nombre: 'laboratorio', etiqueta: 'LABORATORIO BASE DE DATOS', orden: 0, filtro: new Filter() },
-      { nombre: 'laboratorioMuestreo', etiqueta: 'LABORATORIO QUE REALIZO EL MUESTREO', orden: 0, filtro: new Filter() },
+      { nombre: 'laboratorioRealizoMuestreo', etiqueta: 'LABORATORIO QUE REALIZO EL MUESTREO', orden: 0, filtro: new Filter() },
       { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 0, filtro: new Filter() },
-      { nombre: 'grupoParametros', etiqueta: 'GRUPO DE PARÁMETRO', orden: 0, filtro: new Filter() },
-      { nombre: 'subgrupoParametros', etiqueta: 'SUBGRUPO PARÁMETRO', orden: 0, filtro: new Filter() },
+      { nombre: 'grupoParametro', etiqueta: 'GRUPO DE PARAMETROS', orden: 0, filtro: new Filter() },
+      { nombre: 'subGrupo', etiqueta: 'SUBGRUPO PARAMETRO', orden: 0, filtro: new Filter() },
       { nombre: 'claveParametro', etiqueta: 'CLAVE PARÁMETRO', orden: 0, filtro: new Filter() },
       { nombre: 'parametro', etiqueta: 'PARÁMETRO', orden: 0, filtro: new Filter() },
       { nombre: 'unidadMedida', etiqueta: 'UNIDAD DE MEDIDA', orden: 0, filtro: new Filter() },
       { nombre: 'resultado', etiqueta: 'RESULTADO', orden: 0, filtro: new Filter() },
-      { nombre: 'nuevoResultado', etiqueta: 'NUEVO RESULTADO', orden: 0, filtro: new Filter() },
-      { nombre: 'anioOperacion', etiqueta: 'AÑO DE OPERACIÓN', orden: 0, filtro: new Filter() },
-      { nombre: 'idResultado', etiqueta: 'ID RESULTADO', orden: 0, filtro: new Filter() },
+      { nombre: 'nuevoResultadoReplica', etiqueta: 'NUEVO RESULTADO', orden: 0, filtro: new Filter() },
+      { nombre: 'programaAnual', etiqueta: 'AÑO DE OPERACIÓN', orden: 0, filtro: new Filter() },
+      { nombre: 'idResultadoLaboratorio', etiqueta: 'ID RESULTADO', orden: 0, filtro: new Filter() },
       { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 0, filtro: new Filter() },
       { nombre: 'replica', etiqueta: 'REPLICA', orden: 0, filtro: new Filter() },
-      { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() },
-      { nombre: 'validado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() },
-      { nombre: 'obsReglas', etiqueta: 'OBSERVACIONES,REGLAS', orden: 0, filtro: new Filter() },
-      { nombre: 'costoParametro', etiqueta: 'COSTO DE PARÁMETRO', orden: 0, filtro: new Filter() }
+      { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() }
     ];
+
+    //cAMBIAR ESTATUS
+    this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
+      next: (response: any) => {
+        this.datosAcumualdos = response.data;
+        this.resultadosFiltrados = this.datosAcumualdos;
+      },
+      error: (error) => { },
+    });
 
   }
 
@@ -80,5 +90,33 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
         },
       });
   }
+  filtrarColumnas() {
+    //this.resultadosFiltrados = this.datosAcumualdos;
+    console.log(this.resultadosFiltrados);
+    this.columnas.forEach((columna) => {
+      this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
+        return columna.filtro.selectedValue == 'Seleccione'
+          ? true
+          : f[columna.nombre] == columna.filtro.selectedValue;
+      });
+    });
+    this.establecerValores();
+  };
+  establecerValores() {
+    this.columnas.forEach((f) => {
+      f.filtro.values = [
+        ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
+      ];
+      this.page = 1;
+    });
+  };
+  limpiarFiltros() {
+    this.columnas.forEach((f) => {
+      f.filtro.selectedValue = 'Seleccione';
+    });
+    this.filtrarn();
+    document.getElementById('dvMessage')?.click();
+    this.establecerValores();
+  };
 
 }

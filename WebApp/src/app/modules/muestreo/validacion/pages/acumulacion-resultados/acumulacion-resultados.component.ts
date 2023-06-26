@@ -47,15 +47,13 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
       { nombre: 'replica', etiqueta: 'REPLICA', orden: 0, filtro: new Filter() },
       { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() }
     ];  
-
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
         next: (response: any) => { 
           this.datosAcumualdos = response.data;
           this.resultadosFiltrados = this.datosAcumualdos;
         },
         error: (error) => { },
-      });
-    
+      });    
   }
 
 
@@ -90,7 +88,6 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
         },
       });
   }
-
   filtrarColumnas() {
     //this.resultadosFiltrados = this.datosAcumualdos;
     console.log(this.resultadosFiltrados);
@@ -111,7 +108,6 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
       this.page = 1;
     });
   };
-
   limpiarFiltros() {
     this.columnas.forEach((f) => {
       f.filtro.selectedValue = 'Seleccione';

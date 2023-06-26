@@ -17,6 +17,8 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
   aniosSeleccionados: Array<number> = [];
   entregasSeleccionadas: Array<number> = [];
+  resultadosSeleccionados: Array<acumuladosMuestreo> = [];
+
   ngOnInit(): void {
 
     this.columnas = [
@@ -47,7 +49,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
       next: (response: any) => {
         this.resultadosMuestreo = response.data;
-        //this.resultadosFiltrados = this.resultadosMuestreo;
+        this.resultadosFiltrados = this.resultadosMuestreo;
       },
       error: (error) => { },
     });
@@ -114,6 +116,15 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     document.getElementById('dvMessage')?.click();
     this.establecerValores();
   };
+
+  seleccionar(): void {
+    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
+    this.resultadosSeleccionados = this.Seleccionados(
+      this.resultadosFiltrados
+    );
+  }
+
+  enviaraValidacion(): void { }
 
 
 }

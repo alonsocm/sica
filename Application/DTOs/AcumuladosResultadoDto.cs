@@ -27,7 +27,7 @@ namespace Application.DTOs
         public string fechaEntregaTeorica { get; set; }
         public int numParametrosEsperados { get; set; }
         public int numParametrosCargados { get; set; }
-        public bool muestreoCompletoPorResultados { get; set; }
+        public string muestreoCompletoPorResultados { get; set; }
 
         public AcumuladosResultadoDto()
         {   this.claveUnica = string.Empty;
@@ -51,7 +51,7 @@ namespace Application.DTOs
             this.fechaEntregaTeorica = string.Empty;
             this.numParametrosEsperados= 0;
             this.numParametrosCargados= 0;
-            this.muestreoCompletoPorResultados = false;
+            this.muestreoCompletoPorResultados = string.Empty;
 
 
         }

@@ -241,7 +241,7 @@ namespace Persistence.Repository
                                        SubTipoCuerpoAgua = resultados.SubtipoCuerpoDeAgua,
                                        numParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
                                        numParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
-                                       muestreoCompletoPorResultados = Convert.ToBoolean(resultados.MuestreoCompletoPorResultados),
+                                       muestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
                                    }).ToListAsync();
             return muestreos.ToList();
         }

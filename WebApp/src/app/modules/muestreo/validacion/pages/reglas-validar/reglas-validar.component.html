@@ -20,6 +20,78 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th style="text-align:center" class="checkBox-center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                     (change)="seleccionarAll(this.resultadosMuestreo)" />
+            </th>
+            <th *ngFor="let columna of columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                               (selected)="columna.filtro.selectedValue = $event; filtrarColumnas()"
+                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarColumnas()" [itemTemplate]="itemTemplate"
+                               placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let dato of this.resultadosMuestreo| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+            <td style="text-align:center" class="checkBox-center">
+              <input type="checkbox"
+                     (change)="seleccionar()">
+            </td>
+            <td style="text-align: center;">{{dato.claveSitio}}</td>
+            <td style="text-align: center;">{{dato.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{dato.nombreSitio}}</td>
+            <td style="text-align: center;">{{dato.fechaRealizacion}}</td>
+            <td style="text-align: center;">{{dato.fechaProgramada}}</td>
+            <td style="text-align: center;">{{dato.laboratorioRealizoMuestreo}}</td>
+            <td style="text-align: center;">{{dato.cuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.tipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.subTipoCuerpoAgua}}</td>
+            <td style="text-align: center;">{{dato.muestreoCompletoPorResultados}}</td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+
+            <td style="text-align: center;">{{dato.resultado}}</td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"></td>
+          </tr>
+          <tr>
+            <td colspan="20">
+              <div *ngIf="this.resultadosMuestreo.length==0" style="text-align: center;">
+                No se encontraron registros
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+
+  <div style="text-align:right" class="d-flex justify-content-between">
+    <div style="text-align:right" class="col-md-12">
+      <button class="btn btn-primary rigth" type="button" (click)="aplicarReglas()">
+        <i class="bi bi-send"></i> Aplicar reglas
+      </button>
+
+    </div>
+  </div>
+  <br />
 </div>
 
 

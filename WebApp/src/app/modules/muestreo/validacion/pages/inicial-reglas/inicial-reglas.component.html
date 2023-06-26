@@ -7,44 +7,55 @@
                (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
 
-  <!--<div class="row">
-    <div class="col-md-2">
-      <label for="anios">Seleccionar año(s):*</label>
-      <select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados" [size]="this.anios.length">
-        <option *ngFor="let anio of anios" value="{{anio}}">{{anio}}</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <label for="entrega">Seleccionar número(s) de entrega:*</label>
-      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas" [size]="this.entregas.length">
-        <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
-      </select>
-    </div>
-    <div class="col-md-4 align-self-end">
-      <input class="btn btn-primary" type="button" value="Aplicar reglas de validación" (click)="this.validarMuestreosPorReglas()">
-    </div>
-  </div>-->
 
-  <div class="d-flex flex-row-reverse opciones-tabla">
-    <div class="p-2">
+  <div class="row">
+
+    <div class="col-md-3">
+      <label for="anios">Seleccionar año(s):*</label>
+      <!--<select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados" [size]="this.anios.length">
+        <option *ngFor="let anio of anios" value="{{anio}}">{{anio}}</option>
+      </select>-->
+
+      <select class="form-control" name="anios" id="anios">
+        <option value="0">2022</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label for="entrega">Seleccionar número(s) de entrega:*</label>
+      <!--<select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas" [size]="this.entregas.length">
+        <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
+      </select>-->
+      <select class="form-control" name="entrega" id="entrega">
+        <option value="">Entrega-0</option>
+      </select>
+    </div>
+
+    <div style="text-align:right" class="col-md-3">
       <button class="btn btn-secondary" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
     </div>
-    <div class="p-2">
+    <div style="text-align:left" class="col-md-1">
       <button class="btn btn-secondary" type="button">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
+
   </div>
+
 
   <div class="row">
     <div class="col-md-12 table-responsive dvTable">
       <table class="table table-striped">
         <thead>
           <tr>
-
+            <th style="text-align:center" class="checkBox-center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                     (change)="seleccionarAll(this.resultadosMuestreo)" />
+            </th>
             <th *ngFor="let columna of columnas">
               {{columna.etiqueta}}
               <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
@@ -60,7 +71,10 @@
         </thead>
         <tbody style="text-align:left;">
           <tr *ngFor="let dato of this.resultadosMuestreo| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
-
+            <td style="text-align:center" class="checkBox-center">
+              <input type="checkbox"
+                     (change)="seleccionar()">
+            </td>
             <td style="text-align: center;">{{dato.claveSitio}}</td>
             <td style="text-align: center;">{{dato.claveMonitoreo}}</td>
             <td style="text-align: center;">{{dato.nombreSitio}}</td>
@@ -97,6 +111,15 @@
     </pagination-controls>
   </div>
 
+  <div style="text-align:right" class="d-flex justify-content-between">    
+    <div style="text-align:right" class="col-md-12">
+      <button class="btn btn-primary rigth" type="button" (click)="enviaraValidacion()">
+        <i class="bi bi-send"></i> Enviar a validación
+      </button>
+     
+    </div>
+  </div>
+  <br />
 
 </div>
 
