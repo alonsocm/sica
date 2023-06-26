@@ -54,7 +54,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       error: (error) => { },
     });
   }
-
   onDownload(): void {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
     if (muestreosSeleccionados.length === 0) {
@@ -86,10 +85,8 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         },
       });
   }
-
   filtrarColumnas() {
-    //this.resultadosFiltrados = this.datosAcumualdos;
-    console.log(this.resultadosFiltrados);
+    this.resultadosFiltrados = this.resultadosMuestreo;
     this.columnas.forEach((columna) => {
       this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
         return columna.filtro.selectedValue == 'Seleccione'
@@ -107,7 +104,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       this.page = 1;
     });
   };
-
   limpiarFiltros() {
     this.columnas.forEach((f) => {
       f.filtro.selectedValue = 'Seleccione';
@@ -116,14 +112,12 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     document.getElementById('dvMessage')?.click();
     this.establecerValores();
   };
-
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.resultadosSeleccionados = this.Seleccionados(
       this.resultadosFiltrados
     );
   }
-
   enviaraValidacion(): void { }
 
 

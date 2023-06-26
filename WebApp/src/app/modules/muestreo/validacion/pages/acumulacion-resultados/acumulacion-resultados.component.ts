@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { ValidacionReglasService } from '../../services/validacion-reglas.service';
 import { FileService } from 'src/app/shared/services/file.service';
@@ -7,12 +6,13 @@ import { Filter } from 'src/app/interfaces/filtro.interface';
 import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interface';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
 
+
 @Component({
   selector: 'app-acumulacion-resultados',
   templateUrl: './acumulacion-resultados.component.html',
   styleUrls: ['./acumulacion-resultados.component.css']
 })
-export class AcumulacionResultadosComponent extends BaseService implements OnInit {
+export class AcumulacionResultadosComponent extends BaseService  implements OnInit {
 
   constructor(private validacionService: ValidacionReglasService) { super(); }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
@@ -50,13 +50,12 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
         next: (response: any) => { 
           this.datosAcumualdos = response.data;
-          this.resultadosFiltrados = this.datosAcumualdos;
+        this.resultadosFiltrados = this.datosAcumualdos;
+        
         },
         error: (error) => { },
       });    
   }
-
-
   onDownload(): void {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
     if (muestreosSeleccionados.length === 0) {
@@ -89,7 +88,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
       });
   }
   filtrarColumnas() {
-    //this.resultadosFiltrados = this.datosAcumualdos;
+    this.resultadosFiltrados = this.datosAcumualdos;
     console.log(this.resultadosFiltrados);
     this.columnas.forEach((columna) => {
       this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
@@ -101,6 +100,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
     this.establecerValores();
   };
   establecerValores() {
+    console.log("establecer valores");
     this.columnas.forEach((f) => {
       f.filtro.values = [
         ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
@@ -112,7 +112,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
     this.columnas.forEach((f) => {
       f.filtro.selectedValue = 'Seleccione';
     });
-    this.filtrarn();
+    this.filtrarColumnas();
     document.getElementById('dvMessage')?.click();
     this.establecerValores();
   };

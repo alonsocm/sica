@@ -70,7 +70,7 @@
           </tr>
         </thead>
         <tbody style="text-align:left;">
-          <tr *ngFor="let dato of this.resultadosMuestreo| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          <tr *ngFor="let dato of this.resultadosFiltrados| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
             <td style="text-align:center" class="checkBox-center">
               <input type="checkbox"
                      (change)="seleccionar()">
@@ -99,7 +99,7 @@
           </tr>
           <tr>
             <td colspan="20">
-              <div *ngIf="this.resultadosMuestreo.length==0" style="text-align: center;">
+              <div *ngIf="this.resultadosFiltrados.length==0" style="text-align: center;">
                 No se encontraron registros
               </div>
             </td>

@@ -91,8 +91,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       });
   }
   filtrarColumnas() {
-    //this.resultadosFiltrados = this.datosAcumualdos;
-    console.log(this.resultadosFiltrados);
+    this.resultadosFiltrados = this.datosAcumualdos;    
     this.columnas.forEach((columna) => {
       this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
         return columna.filtro.selectedValue == 'Seleccione'

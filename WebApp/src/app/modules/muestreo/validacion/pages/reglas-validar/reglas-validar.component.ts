@@ -18,9 +18,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
   aniosSeleccionados: Array<number> = [];
   entregasSeleccionadas: Array<number> = [];
-  ngOnInit(): void {		
-    
-
+  ngOnInit(): void {
     this.columnas = [
       { nombre: 'claveSitio', etiqueta: 'CLAVE SITIO', orden: 0, filtro: new Filter() },
       { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
@@ -82,10 +80,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         },
       });
   }
-
   filtrarColumnas() {
-    //this.resultadosFiltrados = this.datosAcumualdos;
-    console.log(this.resultadosFiltrados);
+    this.resultadosFiltrados = this.resultadosMuestreo;  
     this.columnas.forEach((columna) => {
       this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
         return columna.filtro.selectedValue == 'Seleccione'
@@ -103,7 +99,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       this.page = 1;
     });
   };
-
   limpiarFiltros() {
     this.columnas.forEach((f) => {
       f.filtro.selectedValue = 'Seleccione';
@@ -112,7 +107,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     document.getElementById('dvMessage')?.click();
     this.establecerValores();
   };
-
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.resultadosSeleccionados = this.Seleccionados(
