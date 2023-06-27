@@ -8,14 +8,18 @@ using Application.Features.Resultados.Comands;
 using Application.Features.ResumenResultados.Queries;
 using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
+using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
 using Azure.Core;
 using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
+using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using WebAPI.Controllers.v1.Catalogos;
 using WebAPI.Shared;
 
@@ -560,6 +564,54 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> GetActionAsync([FromQuery] GetResultadosporMuestreoQuery request)
         {
             return Ok(await Mediator.Send(new GetResultadosporMuestreoQuery { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
+        }
+
+        //ExportaciondeExcelPantallasValidacionReglas
+        [HttpPost("exportExcelValidaciones")]
+        public IActionResult ExportExcelValidaciones(List<AcumuladosResultadoDto> muestreos)
+        {           
+            List<AcumuladosResultadosExcel> lstmuestreosExcel = new();
+            foreach (var dato in muestreos)
+            {
+                AcumuladosResultadosExcel resultadosAcumulados = new()
+                {
+                    claveUnica = dato.claveUnica,
+                    claveMonitoreo = dato.ClaveMonitoreo,
+                    claveSitio = dato.ClaveSitio,
+                    nombreSitio = dato.NombreSitio,
+                    fechaProgramada = dato.FechaProgramada,
+                    fechaRealizacion = dato.FechaRealizacion,
+                    horaInicio = dato.HoraInicio,
+                    horaFin = dato.HoraFin,
+                    zonaEstrategica = dato.zonaEstrategica,
+                    tipoCuerpoAgua = dato.TipoCuerpoAgua,
+                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
+                    laboratorio = dato.Laboratorio,
+                    laboratorioRealizoMuestreo =dato.laboratorioRealizoMuestreo,
+                    laboratorioSubrogado = dato.LaboratorioSubrogado,
+                    grupoParametro = dato.grupoParametro,
+                    subGrupo = dato.subGrupo,
+                    claveParametro = dato.claveParametro,
+                    parametro = dato.parametro,
+                    unidadMedida = dato.unidadMedida,
+                    resultado = dato.resultado,
+                    nuevoResultadoReplica = dato.nuevoResultadoReplica,
+                    programaAnual = dato.ProgramaAnual,
+                    idResultadoLaboratorio = dato.idResultadoLaboratorio,
+                    fechaEntrega = dato.fechaEntrega,
+                    replica = dato.replica,
+                    cambioResultado = dato.cambioResultado
+
+                    };
+                lstmuestreosExcel.Add(resultadosAcumulados);
+            }
+
+            var plantilla = new Plantilla(_configuration, _env);          
+            string templatePath = plantilla.ObtenerRutaPlantilla("AcumulacionResultados");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
 

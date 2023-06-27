@@ -13,7 +13,6 @@ import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
   styleUrls: ['./acumulacion-resultados.component.css']
 })
 export class AcumulacionResultadosComponent extends BaseService  implements OnInit {
-
   constructor(private validacionService: ValidacionReglasService) { super(); }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
@@ -49,72 +48,37 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
     ];  
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
         next: (response: any) => { 
-          this.datosAcumualdos = response.data;
-        this.resultadosFiltrados = this.datosAcumualdos;
-        
+        this.datosAcumualdos = response.data;       
+        this.resultadosFiltradosn = this.datosAcumualdos;
+        this.resultadosn = this.datosAcumualdos;        
         },
         error: (error) => { },
       });    
   }
   onDownload(): void {
-    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
-    if (muestreosSeleccionados.length === 0) {
-      this.mostrarMensaje('Debe seleccionar al menos un monitoreo para descargar la información', 'warning');
+
+    this.resultadosFiltrados = this.resultadosFiltradosn;
+    if (this.resultadosFiltrados.length === 0) {
+      this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
-    this.loading = true;
-    //cambiar
-    this.validacionService.exportarResultadosAcumuladosExcel(muestreosSeleccionados)
+    
+    this.loading = true;    
+    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
       .subscribe({
-        next: (response: any) => {
-
-          this.resultadosFiltradosn = this.resultadosFiltradosn.map((m) => {
-            m.isChecked = false;
-            return m;
-          });
-          this.seleccionarTodosChck = false;
-          FileService.download(response, 'ACUMULACIÓN_RESULTADOS.xlsx');
+        next: (response: any) => {    
+          FileService.download(response, 'AcumulacionResultados.xlsx');
           this.loading = false;
         },
         error: (response: any) => {
           this.mostrarMensaje(
             'No fue posible descargar la información',
             'danger'
-
           );
           this.loading = false;
           this.hacerScroll();
         },
       });
   }
-  filtrarColumnas() {
-    this.resultadosFiltrados = this.datosAcumualdos;
-    console.log(this.resultadosFiltrados);
-    this.columnas.forEach((columna) => {
-      this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
-      });
-    });
-    this.establecerValores();
-  };
-  establecerValores() {
-    console.log("establecer valores");
-    this.columnas.forEach((f) => {
-      f.filtro.values = [
-        ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
-      ];
-      this.page = 1;
-    });
-  };
-  limpiarFiltros() {
-    this.columnas.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrarColumnas();
-    document.getElementById('dvMessage')?.click();
-    this.establecerValores();
-  };
 
 }

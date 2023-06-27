@@ -13,7 +13,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
   constructor(private validacionService: ValidacionReglasService) { super(); }
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
-  resultadosFiltrados: Array<acumuladosMuestreo> = [];
   resultadosSeleccionados: Array<acumuladosMuestreo> = [];
 
   aniosSeleccionados: Array<number> = [];
@@ -40,15 +39,18 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       { nombre: 'muestreoValidadoPor', etiqueta: 'MUESTREO VALIDADO POR', orden: 0, filtro: new Filter() },
       { nombre: 'porcentajePago', etiqueta: '% DE PAGO', orden: 0, filtro: new Filter() }];
 
+
     this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
       next: (response: any) => {
-        this.resultadosMuestreo = response.data;
-        this.resultadosFiltrados = this.resultadosMuestreo;
+        this.loading = true;
+        this.resultadosMuestreo = response.data;  
+        this.resultadosFiltradosn = this.resultadosMuestreo;
+        this.resultadosn = this.resultadosMuestreo;
+        this.loading = false;
       },
-      error: (error) => { },
+      error: (error) => { this.loading = false; },
     });
   }
-
   onDownload(): void {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
     if (muestreosSeleccionados.length === 0) {
@@ -56,7 +58,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       return this.hacerScroll();
     }
     this.loading = true;
-    //cambiar
+
     this.validacionService.exportarResultadosAcumuladosExcel(muestreosSeleccionados)
       .subscribe({
         next: (response: any) => {
@@ -79,38 +81,11 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
           this.hacerScroll();
         },
       });
-  }
-  filtrarColumnas() {
-    this.resultadosFiltrados = this.resultadosMuestreo;  
-    this.columnas.forEach((columna) => {
-      this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
-      });
-    });
-    this.establecerValores();
-  };
-  establecerValores() {
-    this.columnas.forEach((f) => {
-      f.filtro.values = [
-        ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
-      ];
-      this.page = 1;
-    });
-  };
-  limpiarFiltros() {
-    this.columnas.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrarn();
-    document.getElementById('dvMessage')?.click();
-    this.establecerValores();
-  };
+  }  
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.resultadosSeleccionados = this.Seleccionados(
-      this.resultadosFiltrados
+      this.resultadosFiltradosn
     );
   }
   aplicarReglas(): void { }

@@ -16,7 +16,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
   constructor(private validacionService: ValidacionReglasService ) { super(); }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
-  resultadosFiltrados: Array<acumuladosMuestreo> = [];
+
   ngOnInit(): void {
     this.columnas = [
       { nombre: 'numEntrega', etiqueta: 'NÚMERO DE ENTREGA', orden: 0, filtro: new Filter() },
@@ -51,14 +51,14 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     //cAMBIAR ESTATUS
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
       next: (response: any) => {
-        this.datosAcumualdos = response.data;
-        this.resultadosFiltrados = this.datosAcumualdos;
+        this.datosAcumualdos = response.data;      
+        this.resultadosFiltradosn = this.datosAcumualdos;
+        this.resultadosn = this.datosAcumualdos;
       },
       error: (error) => { },
     });
 
   }
-
   onDownload(): void {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
     if (muestreosSeleccionados.length === 0) {
@@ -89,33 +89,6 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
           this.hacerScroll();
         },
       });
-  }
-  filtrarColumnas() {
-    this.resultadosFiltrados = this.datosAcumualdos;    
-    this.columnas.forEach((columna) => {
-      this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
-      });
-    });
-    this.establecerValores();
-  };
-  establecerValores() {
-    this.columnas.forEach((f) => {
-      f.filtro.values = [
-        ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
-      ];
-      this.page = 1;
-    });
-  };
-  limpiarFiltros() {
-    this.columnas.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrarn();
-    document.getElementById('dvMessage')?.click();
-    this.establecerValores();
-  };
+  } 
 
 }

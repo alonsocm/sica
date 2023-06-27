@@ -29,8 +29,8 @@
             <th *ngFor="let columna of columnas">
               {{columna.etiqueta}}
               <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                               (selected)="columna.filtro.selectedValue = $event; filtrarColumnas();"
-                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarColumnas()" [itemTemplate]="itemTemplate"
+                               (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
                                placeholder="seleccione">
               </ng-autocomplete>
               <ng-template #itemTemplate let-item>
@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody style="text-align:left;">
-          <tr *ngFor="let dato of this.resultadosFiltrados| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          <tr *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
 
             <td style="text-align: center;">ENTREGA-0</td>
             <td style="text-align: center;">{{dato.claveUnica}}</td>
@@ -73,7 +73,7 @@
           </tr>
           <tr>
             <td colspan="24">
-              <div *ngIf="this.resultadosFiltrados.length==0" style="text-align: center;">
+              <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">
                 No se encontraron registros
               </div>
             </td>
