@@ -70,6 +70,10 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
                 muestreo.RuleFor(x => x.IdResultado).NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}");
 
                 muestreo.RuleFor(x => x.FechaEntrega).NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}");
+
+                muestreo.RuleFor(x => x.NoEntrega).NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}");
+
+                muestreo.RuleFor(x => x.AnioOperacion).NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}");
             });
         }
 

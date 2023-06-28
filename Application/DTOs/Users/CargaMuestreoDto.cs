@@ -38,6 +38,7 @@ namespace Application.DTOs.Users
         public string? AnioOperacion { get; set; }
         public string? IdResultado { get; set; }
         public DateTime FechaEntrega { get; set; }
+        public string NoEntrega { get; set; }
         public int Linea { get; set; }
     }
 }
