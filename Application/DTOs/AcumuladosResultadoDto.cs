@@ -15,7 +15,7 @@ namespace Application.DTOs
         public string subGrupo { get; set; }
         public string claveParametro { get; set; }
         public string parametro { get; set; }
-        public string unidadMedida { get; set; }
+        public string? unidadMedida { get; set; }
         public string resultado { get; set; }
         public string zonaEstrategica { get; set; }
         public long idResultadoLaboratorio { get; set; }

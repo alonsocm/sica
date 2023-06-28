@@ -48,7 +48,7 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
     ];  
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
         next: (response: any) => { 
-        this.datosAcumualdos = response.data;       
+        this.datosAcumualdos = response.data;        
         this.resultadosFiltradosn = this.datosAcumualdos;
         this.resultadosn = this.datosAcumualdos;        
         },
@@ -56,15 +56,13 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
       });    
   }
   onDownload(): void {
-
-    this.resultadosFiltrados = this.resultadosFiltradosn;
-    if (this.resultadosFiltrados.length === 0) {
+    if (this.resultadosFiltradosn.length == 0) {
       this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
-    
+   
     this.loading = true;    
-    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
+    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {    
           FileService.download(response, 'AcumulacionResultados.xlsx');

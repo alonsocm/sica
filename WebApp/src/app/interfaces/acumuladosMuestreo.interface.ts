@@ -23,5 +23,5 @@ export interface acumuladosMuestreo extends Muestreo {
   numParametrosCargados: number,
   muestreoCompletoPorResultados: string 
 
-
+  
 }

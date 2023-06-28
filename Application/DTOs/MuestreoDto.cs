@@ -45,6 +45,20 @@ namespace Application.DTOs
         {
             this.DiaProgramado = string.Empty;
             this.Evidencias = new List<EvidenciaDto>();
+
+            this.OCDL = string.Empty;
+            this.ClaveSitioOriginal = string.Empty;
+            this.CuerpoAgua = string.Empty;
+            this.Estado = string.Empty;
+            this.FechaCarga = string.Empty;
+            this.FechaLimiteRevision = string.Empty;
+            this.HoraCargaEvidencias = string.Empty;
+            this.NumeroCargaEvidencias = string.Empty;
+            this.NumeroEntrega = string.Empty;
+            this.Observaciones = string.Empty;
+            this.TipoCuerpoAguaOriginal = string.Empty;
+
+
         }
     }
 }
