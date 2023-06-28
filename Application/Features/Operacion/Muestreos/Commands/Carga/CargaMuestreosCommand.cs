@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Users;
+﻿using Application.DTOs;
+using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -12,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Muestreos.Commands.Carga
 {
-    public class CargaMuestreosCommand : IRequest<Response<bool>>
+    public class CargaMuestreosCommand : IRequest<Response<ResultadoCargaMuestreo>>
     {
         public List<CargaMuestreoDto> Muestreos { get; set; } = new List<CargaMuestreoDto>();
         public bool Validado { get; set; }
     }
 
-    public class CargaMasivaMuestreosCommandHandler : IRequestHandler<CargaMuestreosCommand, Response<bool>>
+    public class CargaMasivaMuestreosCommandHandler : IRequestHandler<CargaMuestreosCommand, Response<ResultadoCargaMuestreo>>
     {
         private readonly IMuestreoRepository _repository;
 
@@ -27,13 +28,44 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
             _repository=repositoryAsync;
         }
 
-        public async Task<Response<bool>> Handle(CargaMuestreosCommand request, CancellationToken cancellationToken)
+        public async Task<Response<ResultadoCargaMuestreo>> Handle(CargaMuestreosCommand request, CancellationToken cancellationToken)
         {
-            var muestreos = _repository.ConvertToMuestreosList(request.Muestreos, request.Validado);
+            var numeroEntrega = Convert.ToInt32(request.Muestreos.Select(m => m.NoEntrega).Distinct().FirstOrDefault());
+            var anio = Convert.ToInt32(request.Muestreos.Select(m => m.AnioOperacion).Distinct().FirstOrDefault());
+            var existeCargaPrevia = await ExisteNumeroEntrega(numeroEntrega, anio);
 
-            _repository.InsertarRango(muestreos);
+            if (!existeCargaPrevia)
+            {
+                var muestreos = _repository.ConvertToMuestreosList(request.Muestreos, request.Validado);
+                _repository.InsertarRango(muestreos);
 
-            return new Response<bool>(true);
+                var resultadoCarga = new ResultadoCargaMuestreo
+                {
+                    Correcto = false,
+                    ExisteCarga = true,
+                    Anio = anio,
+                    NumeroEntrega = numeroEntrega,
+                };
+
+                return new Response<ResultadoCargaMuestreo>(resultadoCarga);
+            }
+            else
+            {
+                var resultadoCarga = new ResultadoCargaMuestreo
+                {
+                    Correcto = false,
+                    ExisteCarga = true,
+                    Anio = anio,
+                    NumeroEntrega = numeroEntrega,
+                };
+
+                return new Response<ResultadoCargaMuestreo>(resultadoCarga);
+            }
+        }
+
+        public async Task<bool> ExisteNumeroEntrega(int numeroEntrega, int anio)
+        {
+            return await _repository.ExisteElemento(w => w.NumeroEntrega == numeroEntrega && w.AnioOperacion == anio);
         }
     }
 }
