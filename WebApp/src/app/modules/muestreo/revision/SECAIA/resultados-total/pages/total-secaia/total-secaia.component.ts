@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Filter } from '../../../../../../../interfaces/filtro.interface';
 import { Resultado, ResultadoDescarga } from '../../../../../../../interfaces/Resultado.interface';
 import { Columna } from 'src/app/interfaces/columna-inferface';
@@ -25,6 +25,8 @@ export class TotalSecaiaComponent extends BaseService implements OnInit {
   resultadosnf: Array<any> = [];
   paramTotalOrdenados: Array<any> = [];
   muestreoActualizar: Array<any> = [];
+
+  resultadosResultados: Array<Resultado> = [];
   @ViewChild('inputExcelObservaciones') inputExcelObservaciones: ElementRef = {} as ElementRef; 
 
   constructor(private totalService: TotalService, private muestreoService: MuestreoService) { super(); }
@@ -78,10 +80,10 @@ export class TotalSecaiaComponent extends BaseService implements OnInit {
         this.paramTotalOrdenados.push(columna);       
       }
 
-      this.resultadosFiltradosn = this.resultadosn;
-      this.resultadosFiltradosn[0].lstParametrosTotalOrden = this.paramTotalOrdenados;
-      if (this.resultadosFiltradosn.length > 0) {
-        this.resultadosFiltradosn.forEach((f) => {
+      this.resultadosResultados = this.resultadosn;
+      this.resultadosResultados[0].lstParametrosTotalOrden = this.paramTotalOrdenados;
+      if (this.resultadosResultados.length > 0) {
+        this.resultadosResultados.forEach((f) => {
           this.paramTotalOrdenados.forEach((x) => {
             let paramOrdenado = f.lstParametros?.filter(y => y.id == x.orden);
             (paramOrdenado?.length == 1) ? (f.lstParametrosTotalResultado?.push(paramOrdenado[0].resulatdo)) : (f.lstParametrosTotalResultado?.push(""));

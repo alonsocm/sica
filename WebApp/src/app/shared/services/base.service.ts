@@ -20,9 +20,9 @@ export class BaseService {
   seleccionarTodosChck: boolean = false;
 
   columnas: Array<Columna> = [];
-  resultadosFiltradosn: Array<Resultado> = [];  
-  
-  resultadosn: Array<Resultado> = [];    
+  resultadosFiltradosn: Array<any> = [];  
+
+  resultadosn: Array<any> = [];    
   sufijos: Array<string> = ['E','M','S','D','R','O','A','V','C'];
 
   @ViewChild('mensajes') mensajes: any;

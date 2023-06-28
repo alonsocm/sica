@@ -28,8 +28,8 @@ export class ValidacionReglasService {
     return this.http.get(environment.apiUrl + '/Resultados/ExportarResumenValidacion', { params, responseType: 'blob' });
   }
 
-  exportarResultadosAcumuladosExcel(muestreos: Array<any> = []) {
-    return this.http.post(environment.apiUrl + '/Replicas/ExportarExcelReplica', muestreos, { responseType: 'blob' });
+  exportarResultadosAcumuladosExcel(muestreos: Array<any> = []) { 
+    return this.http.post(environment.apiUrl + '/Resultados/exportExcelValidaciones', muestreos, { responseType: 'blob' } );
   }
 
   getResultadosAcumuladosParametros(estatusId: number) {

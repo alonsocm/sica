@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { ValidacionReglasService } from '../../services/validacion-reglas.service';
 import { FileService } from 'src/app/shared/services/file.service';
@@ -5,14 +6,17 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
 
+
 @Component({
   selector: 'app-inicial-reglas',
   templateUrl: './inicial-reglas.component.html',
   styleUrls: ['./inicial-reglas.component.css']
 })
-export class InicialReglasComponent extends BaseService implements OnInit {
-  
+export class InicialReglasComponent extends BaseService
+  implements OnInit {
+
   constructor(private validacionService: ValidacionReglasService) { super(); }
+
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
   aniosSeleccionados: Array<number> = [];
@@ -43,13 +47,14 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       { nombre: 'autorizacionRegla', etiqueta: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)', orden: 0, filtro: new Filter() },
       { nombre: 'cumpleTodosCriterios', etiqueta: 'CUMPLE CON TODOS LOS CRITERIOS PARA APLICAR REGLAS (SI/NO)', orden: 0, filtro: new Filter() }
 
-   
+
     ];
 
     this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
       next: (response: any) => {
         this.resultadosMuestreo = response.data;
-        this.resultadosFiltrados = this.resultadosMuestreo;
+        this.resultadosFiltradosn = this.resultadosMuestreo;
+        this.resultadosn = this.resultadosMuestreo;
       },
       error: (error) => { },
     });
@@ -61,7 +66,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       return this.hacerScroll();
     }
     this.loading = true;
-//cambiar
+    //cambiar
     this.validacionService.exportarResultadosAcumuladosExcel(muestreosSeleccionados)
       .subscribe({
         next: (response: any) => {
@@ -85,33 +90,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         },
       });
   }
-  filtrarColumnas() {
-    this.resultadosFiltrados = this.resultadosMuestreo;
-    this.columnas.forEach((columna) => {
-      this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
-      });
-    });
-    this.establecerValores();
-  };
-  establecerValores() {
-    this.columnas.forEach((f) => {
-      f.filtro.values = [
-        ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
-      ];
-      this.page = 1;
-    });
-  };
-  limpiarFiltros() {
-    this.columnas.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrarn();
-    document.getElementById('dvMessage')?.click();
-    this.establecerValores();
-  };
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.resultadosSeleccionados = this.Seleccionados(
@@ -122,3 +100,4 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
 
 }
+

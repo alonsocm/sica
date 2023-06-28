@@ -24,5 +24,8 @@ export enum estatusMuestreo {
   ReplicaConDiferenteDato = 23,
   PendienteDeEnvioAprobacionFinal = 24,
   Cargado = 25,
-  OriginalesAprobados = 26
+  OriginalesAprobados = 26,
+  ValidadoPorReglas = 27,
+SeleccionadoParaValidar = 28
+
 }

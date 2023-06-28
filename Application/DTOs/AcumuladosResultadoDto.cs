@@ -42,18 +42,14 @@ namespace Application.DTOs
             this.grupoParametro = string.Empty;
             this.idResultadoLaboratorio = 0;
             this.fechaEntrega = string.Empty;
-
             this.nuevoResultadoReplica = string.Empty;
             this.replica = false;
             this.cambioResultado = false;
-
             this.diferenciaDias = 0;
             this.fechaEntregaTeorica = string.Empty;
             this.numParametrosEsperados= 0;
             this.numParametrosCargados= 0;
             this.muestreoCompletoPorResultados = string.Empty;
-
-
         }
     }
 }
