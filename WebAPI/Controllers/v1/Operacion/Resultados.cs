@@ -11,13 +11,16 @@ using Application.Features.Validados.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
+using AutoMapper;
 using Azure.Core;
 using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using WebAPI.Controllers.v1.Catalogos;
@@ -31,13 +34,15 @@ namespace WebAPI.Controllers.v1.Operacion
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
         const int estatusVencido = (int)Application.Enums.EstatusMuestreo.PendienteDeEnvioAprobacionFinal;
         const int aprobacionSistema = (int)Application.Enums.TipoAprobacion.Sistema;
 
-        public Resultados(IConfiguration configuration, IWebHostEnvironment env)
+        public Resultados(IConfiguration configuration, IWebHostEnvironment env, IMapper mapper )
         {
             _configuration = configuration;
             _env = env;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -112,10 +117,10 @@ namespace WebAPI.Controllers.v1.Operacion
                 UserId = id,
                 isOCDL = isOCDL
             });
-            
+
             List<ResultadoMuestreoDto> lstResultadosValidados = lstResultados.Data.ToList().Where(x => x.fechaLimiteRevisionVencidos >= DateTime.Now.Date).ToList();
-            List<ResultadoMuestreoDto> lstResultadosVencidos = lstResultados.Data.ToList(). Where(x => x.fechaLimiteRevisionVencidos < DateTime.Now.Date && (x.EstatusOCDL == null || x.EstatusSECAIA == null)).ToList();
-            
+            List<ResultadoMuestreoDto> lstResultadosVencidos = lstResultados.Data.ToList().Where(x => x.fechaLimiteRevisionVencidos < DateTime.Now.Date && (x.EstatusOCDL == null || x.EstatusSECAIA == null)).ToList();
+
             //Acatualizar a estatus vencidos
             if (lstResultadosVencidos.Count > 0)
             {
@@ -133,9 +138,9 @@ namespace WebAPI.Controllers.v1.Operacion
                     });
                 }
             }
-            
+
             return Ok(new Response<List<ResultadoMuestreoDto>>(lstResultadosValidados));
-     
+
         }
 
         [HttpPost("ExportarExcelResultados")]
@@ -195,8 +200,8 @@ namespace WebAPI.Controllers.v1.Operacion
                 ExcelValidadosOCDL datoresumen = new()
                 {
                     NumeroEntrega = datomuestreo.NoEntregaOCDL,
-                    ClaveUnica = datomuestreo.ClaveUnica??string.Empty,
-                    ClaveSitio = datomuestreo.ClaveSitio??string.Empty,
+                    ClaveUnica = datomuestreo.ClaveUnica ?? string.Empty,
+                    ClaveSitio = datomuestreo.ClaveSitio ?? string.Empty,
                     ClaveMonitoreo = datomuestreo.ClaveMonitoreo ?? string.Empty,
                     Nombre = datomuestreo.NombreSitio,
                     ClaveParametro = datomuestreo.ClaveParametro ?? string.Empty,
@@ -226,7 +231,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpPost("ExportarExcelResulatdosSECAIA")]
         public IActionResult ExportarExcelTotalSecaia(List<ResultadoDescargaDto> muestreos, string tipoExcel, bool admin = false)
-        {            
+        {
             List<DescargaSecaia> lstSecaia = new List<DescargaSecaia>();
             List<DescargarConsultaFormato> lstConsulForm = new List<DescargarConsultaFormato>();
 
@@ -236,8 +241,9 @@ namespace WebAPI.Controllers.v1.Operacion
                 DescargaParametrosCabecerasDto dato = new DescargaParametrosCabecerasDto();
                 DescargaSecaia secaia = new DescargaSecaia();
                 DescargarConsultaFormato consulForm = new DescargarConsultaFormato();
-                
-                if (tipoExcel == "secaia") {                  
+
+                if (tipoExcel == "secaia")
+                {
                     secaia.NoEntregaOCDL = item.noEntregaOCDL;
                     secaia.Ocdl = item.ocdl;
                     secaia.NombreSitio = item.nombreSitio;
@@ -251,7 +257,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     if (admin)
                     {
                         consulForm.NoEntrega = item.noEntregaOCDL;
-                    }                    
+                    }
                     consulForm.ClaveSitioOriginal = item.claveSitioOriginal;
                     consulForm.ClaveSitio = item.claveSitio;
                     consulForm.ClaveMonitoreo = item.claveMonitoreo;
@@ -274,21 +280,21 @@ namespace WebAPI.Controllers.v1.Operacion
                     {
                         datosfinales.Add("");
                     }
-                }      
+                }
                 int num = 0;
                 PropertyInfo[] propiedad = typeof(DescargaParametrosCabecerasDto).GetProperties();
                 foreach (PropertyInfo p in propiedad)
                 {
                     if (tipoExcel == "secaia")
-                    {                        
+                    {
                         p.SetValue(secaia, datosfinales[num]);
                     }
                     else if (tipoExcel == "resultado" || tipoExcel == "consulta")
                     {
                         p.SetValue(consulForm, datosfinales[num]);
-                    }                    
+                    }
                     num++;
-                }                
+                }
 
                 if (tipoExcel == "secaia")
                 {
@@ -297,7 +303,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 else if (tipoExcel == "resultado" || tipoExcel == "consulta")
                 {
                     lstConsulForm.Add(consulForm);
-                }                
+                }
             }
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = string.Empty;
@@ -309,17 +315,17 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 templatePath = plantilla.ObtenerRutaPlantilla("ConsultaFormato");
             }
-             
+
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
 
-           if (tipoExcel == "secaia")
+            if (tipoExcel == "secaia")
             {
                 ExcelService.ExportToExcel(lstSecaia, fileInfo, true);
             }
             else if (tipoExcel == "resultado" || tipoExcel == "consulta")
             {
                 ExcelService.ExportToExcel(lstConsulForm, fileInfo, true);
-            }            
+            }
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
@@ -454,7 +460,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     ClaveParametro = resumen.ClaveParametro,
                     Laboratorio = resumen.Laboratorio,
                     TipoCuerpoAgua = resumen.TipoCuerpoAgua,
-                    TipoCuerpoAguaOriginal =  resumen.TipoCuerpoAguaOriginal,
+                    TipoCuerpoAguaOriginal = resumen.TipoCuerpoAguaOriginal,
                     Resultado = resumen.Resultado,
                     TipoAprobacion = resumen.TipoAprobacion,
                     ResultadoCorrecto = resumen.EsCorrectoResultado,
@@ -527,7 +533,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ValidarResultadosPorReglas")]
-        public async Task<IActionResult> Get([FromQuery]ValidarResultadosPorReglasCommand request)
+        public async Task<IActionResult> Get([FromQuery] ValidarResultadosPorReglasCommand request)
         {
             return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
         }
@@ -550,10 +556,10 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ResultadosAcumuladosParametros")]
         public async Task<IActionResult> GetActionAsync(int estatusId)
         {
-            Response<List<AcumuladosResultadoDto>> lstResultados = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoQuery 
+            Response<List<AcumuladosResultadoDto>> lstResultados = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoQuery
             {
                 estatusId = estatusId
-                
+
             });
 
             return Ok(lstResultados);
@@ -569,8 +575,8 @@ namespace WebAPI.Controllers.v1.Operacion
         //ExportaciondeExcelPantallasValidacionReglas
         [HttpPost("exportExcelValidaciones")]
         public IActionResult ExportExcelValidaciones(List<AcumuladosResultadoDto> muestreos)
-        {           
-            List<AcumuladosResultadosExcel> lstmuestreosExcel = new();
+        {
+            List<AcumuladosResultadosExcel> lstmuestreosExcel = new List<AcumuladosResultadosExcel>();
             foreach (var dato in muestreos)
             {
                 AcumuladosResultadosExcel resultadosAcumulados = new()
@@ -587,13 +593,13 @@ namespace WebAPI.Controllers.v1.Operacion
                     tipoCuerpoAgua = dato.TipoCuerpoAgua,
                     subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
                     laboratorio = dato.Laboratorio,
-                    laboratorioRealizoMuestreo =dato.laboratorioRealizoMuestreo,
+                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
                     laboratorioSubrogado = dato.LaboratorioSubrogado,
                     grupoParametro = dato.grupoParametro,
                     subGrupo = dato.subGrupo,
                     claveParametro = dato.claveParametro,
                     parametro = dato.parametro,
-                    unidadMedida = dato.unidadMedida,
+                    unidadMedida = dato.unidadMedida ?? string.Empty,
                     resultado = dato.resultado,
                     nuevoResultadoReplica = dato.nuevoResultadoReplica,
                     programaAnual = dato.ProgramaAnual,
@@ -601,12 +607,13 @@ namespace WebAPI.Controllers.v1.Operacion
                     fechaEntrega = dato.fechaEntrega,
                     replica = dato.replica,
                     cambioResultado = dato.cambioResultado
-
-                    };
-                lstmuestreosExcel.Add(resultadosAcumulados);
+                
+                };
+                
+                lstmuestreosExcel.Add(resultadosAcumulados);               
             }
 
-            var plantilla = new Plantilla(_configuration, _env);          
+            var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("AcumulacionResultados");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
             ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
@@ -614,6 +621,121 @@ namespace WebAPI.Controllers.v1.Operacion
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
+        [HttpPost("exportExcelResultadosaValidar")]
+        public IActionResult ExportExcelResultadosaValidar(List<AcumuladosResultadoDto> muestreos)
+        {
+            List<ResultadosValidarExcel> lstmuestreosExcel = new ();
+            foreach (var dato in muestreos)
+            {
+                ResultadosValidarExcel resultadosaValidar = new()
+                {
+                    claveSitio = dato.ClaveSitio,
+                    claveMonitoreo = dato.ClaveMonitoreo,
+                    nombreSitio = dato.NombreSitio,
+                    fechaRealizacion = dato.FechaRealizacion,
+                    fechaProgramada = dato.FechaProgramada,
+                    diferenciaDias = dato.diferenciaDias,
+                    fechaEntregaTeorica = dato.fechaEntregaTeorica,
+                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
+                    cuerpoAgua = dato.CuerpoAgua,
+                    tipoCuerpoAgua = dato.TipoCuerpoAgua,
+                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
+                    numParametrosEsperados = dato.numParametrosEsperados,
+                    numParametrosCargados = dato.numParametrosCargados,
+                    muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados
+                };
+               
+                lstmuestreosExcel.Add(resultadosaValidar);
+            }          
 
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("InicioReglas");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
+
+        [HttpPost("exportExcelResultadosValidados")]
+        public IActionResult ExportExcelResultadosValidados(List<AcumuladosResultadoDto> muestreos)
+        {
+            List<ResultadosValidadosExcel> lstmuestreosExcel = new();
+            foreach (var dato in muestreos)
+            {
+                ResultadosValidadosExcel resultadosValidados = new()
+                {
+                    claveSitio = dato.ClaveSitio,
+                    claveMonitoreo = dato.ClaveMonitoreo,
+                    nombreSitio = dato.NombreSitio,
+                    fechaRealizacion = dato.FechaRealizacion,
+                    fechaProgramada = dato.FechaProgramada,                    
+                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
+                    cuerpoAgua = dato.CuerpoAgua,
+                    tipoCuerpoAgua = dato.TipoCuerpoAgua,
+                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,           
+                    muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados
+                };
+
+                lstmuestreosExcel.Add(resultadosValidados);
+            }
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ResumenCargaResultadosAValidar");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
+
+        [HttpPost("exportExcelResumenResultados")]
+        public IActionResult ExportExcelResumenResultados(List<AcumuladosResultadoDto> muestreos)
+        {
+            List<ResumenResultadosExcel> lstmuestreosExcel = new ();
+            foreach (var dato in muestreos)
+            {
+                ResumenResultadosExcel resultadosAcumulados = new()
+                {
+                     numeroEntrega = dato.NumeroEntrega,
+                    claveUnica = dato.claveUnica,
+                    claveMonitoreo = dato.ClaveMonitoreo,
+                    claveSitio = dato.ClaveSitio,
+                    nombreSitio = dato.NombreSitio,
+                    fechaProgramada = dato.FechaProgramada,
+                    fechaRealizacion = dato.FechaRealizacion,
+                    horaInicio = dato.HoraInicio,
+                    horaFin = dato.HoraFin,
+                    zonaEstrategica = dato.zonaEstrategica,
+                    tipoCuerpoAgua = dato.TipoCuerpoAgua,
+                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
+                    laboratorio = dato.Laboratorio,
+                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
+                    laboratorioSubrogado = dato.LaboratorioSubrogado,
+                    grupoParametro = dato.grupoParametro,
+                    subGrupo = dato.subGrupo,
+                    claveParametro = dato.claveParametro,
+                    parametro = dato.parametro,
+                    unidadMedida = dato.unidadMedida ?? string.Empty,
+                    resultado = dato.resultado,
+                    nuevoResultadoReplica = dato.nuevoResultadoReplica,
+                    programaAnual = dato.ProgramaAnual,
+                    idResultadoLaboratorio = dato.idResultadoLaboratorio,
+                    fechaEntrega = dato.fechaEntrega,
+                    replica = (dato.replica) ? "SI":"NO",
+                    cambioResultado = (dato.cambioResultado) ? "SI":"NO",
+                    validadoReglas = (dato.validadoReglas) ? "SI" : "NO",
+                    observacionesReglas = dato.Observaciones,
+                    costoParametro = dato.costoParametro
+
+            };
+                lstmuestreosExcel.Add(resultadosAcumulados);
+            }
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ResumenResultados");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
     }
 }

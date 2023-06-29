@@ -51,39 +51,33 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     //cAMBIAR ESTATUS
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
       next: (response: any) => {
+        this.loading = true;
         this.datosAcumualdos = response.data;      
         this.resultadosFiltradosn = this.datosAcumualdos;
         this.resultadosn = this.datosAcumualdos;
+        this.loading = false;
       },
-      error: (error) => { },
+      error: (error) => { this.loading = false; },
     });
 
   }
   onDownload(): void {
-    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
-    if (muestreosSeleccionados.length === 0) {
-      this.mostrarMensaje('Debe seleccionar al menos un monitoreo para descargar la información', 'warning');
+    if (this.resultadosFiltradosn.length == 0) {
+      this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
+
     this.loading = true;
-    //cambiar
-    this.validacionService.exportarResultadosAcumuladosExcel(muestreosSeleccionados)
+    this.validacionService.exportExcelResumenResultados(this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {
-
-          this.resultadosFiltradosn = this.resultadosFiltradosn.map((m) => {
-            m.isChecked = false;
-            return m;
-          });
-          this.seleccionarTodosChck = false;
-          FileService.download(response, 'RESUMEN_VALIDACIONREGLAS.xlsx');
+          FileService.download(response, 'ResultadosaValidar.xlsx');
           this.loading = false;
         },
         error: (response: any) => {
           this.mostrarMensaje(
             'No fue posible descargar la información',
             'danger'
-
           );
           this.loading = false;
           this.hacerScroll();

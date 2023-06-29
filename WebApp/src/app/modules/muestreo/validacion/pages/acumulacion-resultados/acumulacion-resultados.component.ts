@@ -18,6 +18,7 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
   
   ngOnInit(): void {
+    this.loading = true;
     this.columnas = [
       { nombre: 'claveUnica', etiqueta: 'CLAVE ÚNICA', orden: 0, filtro: new Filter() },
       { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
@@ -47,12 +48,15 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
       { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() }
     ];  
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
-        next: (response: any) => { 
+     
+      next: (response: any) => {
+       
         this.datosAcumualdos = response.data;        
         this.resultadosFiltradosn = this.datosAcumualdos;
-        this.resultadosn = this.datosAcumualdos;        
+        this.resultadosn = this.datosAcumualdos;
+        this.loading = false;
         },
-        error: (error) => { },
+      error: (error) => { this.loading = false; },
       });    
   }
   onDownload(): void {

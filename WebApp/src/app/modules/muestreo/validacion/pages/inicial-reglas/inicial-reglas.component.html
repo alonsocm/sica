@@ -1,4 +1,9 @@
 <router-outlet name="menu"></router-outlet>
+<form>
+  <div class="form-group  d-flex justify-content-center">
+    <app-loading *ngIf="loading"></app-loading>
+  </div>
+</form>
 <div class="container-fluid">
   <h3>Resumen de carga de resultados para validar resultados (Por monitoreo)</h3>
   <hr class="red">
@@ -50,12 +55,14 @@
     <div class="col-md-12 table-responsive dvTable">
       <table class="table table-striped">
         <thead>
-          <tr>
-            <th style="text-align:center" class="checkBox-center">
+          <tr>       
+
+            <th class="checkBox-center" style="text-align:center">
               <label for="chckAll">SELECCIONAR TODOS</label>
               <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                     (change)="seleccionarAll(this.resultadosMuestreo)" />
+                     (change)="seleccionarAll(this.resultadosFiltradosn)" />
             </th>
+
             <th *ngFor="let columna of columnas">
               {{columna.etiqueta}}
               <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
@@ -72,8 +79,8 @@
         <tbody style="text-align:left;">
           <tr *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
             <td style="text-align:center" class="checkBox-center">
-              <input type="checkbox"
-                     (change)="seleccionar()">
+              <input type="checkbox" [(ngModel)]="dato.isChecked"
+                     (change)="seleccionarn()">
             </td>
             <td style="text-align: center;">{{dato.claveSitio}}</td>
             <td style="text-align: center;">{{dato.claveMonitoreo}}</td>
