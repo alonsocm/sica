@@ -60,42 +60,28 @@ export class InicialReglasComponent extends BaseService
     });
   }
   onDownload(): void {
-    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
-    if (muestreosSeleccionados.length === 0) {
-      this.mostrarMensaje('Debe seleccionar al menos un monitoreo para descargar la información', 'warning');
+    if (this.resultadosFiltradosn.length == 0) {
+      this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
+
     this.loading = true;
-    //cambiar
-    this.validacionService.exportarResultadosAcumuladosExcel(muestreosSeleccionados)
+    this.validacionService.exportExcelResultadosaValidar(this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {
-
-          this.resultadosFiltradosn = this.resultadosFiltradosn.map((m) => {
-            m.isChecked = false;
-            return m;
-          });
-          this.seleccionarTodosChck = false;
-          FileService.download(response, 'CARGA_RESULTADOS_A_VALIDAR.xlsx');
+          FileService.download(response, 'ResultadosaValidar.xlsx');
           this.loading = false;
         },
         error: (response: any) => {
           this.mostrarMensaje(
             'No fue posible descargar la información',
             'danger'
-
           );
           this.loading = false;
           this.hacerScroll();
         },
       });
-  }
-  seleccionar(): void {
-    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
-    this.resultadosSeleccionados = this.Seleccionados(
-      this.resultadosFiltrados
-    );
-  }
+  } 
   enviaraValidacion(): void { }
 
 

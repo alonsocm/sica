@@ -31,7 +31,16 @@ export class ValidacionReglasService {
   exportarResultadosAcumuladosExcel(muestreos: Array<any> = []) { 
     return this.http.post(environment.apiUrl + '/Resultados/exportExcelValidaciones', muestreos, { responseType: 'blob' } );
   }
-
+  exportExcelResultadosaValidar(muestreos: Array<any> = []) {
+    return this.http.post(environment.apiUrl + '/Resultados/exportExcelResultadosaValidar', muestreos, { responseType: 'blob' });
+  }
+  exportExcelResultadosValidados(muestreos: Array<any> = []) {
+    return this.http.post(environment.apiUrl + '/Resultados/exportExcelResultadosValidados', muestreos, { responseType: 'blob' });
+  }
+  exportExcelResumenResultados(muestreos: Array<any> = []) {
+    return this.http.post(environment.apiUrl + '/Resultados/exportExcelResumenResultados', muestreos, { responseType: 'blob' });
+  }
+  
   getResultadosAcumuladosParametros(estatusId: number) {
     let params = new HttpParams({
       fromObject: { estatusId: estatusId},

@@ -55,8 +55,7 @@ export class BaseService {
   };
 
   filtrarn() {
-    this.resultadosFiltradosn = this.resultadosn;
-    console.log(this.resultadosFiltradosn);
+    this.resultadosFiltradosn = this.resultadosn;   
     this.columnas.forEach((columna) => {
       this.resultadosFiltradosn = this.resultadosFiltradosn.filter((f: any) => {
         return columna.filtro.selectedValue == 'Seleccione'
@@ -66,7 +65,6 @@ export class BaseService {
     });
     this.establecerValoresFiltrosTablan();
   };
-
 
   establecerValoresFiltrosTablan() {
     this.columnas.forEach((f) => {
@@ -88,11 +86,7 @@ export class BaseService {
 
   seleccionarAll(resultadosFiltrados: Array<any>): void {
     resultadosFiltrados.map((m) => {
-      if (this.seleccionarTodosChck) {
-        m.isChecked ? true : (m.isChecked = true);
-      } else {
-        m.isChecked ? (m.isChecked = false) : true;
-      }
+      m.isChecked = (this.seleccionarTodosChck) ? true : false;      
     });
   };
 
@@ -115,5 +109,10 @@ export class BaseService {
   resetInputFile(input: ElementRef)
   {
     input.nativeElement.value = null;
+  }
+
+  seleccionarn(): void {
+    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
+    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);    
   }
 };

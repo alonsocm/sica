@@ -18,6 +18,7 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
   
   ngOnInit(): void {
+    this.loading = true;
     this.columnas = [
       { nombre: 'claveUnica', etiqueta: 'CLAVE ÚNICA', orden: 0, filtro: new Filter() },
       { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
@@ -47,24 +48,25 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
       { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() }
     ];  
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
-        next: (response: any) => { 
-        this.datosAcumualdos = response.data;       
+     
+      next: (response: any) => {
+       
+        this.datosAcumualdos = response.data;        
         this.resultadosFiltradosn = this.datosAcumualdos;
-        this.resultadosn = this.datosAcumualdos;        
+        this.resultadosn = this.datosAcumualdos;
+        this.loading = false;
         },
-        error: (error) => { },
+      error: (error) => { this.loading = false; },
       });    
   }
   onDownload(): void {
-
-    this.resultadosFiltrados = this.resultadosFiltradosn;
-    if (this.resultadosFiltrados.length === 0) {
+    if (this.resultadosFiltradosn.length == 0) {
       this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
-    
+   
     this.loading = true;    
-    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
+    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {    
           FileService.download(response, 'AcumulacionResultados.xlsx');

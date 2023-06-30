@@ -8,6 +8,7 @@ namespace Application.DTOs
 {
     public class AcumuladosResultadoDto :MuestreoDto
     {
+       
         public string claveUnica { get; set; }
         public string SubTipoCuerpoAgua { get; set; }
         public string laboratorioRealizoMuestreo { get; set; }
@@ -15,7 +16,7 @@ namespace Application.DTOs
         public string subGrupo { get; set; }
         public string claveParametro { get; set; }
         public string parametro { get; set; }
-        public string unidadMedida { get; set; }
+        public string? unidadMedida { get; set; }
         public string resultado { get; set; }
         public string zonaEstrategica { get; set; }
         public long idResultadoLaboratorio { get; set; }
@@ -27,10 +28,12 @@ namespace Application.DTOs
         public string fechaEntregaTeorica { get; set; }
         public int numParametrosEsperados { get; set; }
         public int numParametrosCargados { get; set; }
-        public string muestreoCompletoPorResultados { get; set; }
+        public string muestreoCompletoPorResultados { get; set; }           
+        public bool validadoReglas { get; set; }       
+        public decimal costoParametro { get; set; }
 
         public AcumuladosResultadoDto()
-        {   this.claveUnica = string.Empty;
+        { this.claveUnica = string.Empty;
             this.SubTipoCuerpoAgua = string.Empty;
             this.laboratorioRealizoMuestreo = string.Empty;
             this.subGrupo = string.Empty;
@@ -47,9 +50,11 @@ namespace Application.DTOs
             this.cambioResultado = false;
             this.diferenciaDias = 0;
             this.fechaEntregaTeorica = string.Empty;
-            this.numParametrosEsperados= 0;
-            this.numParametrosCargados= 0;
+            this.numParametrosEsperados = 0;
+            this.numParametrosCargados = 0;
             this.muestreoCompletoPorResultados = string.Empty;
+            this.validadoReglas = false;
+            this.costoParametro = 0;
         }
     }
 }
