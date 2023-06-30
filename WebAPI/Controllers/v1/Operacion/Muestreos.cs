@@ -49,7 +49,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             System.IO.File.Delete(filePath);
 
-            return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado }));
+            return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar=cargaMuestreos.Reemplazar }));
         }
 
         [HttpPost("ExportarExcel")]

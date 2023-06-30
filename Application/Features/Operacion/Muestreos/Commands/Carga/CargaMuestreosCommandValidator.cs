@@ -37,9 +37,9 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
                 muestreo.RuleFor(x => x.Muestreo).Cascade(CascadeMode.Stop)
                                             .NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}")
                                             .Must((muestreo, claveMuestreo) => { return clavesMuestreo.Any(a => a.ClaveMuestreo == claveMuestreo); })
-                                            .WithMessage(muestreo => $"La clave de muestreo {{PropertyValue}} no se encontró en la BD. Linea:{muestreo.Linea}")
-                                            .Must((muestreo, claveMuestreo) => { return clavesMuestreo.Any(a => a.ClaveMuestreo == claveMuestreo && a.Cargado == 0); })
-                                            .WithMessage(muestreo => $"Los resultados del muestreo {{PropertyValue}} ya han sido cargados previamente en la BD. Linea:{muestreo.Linea}");
+                                            .WithMessage(muestreo => $"La clave de muestreo {{PropertyValue}} no se encontró en la BD. Linea:{muestreo.Linea}");
+                                            //.Must((muestreo, claveMuestreo) => { return clavesMuestreo.Any(a => a.ClaveMuestreo == claveMuestreo && a.Cargado == 0); })
+                                            //.WithMessage(muestreo => $"Los resultados del muestreo {{PropertyValue}} ya han sido cargados previamente en la BD. Linea:{muestreo.Linea}");
 
                 muestreo.RuleFor(x => x.Claveconagua).Cascade(CascadeMode.Stop)
                                             .NotEmpty().WithMessage(muestreo => $"El campo {{PropertyName}} no puede estar vacío. Linea: {muestreo.Linea}")

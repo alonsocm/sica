@@ -17,6 +17,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
     {
         public List<CargaMuestreoDto> Muestreos { get; set; } = new List<CargaMuestreoDto>();
         public bool Validado { get; set; }
+        public bool Reemplazar { get; set; }
     }
 
     public class CargaMasivaMuestreosCommandHandler : IRequestHandler<CargaMuestreosCommand, Response<ResultadoCargaMuestreo>>
