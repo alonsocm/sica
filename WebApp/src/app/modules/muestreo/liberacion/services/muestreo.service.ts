@@ -33,10 +33,11 @@ export class MuestreoService {
     this.resultadosPrivate.next(resultados);
   }
 
-  cargarArchivo(archivo: File, validado: boolean): Observable<any> {
+  cargarArchivo(archivo: File, validado: boolean, reemplazar:boolean=false): Observable<any> {
     const formData = new FormData();
     formData.append('archivo', archivo, archivo.name);
     formData.append('validado', validado.toString());
+    formData.append('reemplazar', reemplazar.toString());
     return this.http.post(environment.apiUrl + '/muestreos', formData);
   }
 

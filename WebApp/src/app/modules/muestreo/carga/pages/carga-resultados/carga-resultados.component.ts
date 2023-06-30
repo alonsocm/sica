@@ -15,6 +15,8 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreos: Array<Muestreo> = [];
   muestreosFiltrados: Array<Muestreo> = [];
+  reemplazarResultados: boolean = false;
+  archivo: any;
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
   constructor(private muestreoService: MuestreoService) {
@@ -150,19 +152,31 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   cargarArchivo(event: Event) {
-    let archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
 
-    if (archivo) {
+    if (this.archivo) {
       this.loading = !this.loading;
 
-      this.muestreoService.cargarArchivo(archivo[0], false).subscribe({
+      this.muestreoService.cargarArchivo(this.archivo[0], false, this.reemplazarResultados).subscribe({
         next: (response: any) => {
-          this.loading = false;
-          this.mostrarMensaje(
-            'Archivo procesado correctamente.',
-            TIPO_MENSAJE.exito
-          );
-          this.consultarMonitoreos();
+          console.table(response);
+          if (response.Correcto) {
+            this.loading = false;
+            this.mostrarMensaje(
+              'Archivo procesado correctamente.',
+              TIPO_MENSAJE.exito
+            );
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.consultarMonitoreos(); 
+          }
+          else{
+            this.loading = false;
+            this.mostrarMensaje(
+              'Existe carga previa',
+              TIPO_MENSAJE.alerta
+            );
+            document.getElementById('btnMdlConfirmacion')?.click();
+          }
         },
         error: (error: any) => {
           this.loading = false;
@@ -173,11 +187,44 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           );
           this.hacerScroll();
           FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelMonitoreos);
         },
       });
-      this.resetInputFile(this.inputExcelMonitoreos);
+      // this.resetInputFile(this.inputExcelMonitoreos);
     }
   }
+
+  sustituirResultados(){
+    this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+      next: (response: any) => {
+        console.table(response);
+        if (response.Correcto) {
+          this.loading = false;
+          this.mostrarMensaje(
+            'Archivo procesado correctamente.',
+            TIPO_MENSAJE.exito
+          );
+          this.resetInputFile(this.inputExcelMonitoreos);
+          this.consultarMonitoreos(); 
+        }
+        else{
+          this.loading = false;
+          document.getElementById('btnMdlConfirmacion')?.click();
+        }
+      },
+      error: (error: any) => {
+        this.loading = false;
+        let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
+        this.mostrarMensaje(
+          'Se encontraron errores en el archivo procesado.',
+          TIPO_MENSAJE.error
+        );
+        this.hacerScroll();
+        FileService.download(archivoErrores, 'errores.txt');
+        this.resetInputFile(this.inputExcelMonitoreos);
+      },
+    });
+  };
 
   filtrar() {
     this.muestreosFiltrados = this.muestreos;
