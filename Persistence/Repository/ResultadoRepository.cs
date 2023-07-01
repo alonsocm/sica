@@ -122,5 +122,20 @@ namespace Persistence.Repository
                                                             .ExecuteUpdate(s => s.SetProperty(e => e.ResultadoReglas, resultadoRegla));
             });
         }
+
+        public List<CargaMuestreoDto> ActualizarValorResultado(List<CargaMuestreoDto> muestreosDto)
+        {
+            var resultadosNoEncontrados = new List<CargaMuestreoDto>();
+
+                muestreosDto.ForEach(resultadoDto =>
+                {
+                    var resultado = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado))
+                                                                .ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado));
+                    if (resultado == 0)
+                        resultadosNoEncontrados.Add(resultadoDto);
+                });
+
+            return resultadosNoEncontrados;
+        }
     }
 }
