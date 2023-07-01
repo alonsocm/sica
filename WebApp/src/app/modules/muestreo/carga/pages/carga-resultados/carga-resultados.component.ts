@@ -17,6 +17,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreosFiltrados: Array<Muestreo> = [];
   reemplazarResultados: boolean = false;
   archivo: any;
+  numeroEntrega: string = '';
+  anioOperacion: string = '';
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
   constructor(private muestreoService: MuestreoService) {
@@ -159,8 +161,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
       this.muestreoService.cargarArchivo(this.archivo[0], false, this.reemplazarResultados).subscribe({
         next: (response: any) => {
-          console.table(response);
-          if (response.Correcto) {
+          if (response.data.correcto) {
             this.loading = false;
             this.mostrarMensaje(
               'Archivo procesado correctamente.',
@@ -171,10 +172,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           }
           else{
             this.loading = false;
-            this.mostrarMensaje(
-              'Existe carga previa',
-              TIPO_MENSAJE.alerta
-            );
+            this.numeroEntrega = response.data.numeroEntrega;
+            this.anioOperacion = response.data.anio;
             document.getElementById('btnMdlConfirmacion')?.click();
           }
         },
@@ -190,15 +189,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.resetInputFile(this.inputExcelMonitoreos);
         },
       });
-      // this.resetInputFile(this.inputExcelMonitoreos);
     }
   }
 
   sustituirResultados(){
+    this.loading = true;
     this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
       next: (response: any) => {
-        console.table(response);
-        if (response.Correcto) {
+        if (response.data.correcto) {
           this.loading = false;
           this.mostrarMensaje(
             'Archivo procesado correctamente.',
@@ -209,7 +207,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         }
         else{
           this.loading = false;
-          document.getElementById('btnMdlConfirmacion')?.click();
         }
       },
       error: (error: any) => {
