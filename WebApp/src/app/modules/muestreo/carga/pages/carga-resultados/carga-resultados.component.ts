@@ -15,6 +15,10 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreos: Array<Muestreo> = [];
   muestreosFiltrados: Array<Muestreo> = [];
+  reemplazarResultados: boolean = false;
+  archivo: any;
+  numeroEntrega: string = '';
+  anioOperacion: string = '';
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
   constructor(private muestreoService: MuestreoService) {
@@ -150,19 +154,28 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   cargarArchivo(event: Event) {
-    let archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
 
-    if (archivo) {
+    if (this.archivo) {
       this.loading = !this.loading;
 
-      this.muestreoService.cargarArchivo(archivo[0], false).subscribe({
+      this.muestreoService.cargarArchivo(this.archivo[0], false, this.reemplazarResultados).subscribe({
         next: (response: any) => {
-          this.loading = false;
-          this.mostrarMensaje(
-            'Archivo procesado correctamente.',
-            TIPO_MENSAJE.exito
-          );
-          this.consultarMonitoreos();
+          if (response.data.correcto) {
+            this.loading = false;
+            this.mostrarMensaje(
+              'Archivo procesado correctamente.',
+              TIPO_MENSAJE.exito
+            );
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.consultarMonitoreos(); 
+          }
+          else{
+            this.loading = false;
+            this.numeroEntrega = response.data.numeroEntrega;
+            this.anioOperacion = response.data.anio;
+            document.getElementById('btnMdlConfirmacion')?.click();
+          }
         },
         error: (error: any) => {
           this.loading = false;
@@ -173,11 +186,42 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           );
           this.hacerScroll();
           FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelMonitoreos);
         },
       });
-      this.resetInputFile(this.inputExcelMonitoreos);
     }
   }
+
+  sustituirResultados(){
+    this.loading = true;
+    this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+      next: (response: any) => {
+        if (response.data.correcto) {
+          this.loading = false;
+          this.mostrarMensaje(
+            'Archivo procesado correctamente.',
+            TIPO_MENSAJE.exito
+          );
+          this.resetInputFile(this.inputExcelMonitoreos);
+          this.consultarMonitoreos(); 
+        }
+        else{
+          this.loading = false;
+        }
+      },
+      error: (error: any) => {
+        this.loading = false;
+        let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
+        this.mostrarMensaje(
+          'Se encontraron errores en el archivo procesado.',
+          TIPO_MENSAJE.error
+        );
+        this.hacerScroll();
+        FileService.download(archivoErrores, 'errores.txt');
+        this.resetInputFile(this.inputExcelMonitoreos);
+      },
+    });
+  };
 
   filtrar() {
     this.muestreosFiltrados = this.muestreos;

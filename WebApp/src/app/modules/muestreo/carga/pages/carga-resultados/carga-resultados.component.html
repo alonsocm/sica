@@ -110,4 +110,26 @@
         <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
         </pagination-controls>
     </div>
+    <button id="btnMdlConfirmacion" style="display:none" class="btn btn-primary rigth" type="button"
+    data-toggle="modal" data-target="#mdlConfirmacion"></button>
+    <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar carga de resultados</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Los resultados correspondientes al número de entrega <b>{{this.numeroEntrega}}</b> del año <b>{{this.anioOperacion}}</b>, ya han sido cargados previamente.</p>
+                    <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá los valores de los resultados.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnCancelarModal" type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="sustituirResultados()">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

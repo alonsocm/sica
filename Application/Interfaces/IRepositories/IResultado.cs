@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Users;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace Application.Interfaces.IRepositories
         Task<List<ResultadoValidacionReglasDto>> ObtenerResultadosValidacion(List<long> muestreosId);
         Task<IEnumerable<ResultadoParametroReglasDto>> ObtenerResultadosParaReglas(long muestreoId);
         void ActualizarResultadosValidadosPorReglas(List<ResultadoParametroReglasDto> resultadosDto);
+        List<CargaMuestreoDto> ActualizarValorResultado(List<CargaMuestreoDto> muestreosDto);
     }
 }

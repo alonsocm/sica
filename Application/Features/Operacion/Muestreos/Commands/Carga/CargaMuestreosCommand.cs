@@ -17,15 +17,18 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
     {
         public List<CargaMuestreoDto> Muestreos { get; set; } = new List<CargaMuestreoDto>();
         public bool Validado { get; set; }
+        public bool Reemplazar { get; set; }
     }
 
     public class CargaMasivaMuestreosCommandHandler : IRequestHandler<CargaMuestreosCommand, Response<ResultadoCargaMuestreo>>
     {
         private readonly IMuestreoRepository _repository;
+        private readonly IResultado _resultadosRepository;
 
-        public CargaMasivaMuestreosCommandHandler(IMuestreoRepository repositoryAsync)
+        public CargaMasivaMuestreosCommandHandler(IMuestreoRepository repositoryAsync, IResultado resultadosRepository)
         {
             _repository=repositoryAsync;
+            _resultadosRepository=resultadosRepository;
         }
 
         public async Task<Response<ResultadoCargaMuestreo>> Handle(CargaMuestreosCommand request, CancellationToken cancellationToken)
@@ -34,33 +37,29 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
             var anio = Convert.ToInt32(request.Muestreos.Select(m => m.AnioOperacion).Distinct().FirstOrDefault());
             var existeCargaPrevia = await ExisteNumeroEntrega(numeroEntrega, anio);
 
+            var resultadoCarga = new ResultadoCargaMuestreo
+            {
+                Correcto = false,
+                ExisteCarga = true,
+                Anio = anio,
+                NumeroEntrega = numeroEntrega,
+            };
+
             if (!existeCargaPrevia)
             {
                 var muestreos = _repository.ConvertToMuestreosList(request.Muestreos, request.Validado);
                 _repository.InsertarRango(muestreos);
-
-                var resultadoCarga = new ResultadoCargaMuestreo
-                {
-                    Correcto = false,
-                    ExisteCarga = true,
-                    Anio = anio,
-                    NumeroEntrega = numeroEntrega,
-                };
-
-                return new Response<ResultadoCargaMuestreo>(resultadoCarga);
+                resultadoCarga.Correcto = true;
             }
-            else
+            else if (existeCargaPrevia && request.Reemplazar)
             {
-                var resultadoCarga = new ResultadoCargaMuestreo
-                {
-                    Correcto = false,
-                    ExisteCarga = true,
-                    Anio = anio,
-                    NumeroEntrega = numeroEntrega,
-                };
-
-                return new Response<ResultadoCargaMuestreo>(resultadoCarga);
+                var resultadosNoEncontrados = _resultadosRepository.ActualizarValorResultado(request.Muestreos);
+                var muestreos = _repository.ConvertToMuestreosList(resultadosNoEncontrados, request.Validado);
+                _repository.InsertarRango(muestreos);
+                resultadoCarga.Correcto = true;
             }
+
+            return new Response<ResultadoCargaMuestreo>(resultadoCarga);
         }
 
         public async Task<bool> ExisteNumeroEntrega(int numeroEntrega, int anio)
