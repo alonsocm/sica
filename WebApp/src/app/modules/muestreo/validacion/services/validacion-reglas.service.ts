@@ -39,24 +39,24 @@ export class ValidacionReglasService {
   }
   exportExcelResumenResultados(muestreos: Array<any> = []) {
     return this.http.post(environment.apiUrl + '/Resultados/exportExcelResumenResultados', muestreos, { responseType: 'blob' });
-  }
-  
+  }  
   getResultadosAcumuladosParametros(estatusId: number) {
     let params = new HttpParams({
       fromObject: { estatusId: estatusId},
     });
     return this.http.get(environment.apiUrl + '/Resultados/ResultadosAcumuladosParametros', { params });
   }
-
-  getResultadosporMonitoreo(anios: Array<number>, numeroEntrega: Array<number>) {
+  getResultadosporMonitoreo(anios: Array<number>, numeroEntrega: Array<number>, estatusId: number) {
     let params = new HttpParams({
-      fromObject: { anios: anios, numeroEntrega: numeroEntrega },
+      fromObject: { anios: anios, numeroEntrega: numeroEntrega, estatusId: estatusId },
     });
     return this.http.get(environment.apiUrl + '/Resultados/ResultadosporMuestreo', { params });
   }
 
-
-  
+  enviarMuestreoaValidar(estatusId: number, muestreos: Array<number>) {  
+    let datos = { estatusId: estatusId, muestreos: muestreos };
+    return this.http.put(environment.apiUrl + '/Muestreos/cambioEstatusMuestreos', datos);
+  }  
 }
 
 

@@ -31,6 +31,9 @@ namespace Application.DTOs
         public string muestreoCompletoPorResultados { get; set; }           
         public bool validadoReglas { get; set; }       
         public decimal costoParametro { get; set; }
+        public int anioOperacion { get; set; }
+
+
 
         public AcumuladosResultadoDto()
         { this.claveUnica = string.Empty;
@@ -55,6 +58,8 @@ namespace Application.DTOs
             this.muestreoCompletoPorResultados = string.Empty;
             this.validadoReglas = false;
             this.costoParametro = 0;
+
+            this.anioOperacion = 0;
         }
     }
 }

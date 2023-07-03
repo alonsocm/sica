@@ -5,7 +5,9 @@ using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
+using Application.Features.Operacion.Resultados.Queries;
 using Application.Models;
+using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -125,5 +127,16 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new PutMuestreoEstatus { estatus = estatus, muestreoId =  muestreoId }));
         }
+
+        [HttpPut("cambioEstatusMuestreos")]
+        public async Task<IActionResult> CambioEstatusMuestreos(ActualizarEstatusListMuestreos datos)
+        {
+          
+            return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { estatusId = datos.estatusId,muestreos = datos.muestreos }));
+        }
+
+       
+
+
     }
 }

@@ -23,6 +23,8 @@ export interface Muestreo {
   evidencias: Array<Evidencia>;
   estatusSECAIA: number;
   isupdate: boolean;
+  programaMuestreoId: number;
+  estatusId: number;
 }
 
 export interface Evidencia {

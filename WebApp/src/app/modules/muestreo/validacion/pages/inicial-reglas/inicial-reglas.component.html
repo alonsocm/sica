@@ -12,51 +12,43 @@
                (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
 
-
   <div class="row">
-
     <div class="col-md-3">
       <label for="anios">Seleccionar año(s):*</label>
-      <!--<select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados" [size]="this.anios.length">
+      <select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados" [size]="this.anios.length">
+
         <option *ngFor="let anio of anios" value="{{anio}}">{{anio}}</option>
-      </select>-->
-
-      <select class="form-control" name="anios" id="anios">
-        <option value="0">2022</option>
       </select>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
       <label for="entrega">Seleccionar número(s) de entrega:*</label>
-      <!--<select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas" [size]="this.entregas.length">
+      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas" [size]="this.entregas.length">
         <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
-      </select>-->
-      <select class="form-control" name="entrega" id="entrega">
-        <option value="">Entrega-0</option>
       </select>
     </div>
-
-    <div style="text-align:right" class="col-md-3">
+    <div class="col-md-2">
+      <button style="text-align:right" class="btn btn-primary rigth" type="button" (click)="cargaResultados()">
+        <i class="bi bi-send"></i> Ver resultados
+      </button>
+    </div>
+    <div class="col-md-2">
       <button class="btn btn-secondary" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
     </div>
-    <div style="text-align:left" class="col-md-1">
+    <div class="col-md-1">
       <button class="btn btn-secondary" type="button">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
-
   </div>
-
-
   <div class="row">
     <div class="col-md-12 table-responsive dvTable">
       <table class="table table-striped">
         <thead>
-          <tr>       
-
+          <tr>
             <th class="checkBox-center" style="text-align:center">
               <label for="chckAll">SELECCIONAR TODOS</label>
               <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
@@ -118,15 +110,14 @@
     </pagination-controls>
   </div>
 
-  <div style="text-align:right" class="d-flex justify-content-between">    
+  <div style="text-align:right" class="d-flex justify-content-between">
     <div style="text-align:right" class="col-md-12">
       <button class="btn btn-primary rigth" type="button" (click)="enviaraValidacion()">
         <i class="bi bi-send"></i> Enviar a validación
       </button>
-     
+
     </div>
   </div>
   <br />
-
 </div>
 

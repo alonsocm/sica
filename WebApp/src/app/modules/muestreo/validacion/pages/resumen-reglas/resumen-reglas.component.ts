@@ -49,7 +49,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     ];
 
     //cAMBIAR ESTATUS
-    this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
+    this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.ValidadoPorReglas).subscribe({
       next: (response: any) => {
         this.loading = true;
         this.datosAcumualdos = response.data;      

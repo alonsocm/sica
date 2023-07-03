@@ -26,6 +26,6 @@ export enum estatusMuestreo {
   Cargado = 25,
   OriginalesAprobados = 26,
   ValidadoPorReglas = 27,
-SeleccionadoParaValidar = 28
+  SeleccionadoParaValidar = 28,
 
 }

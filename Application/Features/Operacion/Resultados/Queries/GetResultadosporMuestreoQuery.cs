@@ -14,6 +14,7 @@ namespace Application.Features.Operacion.Resultados.Queries
     {
         public List<int> Anios { get; set; } = new List<int>();
         public List<int> NumeroEntrega { get; set; } = new List<int>();
+        public int estatusId { get; set; }
     }
 
     public class GetResultadosporMuestreoQueryHandler : IRequestHandler<GetResultadosporMuestreoQuery, Response<List<AcumuladosResultadoDto>>>
@@ -28,7 +29,7 @@ namespace Application.Features.Operacion.Resultados.Queries
 
         public async Task<Response<List<AcumuladosResultadoDto>>> Handle(GetResultadosporMuestreoQuery request, CancellationToken cancellationToken)
         {
-            var datos = await _repositoryAsync.GetResultadosporMuestreoAsync(request.Anios, request.NumeroEntrega);
+            var datos = await _repositoryAsync.GetResultadosporMuestreoAsync(request.Anios, request.NumeroEntrega, request.estatusId);
             if (datos == null)
             {
                 throw new KeyNotFoundException($"No se encontraron datos asociados a GetResultadosporMuestreoAsync");

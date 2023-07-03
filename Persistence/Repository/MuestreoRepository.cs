@@ -228,19 +228,19 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga)
+        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga, int estatusId)
         {
-            var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas                                   
-                                   
+            var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas
+
                                    select new AcumuladosResultadoDto
                                    {
                                        ClaveSitio = resultados.ClaveSitio,
-                                       ClaveMonitoreo = resultados.ClaveMuestreo,                                                                            
+                                       ClaveMonitoreo = resultados.ClaveMuestreo,
                                        NombreSitio = resultados.NombreSitio,
                                        FechaRealizacion = resultados.FechaRealizacion.ToString() ?? string.Empty,
                                        FechaProgramada = resultados.FechaProgramada.ToString(),
                                        diferenciaDias = Convert.ToInt32(resultados.DiferenciaEnDias.ToString()),
-                                       fechaEntregaTeorica= resultados.FechaEntregaTeorica.ToString() ?? string.Empty,
+                                       fechaEntregaTeorica = resultados.FechaEntregaTeorica.ToString() ?? string.Empty,
                                        laboratorioRealizoMuestreo = resultados.Laboratorio ?? string.Empty,
                                        CuerpoAgua = resultados.CuerpoDeAgua,
                                        TipoCuerpoAgua = resultados.TipoCuerpoAgua,
@@ -248,10 +248,19 @@ namespace Persistence.Repository
                                        numParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
                                        numParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
                                        muestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
-                                   }).ToListAsync();
-            return muestreos.ToList();
+                                       anioOperacion = resultados.AnioOperacion,
+                                       NumeroEntrega = resultados.NumeroEntrega.ToString(),
+                                       MuestreoId = resultados.MuestreoId,                                    
+                                       estatusId = resultados.EstatusId
+
+                                   }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId==estatusId).ToListAsync();
+                                       
+                                  
+
+return muestreos.ToList();
         }
 
-
+        
+           
     }
 }

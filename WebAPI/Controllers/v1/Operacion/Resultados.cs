@@ -569,7 +569,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ResultadosporMuestreo")]
         public async Task<IActionResult> GetActionAsync([FromQuery] GetResultadosporMuestreoQuery request)
         {
-            return Ok(await Mediator.Send(new GetResultadosporMuestreoQuery { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
+            return Ok(await Mediator.Send(new GetResultadosporMuestreoQuery { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega, estatusId = request.estatusId }));
         }
 
         //ExportaciondeExcelPantallasValidacionReglas
@@ -737,5 +737,8 @@ namespace WebAPI.Controllers.v1.Operacion
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
+
+    
     }
 }
+  

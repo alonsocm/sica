@@ -4,6 +4,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
+import { estatusMuestreo } from '../../../../../shared/enums/estatusMuestreo';
 @Component({
   selector: 'app-reglas-validar',
   templateUrl: './reglas-validar.component.html',
@@ -15,8 +16,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
   resultadosSeleccionados: Array<acumuladosMuestreo> = [];
 
-  aniosSeleccionados: Array<number> = [];
-  entregasSeleccionadas: Array<number> = [];
+  aniosSeleccionados: Array<number> = [2023];
+  entregasSeleccionadas: Array<number> = [0];
   ngOnInit(): void {
     this.columnas = [
       { nombre: 'claveSitio', etiqueta: 'CLAVE SITIO', orden: 0, filtro: new Filter() },
@@ -40,7 +41,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       { nombre: 'porcentajePago', etiqueta: '% DE PAGO', orden: 0, filtro: new Filter() }];
 
 
-    this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
+    this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas, estatusMuestreo.SeleccionadoParaValidar).subscribe({
       next: (response: any) => {
         this.loading = true;
         this.resultadosMuestreo = response.data;  

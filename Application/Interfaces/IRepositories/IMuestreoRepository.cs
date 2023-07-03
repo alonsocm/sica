@@ -18,6 +18,8 @@ namespace Application.Interfaces.IRepositories
         string GetTipoCuerpoAguaHomologado(string claveMuestreo);
         Task<List<int?>> GetListAniosConRegistro();
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId);
-        Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga);
+        Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga, int estatusId);
+
+       
     }
 }

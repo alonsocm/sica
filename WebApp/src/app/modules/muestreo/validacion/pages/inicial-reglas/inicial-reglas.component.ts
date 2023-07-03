@@ -5,7 +5,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
-
+import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
 
 @Component({
   selector: 'app-inicial-reglas',
@@ -17,11 +17,12 @@ export class InicialReglasComponent extends BaseService
 
   constructor(private validacionService: ValidacionReglasService) { super(); }
 
-  resultadosMuestreo: Array<acumuladosMuestreo> = [];
-  resultadosFiltrados: Array<acumuladosMuestreo> = [];
+  resultadosMuestreo: Array<acumuladosMuestreo> = [];  
   aniosSeleccionados: Array<number> = [];
   entregasSeleccionadas: Array<number> = [];
-  resultadosSeleccionados: Array<acumuladosMuestreo> = [];
+  resultadosEnviados: Array<number> = []; 
+  anios: Array<number> = [];
+  entregas: Array<number> = [0];
 
   ngOnInit(): void {
 
@@ -50,13 +51,31 @@ export class InicialReglasComponent extends BaseService
 
     ];
 
-    this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
+    this.validacionService.obtenerMuestreos().subscribe({
       next: (response: any) => {
+        this.anios = response.data;
+      },
+      error: (error) => { },
+    });   
+  
+  }
+  cargaResultados() {    
+    if (this.entregasSeleccionadas.length == 0 && this.aniosSeleccionados.length == 0) {
+      this.mensajeAlerta = "Debes de seleccionar al menos un año y un número de entrega";
+      this.mostrarAlerta = true;
+      this.tipoAlerta = 'warning';      
+      return this.hacerScroll();
+    }
+
+    this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas, estatusMuestreo.Cargado).subscribe({
+      next: (response: any) => {
+        this.loading = true;
         this.resultadosMuestreo = response.data;
         this.resultadosFiltradosn = this.resultadosMuestreo;
         this.resultadosn = this.resultadosMuestreo;
+        this.loading = false;
       },
-      error: (error) => { },
+      error: (error) => { this.loading = false; },
     });
   }
   onDownload(): void {
@@ -64,26 +83,52 @@ export class InicialReglasComponent extends BaseService
       this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
-
-    this.loading = true;
+    
     this.validacionService.exportExcelResultadosaValidar(this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {
+          this.loading = true;
           FileService.download(response, 'ResultadosaValidar.xlsx');
           this.loading = false;
         },
         error: (response: any) => {
+          this.loading = false;
           this.mostrarMensaje(
             'No fue posible descargar la información',
             'danger'
-          );
-          this.loading = false;
+          );          
           this.hacerScroll();
         },
       });
   } 
-  enviaraValidacion(): void { }
+  enviaraValidacion(): void {   
 
+    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn).map((m) => {    
+      return m.muestreoId;
+    });
 
+    this.validacionService.enviarMuestreoaValidar(estatusMuestreo.SeleccionadoParaValidar, this.resultadosEnviados)
+      .subscribe({
+        next: (response: any) => {
+          this.loading = true;
+          
+          if (response.succeded) {
+            this.loading = false;
+            this.cargaResultados();
+            this.mostrarMensaje('Los muestreos fueron enviados a validar correctamente', 'success');
+            this.hacerScroll();
+            
+          }
+          },
+          error: (response: any) => {
+            this.loading = false;
+            this.mostrarMensaje(
+              ' Error al enviar los muestreos a validar',
+              'danger'
+            );
+            this.hacerScroll();
+          },
+      });
+  }
 }
 

@@ -41,6 +41,9 @@ namespace Application.DTOs
 
         public List<EvidenciaDto> Evidencias { get; set; }
 
+        public long ProgramaMuestreoId { get; set; }
+        public int estatusId { get; set; }
+
         public MuestreoDto()
         {
             this.DiaProgramado = string.Empty;
@@ -65,6 +68,9 @@ namespace Application.DTOs
             this.ProgramaAnual = string.Empty;
             this.TipoSitio =    string.Empty;
             this.TipoCuerpoAguaOriginal = string.Empty;
+            this.ProgramaMuestreoId = 0;
+            this.estatusId = 0;
+            this.MuestreoId = 0;
 
         }
     }

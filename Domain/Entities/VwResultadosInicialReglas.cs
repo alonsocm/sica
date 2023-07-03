@@ -36,4 +36,9 @@ public partial class VwResultadosInicialReglas
     public int? NumDatosReportados { get; set; }
 
     public string? MuestreoCompletoPorResultados { get; set; }
+
+    public int AnioOperacion { get; set; }
+    public int NumeroEntrega { get; set; }
+    public long MuestreoId { get; set; }    
+    public int EstatusId { get; set; }
 }
