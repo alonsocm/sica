@@ -988,7 +988,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAguaOriginal).HasMaxLength(150);
         });
 
-            modelBuilder.Entity<VwResultadosInicialReglas>(entity =>
+        modelBuilder.Entity<VwResultadosInicialReglas>(entity =>
         {
             entity
                 .HasNoKey()
@@ -999,6 +999,10 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.CuerpoDeAgua)
                 .HasMaxLength(150)
                 .HasColumnName("Cuerpo de agua");
+            entity.Property(e => e.CumpleConLasReglasCondicionantes)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("Cumple con las Reglas condicionantes");
             entity.Property(e => e.DiferenciaEnDias).HasColumnName("Diferencia en dias");
             entity.Property(e => e.FechaEntregaTeorica)
                 .HasColumnType("date")

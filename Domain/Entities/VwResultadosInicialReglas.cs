@@ -5,13 +5,21 @@ namespace Domain.Entities;
 
 public partial class VwResultadosInicialReglas
 {
+    public long MuestreoId { get; set; }
+
+    public DateTime? FechaRealizacion { get; set; }
+
+    public int? AnioOperacion { get; set; }
+
+    public int? NumeroEntrega { get; set; }
+
+    public int EstatusId { get; set; }
+
     public string ClaveSitio { get; set; } = null!;
 
     public string ClaveMuestreo { get; set; } = null!;
 
     public string NombreSitio { get; set; } = null!;
-
-    public DateTime? FechaRealizacion { get; set; }
 
     public DateTime FechaProgramada { get; set; }
 
@@ -37,8 +45,5 @@ public partial class VwResultadosInicialReglas
 
     public string? MuestreoCompletoPorResultados { get; set; }
 
-    public int AnioOperacion { get; set; }
-    public int NumeroEntrega { get; set; }
-    public long MuestreoId { get; set; }    
-    public int EstatusId { get; set; }
+    public string? CumpleConLasReglasCondicionantes { get; set; }
 }
