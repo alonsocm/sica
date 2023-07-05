@@ -32,6 +32,10 @@ namespace Application.DTOs
         public bool validadoReglas { get; set; }       
         public decimal costoParametro { get; set; }
         public int anioOperacion { get; set; }
+        public string cumpleReglasCondic { get; set; }
+
+        public long tipoCuerpoAguaId { get; set; }
+        public long tipoSitioId { get; set; }
 
 
 
@@ -58,8 +62,11 @@ namespace Application.DTOs
             this.muestreoCompletoPorResultados = string.Empty;
             this.validadoReglas = false;
             this.costoParametro = 0;
-
             this.anioOperacion = 0;
+            this.cumpleReglasCondic = string.Empty;
+
+            this.tipoCuerpoAguaId = 0;
+            this.tipoSitioId = 0;
         }
     }
 }

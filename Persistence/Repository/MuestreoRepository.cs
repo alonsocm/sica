@@ -2,12 +2,17 @@
 using Application.DTOs.Users;
 using Application.Enums;
 using Application.Interfaces.IRepositories;
+using Application.Models;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -247,20 +252,48 @@ namespace Persistence.Repository
                                        SubTipoCuerpoAgua = resultados.SubtipoCuerpoDeAgua,
                                        numParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
                                        numParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
-                                       muestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
-                                       anioOperacion = resultados.AnioOperacion,
-                                       NumeroEntrega = resultados.NumeroEntrega.ToString(),
+                                       muestreoCompletoPorResultados = (resultados.MuestreoCompletoPorResultados == null) ? "SI" : resultados.MuestreoCompletoPorResultados.ToString(),
+                                       cumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
+                                       anioOperacion = resultados.AnioOperacion ?? 0,
+                                       NumeroEntrega = resultados.NumeroEntrega.ToString() ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,                                    
-                                       estatusId = resultados.EstatusId
-
+                                       estatusId = resultados.EstatusId,
+                                       tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
+                                       tipoSitioId = resultados.TipoSitioId
                                    }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId==estatusId).ToListAsync();
-                                       
-                                  
+
+            muestreos.ForEach(x => x.Observaciones = (x.cumpleReglasCondic == "NO") ? GetParametrosFaltantes(x.tipoSitioId, x.tipoCuerpoAguaId, x.MuestreoId) : string.Empty);
 
 return muestreos.ToList();
         }
 
-        
+        protected string GetParametrosFaltantes(long tipoSitioId, long tipoCuerpoAguaId, long muestreoId ) 
+        {
+            string valor = "";
+                var resultadosCargados = (from param in _dbContext.ParametrosSitioTipoCuerpoAgua
+                                          join reglas in _dbContext.ReglasRelacionParametro on param.ParametroId equals reglas.ParametroId
+                                          join resultados in _dbContext.ResultadoMuestreo on reglas.ParametroId equals resultados.ParametroId
+                                          select new ResultadoMuestreoDto
+                                          {
+                                              TipoSitioId = param.TipoSitioId,
+                                              TipoCuerpoAguaId = param.TipoCuerpoAguaId,
+                                              MuestreoId = resultados.MuestreoId,
+                                              ParametroId = param.ParametroId
+
+                                          }).Where(x => x.TipoSitioId == tipoSitioId && x.TipoCuerpoAguaId == tipoCuerpoAguaId && x.MuestreoId == muestreoId).Select(y => y.ParametroId);
+
+            var muestreos = (from param in _dbContext.ParametrosSitioTipoCuerpoAgua
+                             join reglas in _dbContext.ReglasRelacionParametro on param.ParametroId equals reglas.ParametroId
+                             select new ResultadoMuestreoDto
+                             {
+                                 TipoSitioId = param.TipoSitioId,
+                                 TipoCuerpoAguaId = param.TipoCuerpoAguaId,
+                                 ParametroId = param.ParametroId
+                             }).Where(x => x.TipoSitioId == tipoSitioId && x.TipoCuerpoAguaId == tipoCuerpoAguaId && (!resultadosCargados.Contains(x.ParametroId))).Distinct();
+            if (muestreos.ToList().Count > 0)
+            { muestreos.ToList().ForEach(x => valor += (x.ParametroId.ToString() + ',')); }
+            return valor;
+        }       
            
     }
 }
