@@ -12,5 +12,6 @@ namespace Application.Interfaces
     {
         Task<bool> IsUserValid(string userName, string password);
         Task<List<UserDto>> GetUsers(string userName);
+        Task<string> GetUrlServiceCna();
     }
 }

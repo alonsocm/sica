@@ -248,7 +248,7 @@ namespace Persistence.Repository
                                        numParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
                                        numParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
                                        muestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
-                                       anioOperacion = resultados.AnioOperacion,
+                                       anioOperacion = (int)resultados.AnioOperacion,
                                        NumeroEntrega = resultados.NumeroEntrega.ToString(),
                                        MuestreoId = resultados.MuestreoId,                                    
                                        estatusId = resultados.EstatusId
