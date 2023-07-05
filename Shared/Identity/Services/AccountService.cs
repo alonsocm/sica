@@ -33,14 +33,15 @@ namespace Shared.Identity.Services
 
         public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress)
         {
-            var usuario = await _repositoryAsync.FirstOrDefaultAsync(new UsuarioByUserNameSpec(request.UserName));
-
-            if (usuario == null)
-            {
-                throw new ApiException($"No hay una cuenta registrada con el nombre de usuario: {request.UserName}");
-            }
-
+            var usuario = await _repositoryAsync.FirstOrDefaultAsync(new UsuarioByUserNameSpec(request.UserName))??throw new ApiException($"No hay una cuenta registrada con el nombre de usuario: {request.UserName}");
             var valid = true;
+
+            //var urlServiceCna = await _activeDirectoryService.GetUrlServiceCna();
+            //var cnaService = new UsuarioCnaService.UsuarioCnaSoapClient(UsuarioCnaService.UsuarioCnaSoapClient.EndpointConfiguration.UsuarioCnaSoap, urlServiceCna);
+
+            //var existe = await cnaService.ConsultaUsuarioCNAAsync(request.UserName, request.Password);
+            
+
             //var valid = await _activeDirectoryService.IsUserValid(request.UserName, request.Password);
 
             if (!valid)

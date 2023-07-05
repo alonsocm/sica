@@ -60,5 +60,10 @@ namespace Shared.ActiveDirectory.Services
             bool isValid = pc.ValidateCredentials(userName, password);
             return Task.FromResult(isValid);
         }
+
+        public Task<string> GetUrlServiceCna()
+        {
+            return Task.FromResult(_configuration["ActiveDirectorySettings:WebServiceUri"]);
+        }
     }
 }
