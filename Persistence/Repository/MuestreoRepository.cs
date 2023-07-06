@@ -210,8 +210,10 @@ namespace Persistence.Repository
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        costoParametro = costo.Precio,
-                                       NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty
-                                       
+                                       NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty,
+                                       fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yy") ?? string.Empty,
+                                       idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio
+
 
 
                                    }).ToListAsync();

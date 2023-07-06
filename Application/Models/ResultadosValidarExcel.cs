@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -25,6 +26,8 @@ namespace Application.Models
         public int numParametrosEsperados { get; set; }
         public int numParametrosCargados { get; set; }
         public string muestreoCompletoPorResultados { get; set; }
+        public string cumpleReglasCond { get; set; }
+        public string observaciones { get; set; }
 
         public ResultadosValidarExcel()
         {
@@ -42,6 +45,8 @@ namespace Application.Models
             this.numParametrosEsperados = 0;
             this.numParametrosCargados = 0;
             this.muestreoCompletoPorResultados = string.Empty;
+            this.cumpleReglasCond = string.Empty;
+            this.observaciones = string.Empty;
         }
     }
 
