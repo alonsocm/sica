@@ -37,6 +37,8 @@ namespace Application.DTOs
         public long tipoCuerpoAguaId { get; set; }
         public long tipoSitioId { get; set; }
 
+        public string cumpleFechaEntrega { get; set; }
+
 
 
         public AcumuladosResultadoDto()
@@ -67,6 +69,8 @@ namespace Application.DTOs
 
             this.tipoCuerpoAguaId = 0;
             this.tipoSitioId = 0;
+
+            this.cumpleFechaEntrega = string.Empty;
         }
     }
 }

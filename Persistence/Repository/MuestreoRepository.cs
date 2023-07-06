@@ -261,7 +261,8 @@ namespace Persistence.Repository
                                        MuestreoId = resultados.MuestreoId,                                    
                                        estatusId = resultados.EstatusId,
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
-                                       tipoSitioId = resultados.TipoSitioId
+                                       tipoSitioId = resultados.TipoSitioId,
+                                       cumpleFechaEntrega = (resultados.NumFechasNOCumplidas > 0) ? "NO" : "SI"
                                    }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId==estatusId).ToListAsync();
 
             muestreos.ForEach(x => x.Observaciones = (x.cumpleReglasCondic == "NO") ? GetParametrosFaltantes(x.tipoSitioId, x.tipoCuerpoAguaId, x.MuestreoId) : string.Empty);

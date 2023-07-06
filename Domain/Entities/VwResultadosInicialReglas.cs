@@ -46,4 +46,7 @@ public partial class VwResultadosInicialReglas
     public string? MuestreoCompletoPorResultados { get; set; }
 
     public string? CumpleConLasReglasCondicionantes { get; set; }
+
+    public int? NumFechasNOCumplidas { get; set; }
+
 }
