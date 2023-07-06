@@ -1,20 +1,19 @@
 ﻿using Application.DTOs.Users;
 using Application.Exceptions;
 using Application.Interfaces;
+using Application.Interfaces.IRepositories;
+using Application.Specifications;
 using Application.Wrappers;
+using Domain.Entities;
 using Domain.Settings;
-using Shared.Identity.Helpers;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Identity.Helpers;
+using Shared.Utilities.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Domain.Entities;
-using Application.Specifications;
-using Shared.Utilities.Services;
-using System.Linq;
-using Application.Interfaces.IRepositories;
 
 namespace Shared.Identity.Services
 {
@@ -35,14 +34,23 @@ namespace Shared.Identity.Services
         {
             var usuario = await _repositoryAsync.FirstOrDefaultAsync(new UsuarioByUserNameSpec(request.UserName))??throw new ApiException($"No hay una cuenta registrada con el nombre de usuario: {request.UserName}");
             var valid = true;
+            var validarActiveDirectory = await _activeDirectoryService.ValidarPorActiveDirectoryAsync();
 
-            //var urlServiceCna = await _activeDirectoryService.GetUrlServiceCna();
-            //var cnaService = new UsuarioCnaService.UsuarioCnaSoapClient(UsuarioCnaService.UsuarioCnaSoapClient.EndpointConfiguration.UsuarioCnaSoap, urlServiceCna);
+            if (validarActiveDirectory)
+            {
+                var urlServiceCna = await _activeDirectoryService.GetUrlServiceCna();
 
-            //var existe = await cnaService.ConsultaUsuarioCNAAsync(request.UserName, request.Password);
-            
-
-            //var valid = await _activeDirectoryService.IsUserValid(request.UserName, request.Password);
+                try
+                {
+                    var cnaService = new UsuarioCnaService.UsuarioCnaSoapClient(UsuarioCnaService.UsuarioCnaSoapClient.EndpointConfiguration.UsuarioCnaSoap, urlServiceCna);
+                    var usuarioCNA = await cnaService.ConsultaUsuarioCNAAsync(request.UserName, request.Password);
+                    valid = usuarioCNA.Tables["User"]?.Rows.Count > 0;
+                }
+                catch (Exception)
+                {
+                    throw new ApiException("Ocurrió un error al validar las credenciales del usuario en el directorio activo");
+                }
+            }
 
             if (!valid)
                 throw new ApiException($"Las credenciales del usuario no son válidas");
@@ -68,7 +76,7 @@ namespace Shared.Identity.Services
             {
                 throw new ApiException($"El nombre de usuario {request.UserName} ya fue registrado previamente");
             }
-            
+
             var usuario = new Usuario
             {
                 UserName = request.UserName,
@@ -138,7 +146,7 @@ namespace Shared.Identity.Services
             using var rngCryptoServiceProvider = new RNGCryptoServiceProvider();
             var randomBytes = new byte[40];
             rngCryptoServiceProvider.GetBytes(randomBytes);
-            return BitConverter.ToString(randomBytes).Replace("-","");
+            return BitConverter.ToString(randomBytes).Replace("-", "");
         }
     }
 }

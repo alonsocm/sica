@@ -20,8 +20,8 @@
                 <div class="form-group">
                   <div class="input-group">
                     <!--Mensaje de Alerta ERROR-->
-                    <div class="alert alert-danger" *ngIf="errorMessage">                      
-                      Usuario o contraseña incorrectos
+                    <div class="alert alert-danger" *ngIf="this.errorMessage">                      
+                      {{this.errorMessage}}
                     </div>
                     <input type="text" class="form-control" placeholder="Usuario de red" maxlength="15"
                       onkeypress="return validarCaracteres(event);" formControlName="usuario" />
