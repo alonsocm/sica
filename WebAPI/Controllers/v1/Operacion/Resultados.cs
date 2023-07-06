@@ -642,7 +642,9 @@ namespace WebAPI.Controllers.v1.Operacion
                     subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
                     numParametrosEsperados = dato.numParametrosEsperados,
                     numParametrosCargados = dato.numParametrosCargados,
-                    muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados
+                    muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados,
+                    cumpleReglasCond = dato.cumpleReglasCondic,
+                    observaciones = dato.Observaciones
                 };
                
                 lstmuestreosExcel.Add(resultadosaValidar);

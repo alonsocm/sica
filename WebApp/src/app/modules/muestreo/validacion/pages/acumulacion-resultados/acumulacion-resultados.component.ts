@@ -51,8 +51,8 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
      
       next: (response: any) => {
        
-        this.datosAcumualdos = response.data;        
-        this.resultadosFiltradosn = this.datosAcumualdos;
+        this.datosAcumualdos = response.data;
+               this.resultadosFiltradosn = this.datosAcumualdos;
         this.resultadosn = this.datosAcumualdos;
         this.loading = false;
         },
