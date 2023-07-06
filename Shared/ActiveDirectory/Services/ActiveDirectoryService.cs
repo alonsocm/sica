@@ -1,13 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.DirectoryServices.AccountManagement;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.DTOs.Users;
 using Application.Interfaces;
-using Application.DTOs.Users;
+using Microsoft.Extensions.Configuration;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 
 namespace Shared.ActiveDirectory.Services
 {
@@ -63,7 +58,12 @@ namespace Shared.ActiveDirectory.Services
 
         public Task<string> GetUrlServiceCna()
         {
-            return Task.FromResult(_configuration["ActiveDirectorySettings:WebServiceUri"]);
+            return Task.FromResult(_configuration["ActiveDirectorySettings:WebServiceUrl"]);
+        }
+
+        public Task<bool> ValidarPorActiveDirectoryAsync()
+        {
+            return Task.FromResult(Convert.ToBoolean(_configuration["ActiveDirectorySettings:Activo"]));
         }
     }
 }
