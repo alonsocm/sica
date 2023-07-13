@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs
 {
-    internal class LimiteMaximoComunDto
+    public class LimiteMaximoComunDto
     {
         public string ClaveParametro { get; set; } = string.Empty;
         public string LDM { get; set; } = string.Empty;

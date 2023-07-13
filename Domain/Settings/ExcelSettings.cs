@@ -117,7 +117,7 @@
 
             new KeyValuePair<string, string>("NO. ENTREGA","NoEntrega"),
             new KeyValuePair<string, string>("CLAVE ÚNICA","ClaveUnica"),
-            new KeyValuePair<string, string>("CLAVE SITIO","ClaveSitio"),  
+            new KeyValuePair<string, string>("CLAVE SITIO","ClaveSitio"),
             new KeyValuePair<string, string>("CLAVE MONITOREO","ClaveMonitoreo"),
             new KeyValuePair<string, string>("NOMBRE","NombreSitio"),
             new KeyValuePair<string, string>("CLAVE PARAMETRO","ClaveParametro"),
@@ -132,8 +132,8 @@
             new KeyValuePair<string, string>("CLASIFICACIÓN OBSERVACIÓN","ClasificacionObservacion"),
             new KeyValuePair<string, string>("OBSERVACIÓN SRENAMECA","ObservacionSRENAMECA"),
             new KeyValuePair<string, string>("COMENTARIOS","ComentariosAprobacionResultados"),
-            
-            
+
+
 
         };
     }
@@ -172,6 +172,17 @@
             new KeyValuePair<string, string>("CLAVE MONITOREO", "ClaveMonitoreo"),
             new KeyValuePair<string, string>("OBSERVACIÓN SRENAMECA", "ObservacionSRENAMECA"),
             new KeyValuePair<string, string>("COMENTARIOS", "Comentarios")
+        };
+    }
+
+    public static class ExcelLimitesComunes
+    {
+        public static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("Clave Parametro", "ClaveParametro"),
+            new KeyValuePair<string, string>("LDM (Máximo)", "LDM"),
+            new KeyValuePair<string, string>("LPC /CMC (Máximo)", "LPC"),
+            new KeyValuePair<string, string>("Tipo de limite a considerar", "LimiteConsiderado"),
         };
     }
 }
