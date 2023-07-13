@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Enums
+﻿namespace Application.Enums
 {
     public enum EstatusMuestreo
-    {       
+    {
         NoEnviado = 1,
         Enviado = 2,
         EnviadoConExtensionFecha = 3,
@@ -33,6 +27,7 @@ namespace Application.Enums
         ReplicaConDiferenteDato = 23,
         PendienteDeEnvioAprobacionFinal = 24,
         Cargado = 25,
-        OriginalesAprobados = 26
+        OriginalesAprobados = 26,
+        ValidadoPorReglas = 27
     }
 }

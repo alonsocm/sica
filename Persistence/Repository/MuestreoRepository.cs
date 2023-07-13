@@ -1,20 +1,9 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
-using Application.Enums;
 using Application.Interfaces.IRepositories;
-using Application.Models;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
@@ -58,7 +47,7 @@ namespace Persistence.Repository
                                        TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty
-                                   }).ToListAsync();         
+                                   }).ToListAsync();
 
             var evidencias = await (from e in _dbContext.EvidenciaMuestreo
                                     where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
@@ -170,9 +159,9 @@ namespace Persistence.Repository
         }
 
         public async Task<List<int?>> GetListAniosConRegistro()
-        {           
+        {
             var lista = await _dbContext.Muestreo.Select(t => t.AnioOperacion).Distinct().ToListAsync();
-            
+
             return lista;
         }
 
@@ -180,12 +169,12 @@ namespace Persistence.Repository
         {
             var muestreos = await (from m in _dbContext.Muestreo
                                    join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
-                                   join resMuestreo in _dbContext.ResultadoMuestreo on m.Id equals resMuestreo.MuestreoId 
+                                   join resMuestreo in _dbContext.ResultadoMuestreo on m.Id equals resMuestreo.MuestreoId
                                    join costo in _dbContext.ParametrosCostos on resMuestreo.ParametroId equals costo.ParametroId
                                    where m.EstatusId  == estatusId
                                    select new AcumuladosResultadoDto
                                    {
-                                       MuestreoId = m.Id,                                                                             
+                                       MuestreoId = m.Id,
                                        claveUnica = $"{vpm.ClaveMuestreo}{resMuestreo.Parametro.ClaveParametro}",
                                        ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
                                        ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
@@ -204,7 +193,7 @@ namespace Persistence.Repository
                                        parametro = resMuestreo.Parametro.Descripcion,
                                        unidadMedida = resMuestreo.Parametro.IdUnidadMedidaNavigation.Descripcion,
                                        resultado = resMuestreo.Resultado,
-                                       ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,                                       
+                                       ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,
                                        Estatus = m.Estatus.Descripcion,
                                        TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1.ToString() ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
@@ -258,39 +247,40 @@ namespace Persistence.Repository
                                        cumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
                                        anioOperacion = resultados.AnioOperacion ?? 0,
                                        NumeroEntrega = resultados.NumeroEntrega.ToString() ?? string.Empty,
-                                       MuestreoId = resultados.MuestreoId,                                    
+                                       MuestreoId = resultados.MuestreoId,
                                        estatusId = resultados.EstatusId,
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
                                        cumpleFechaEntrega = (resultados.NumFechasNOCumplidas > 0) ? "NO" : "SI"
                                    }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId==estatusId).ToListAsync();
-            
+
             foreach (var dato in muestreos)
             {
                 List<string> datParam = (dato.cumpleReglasCondic == "NO") ? GetParametrosFaltantes(dato.tipoSitioId, dato.tipoCuerpoAguaId, dato.MuestreoId) : new List<string>();
                 dato.Observaciones = (datParam.Count > 0) ? datParam[0] : string.Empty;
                 dato.claveParametro = (datParam.Count > 0) ? datParam[1] : string.Empty;
             }
-return muestreos.ToList();
+            return muestreos.ToList();
         }
 
-        protected List<string> GetParametrosFaltantes(long tipoSitioId, long tipoCuerpoAguaId, long muestreoId ) 
+        protected List<string> GetParametrosFaltantes(long tipoSitioId, long tipoCuerpoAguaId, long muestreoId)
         {
-            List<string> datosParametros = new List<string>();
+            List<string> datosParametros = new();
             string valor = "";
             string clavesParametros = "";
-                var resultadosCargados = (from param in _dbContext.ParametrosSitioTipoCuerpoAgua
-                                          join reglas in _dbContext.ReglasRelacionParametro on param.ParametroId equals reglas.ParametroId
-                                          join resultados in _dbContext.ResultadoMuestreo on reglas.ParametroId equals resultados.ParametroId
-                                                                                    select new ResultadoMuestreoDto
-                                          {
-                                              TipoSitioId = param.TipoSitioId,
-                                              TipoCuerpoAguaId = param.TipoCuerpoAguaId,
-                                              MuestreoId = resultados.MuestreoId,
-                                              ParametroId = param.ParametroId,
-                                              
 
-                                          }).Where(x => x.TipoSitioId == tipoSitioId && x.TipoCuerpoAguaId == tipoCuerpoAguaId && x.MuestreoId == muestreoId).Select(y => y.ParametroId);
+            var resultadosCargados = (from param in _dbContext.ParametrosSitioTipoCuerpoAgua
+                                      join reglas in _dbContext.ReglasRelacionParametro on param.ParametroId equals reglas.ParametroId
+                                      join resultados in _dbContext.ResultadoMuestreo on reglas.ParametroId equals resultados.ParametroId
+                                      select new ResultadoMuestreoDto
+                                      {
+                                          TipoSitioId = param.TipoSitioId,
+                                          TipoCuerpoAguaId = param.TipoCuerpoAguaId,
+                                          MuestreoId = resultados.MuestreoId,
+                                          ParametroId = param.ParametroId,
+
+
+                                      }).Where(x => x.TipoSitioId == tipoSitioId && x.TipoCuerpoAguaId == tipoCuerpoAguaId && x.MuestreoId == muestreoId).Select(y => y.ParametroId);
 
             var muestreos = (from param in _dbContext.ParametrosSitioTipoCuerpoAgua
                              join reglas in _dbContext.ReglasRelacionParametro on param.ParametroId equals reglas.ParametroId
@@ -302,13 +292,17 @@ return muestreos.ToList();
                                  ParametroId = param.ParametroId,
                                  ClaveParametro = paramgrupo.ClaveParametro
                              }).Where(x => x.TipoSitioId == tipoSitioId && x.TipoCuerpoAguaId == tipoCuerpoAguaId && (!resultadosCargados.Contains(x.ParametroId))).Distinct();
+
             if (muestreos.ToList().Count > 0)
-            { muestreos.ToList().ForEach(x => valor += (x.ParametroId.ToString() + ','));
+            {
+                muestreos.ToList().ForEach(x => valor += (x.ParametroId.ToString() + ','));
                 muestreos.ToList().ForEach(x => clavesParametros += (x.ClaveParametro + ','));
-                datosParametros.Add(valor);datosParametros.Add(clavesParametros);
+                datosParametros.Add(valor);
+                datosParametros.Add(clavesParametros);
             }
+
             return datosParametros;
-        }       
-           
+        }
+
     }
 }
