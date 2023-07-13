@@ -535,7 +535,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ValidarResultadosPorReglas")]
         public async Task<IActionResult> Get([FromQuery] ValidarResultadosPorReglasCommand request)
         {
-            return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega }));
+            return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Muestreos = request.Muestreos}));
         }
 
         [HttpGet("ExportarResumenValidacion")]

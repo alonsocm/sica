@@ -52,7 +52,7 @@ export class ValidacionReglasComponent extends BaseService implements OnInit {
     }
 
     this.loading = !this.loading;
-    this.validacionService.obtenerResultadosValidadosPorReglas(this.aniosSeleccionados, this.entregasSeleccionadas).subscribe({
+    this.validacionService.obtenerResultadosValidadosPorReglas(this.aniosSeleccionados).subscribe({
       next: (response: any) => {
         this.registros = response.data;
          this.mostrarMensaje(

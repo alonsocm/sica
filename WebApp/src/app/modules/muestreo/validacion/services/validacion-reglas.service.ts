@@ -14,9 +14,9 @@ export class ValidacionReglasService {
     return this.http.get(environment.apiUrl + '/Muestreos/AniosConRegistro');
   }
 
-  obtenerResultadosValidadosPorReglas(anios: Array<number>, numeroEntrega:Array<number>){
+  obtenerResultadosValidadosPorReglas(Muestreos: Array<number>){
     let params = new HttpParams({
-      fromObject: { anios: anios, numeroEntrega:  numeroEntrega},
+      fromObject: { Muestreos: Muestreos},
     });
     return this.http.get(environment.apiUrl + '/Resultados/ValidarResultadosPorReglas', { params });
   }

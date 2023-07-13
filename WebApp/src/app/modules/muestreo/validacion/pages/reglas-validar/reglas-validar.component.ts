@@ -94,6 +94,30 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         },
       });
   }   
-  aplicarReglas(): void { }
+  aplicarReglas(): void {   
+    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn).map((m) => {
+      return m.muestreoId;
+    });
+    if (this.resultadosEnviados.length == 0) {
+      this.mostrarMensaje('Debes de seleccionar al menos un muestreo para aplicar las reglas', 'warning');
+      return this.hacerScroll();
+    }
+    this.loading = true;
+    this.validacionService.obtenerResultadosValidadosPorReglas(this.resultadosEnviados).subscribe({
+      next: (response: any) => {      
+        this.mostrarMensaje(
+          'Se aplicaron las reglas de validación correctamente',
+          'success'
+        );
+        this.loading = false;
+        return this.hacerScroll();
+      },
+      error: (error) => {
+        this.loading = false;
+      },
+    });
+
+
+  }
 
 }
