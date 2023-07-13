@@ -9,8 +9,7 @@ namespace Application.Features.Operacion.Resultados.Comands
 {
     public class ValidarResultadosPorReglasCommand : IRequest<Response<List<ResultadoValidacionReglasDto>>>
     {
-        public List<int> Anios { get; set; } = new List<int>();
-        public List<int> NumeroEntrega { get; set; } = new List<int>();
+        public List<long> Muestreos { get; set; } = new List<long>();
     }
 
     public class ValidarResultadosPorReglasCommandHandler : IRequestHandler<ValidarResultadosPorReglasCommand, Response<List<ResultadoValidacionReglasDto>>>
@@ -49,8 +48,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         {
             List<ResultadoValidacionReglasDto> resultadosValidacion = new();
 
-            var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Anios.Contains((int)(x.AnioOperacion != null ? x.AnioOperacion : 0)) &&
-                                                                                         request.NumeroEntrega.Contains((int)(x.NumeroEntrega != null ? x.NumeroEntrega : 0)));
+            var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Muestreos.Contains(x.Id));
 
             if (muestreos.Any())
             {
