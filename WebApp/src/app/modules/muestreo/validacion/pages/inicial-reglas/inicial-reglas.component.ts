@@ -50,7 +50,6 @@ export class InicialReglasComponent extends BaseService
 
 
     ];
-
     this.validacionService.obtenerMuestreos().subscribe({
       next: (response: any) => {
         this.anios = response.data;
@@ -66,10 +65,9 @@ export class InicialReglasComponent extends BaseService
       this.tipoAlerta = 'warning';      
       return this.hacerScroll();
     }
-
+    this.loading = true;
     this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas, estatusMuestreo.Cargado).subscribe({
-      next: (response: any) => {
-        this.loading = true;
+      next: (response: any) => {        
         this.resultadosMuestreo = response.data;
         this.resultadosFiltradosn = this.resultadosMuestreo;
         this.resultadosn = this.resultadosMuestreo;
@@ -82,9 +80,9 @@ export class InicialReglasComponent extends BaseService
     if (this.resultadosFiltradosn.length == 0) {
       this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
-    }
-    
-    this.validacionService.exportExcelResultadosaValidar(this.resultadosFiltradosn)
+    }   
+    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);    
+    this.validacionService.exportExcelResultadosaValidar((this.resultadosEnviados.length > 0) ? this.resultadosEnviados : this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {
           this.loading = true;
@@ -102,16 +100,19 @@ export class InicialReglasComponent extends BaseService
       });
   } 
   enviaraValidacion(): void {   
-
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn).map((m) => {    
       return m.muestreoId;
     });
 
+    if (this.resultadosEnviados.length == 0) {        
+      this.hacerScroll();
+      return this.mostrarMensaje('Debes de seleccionar al menos un muestreos para enviar a validar', 'danger');     
+    }
+
     this.validacionService.enviarMuestreoaValidar(estatusMuestreo.SeleccionadoParaValidar, this.resultadosEnviados)
       .subscribe({
         next: (response: any) => {
-          this.loading = true;
-          
+          this.loading = true;          
           if (response.succeded) {
             this.loading = false;
             this.cargaResultados();

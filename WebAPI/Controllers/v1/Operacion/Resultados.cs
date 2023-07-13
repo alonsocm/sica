@@ -605,8 +605,8 @@ namespace WebAPI.Controllers.v1.Operacion
                     programaAnual = dato.ProgramaAnual,
                     idResultadoLaboratorio = dato.idResultadoLaboratorio,
                     fechaEntrega = dato.fechaEntrega,
-                    replica = dato.replica,
-                    cambioResultado = dato.cambioResultado
+                    replica = (dato.replica) ? "SI" : "NO",
+                    cambioResultado = (dato.cambioResultado) ? "SI" : "NO"
                 
                 };
                 
@@ -644,7 +644,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     numParametrosCargados = dato.numParametrosCargados,
                     muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados,
                     cumpleReglasCond = dato.cumpleReglasCondic,
-                    observaciones = dato.Observaciones
+                    observaciones = dato.claveParametro
                 };
                
                 lstmuestreosExcel.Add(resultadosaValidar);

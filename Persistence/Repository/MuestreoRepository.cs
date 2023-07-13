@@ -264,38 +264,50 @@ namespace Persistence.Repository
                                        tipoSitioId = resultados.TipoSitioId,
                                        cumpleFechaEntrega = (resultados.NumFechasNOCumplidas > 0) ? "NO" : "SI"
                                    }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId==estatusId).ToListAsync();
-
-            muestreos.ForEach(x => x.Observaciones = (x.cumpleReglasCondic == "NO") ? GetParametrosFaltantes(x.tipoSitioId, x.tipoCuerpoAguaId, x.MuestreoId) : string.Empty);
-
+            
+            foreach (var dato in muestreos)
+            {
+                List<string> datParam = (dato.cumpleReglasCondic == "NO") ? GetParametrosFaltantes(dato.tipoSitioId, dato.tipoCuerpoAguaId, dato.MuestreoId) : new List<string>();
+                dato.Observaciones = (datParam.Count > 0) ? datParam[0] : string.Empty;
+                dato.claveParametro = (datParam.Count > 0) ? datParam[1] : string.Empty;
+            }
 return muestreos.ToList();
         }
 
-        protected string GetParametrosFaltantes(long tipoSitioId, long tipoCuerpoAguaId, long muestreoId ) 
+        protected List<string> GetParametrosFaltantes(long tipoSitioId, long tipoCuerpoAguaId, long muestreoId ) 
         {
+            List<string> datosParametros = new List<string>();
             string valor = "";
+            string clavesParametros = "";
                 var resultadosCargados = (from param in _dbContext.ParametrosSitioTipoCuerpoAgua
                                           join reglas in _dbContext.ReglasRelacionParametro on param.ParametroId equals reglas.ParametroId
                                           join resultados in _dbContext.ResultadoMuestreo on reglas.ParametroId equals resultados.ParametroId
-                                          select new ResultadoMuestreoDto
+                                                                                    select new ResultadoMuestreoDto
                                           {
                                               TipoSitioId = param.TipoSitioId,
                                               TipoCuerpoAguaId = param.TipoCuerpoAguaId,
                                               MuestreoId = resultados.MuestreoId,
-                                              ParametroId = param.ParametroId
+                                              ParametroId = param.ParametroId,
+                                              
 
                                           }).Where(x => x.TipoSitioId == tipoSitioId && x.TipoCuerpoAguaId == tipoCuerpoAguaId && x.MuestreoId == muestreoId).Select(y => y.ParametroId);
 
             var muestreos = (from param in _dbContext.ParametrosSitioTipoCuerpoAgua
                              join reglas in _dbContext.ReglasRelacionParametro on param.ParametroId equals reglas.ParametroId
+                             join paramgrupo in _dbContext.ParametrosGrupo on param.ParametroId equals paramgrupo.Id
                              select new ResultadoMuestreoDto
                              {
                                  TipoSitioId = param.TipoSitioId,
                                  TipoCuerpoAguaId = param.TipoCuerpoAguaId,
-                                 ParametroId = param.ParametroId
+                                 ParametroId = param.ParametroId,
+                                 ClaveParametro = paramgrupo.ClaveParametro
                              }).Where(x => x.TipoSitioId == tipoSitioId && x.TipoCuerpoAguaId == tipoCuerpoAguaId && (!resultadosCargados.Contains(x.ParametroId))).Distinct();
             if (muestreos.ToList().Count > 0)
-            { muestreos.ToList().ForEach(x => valor += (x.ParametroId.ToString() + ',')); }
-            return valor;
+            { muestreos.ToList().ForEach(x => valor += (x.ParametroId.ToString() + ','));
+                muestreos.ToList().ForEach(x => clavesParametros += (x.ClaveParametro + ','));
+                datosParametros.Add(valor);datosParametros.Add(clavesParametros);
+            }
+            return datosParametros;
         }       
            
     }

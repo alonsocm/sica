@@ -16,8 +16,11 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
   resultadosSeleccionados: Array<acumuladosMuestreo> = [];
 
-  aniosSeleccionados: Array<number> = [2023];
-  entregasSeleccionadas: Array<number> = [0];
+  aniosSeleccionados: Array<number> = [];
+  entregasSeleccionadas: Array<number> = [];
+  anios: Array<number> = [];
+  entregas: Array<number> = [0];
+  resultadosEnviados: Array<any> = [];
   ngOnInit(): void {
     this.columnas = [
       { nombre: 'claveSitio', etiqueta: 'CLAVE SITIO', orden: 0, filtro: new Filter() },
@@ -31,7 +34,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       { nombre: 'subtipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO AGUA', orden: 0, filtro: new Filter() },      
       { nombre: 'muestreoCompletoPorResultados', etiqueta: 'MUESTREO COMPLETO POR RESULTADOS', orden: 0, filtro: new Filter() },
 
-      { nombre: 'cumpleReglas', etiqueta: '¿CUMPLE CON LA REGLAS CONDICIONANTES?', orden: 0, filtro: new Filter() },      
+      { nombre: 'cumpleReglasCondic', etiqueta: '¿CUMPLE CON LA REGLAS CONDICIONANTES?', orden: 0, filtro: new Filter() },      
       { nombre: 'cumpleFechaEntrega', etiqueta: 'CUMPLE CON LA FECHA DE ENTREGA', orden: 0, filtro: new Filter() },
       { nombre: 'reglaValicdacion', etiqueta: 'SE CORRE REGLA DE VALIDACIÓN', orden: 0, filtro: new Filter() },
       { nombre: 'autorizacionRegla', etiqueta: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)', orden: 0, filtro: new Filter() },
@@ -40,17 +43,32 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       { nombre: 'muestreoValidadoPor', etiqueta: 'MUESTREO VALIDADO POR', orden: 0, filtro: new Filter() },
       { nombre: 'porcentajePago', etiqueta: '% DE PAGO', orden: 0, filtro: new Filter() }];
 
+    this.validacionService.obtenerMuestreos().subscribe({
+      next: (response: any) => {
+        this.anios = response.data;
+      },
+      error: (error) => { },
+    });   
+    }
 
+  cargarResultados() {
+    if (this.entregasSeleccionadas.length == 0 && this.aniosSeleccionados.length == 0) {
+      this.mensajeAlerta = "Debes de seleccionar al menos un año y un número de entrega";
+      this.mostrarAlerta = true;
+      this.tipoAlerta = 'warning';
+      return this.hacerScroll();
+    }
     this.validacionService.getResultadosporMonitoreo(this.aniosSeleccionados, this.entregasSeleccionadas, estatusMuestreo.SeleccionadoParaValidar).subscribe({
       next: (response: any) => {
         this.loading = true;
-        this.resultadosMuestreo = response.data;  
+        this.resultadosMuestreo = response.data;
         this.resultadosFiltradosn = this.resultadosMuestreo;
         this.resultadosn = this.resultadosMuestreo;
         this.loading = false;
       },
       error: (error) => { this.loading = false; },
     });
+
   }
   onDownload(): void {
     if (this.resultadosFiltradosn.length == 0) {
@@ -59,7 +77,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     }
 
     this.loading = true;
-    this.validacionService.exportExcelResultadosValidados(this.resultadosFiltradosn)
+    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
+    this.validacionService.exportExcelResultadosValidados((this.resultadosEnviados.length > 0) ? this.resultadosEnviados : this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'ResultadosaValidar.xlsx');

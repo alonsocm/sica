@@ -113,6 +113,7 @@ export class BaseService {
 
   seleccionarn(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
-    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);    
+    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
+   
   }
 };

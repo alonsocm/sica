@@ -35,8 +35,8 @@ namespace Application.Models
         public string programaAnual { get; set; }
         public long idResultadoLaboratorio { get; set; }
         public string fechaEntrega { get; set; }
-        public bool replica { get; set; }
-        public bool cambioResultado { get; set; }
+        public string replica { get; set; }
+        public string cambioResultado { get; set; }
         public AcumuladosResultadosExcel()
         {
             this.claveUnica = string.Empty;
@@ -63,8 +63,8 @@ namespace Application.Models
             this.programaAnual = string.Empty;
             this.idResultadoLaboratorio = 0;
             this.fechaEntrega = string.Empty;
-            this.replica = false;
-            this.cambioResultado = false;
+            this.replica = string.Empty;
+            this.cambioResultado = string.Empty;
 
         }
 

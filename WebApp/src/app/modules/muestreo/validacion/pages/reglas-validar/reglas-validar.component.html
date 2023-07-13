@@ -11,19 +11,41 @@
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
                (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
-  <div class="d-flex flex-row-reverse opciones-tabla">
-    <div class="p-2">
+
+  <div class="row">
+    <div class="col-md-3">
+      <label for="anios">Seleccionar año(s):*</label>
+      <select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados" [size]="this.anios.length">
+
+        <option *ngFor="let anio of anios" value="{{anio}}">{{anio}}</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label for="entrega">Seleccionar número(s) de entrega:*</label>
+      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas" [size]="this.entregas.length">
+        <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button style="text-align:right" class="btn btn-primary rigth" type="button" (click)="cargarResultados()">
+        <i class="bi bi-send"></i> Ver resultados
+      </button>
+    </div>
+    <div class="col-md-2">
       <button class="btn btn-secondary" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
     </div>
-    <div class="p-2">
+    <div class="col-md-1">
       <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltrosn()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
   </div>
+
+
 
   <div class="row">
     <div class="col-md-12 table-responsive dvTable">
@@ -64,8 +86,8 @@
             <td style="text-align: center;">{{dato.tipoCuerpoAgua}}</td>
             <td style="text-align: center;">{{dato.subTipoCuerpoAgua}}</td>
             <td style="text-align: center;">{{dato.muestreoCompletoPorResultados}}</td>
-            <td style="text-align: center;"></td>
-            <td style="text-align: center;"></td>
+            <td style="text-align: center;">{{dato.cumpleReglasCondic}}</td>
+            <td style="text-align: center;">{{dato.cumpleFechaEntrega}}</td>
             <td style="text-align: center;"></td>
             <td style="text-align: center;"></td>
             <td style="text-align: center;"></td>
