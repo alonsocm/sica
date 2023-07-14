@@ -725,10 +725,11 @@ namespace WebAPI.Controllers.v1.Operacion
                     replica = (dato.replica) ? "SI":"NO",
                     cambioResultado = (dato.cambioResultado) ? "SI":"NO",
                     validadoReglas = (dato.validadoReglas) ? "SI" : "NO",
-                    observacionesReglas = dato.Observaciones,
-                    costoParametro = dato.costoParametro
+                    observacionesReglas = dato.resultadoReglas,
+                    costoParametro = dato.costoParametro,
+                    
 
-            };
+                };
                 lstmuestreosExcel.Add(resultadosAcumulados);
             }
 

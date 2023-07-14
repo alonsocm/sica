@@ -71,7 +71,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     this.validacionService.exportExcelResumenResultados(this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {
-          FileService.download(response, 'ResultadosaValidar.xlsx');
+          FileService.download(response, 'ResumenValidacionReglas.xlsx');
           this.loading = false;
         },
         error: (response: any) => {

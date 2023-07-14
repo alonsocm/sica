@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
+using Application.Enums;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -171,7 +172,7 @@ namespace Persistence.Repository
                                    join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
                                    join resMuestreo in _dbContext.ResultadoMuestreo on m.Id equals resMuestreo.MuestreoId
                                    join costo in _dbContext.ParametrosCostos on resMuestreo.ParametroId equals costo.ParametroId
-                                   where m.EstatusId  == estatusId
+                                   where m.EstatusId == estatusId
                                    select new AcumuladosResultadoDto
                                    {
                                        MuestreoId = m.Id,
@@ -201,7 +202,9 @@ namespace Persistence.Repository
                                        costoParametro = costo.Precio,
                                        NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty,
                                        fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yy") ?? string.Empty,
-                                       idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio
+                                       idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
+                                       validadoReglas = (m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas) ? true : false,
+                                       resultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty
 
 
 

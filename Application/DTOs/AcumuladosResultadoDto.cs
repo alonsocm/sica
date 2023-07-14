@@ -38,6 +38,7 @@ namespace Application.DTOs
         public long tipoSitioId { get; set; }
 
         public string cumpleFechaEntrega { get; set; }
+        public string resultadoReglas { get; set; }
 
 
 
@@ -71,6 +72,7 @@ namespace Application.DTOs
             this.tipoSitioId = 0;
 
             this.cumpleFechaEntrega = string.Empty;
+            this.resultadoReglas = string.Empty;
         }
     }
 }
