@@ -1,0 +1,14 @@
+<router-outlet name="menu"></router-outlet>
+<div *ngIf="loading">
+    <app-loading></app-loading>
+</div>
+<div class="container-fluid">
+    <h3>Sustitución por límite máximo común</h3>
+    <hr class="red">
+    <div class="message-container">
+        <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+            [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    </div>
+    <div class="row">        
+    </div>
+</div>
