@@ -11,5 +11,14 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     super();
   }
 
+  tipoSeleccionado: string = '';
+  periodoSeleccionado: string = '';
+  archivoLimites: File = {} as File;
+
   ngOnInit(): void {}
+  
+  mostrarValoresSeleccionados(){
+    console.log(this.archivoLimites.name);
+    
+  }
 }
