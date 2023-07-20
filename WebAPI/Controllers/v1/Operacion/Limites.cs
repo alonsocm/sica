@@ -3,23 +3,21 @@ using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
 
-namespace WebAPI.Controllers.v1.Catalogos
+namespace WebAPI.Controllers.v1.Operacion
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class Limites : BaseApiController
     {
         [HttpPost]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Post(IFormFile archivo)
+        public async Task<IActionResult> Post([FromForm] ParametrosSustitucionLimitesDto parametrosSustitucionLimites)
         {
             string filePath = string.Empty;
 
-            if (archivo.Length > 0)
+            if (parametrosSustitucionLimites.Archivo?.Length > 0)
             {
                 filePath = Path.GetTempFileName();
                 using var stream = System.IO.File.Create(filePath);
-                await archivo.CopyToAsync(stream);
+                await parametrosSustitucionLimites.Archivo.CopyToAsync(stream);
             }
 
             FileInfo fileInfo = new(filePath);

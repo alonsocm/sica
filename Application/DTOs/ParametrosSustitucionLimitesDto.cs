@@ -1,0 +1,12 @@
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Application.DTOs
+{
+
+    public class ParametrosSustitucionLimitesDto
+    {
+        public string OrigenLimites { get; set; }
+        public string Periodo { get; set; }
+        public IFormFile? Archivo { get; set; }
+    }
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { LimitesService } from '../limites.service';
 
 @Component({
   selector: 'app-maximo-comun',
@@ -8,11 +9,11 @@ import { BaseService } from 'src/app/shared/services/base.service';
   styleUrls: ['./maximo-comun.component.css'],
 })
 export class MaximoComunComponent extends BaseService implements OnInit {
-  constructor() {
+  constructor(private limitesService: LimitesService) {
     super();
   }
 
-  form = new FormGroup({
+  formOpcionesSustitucion = new FormGroup({
     origenLimites: new FormControl('', Validators.required),    
     periodo: new FormControl('', Validators.required),
     excelLimites: new FormControl(),
@@ -27,25 +28,37 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   ngOnInit(): void {}
   
   onSubmit(){
-    console.table(this.form.value); 
+    let configSustitucion = {
+      archivo: this.formOpcionesSustitucion.controls.archivo.value,
+      origenLimites: this.formOpcionesSustitucion.controls.origenLimites.value,
+      periodo: this.formOpcionesSustitucion.controls.periodo.value
+    };
+
+    console.table(configSustitucion); 
+
+    this.limitesService.sustituirLimites(configSustitucion).subscribe({
+      next: (response: any) => {        
+      },
+      error: (error) => {},
+    });;
   }
 
   validarArchivo(){    
-    if (this.form.controls.origenLimites.value == 'tablaTemporal') {
-      this.form.controls.excelLimites.setValue('');
-      this.form.controls.excelLimites.setValidators(Validators.required);
+    if (this.formOpcionesSustitucion.controls.origenLimites.value == 'tablaTemporal') {
+      this.formOpcionesSustitucion.controls.excelLimites.setValue('');
+      this.formOpcionesSustitucion.controls.excelLimites.setValidators(Validators.required);
     } else {
-      this.form.controls.excelLimites.setValue('');
-      this.form.controls.excelLimites.setValidators(null);
+      this.formOpcionesSustitucion.controls.excelLimites.setValue('');
+      this.formOpcionesSustitucion.controls.excelLimites.setValidators(null);
     }
 
-    this.form.controls.excelLimites.updateValueAndValidity();
+    this.formOpcionesSustitucion.controls.excelLimites.updateValueAndValidity();
   }
   
   onFileChange(event: any){
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
-      this.form.patchValue({
+      this.formOpcionesSustitucion.patchValue({
         archivo: file
       });
     }
