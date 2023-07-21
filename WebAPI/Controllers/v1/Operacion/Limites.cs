@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Features.Operacion.SustitucionLimites.Commands;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -11,6 +12,8 @@ namespace WebAPI.Controllers.v1.Operacion
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromForm] ParametrosSustitucionLimitesDto parametrosSustitucionLimites)
         {
+            var sustítucionCorrecta = await Mediator.Send(new SustitucionMaximoComunCommand { ParametrosSustitucion = parametrosSustitucionLimites });
+
             string filePath = string.Empty;
 
             if (parametrosSustitucionLimites.Archivo?.Length > 0)
@@ -24,6 +27,7 @@ namespace WebAPI.Controllers.v1.Operacion
             ExcelService.Mappings = ExcelLimitesComunes.keyValues;
             var registros = ExcelService.Import<LimiteMaximoComunDto>(fileInfo, "Límites 2012-2022");
             System.IO.File.Delete(filePath);
+
 
             return Ok();
         }
