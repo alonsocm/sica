@@ -19,6 +19,8 @@ public partial class ProgramaMuestreo
 
     public long BrigadaMuestreoId { get; set; }
 
+    public virtual BrigadaMuestreo BrigadaMuestreo { get; set; } = null!;
+
     public virtual ICollection<Muestreo> Muestreo { get; set; } = new List<Muestreo>();
 
     public virtual ProgramaSitio ProgramaSitio { get; set; } = null!;

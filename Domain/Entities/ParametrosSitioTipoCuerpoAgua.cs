@@ -16,4 +16,6 @@ public partial class ParametrosSitioTipoCuerpoAgua
     public virtual ParametrosGrupo Parametro { get; set; } = null!;
 
     public virtual TipoCuerpoAgua TipoCuerpoAgua { get; set; } = null!;
+
+    public virtual TipoSitio TipoSitio { get; set; } = null!;
 }

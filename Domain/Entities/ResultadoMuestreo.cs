@@ -53,13 +53,13 @@ public partial class ResultadoMuestreo
 
     public string? Comentarios { get; set; }
 
-    public string? ResultadoReglas { get; set; }
-
     public long LaboratorioId { get; set; }
 
     public DateTime FechaEntrega { get; set; }
 
     public long IdResultadoLaboratorio { get; set; }
+
+    public string? ResultadoReglas { get; set; }
 
     public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = new List<AprobacionResultadoMuestreo>();
 

@@ -10,4 +10,6 @@ public partial class BrigadaMuestreo
     public string Descripcion { get; set; } = null!;
 
     public bool Activo { get; set; }
+
+    public virtual ICollection<ProgramaMuestreo> ProgramaMuestreo { get; set; } = new List<ProgramaMuestreo>();
 }

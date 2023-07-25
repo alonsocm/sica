@@ -11,17 +11,25 @@ public partial class ParametrosGrupo
 
     public string Descripcion { get; set; } = null!;
 
-    public long IdSubgrupo { get; set; }
+    public long? IdSubgrupo { get; set; }
 
     public long? IdUnidadMedida { get; set; }
 
     public long? Orden { get; set; }
 
+    public int? GrupoParametroId { get; set; }
+
+    public bool? EsLdm { get; set; }
+
     public virtual ICollection<FormaReporteEspecifica> FormaReporteEspecifica { get; set; } = new List<FormaReporteEspecifica>();
 
-    public virtual SubgrupoAnalitico IdSubgrupoNavigation { get; set; } = null!;
+    public virtual GrupoParametro? GrupoParametro { get; set; }
+
+    public virtual SubgrupoAnalitico? IdSubgrupoNavigation { get; set; }
 
     public virtual UnidadMedida? IdUnidadMedidaNavigation { get; set; }
+
+    public virtual ICollection<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; } = new List<LimiteParametroLaboratorio>();
 
     public virtual ICollection<ParametrosCostos> ParametrosCostos { get; set; } = new List<ParametrosCostos>();
 

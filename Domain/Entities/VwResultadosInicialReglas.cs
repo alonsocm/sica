@@ -47,6 +47,5 @@ public partial class VwResultadosInicialReglas
 
     public string? CumpleConLasReglasCondicionantes { get; set; }
 
-    public int? NumFechasNOCumplidas { get; set; }
-
+    public int? NumFechasNoCumplidas { get; set; }
 }

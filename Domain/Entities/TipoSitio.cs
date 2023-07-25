@@ -7,7 +7,9 @@ public partial class TipoSitio
 {
     public long Id { get; set; }
 
-    public string? TipoSitio1 { get; set; }
+    public string? Descripcion { get; set; }
+
+    public virtual ICollection<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; } = new List<ParametrosSitioTipoCuerpoAgua>();
 
     public virtual ICollection<ProgramaSitio> ProgramaSitio { get; set; } = new List<ProgramaSitio>();
 }

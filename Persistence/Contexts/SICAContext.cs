@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -17,6 +15,8 @@ public partial class SicaContext : DbContext
     }
 
     public virtual DbSet<Accion> Accion { get; set; }
+
+    public virtual DbSet<AccionLaboratorio> AccionLaboratorio { get; set; }
 
     public virtual DbSet<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; }
 
@@ -42,7 +42,11 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<FormaReporteEspecifica> FormaReporteEspecifica { get; set; }
 
+    public virtual DbSet<GrupoParametro> GrupoParametro { get; set; }
+
     public virtual DbSet<Laboratorios> Laboratorios { get; set; }
+
+    public virtual DbSet<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; }
 
     public virtual DbSet<Localidad> Localidad { get; set; }
 
@@ -132,6 +136,14 @@ public partial class SicaContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<AccionLaboratorio>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_AccionSubrogado");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(30);
+            entity.Property(e => e.LoSubroga).HasMaxLength(10);
+        });
+
         modelBuilder.Entity<AprobacionResultadoMuestreo>(entity =>
         {
             entity.HasIndex(e => e.ResultadoMuestreoId, "IX_AprobacionResultadoMuestreo_ResultadoMuestreoId");
@@ -143,7 +155,7 @@ public partial class SicaContext : DbContext
             entity.HasOne(d => d.ResultadoMuestreo).WithMany(p => p.AprobacionResultadoMuestreo)
                 .HasForeignKey(d => d.ResultadoMuestreoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AprobacionResultadoMuestreo_Muestreo");
+                .HasConstraintName("FK_AprobacionResultadoMuestreo_ResultadoMuestreo");
 
             entity.HasOne(d => d.UsuarioRevision).WithMany(p => p.AprobacionResultadoMuestreo)
                 .HasForeignKey(d => d.UsuarioRevisionId)
@@ -284,6 +296,11 @@ public partial class SicaContext : DbContext
                 .HasConstraintName("FK_FormaReporteEspecifica_ParametrosGrupo");
         });
 
+        modelBuilder.Entity<GrupoParametro>(entity =>
+        {
+            entity.Property(e => e.Descripcion).HasMaxLength(15);
+        });
+
         modelBuilder.Entity<Laboratorios>(entity =>
         {
             entity.Property(e => e.Descripcion)
@@ -292,6 +309,54 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Nomenclatura)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<LimiteParametroLaboratorio>(entity =>
+        {
+            entity.Property(e => e.Ldm)
+                .HasMaxLength(30)
+                .HasColumnName("LDM");
+            entity.Property(e => e.LdmaCumplir)
+                .HasMaxLength(30)
+                .HasColumnName("LDMaCumplir");
+            entity.Property(e => e.Lpc)
+                .HasMaxLength(30)
+                .HasColumnName("LPC");
+            entity.Property(e => e.LpcaCumplir)
+                .HasMaxLength(30)
+                .HasColumnName("LPCaCumplir");
+            entity.Property(e => e.MetodoAnalitico).HasMaxLength(250);
+
+            entity.HasOne(d => d.Anio).WithMany(p => p.LimiteParametroLaboratorio)
+                .HasForeignKey(d => d.AnioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_ProgramaAnio");
+
+            entity.HasOne(d => d.Laboratorio).WithMany(p => p.LimiteParametroLaboratorioLaboratorio)
+                .HasForeignKey(d => d.LaboratorioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_Laboratorios");
+
+            entity.HasOne(d => d.LaboratorioMuestreo).WithMany(p => p.LimiteParametroLaboratorioLaboratorioMuestreo)
+                .HasForeignKey(d => d.LaboratorioMuestreoId)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_LaboratorioMuestreo");
+
+            entity.HasOne(d => d.LaboratorioSubroga).WithMany(p => p.LimiteParametroLaboratorioLaboratorioSubroga)
+                .HasForeignKey(d => d.LaboratorioSubrogaId)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_LaboratorioSubroga");
+
+            entity.HasOne(d => d.LoSubroga).WithMany(p => p.LimiteParametroLaboratorioLoSubroga)
+                .HasForeignKey(d => d.LoSubrogaId)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_AccionSubrogado");
+
+            entity.HasOne(d => d.Parametro).WithMany(p => p.LimiteParametroLaboratorio)
+                .HasForeignKey(d => d.ParametroId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_ParametrosGrupo");
+
+            entity.HasOne(d => d.RealizaLaboratorioMuestreo).WithMany(p => p.LimiteParametroLaboratorioRealizaLaboratorioMuestreo)
+                .HasForeignKey(d => d.RealizaLaboratorioMuestreoId)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_AccionSubrogado1");
         });
 
         modelBuilder.Entity<Localidad>(entity =>
@@ -441,10 +506,14 @@ public partial class SicaContext : DbContext
 
             entity.Property(e => e.ClaveParametro).HasMaxLength(30);
             entity.Property(e => e.Descripcion).HasMaxLength(100);
+            entity.Property(e => e.EsLdm).HasColumnName("EsLDM");
+
+            entity.HasOne(d => d.GrupoParametro).WithMany(p => p.ParametrosGrupo)
+                .HasForeignKey(d => d.GrupoParametroId)
+                .HasConstraintName("FK_ParametrosGrupo_GrupoParametro");
 
             entity.HasOne(d => d.IdSubgrupoNavigation).WithMany(p => p.ParametrosGrupo)
                 .HasForeignKey(d => d.IdSubgrupo)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ParametrosGrupo_SubtipoCuerpoAgua");
 
             entity.HasOne(d => d.IdUnidadMedidaNavigation).WithMany(p => p.ParametrosGrupo)
@@ -473,6 +542,11 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.TipoCuerpoAguaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ParametrosSitioTipoCuerpoAgua_TipoCuerpoAgua");
+
+            entity.HasOne(d => d.TipoSitio).WithMany(p => p.ParametrosSitioTipoCuerpoAgua)
+                .HasForeignKey(d => d.TipoSitioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ParametrosSitioTipoCuerpoAgua_TipoSitio");
         });
 
         modelBuilder.Entity<Perfil>(entity =>
@@ -528,6 +602,11 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.DiaProgramado).HasColumnType("date");
             entity.Property(e => e.DomingoSemanaProgramada).HasColumnType("date");
             entity.Property(e => e.NombreCorrectoArchivo).HasMaxLength(100);
+
+            entity.HasOne(d => d.BrigadaMuestreo).WithMany(p => p.ProgramaMuestreo)
+                .HasForeignKey(d => d.BrigadaMuestreoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProgramaMuestreo_BrigadaMuestreo");
 
             entity.HasOne(d => d.ProgramaSitio).WithMany(p => p.ProgramaMuestreo)
                 .HasForeignKey(d => d.ProgramaSitioId)
@@ -729,7 +808,7 @@ public partial class SicaContext : DbContext
             entity.HasOne(d => d.Laboratorio).WithMany(p => p.ResultadoMuestreo)
                 .HasForeignKey(d => d.LaboratorioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ResultadoMuestreo_Laboratorio");
+                .HasConstraintName("FK_ResultadoMuestreo_Laboratorios");
 
             entity.HasOne(d => d.Muestreo).WithMany(p => p.ResultadoMuestreo)
                 .HasForeignKey(d => d.MuestreoId)
@@ -746,12 +825,12 @@ public partial class SicaContext : DbContext
 
             entity.HasOne(d => d.ObservacionesSecaiaNavigation).WithMany(p => p.ResultadoMuestreoObservacionesSecaiaNavigation)
                 .HasForeignKey(d => d.ObservacionesSecaiaid)
-                .HasConstraintName("FK_ResultadoMuestreo_Observaciones");
+                .HasConstraintName("FK_ResultadoMuestreo_ObservacionesSECAIA");
 
             entity.HasOne(d => d.Parametro).WithMany(p => p.ResultadoMuestreo)
                 .HasForeignKey(d => d.ParametroId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ResultadoMuestreo_Parametro");
+                .HasConstraintName("FK_ResultadoMuestreo_ParametrosGrupo");
         });
 
         modelBuilder.Entity<Sitio>(entity =>
@@ -856,10 +935,9 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<TipoSitio>(entity =>
         {
-            entity.Property(e => e.TipoSitio1)
+            entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("TipoSitio");
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<UnidadMedida>(entity =>
@@ -1023,7 +1101,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.NombreSitio).HasMaxLength(250);
             entity.Property(e => e.NumDatosEsperados).HasColumnName("Num datos esperados");
             entity.Property(e => e.NumDatosReportados).HasColumnName("Num datos reportados");
-            entity.Property(e => e.NumFechasNOCumplidas).HasColumnName("NumFechasNoCumplidas");
+            entity.Property(e => e.NumFechasNoCumplidas).HasColumnName("NumFechasNoCumplidas");
             entity.Property(e => e.SubtipoCuerpoDeAgua)
                 .HasMaxLength(50)
                 .HasColumnName("Subtipo cuerpo de agua");
