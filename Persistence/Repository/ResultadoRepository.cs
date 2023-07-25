@@ -1,16 +1,9 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
-using Application.Enums;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
@@ -77,7 +70,7 @@ namespace Persistence.Repository
                                     {
                                         Anio = (int)(r.Muestreo.AnioOperacion != null ? r.Muestreo.AnioOperacion : 0),
                                         NoEntrega = (int)(r.Muestreo.NumeroEntrega != null ? r.Muestreo.NumeroEntrega : 0),
-                                        TipoSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1??string.Empty,
+                                        TipoSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion??string.Empty,
                                         ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo}{r.Parametro.ClaveParametro}",
                                         ClaveSitio = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}",
                                         ClaveMonitoreo = r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo,
@@ -127,13 +120,13 @@ namespace Persistence.Repository
         {
             var resultadosNoEncontrados = new List<CargaMuestreoDto>();
 
-                muestreosDto.ForEach(resultadoDto =>
-                {
-                    var resultado = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado))
-                                                                .ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado));
-                    if (resultado == 0)
-                        resultadosNoEncontrados.Add(resultadoDto);
-                });
+            muestreosDto.ForEach(resultadoDto =>
+            {
+                var resultado = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado))
+                                                            .ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado));
+                if (resultado == 0)
+                    resultadosNoEncontrados.Add(resultadoDto);
+            });
 
             return resultadosNoEncontrados;
         }

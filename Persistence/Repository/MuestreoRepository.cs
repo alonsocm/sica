@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
-using Application.Enums;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +36,7 @@ namespace Persistence.Repository
                                        HoraFin =$"{m.HoraFin:hh\\:mm\\:ss}"??string.Empty,
                                        ProgramaAnual = m.AnioOperacion.ToString()??string.Empty,
                                        FechaProgramada = m.ProgramaMuestreo.DiaProgramado.ToString(),
-                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1.ToString()??string.Empty,
+                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString()??string.Empty,
                                        NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
                                        FechaCarga = m.FechaCarga.ToString("yyyy-MM-dd")??string.Empty,
                                        LaboratorioSubrogado = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
@@ -196,7 +195,7 @@ namespace Persistence.Repository
                                        resultado = resMuestreo.Resultado,
                                        ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,
                                        Estatus = m.Estatus.Descripcion,
-                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.TipoSitio1.ToString() ?? string.Empty,
+                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString() ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        costoParametro = costo.Precio,
@@ -254,7 +253,7 @@ namespace Persistence.Repository
                                        estatusId = resultados.EstatusId,
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
-                                       cumpleFechaEntrega = (resultados.NumFechasNOCumplidas > 0) ? "NO" : "SI"
+                                       cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI"
                                    }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId==estatusId).ToListAsync();
 
             foreach (var dato in muestreos)

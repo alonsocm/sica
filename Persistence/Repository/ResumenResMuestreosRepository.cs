@@ -1,9 +1,9 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
+using Ardalis.Specification.EntityFrameworkCore;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using Ardalis.Specification.EntityFrameworkCore;
 
 namespace Persistence.Repository
 {
@@ -297,7 +297,7 @@ namespace Persistence.Repository
                                 TipoCuerpoAgua = tca.Descripcion,
                                 TipoHomologadoId = th.Id,
                                 TipoHomologado = th.Descripcion,
-                                TipoSitio = ts.TipoSitio1,
+                                TipoSitio = ts.Descripcion,
                                 EstatusId = m.EstatusId
                             };
 
