@@ -2,12 +2,10 @@
 using Application.Wrappers;
 using Domain.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Persistence.Contexts;
@@ -93,6 +91,7 @@ namespace Persistence
             services.AddTransient<IFormaReporteEspecificaRepository, FormaReporteEspecificaRepository>();
             services.AddTransient<IReglasLaboratorioLDMRepository, ReglasLaboratorioLDMRepository>();
             services.AddTransient<ILaboratorioRepository, LaboratorioRepository>();
+            services.AddTransient<ILimiteParametroLaboratorioRepository, LimiteParametroLaboratorioRepository>();
             #endregion
         }
     }
