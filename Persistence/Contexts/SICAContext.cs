@@ -1111,6 +1111,11 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo cuerpo agua");
         });
 
+        modelBuilder.Entity<VwLimiteMaximoComun>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
