@@ -92,6 +92,7 @@ namespace Persistence
             services.AddTransient<IReglasLaboratorioLDMRepository, ReglasLaboratorioLDMRepository>();
             services.AddTransient<ILaboratorioRepository, LaboratorioRepository>();
             services.AddTransient<ILimiteParametroLaboratorioRepository, LimiteParametroLaboratorioRepository>();
+            services.AddTransient<IVwLimiteMaximoComunRepository, VwLimiteMaximoComunRepository>();
             #endregion
         }
     }
