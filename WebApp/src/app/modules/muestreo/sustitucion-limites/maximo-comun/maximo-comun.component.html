@@ -30,10 +30,10 @@
                         <div class="col-md-6">
                             <p>1.&nbsp;Seleccione el origen de límites:</p>
                             <input id="rdCatalogo" type="radio" formControlName="origenLimites" name="origenLimites"
-                                value="catalogo" (change)="validarArchivo()">
+                                value="1" (change)="validarArchivo()">
                             <label for="rdCatalogo">&nbsp;Catálogo de límites</label><br>
                             <input id="rdTblTemporal" type="radio" formControlName="origenLimites" name="origenLimites"
-                                value="tablaTemporal" (change)="validarArchivo()">
+                                value="2" (change)="validarArchivo()">
                             <label for="rdTblTemporal">&nbsp;Tabla temporal</label>
                         </div>
                         <div class="col-md-6" style="border-left: solid 1px black;">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="row col-md-12" style="margin-top: 15px;"
-                        *ngIf="this.formOpcionesSustitucion.controls.origenLimites.value == 'tablaTemporal'">
+                        *ngIf="this.formOpcionesSustitucion.controls.origenLimites.value == '2'">
                         <p>Seleccione el archivo Excel de los límites máximos comunes:</p>
                         <input type="file" accept=".xls, .xlsx" formControlName="excelLimites" (change)="onFileChange($event)">
                     </div>

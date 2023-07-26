@@ -130,5 +130,36 @@ namespace Persistence.Repository
 
             return resultadosNoEncontrados;
         }
+
+        public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo()
+        {
+            var resultados = await (from r in _dbContext.ResultadoMuestreo
+                                    where r.Muestreo.AnioOperacion == 2022
+                                    select new ResultadoParaSustitucionLimitesDto
+                                    {
+                                        IdMuestreo = r.MuestreoId,
+                                        IdParametro = r.ParametroId,
+                                        IdResultado = r.Id,
+                                        ClaveParametro = r.Parametro.ClaveParametro,
+                                        ValorOriginal = r.Resultado
+                                    }).ToListAsync();
+
+            return resultados;
+        }
+
+        public List<ResultadoParaSustitucionLimitesDto> ActualizarResultadoSustituidoPorLimite(List<ResultadoParaSustitucionLimitesDto> resultadosDto)
+        {
+            var resultadosNoEncontrados = new List<ResultadoParaSustitucionLimitesDto>();
+
+            resultadosDto.ForEach(resultadoDto =>
+            {
+                var resultado = _dbContext.ResultadoMuestreo.Where(x => x.Id == resultadoDto.IdResultado)
+                                                            .ExecuteUpdate(s => s.SetProperty(e => e.ResultadoSustituidoPorLimite, resultadoDto.ValorSustituido));
+                if (resultado == 0)
+                    resultadosNoEncontrados.Add(resultadoDto);
+            });
+
+            return resultadosNoEncontrados;
+        }
     }
 }
