@@ -120,6 +120,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; }
 
+    public virtual DbSet<VwLimiteMaximoComun> VwLimiteMaximoComun { get; set; }
+
     public virtual DbSet<VwReplicaRevisionResultado> VwReplicaRevisionResultado { get; set; }
 
     public virtual DbSet<VwResultadosInicialReglas> VwResultadosInicialReglas { get; set; }
@@ -1101,7 +1103,6 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.NombreSitio).HasMaxLength(250);
             entity.Property(e => e.NumDatosEsperados).HasColumnName("Num datos esperados");
             entity.Property(e => e.NumDatosReportados).HasColumnName("Num datos reportados");
-            entity.Property(e => e.NumFechasNoCumplidas).HasColumnName("NumFechasNoCumplidas");
             entity.Property(e => e.SubtipoCuerpoDeAgua)
                 .HasMaxLength(50)
                 .HasColumnName("Subtipo cuerpo de agua");
