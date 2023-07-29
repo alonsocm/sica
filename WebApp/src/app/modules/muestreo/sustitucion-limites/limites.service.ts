@@ -1,13 +1,15 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/modules/login/services/auth.service';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LimitesService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public authService: AuthService) { }
 
   sustituirLimites(parametrosSustitucion: any){
     let formData = new FormData();
@@ -21,4 +23,16 @@ export class LimitesService {
       formData
     );
   }
+
+  getResultadosParametrosEstatus(idEstatus: number) {
+
+    let params = new HttpParams({
+      fromObject: { estatusId: idEstatus, userId: this.authService.getUser().usuarioId },
+    });
+    return this.http.get(environment.apiUrl + '/Resultados/ResultadosParametrosEstatus', { params });
+  }
+
+
+
+
 }
