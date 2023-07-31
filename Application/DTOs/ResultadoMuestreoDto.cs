@@ -54,6 +54,9 @@ namespace Application.DTOs
         public string? TipoHomologado { get; set; }
         public string ClaveSitioOriginal { get; set; }
 
+        public long LaboratorioId { get; set; }
+
+
         public ResultadoMuestreoDto()
         {
             lstParametros = new List<ParametrosDto>();
@@ -72,6 +75,8 @@ namespace Application.DTOs
             TipoHomologado = string.Empty;
             ClaveSitioOriginal = string.Empty;
             fechaLimiteRevisionVencidos = null;
+            LaboratorioId = 0;
+     
         }
     }
 

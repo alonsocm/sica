@@ -40,6 +40,8 @@ namespace Application.DTOs
         public string cumpleFechaEntrega { get; set; }
         public string resultadoReglas { get; set; }
 
+        public List<ParametrosDto> lstParametros { get; set; }
+
 
 
         public AcumuladosResultadoDto()
@@ -73,6 +75,8 @@ namespace Application.DTOs
 
             this.cumpleFechaEntrega = string.Empty;
             this.resultadoReglas = string.Empty;
+
+            this.lstParametros = new List<ParametrosDto>();
         }
     }
 }

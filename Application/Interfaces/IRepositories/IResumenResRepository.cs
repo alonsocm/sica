@@ -16,5 +16,8 @@ namespace Application.Interfaces.IRepositories
         List<ResultadoMuestreo> ConvertMuestreosParamsList(List<UpdateMuestreoExcelDto> updateMuestreoExcelDtoList);
         List<ResultadoMuestreo> ConvertMuestreosParamsListSECAIA(List<UpdateMuestreoSECAIAExcelDto> updateMuestreoExcelDtoList);
         Task<IEnumerable<ResultadoMuestreoDto>> GetResumenResultadosTemp(int userId, int cuerpAgua, int estatusId,int anio);
+
+
+        Task<IEnumerable<ResultadoMuestreoDto>> GetResultadosParametrosEstatus(long userId, long estatusId);
     }
 }
