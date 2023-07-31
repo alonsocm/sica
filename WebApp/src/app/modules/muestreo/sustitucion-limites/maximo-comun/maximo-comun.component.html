@@ -11,9 +11,45 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <button type="button" class="btn btn-secondary" data-toggle="modal"
+            <button type="button" class="btn btn-primary" data-toggle="modal"
                 data-target="#mdlConfirmacion">Sustitución</button>
         </div>
+        <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-secondary">
+                <i class="bi bi-cloud-download"></i>
+                Descargar resumen
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-responsive dvTable" style="max-width: 1900px;">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>CLAVE SITIO</th>
+                        <th>CLAVE MONITOREO</th>
+                        <th>NOMBRE DEL SITIO</th>
+                        <th>TIPO CUERPO DE AGUA</th>
+                        <th>FECHA REALIZACIÓN</th>
+                        <th>AÑO</th>
+                        <th *ngFor="let parametro of this.registros[1].resultados">{{parametro.descripcion}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let registro of this.registros | paginate: { itemsPerPage:30, currentPage: page }">
+                        <td>{{registro.claveSitio}}</td>
+                        <td>{{registro.claveMonitoreo}}</td>
+                        <td>{{registro.nombreSitio}}</td>
+                        <td>{{registro.tipoCuerpoAgua}}</td>
+                        <td>{{registro.fechaRealizacion}}</td>
+                        <td>{{registro.anio}}</td>
+                        <td *ngFor="let resultado of this.registro.resultados">{{resultado.valor}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
     </div>
 </div>
 <button id="btnMdlConfirmacion" style="display:none" class="btn btn-primary rigth" type="button" data-toggle="modal"
@@ -48,12 +84,15 @@
                     <div class="row col-md-12" style="margin-top: 15px;"
                         *ngIf="this.formOpcionesSustitucion.controls.origenLimites.value == '2'">
                         <p>Seleccione el archivo Excel de los límites máximos comunes:</p>
-                        <input type="file" accept=".xls, .xlsx" formControlName="excelLimites" (change)="onFileChange($event)">
+                        <input type="file" accept=".xls, .xlsx" formControlName="excelLimites"
+                            (change)="onFileChange($event)">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal" (click)="formOpcionesSustitucion.reset()">Cancelar</button>
-                    <button id="btnAceptarModal" type="submit" class="btn btn-primary" [disabled]="!formOpcionesSustitucion.valid">Aceptar</button>
+                    <button id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
+                        (click)="formOpcionesSustitucion.reset()">Cancelar</button>
+                    <button id="btnAceptarModal" type="submit" class="btn btn-primary"
+                        [disabled]="!formOpcionesSustitucion.valid">Aceptar</button>
                 </div>
             </div>
         </form>
