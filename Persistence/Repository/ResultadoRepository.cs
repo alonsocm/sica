@@ -161,5 +161,36 @@ namespace Persistence.Repository
 
             return resultadosNoEncontrados;
         }
+
+        public async Task<List<MuestreoSustituidoDto>> ObtenerResultadosSustituidos()
+        {
+            var muestreos = await (from muestreo in _dbContext.Muestreo
+                                   join vw in _dbContext.VwClaveMuestreo on muestreo.ProgramaMuestreoId equals vw.ProgramaMuestreoId
+                                   select new MuestreoSustituidoDto
+                                   {
+                                       MuestreoId = muestreo.Id,
+                                       ClaveSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                       ClaveMonitoreo = vw.ClaveMuestreo,
+                                       NombreSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
+                                       TipoCuerpoAgua = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                                       FechaRealizacion = muestreo.FechaRealVisita != null ? muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy") : string.Empty,
+                                       Anio = muestreo.AnioOperacion??0
+                                   }).ToListAsync();
+
+            muestreos.ForEach(f =>
+            {
+                var resultados = (from parametro in _dbContext.ParametrosGrupo
+                                  join resultado in _dbContext.ResultadoMuestreo on
+                                  new { ParametroId = (int)parametro.Id, f.MuestreoId } equals new { ParametroId = (int)resultado.ParametroId, resultado.MuestreoId } into gp
+                                  from subresultado in gp.DefaultIfEmpty()
+                                  orderby parametro.Orden
+                                  select new ResultadoSustituidoDto { Id=parametro.Id, Orden = parametro.Orden ?? 0, Descripcion = parametro.Descripcion, Valor = subresultado.Resultado??string.Empty }
+                                 ).ToList();
+
+                f.Resultados = resultados;
+            });
+
+            return muestreos;
+        }
     }
 }

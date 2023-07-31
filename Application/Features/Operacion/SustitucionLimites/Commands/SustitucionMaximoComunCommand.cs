@@ -92,7 +92,6 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
             var resultadosSustituidos = resultadosSustituir.Where(x => !string.IsNullOrEmpty(x.ValorSustituido));
             _resultadosRepository.ActualizarResultadoSustituidoPorLimite(resultadosSustituidos.ToList());
 
-
             return new Response<bool>(true);
         }
     }

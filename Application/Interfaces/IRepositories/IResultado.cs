@@ -13,5 +13,6 @@ namespace Application.Interfaces.IRepositories
         List<CargaMuestreoDto> ActualizarValorResultado(List<CargaMuestreoDto> muestreosDto);
         Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo();
         List<ResultadoParaSustitucionLimitesDto> ActualizarResultadoSustituidoPorLimite(List<ResultadoParaSustitucionLimitesDto> resultadosDto);
+        Task<List<MuestreoSustituidoDto>> ObtenerResultadosSustituidos();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Enums;
 using Application.Features.Operacion.SustitucionLimites.Commands;
+using Application.Features.Operacion.SustitucionLimites.Queries;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -15,25 +16,39 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             if (parametrosSustitucionLimites.OrigenLimites == (int)TipoSustitucionLimites.TablaTemporal)
             {
-                string filePath = string.Empty;
-
                 if (parametrosSustitucionLimites.Archivo?.Length > 0)
                 {
-                    filePath = Path.GetTempFileName();
-                    using var stream = System.IO.File.Create(filePath);
-                    await parametrosSustitucionLimites.Archivo.CopyToAsync(stream);
+                    string filePath = Path.GetTempFileName();
+                    using (var fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                    {
+                        await parametrosSustitucionLimites.Archivo.CopyToAsync(fs);
+                    }
+
+                    FileInfo fileInfo = new(filePath);
+                    ExcelService.Mappings = ExcelLimitesComunes.keyValues;
+                    var registros = ExcelService.Import<LimiteMaximoComunDto>(fileInfo, "Límites 2012-2022");
+                    System.IO.File.Delete(filePath);
+                    parametrosSustitucionLimites.LimitesComunes = registros;
+                }
+                else
+                {
+                    throw new Exception("El archivo está vacio");
                 }
 
-                FileInfo fileInfo = new(filePath);
-                ExcelService.Mappings = ExcelLimitesComunes.keyValues;
-                var registros = ExcelService.Import<LimiteMaximoComunDto>(fileInfo, "Límites 2012-2022");
-                System.IO.File.Delete(filePath);
-                parametrosSustitucionLimites.LimitesComunes = registros;
             }
 
             await Mediator.Send(new SustitucionMaximoComunCommand { ParametrosSustitucion = parametrosSustitucionLimites });
 
             return Ok();
+        }
+
+        [HttpGet()]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await Mediator.Send(new ResultadosSustituidosQuery
+            {
+
+            }));
         }
     }
 }
