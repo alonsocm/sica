@@ -49,6 +49,7 @@ import { ReglasValidarComponent } from './modules/muestreo/validacion/pages/regl
 import { ResumenReglasComponent } from './modules/muestreo/validacion/pages/resumen-reglas/resumen-reglas.component';
 import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/maximo-comun/maximo-comun.component';
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
+import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
 
 
 @NgModule({
@@ -90,7 +91,8 @@ import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/lab
     ReglasValidarComponent,
     ResumenReglasComponent,
     MaximoComunComponent,
-    LaboratorioComponent
+    LaboratorioComponent,
+    EmergenciaComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
