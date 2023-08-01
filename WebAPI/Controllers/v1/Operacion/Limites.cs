@@ -5,11 +5,21 @@ using Application.Features.Operacion.SustitucionLimites.Queries;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
+using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
 {
     public class Limites : BaseApiController
     {
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
+
+        public Limites(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            _configuration = configuration;
+            _env = env;
+        }
+
         [HttpPost]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromForm] ParametrosSustitucionLimitesDto parametrosSustitucionLimites)
@@ -58,7 +68,13 @@ namespace WebAPI.Controllers.v1.Operacion
 
             if (registros.Data.Count > 0)
             {
-                ExcelService.ExportListToExcel(registros.Data, "D:\\CONAGUA\\pruebaexportar.xlsx");
+                var plantilla = new Plantilla(_configuration, _env);
+                string templatePath = plantilla.ObtenerRutaPlantilla("ResultadosSustituidos");
+                var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+                ExcelService.ExportListToExcel(registros.Data, fileInfo.FullName);
+                var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+                return File(bytes, contentType, Path.GetFileName(temporalFilePath));
             }
 
             return Ok();
