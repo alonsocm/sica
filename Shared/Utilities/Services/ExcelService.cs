@@ -3,6 +3,7 @@ using Application.Exceptions;
 using Application.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.DataValidation;
+using OfficeOpenXml.Style;
 
 namespace Shared.Utilities.Services
 {
@@ -148,6 +149,64 @@ namespace Shared.Utilities.Services
                 validation.ShowErrorMessage = true;
                 validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
                 validation.Formula.ExcelFormula = "Z1:Z2";
+            }
+        }
+        public static void ExportListToExcel(IEnumerable<MuestreoSustituidoDto> data, string filePath)
+        {
+            // Create a new ExcelPackage
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                // Add a new worksheet to the empty workbook
+                var worksheet = package.Workbook.Worksheets.Add("Data");
+                var parametros = data.FirstOrDefault()?.Resultados;
+
+                worksheet.Cells[1, 1].Value = "CLAVE SITIO";
+                worksheet.Cells[1, 2].Value = "CLAVE MONITOREO";
+                worksheet.Cells[1, 3].Value = "NOMBRE DEL SITIO";
+                worksheet.Cells[1, 4].Value = "TIPO CUERPO DE AGUA";
+                worksheet.Cells[1, 5].Value = "FECHA REALIZACIÓN";
+                worksheet.Cells[1, 6].Value = "AÑO";
+
+                using (ExcelRange range = worksheet.Cells[1, 1, 1, parametros.Count + 6])
+                {
+                    var border = range.Style.Border;
+                    border.Bottom.Style = ExcelBorderStyle.Thin;
+                    range.Style.Font.Bold = true;
+                    range.Style.Font.Size = 11;
+                }
+
+                var celda = 7;
+                //Agregamos dinámicamente los encabezados
+                foreach (var parametro in parametros.OrderBy(x => x.Orden))
+                {
+                    worksheet.Cells[1, celda].Value = parametro.Descripcion;
+                    celda++;
+                }
+
+                var fila = 2;
+                //Agregamos dinámicamente los encabezados
+                foreach (var muestreo in data)
+                {
+                    worksheet.Cells[fila, 1].Value = muestreo.ClaveSitio;
+                    worksheet.Cells[fila, 2].Value = muestreo.ClaveMonitoreo;
+                    worksheet.Cells[fila, 3].Value = muestreo.NombreSitio;
+                    worksheet.Cells[fila, 4].Value = muestreo.TipoCuerpoAgua;
+                    worksheet.Cells[fila, 5].Value = muestreo.FechaRealizacion;
+                    worksheet.Cells[fila, 6].Value = muestreo.Anio;
+
+                    var columna = 7;
+                    foreach (var parametro in muestreo.Resultados.OrderBy(x => x.Orden))
+                    {
+                        worksheet.Cells[fila, columna].Value = parametro.Valor;
+                        columna++;
+                    }
+
+                    fila++;
+                }
+
+                // Save the workbook to the specified file path
+                package.SaveAs(new FileInfo(filePath));
             }
         }
     }

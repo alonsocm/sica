@@ -50,5 +50,18 @@ namespace WebAPI.Controllers.v1.Operacion
 
             }));
         }
+
+        [HttpGet("ExportarExcel")]
+        public async Task<IActionResult> Get(int? anio)
+        {
+            var registros = await Mediator.Send(new ResultadosSustituidosQuery { });
+
+            if (registros.Data.Count > 0)
+            {
+                ExcelService.ExportListToExcel(registros.Data, "D:\\CONAGUA\\pruebaexportar.xlsx");
+            }
+
+            return Ok();
+        }
     }
 }
