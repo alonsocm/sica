@@ -36,4 +36,8 @@ export class LimitesService {
     });
     return this.http.get(environment.apiUrl + '/Resultados/ResultadosParametrosEstatus', { params });
   }
+
+  exportarResumenExcel(): Observable<Object> {
+    return this.http.get(environment.apiUrl + '/Limites/ExportarExcel', {responseType: 'blob'});
+  }
 }

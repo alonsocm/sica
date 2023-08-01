@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { LimitesService } from '../limites.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
+import { FileService } from 'src/app/shared/services/file.service';
 
 @Component({
   selector: 'app-maximo-comun',
@@ -86,5 +87,25 @@ export class MaximoComunComponent extends BaseService implements OnInit {
         archivo: file,
       });
     }
+  }
+
+  exportarResumen(){
+    this.loading = true;    
+    this.limitesService
+    .exportarResumenExcel()
+    .subscribe({
+      next: (response: any) => {
+        this.loading = false;
+        FileService.download(response, 'resultados.xlsx');
+      },
+      error: (response: any) => {
+        this.loading = false
+      this.mostrarMensaje(
+        'No fue posible descargar la información',
+        TipoMensaje.Error
+        );
+      this.hacerScroll();
+    },
+  });
   }
 }
