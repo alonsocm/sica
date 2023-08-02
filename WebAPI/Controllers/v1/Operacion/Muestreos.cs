@@ -6,10 +6,12 @@ using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
 using Application.Features.Operacion.Resultados.Queries;
+using Application.Interfaces.IRepositories;
 using Application.Models;
 using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Persistence.Repository;
 using Shared.Utilities.Services;
 using WebAPI.Shared;
 
@@ -21,11 +23,13 @@ namespace WebAPI.Controllers.v1.Operacion
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly IProgramaAnioRepository _progrepor;
 
-        public Muestreos(IConfiguration configuration, IWebHostEnvironment env)
+        public Muestreos(IConfiguration configuration, IWebHostEnvironment env, IProgramaAnioRepository progepo)
         {
             _configuration=configuration;
             _env=env;
+            _progrepor = progepo;
         }
 
         [HttpPost]
@@ -121,6 +125,16 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new GetAniosConOperacion()));
         }
+
+
+        [HttpGet("ProgramaAnios")]
+        public async Task<IActionResult> ProgramaAnios()
+        {
+            var datos = await _progrepor.ObtenerTodosElementosAsync();
+            return Ok(datos);
+        }
+          
+        
 
         [HttpGet("CambioEstatus")]
         public async Task<IActionResult> CambioEstatus(int estatus, long muestreoId)

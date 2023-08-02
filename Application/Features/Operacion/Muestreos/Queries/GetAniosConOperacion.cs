@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,12 @@ namespace Application.Features.Operacion.Muestreos.Queries
     public class GetAniosConOperacionHandler : IRequestHandler<GetAniosConOperacion, Response<List<int?>>>
     {
         private readonly IMuestreoRepository _repository;
+        private readonly IProgramaAnioRepository _programAnio;
 
-        public GetAniosConOperacionHandler(IMuestreoRepository repository)
+        public GetAniosConOperacionHandler(IMuestreoRepository repository, IProgramaAnioRepository programaAnio)
         {
             _repository=repository;
+            _programAnio = programaAnio;
         }
 
         public async Task<Response<List<int?>>> Handle(GetAniosConOperacion request, CancellationToken cancellationToken)
@@ -30,5 +33,15 @@ namespace Application.Features.Operacion.Muestreos.Queries
             
             return new Response<List<int?>>(anios);
         }
+
+        public async Task<Response<List<ProgramaAnio>>> GetProgramaAnios()
+        {
+            var anios = await _programAnio.ObtenerTodosElementosAsync();
+
+            return new Response<List<ProgramaAnio>>(anios.ToList());
+        }
+
+
+
     }
 }

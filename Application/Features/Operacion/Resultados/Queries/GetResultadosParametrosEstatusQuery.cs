@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Operacion.Resultados.Comands
+namespace Application.Features.Operacion.Resultados.Queries
 {
     public class GetResultadosParametrosEstatusQuery : IRequest<Response<List<ResultadoMuestreoDto>>>
     {

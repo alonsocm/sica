@@ -141,7 +141,8 @@ namespace Persistence.Repository
                                         IdParametro = r.ParametroId,
                                         IdResultado = r.Id,
                                         ClaveParametro = r.Parametro.ClaveParametro,
-                                        ValorOriginal = r.Resultado
+                                        ValorOriginal = r.Resultado,
+                                        LaboratorioId = r.LaboratorioId
                                     }).ToListAsync();
 
             return resultados;

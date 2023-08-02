@@ -20,6 +20,7 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId);
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga, int estatusId);
 
-       
+        
+
     }
 }
