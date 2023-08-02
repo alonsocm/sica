@@ -21,5 +21,7 @@ public partial class Laboratorios
 
     public virtual ICollection<ReglasLaboratorioLdmLpc> ReglasLaboratorioLdmLpc { get; set; } = new List<ReglasLaboratorioLdmLpc>();
 
-    public virtual ICollection<ResultadoMuestreo> ResultadoMuestreo { get; set; } = new List<ResultadoMuestreo>();
+    public virtual ICollection<ResultadoMuestreo> ResultadoMuestreoLaboratorio { get; set; } = new List<ResultadoMuestreo>();
+
+    public virtual ICollection<ResultadoMuestreo> ResultadoMuestreoLaboratorioSubrogado { get; set; } = new List<ResultadoMuestreo>();
 }

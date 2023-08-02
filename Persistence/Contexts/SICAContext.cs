@@ -120,6 +120,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; }
 
+    public virtual DbSet<VwLimiteLaboratorio> VwLimiteLaboratorio { get; set; }
+
     public virtual DbSet<VwLimiteMaximoComun> VwLimiteMaximoComun { get; set; }
 
     public virtual DbSet<VwReplicaRevisionResultado> VwReplicaRevisionResultado { get; set; }
@@ -802,18 +804,20 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(250)
                 .IsUnicode(false);
             entity.Property(e => e.ResultadoReplica).IsUnicode(false);
-            entity.Property(e => e.ResultadoSustituidoPorLimite)
-                .HasMaxLength(50)
-                .IsUnicode(true);
+            entity.Property(e => e.ResultadoSustituidoPorLimite).HasMaxLength(50);
 
             entity.HasOne(d => d.EstatusResultadoNavigation).WithMany(p => p.ResultadoMuestreo)
                 .HasForeignKey(d => d.EstatusResultado)
                 .HasConstraintName("FK_ResultadoMuestreo_EstatusMuestreo");
 
-            entity.HasOne(d => d.Laboratorio).WithMany(p => p.ResultadoMuestreo)
+            entity.HasOne(d => d.Laboratorio).WithMany(p => p.ResultadoMuestreoLaboratorio)
                 .HasForeignKey(d => d.LaboratorioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ResultadoMuestreo_Laboratorios");
+
+            entity.HasOne(d => d.LaboratorioSubrogado).WithMany(p => p.ResultadoMuestreoLaboratorioSubrogado)
+                .HasForeignKey(d => d.LaboratorioSubrogadoId)
+                .HasConstraintName("FK_ResultadoMuestreo_LaboratorioSub");
 
             entity.HasOne(d => d.Muestreo).WithMany(p => p.ResultadoMuestreo)
                 .HasForeignKey(d => d.MuestreoId)
@@ -1115,6 +1119,11 @@ public partial class SicaContext : DbContext
         });
 
         modelBuilder.Entity<VwLimiteMaximoComun>(entity =>
+        {
+            entity.HasNoKey();
+        });
+
+        modelBuilder.Entity<VwLimiteLaboratorio>(entity =>
         {
             entity.HasNoKey();
         });
