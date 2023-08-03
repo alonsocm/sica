@@ -4,6 +4,8 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { LimitesService } from '../limites.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { FileService } from 'src/app/shared/services/file.service';
+import { Columna } from 'src/app/interfaces/columna-inferface';
+import { Filter } from 'src/app/interfaces/filtro.interface';
 
 @Component({
   selector: 'app-maximo-comun',
@@ -14,6 +16,9 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   constructor(private limitesService: LimitesService) {
     super();
   }
+
+  muestreosFiltrados: Array<MuestreoSustitucion> = []; 
+  muestreos: Array<MuestreoSustitucion> = [];
 
   formOpcionesSustitucion = new FormGroup({
     origenLimites: new FormControl('', Validators.required),
@@ -29,16 +34,23 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   registros: Array<any> = [];
 
   ngOnInit(): void {
+    this.definirColumnas();
     this.obtenerMuestreosSustituidos();
   }
 
   obtenerMuestreosSustituidos() {
+    this.loading = true;
     this.limitesService.obtenerMuestreosSustituidos().subscribe({
       next: (response: any) => {
-        this.registros = response.data;
-        console.table(response.data);
+        this.loading = false;
+        this.muestreos = response.data;
+        this.muestreosFiltrados = response.data;
+        console.table(this.muestreos);
+        this.establecerValoresFiltrosTabla();
       },
-      error: (error) => {},
+      error: (error) => {
+        this.loading = false;
+      },
     });
   }
 
@@ -108,4 +120,77 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     },
   });
   }
+
+  filtrar() {
+    this.muestreosFiltrados = this.muestreos;
+    this.columnas.forEach((columna) => {
+      this.muestreosFiltrados = this.muestreosFiltrados.filter((f: any) => {
+        return columna.filtro.selectedValue == 'Seleccione'
+          ? true
+          : f[columna.nombre] == columna.filtro.selectedValue;
+      });
+    });
+
+    this.establecerValoresFiltrosTabla();
+  }
+
+  private establecerValoresFiltrosTabla() {
+    this.columnas.forEach((f) => {
+      f.filtro.values = [
+        ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
+      ];
+    });
+  }
+
+  definirColumnas() {
+    let nombresColumnas: Array<Columna> = [
+      {
+        nombre: 'claveSitio',
+        etiqueta: 'CLAVE SITIO',
+        orden: 1,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'claveMonitoreo',
+        etiqueta: 'CLAVE MONITOREO',
+        orden: 2,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'nombreSitio',
+        etiqueta: 'NOMBRE DEL SITIO',
+        orden: 3,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'tipoCuerpoAgua',
+        etiqueta: 'TIPO CUERPO DE AGUA',
+        orden: 4,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'fechaRealizacion',
+        etiqueta: 'FECHA REALIZACIÓN',
+        orden: 5,
+        filtro: new Filter(),
+      },
+      { nombre: 'anio', 
+        etiqueta: 'AÑO', 
+        orden: 6, 
+        filtro: new Filter() },
+      ]
+      this.columnas = nombresColumnas;
+  }
+
 }
+
+interface MuestreoSustitucion {
+  claveSitio: string;
+  claveMonitoreo: string;
+  nombreSitio: string;
+  tipoCuerpoAgua: string;
+  fechaRealizacion: string;
+  anio: string;
+  resultados: Array<any>
+}
+

@@ -1,6 +1,54 @@
 p{
     font-weight: 500;
 }
+
 label{
     font-weight: 100;
+}
+.sticky-col {
+    position: -webkit-sticky;
+    position: sticky;
+    background-color: white;
+}
+
+.primera-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 0px;
+}
+
+.segunda-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 150px;
+}
+
+.tercera-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 300px;
+}
+
+.cuarta-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 450px;
+}
+
+.quinta-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 600px;
+}
+
+.sexta-col {
+    width: 100px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 750px;
 }
