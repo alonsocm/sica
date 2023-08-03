@@ -17,7 +17,7 @@ export class LaboratorioComponent extends BaseService implements OnInit {
   constructor(private limiteService: LimitesService) { 
     super();
   }
-
+  anios: Array<any> = [];
   ngOnInit(): void {
 
     this.columnas = [
@@ -32,7 +32,16 @@ export class LaboratorioComponent extends BaseService implements OnInit {
       { nombre: 'tipoCuerpoAguaOriginal', etiqueta: 'TIPO CUERPO AGUA  ORIGINAL', orden: 0, filtro: new Filter() },
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 0, filtro: new Filter() }
     ];
-   
+
+    this.limiteService.obtenerMuestreos().subscribe({
+      next: (response: any) => {
+        
+        this.anios = response;
+        console.log(response);
+        
+      },
+      error: (error) => { },
+    });   
 
 
     this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
@@ -41,6 +50,8 @@ export class LaboratorioComponent extends BaseService implements OnInit {
 
         
         this.resultadosFiltradosn = response.data;
+     
+
         console.log(this.resultadosFiltradosn);
         this.loading = false;
       },
@@ -48,5 +59,6 @@ export class LaboratorioComponent extends BaseService implements OnInit {
     }); 
   }
   seleccionar() { }
+  exportarExcel() { }
 
 }

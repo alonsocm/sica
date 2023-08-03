@@ -40,4 +40,8 @@ export class LimitesService {
   exportarResumenExcel(): Observable<Object> {
     return this.http.get(environment.apiUrl + '/Limites/ExportarExcel', {responseType: 'blob'});
   }
+
+  obtenerMuestreos(): Observable<Object> {
+    return this.http.get(environment.apiUrl + '/Muestreos/ProgramaAnios');
+  }
 }

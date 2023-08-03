@@ -3,68 +3,103 @@
     <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-    <h3>Sustitución por límite laboratorio</h3>
-    <hr class="red">
-    <div class="message-container">
-        <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-            [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
-    </div>
-    <div class="row">
-      <div class="col-md-12 table-responsive dvTable">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th class="checkBox-center">
-                <label for="chckAll">SELECCIONAR TODOS</label>
-                <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                       (change)="seleccionarAll(this.resultadosFiltradosn)" />
-              </th>
-              <th *ngFor="let columna of columnas">
-                {{columna.etiqueta}}
-                <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                                 (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-                                 (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                                 placeholder="seleccione">
-                </ng-autocomplete>
-                <ng-template #itemTemplate let-item>
-                  <a [innerHTML]="item"></a>
-                </ng-template>
-              </th>
-            </tr>
-          </thead>
-          <tbody style="text-align:left;">
-            <tr *ngFor="let muestreo of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
-              <td style="text-align:center" class="checkBox-center">
-                <input type="checkbox" [(ngModel)]="muestreo.isChecked"
-                       (change)="seleccionar()">
-              </td>
-              <td style="text-align: center;">{{muestreo.noEntregaOCDL}}</td>
-              <td style="text-align: center;">{{muestreo.tipoSitio}}</td>
-              <td style="text-align: center;">{{muestreo.claveSitio}}</td>
-              <td style="text-align: center;">{{muestreo.nombreSitio}}</td>
-              <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
-              <td style="text-align: center;">{{muestreo.fechaRealizacion}}</td>
-              <td style="text-align: center;">{{muestreo.laboratorio}}</td>
+  <h3>Sustitución por límite laboratorio</h3>
+  <hr class="red">
+  <div class="message-container">
+    <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+               [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
 
-              <td style="text-align: center;"> {{(muestreo.cuerpoAgua)}}</td>
-              <td style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
-              <td style="text-align: center;"> {{(muestreo.tipoCuerpoAgua)}}</td>
-
-              <ng-container *ngFor="let parametrotot of muestreo.lstParametrosTotalResultado">
-                <td>{{ parametrotot }}</td>
-              </ng-container>
-            </tr>
-            <tr>
-              <td colspan="24">
-                <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">
-                  No se encontraron registros
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-      </pagination-controls>
+  <div class="row">
+    <div class="col-md-3 ">
+      <label for="anios">Año a sustituir:*</label>
+      <select class="form-control" name="anios" id="anios">
+        <option selected>Selecciona el año</option>
+        <option *ngFor="let anio of this.anios" value="{{anio.id}}">{{anio.anio}}</option>
+      </select>
     </div>
+    <div class="col-md-3 text-right">
+      
+      <button type="button" class="btn btn-primary">
+        Sustituir Limites
+      </button>
+    </div>
+    <div class="col-md-6 text-left">
+      <button type="button" class="btn btn-secondary" (click)="exportarExcel()">
+        <i class="bi bi-cloud-download"></i>
+        Descargar resumen
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 table-responsive dvTable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="checkBox-center" style="text-align:center">
+              <label for="chckAll">SELECCIONAR TODOS</label>
+              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                     (change)="seleccionarAll(this.resultadosFiltradosn)" />
+            </th>
+            <th *ngFor="let columna of columnas">
+              {{columna.etiqueta}}
+              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                               (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+                               placeholder="seleccione">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item"></a>
+              </ng-template>
+            </th>
+            <th *ngFor="let parametro of this.resultadosFiltradosn[0].lstParametros">
+              {{parametro.claveParametro}}
+
+            </th>
+
+
+          </tr>
+        </thead>
+        <tbody style="text-align:left;">
+          <tr *ngFor="let muestreo of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+            <td style="text-align:center" class="checkBox-center">
+              <input type="checkbox" [(ngModel)]="muestreo.isChecked"
+                     (change)="seleccionar()">
+            </td>
+            <td style="text-align: center;">{{muestreo.noEntregaOCDL}}</td>
+            <td style="text-align: center;">{{muestreo.tipoSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveSitio}}</td>
+            <td style="text-align: center;">{{muestreo.nombreSitio}}</td>
+            <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
+            <td style="text-align: center;">{{muestreo.fechaRealizacion}}</td>
+            <td style="text-align: center;">{{muestreo.laboratorio}}</td>
+
+            <td style="text-align: center;"> {{(muestreo.cuerpoAgua)}}</td>
+            <td style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
+            <td style="text-align: center;"> {{(muestreo.tipoCuerpoAgua)}}</td>
+            <td *ngFor="let resultado of this.muestreo.lstParametros">{{resultado.resulatdo}}</td>
+
+            <!--<ng-container *ngFor="let parametrotot of muestreo.lstParametros">
+              <td>{{ parametrotot }}</td>
+            </ng-container>-->
+          </tr>
+          <tr>
+            <td colspan="24">
+              <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">
+                No se encontraron registros
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+    ol
+    
+
+  </div>
+  ol
+  
+
 </div>  

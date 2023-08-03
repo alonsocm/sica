@@ -8,5 +8,7 @@
         public string ClaveParametro { get; set; }
         public string ValorOriginal { get; set; }
         public string ValorSustituido { get; set; }
+        public long LaboratorioId { get; set; }
+        public long? LaboratorioSubrogadoId { get; set; }
     }
 }

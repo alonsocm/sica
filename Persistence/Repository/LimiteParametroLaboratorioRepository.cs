@@ -9,5 +9,10 @@ namespace Persistence.Repository
         public LimiteParametroLaboratorioRepository(SicaContext dbContext) : base(dbContext)
         {
         }
+
+        
+
+    
+
     }
 }

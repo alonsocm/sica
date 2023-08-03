@@ -386,41 +386,26 @@ namespace Persistence.Repository
 
             List<ResultadoMuestreoDto> lstResultados = await lstSalida.ToListAsync();
 
-            foreach (var item in lstResultados)
+            lstResultados.ForEach(f =>
             {
-                var parametros = await (from rm in _dbContext.ResultadoMuestreo
-                                        join muestreo in _dbContext.Muestreo on rm.MuestreoId equals muestreo.Id
-                                        join pgpos in _dbContext.ParametrosGrupo on rm.ParametroId equals pgpos.Id
-                                        join vcm in _dbContext.VwClaveMuestreo on muestreo.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
-                                        where muestreo.Id == item.MuestreoId
+                var resultados = (from parametro in _dbContext.ParametrosGrupo
+                                  join resultado in _dbContext.ResultadoMuestreo on
+                                  new { ParametroId = (int)parametro.Id, f.MuestreoId } equals new { ParametroId = (int)resultado.ParametroId, resultado.MuestreoId } into gp
+                                  from subresultado in gp.DefaultIfEmpty()
+                                  orderby parametro.Orden
+                                  select new ParametrosDto
+                                  {                                       
+                                      Id = parametro.Id, 
+                                      Orden = parametro.Orden ?? 0,
+                                      NombreParametro = parametro.Descripcion,
+                                      Resulatdo = subresultado.Resultado ?? string.Empty, 
+                                      ClaveParametro = parametro.ClaveParametro
 
-                                        select new ParametrosDto
-                                        {
-                                            Id = pgpos.Id,
-                                            MuestreoId = muestreo.Id,
-                                            Resulatdo = rm.Resultado,
-                                            ClaveParametro = pgpos.ClaveParametro,
-                                            ObservacionesOCDLId = rm.ObservacionesOcdlid,
-                                            IsCorrecto = rm.EsCorrectoOcdl,
-                                            NombreParametro = pgpos.Descripcion,
-                                            ClaveUnica = $"{vcm.ClaveMuestreo}{pgpos.ClaveParametro}",
-                                        }
-                    ).ToListAsync();
+                                  }
+                                 ).ToList();
 
-                var archivosn = await (from arch in _dbContext.EvidenciaMuestreo
-                                       join muestreo in _dbContext.Muestreo on arch.MuestreoId equals muestreo.Id
-
-                                       where muestreo.Id == item.MuestreoId
-                                       select new EvidenciaDto
-                                       {
-                                           NombreArchivo = arch.NombreArchivo,
-                                           TipoEvidencia = arch.TipoEvidenciaMuestreoId,
-                                           Sufijo = arch.TipoEvidenciaMuestreo.Sufijo
-                                       }
-                                       ).ToListAsync();
-                item.lstEvidencias = archivosn.ToList();
-                item.lstParametros = parametros.ToList();
-            }
+                f.lstParametros = resultados;
+            });
             return lstResultados;
         }
     }
