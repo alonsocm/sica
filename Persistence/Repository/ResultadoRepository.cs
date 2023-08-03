@@ -174,7 +174,7 @@ namespace Persistence.Repository
                                        NombreSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
                                        TipoCuerpoAgua = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                        FechaRealizacion = muestreo.FechaRealVisita != null ? muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy") : string.Empty,
-                                       Anio = muestreo.AnioOperacion??0
+                                       Anio = string.IsNullOrEmpty(muestreo.AnioOperacion.ToString()) ? string.Empty : muestreo.AnioOperacion.ToString()
                                    }).ToListAsync();
 
             muestreos.ForEach(f =>
@@ -184,7 +184,13 @@ namespace Persistence.Repository
                                   new { ParametroId = (int)parametro.Id, f.MuestreoId } equals new { ParametroId = (int)resultado.ParametroId, resultado.MuestreoId } into gp
                                   from subresultado in gp.DefaultIfEmpty()
                                   orderby parametro.Orden
-                                  select new ResultadoSustituidoDto { Id=parametro.Id, Orden = parametro.Orden ?? 0, Descripcion = parametro.Descripcion, Valor = subresultado.Resultado??string.Empty }
+                                  select new ResultadoSustituidoDto
+                                  {
+                                      Id=parametro.Id,
+                                      Orden = parametro.Orden ?? 0,
+                                      ClaveParametro = parametro.ClaveParametro,
+                                      Valor = string.IsNullOrEmpty(subresultado.ResultadoSustituidoPorLimite) ? subresultado.Resultado : subresultado.ResultadoSustituidoPorLimite
+                                  }
                                  ).ToList();
 
                 f.Resultados = resultados;

@@ -8,7 +8,7 @@
         public string NombreSitio { get; set; }
         public string TipoCuerpoAgua { get; set; }
         public string FechaRealizacion { get; set; }
-        public int Anio { get; set; }
+        public string Anio { get; set; }
         public List<ResultadoSustituidoDto> Resultados { get; set; }
     }
 }
