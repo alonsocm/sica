@@ -68,6 +68,9 @@ namespace Persistence.Repository
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)
         {
+            var laboratorios = _dbContext.Laboratorios.ToList();
+            var parametros = _dbContext.ParametrosGrupo.ToList();
+
             var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion }).Distinct().ToList();
             var muestreos = (from cm in cargaMuestreos
                              join vcm in _dbContext.VwClaveMuestreo on cm.Muestreo equals vcm.ClaveMuestreo
@@ -78,7 +81,7 @@ namespace Persistence.Repository
                                  HoraInicio = TimeSpan.Parse(cm.HoraInicioMuestreo),
                                  HoraFin = TimeSpan.Parse(cm.HoraFinMuestreo),
                                  EstatusId = validado ? (int)Application.Enums.EstatusMuestreo.NoEnviado : (int)Application.Enums.EstatusMuestreo.Cargado,
-                                 ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList),
+                                 ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList, laboratorios, parametros),
                                  NumeroEntrega = 0,
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
                                  FechaCarga = DateTime.Now
@@ -87,18 +90,20 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public List<ResultadoMuestreo> GenerarResultados(string claveMuestreo, List<CargaMuestreoDto> cargaMuestreoDto)
+        public List<ResultadoMuestreo> GenerarResultados(string claveMuestreo, List<CargaMuestreoDto> cargaMuestreoDto, List<Laboratorios> laboratorios, List<ParametrosGrupo> parametros)
         {
-
             var resultados = (from cm in cargaMuestreoDto
-                              join p in _dbContext.ParametrosGrupo on cm.ClaveParametro equals p.ClaveParametro
-                              join l in _dbContext.Laboratorios on cm.LaboratorioRealizoMuestreo equals l.Nomenclatura
+                              join p in parametros on cm.ClaveParametro equals p.ClaveParametro
+                              join l in laboratorios on cm.LaboratorioRealizoMuestreo equals l.Nomenclatura
+                              join ls in laboratorios on cm.LaboratorioSubrogado equals ls.Nomenclatura into lsg
+                              from laboratorioSubrogado in lsg.DefaultIfEmpty()
                               where cm.Muestreo == claveMuestreo
                               select new ResultadoMuestreo
                               {
                                   ParametroId = p.Id,
                                   Resultado = cm.Resultado??string.Empty,
                                   LaboratorioId = l.Id,
+                                  LaboratorioSubrogadoId = laboratorioSubrogado?.Id,
                                   FechaEntrega = cm.FechaEntrega,
                                   IdResultadoLaboratorio = Convert.ToInt64(cm.IdResultado)
                               }).ToList();
