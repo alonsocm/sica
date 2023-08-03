@@ -48,7 +48,7 @@
                         <th *ngFor="let parametro of this.muestreos[1].resultados">{{parametro.claveParametro}}</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="position: relative; z-index: -1;">
                     <tr *ngFor="let registro of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
                         <td class="sticky-col primera-col">{{registro.claveSitio}}</td>
                         <td class="sticky-col segunda-col">{{registro.claveMonitoreo}}</td>
