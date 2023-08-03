@@ -180,7 +180,7 @@ namespace Shared.Utilities.Services
                 //Agregamos dinámicamente los encabezados
                 foreach (var parametro in parametros.OrderBy(x => x.Orden))
                 {
-                    worksheet.Cells[1, celda].Value = parametro.Descripcion;
+                    worksheet.Cells[1, celda].Value = parametro.ClaveParametro;
                     celda++;
                 }
 
