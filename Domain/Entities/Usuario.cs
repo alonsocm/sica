@@ -33,6 +33,8 @@ public partial class Usuario
 
     public virtual DireccionLocal? DireccionLocal { get; set; }
 
+    public virtual ICollection<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; } = new List<HistorialSustitucionLimites>();
+
     public virtual ICollection<Muestreo> MuestreoUsuarioRevisionOcdl { get; set; } = new List<Muestreo>();
 
     public virtual ICollection<Muestreo> MuestreoUsuarioRevisionSecaia { get; set; } = new List<Muestreo>();

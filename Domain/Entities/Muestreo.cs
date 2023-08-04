@@ -49,6 +49,8 @@ public partial class Muestreo
 
     public virtual ICollection<EvidenciaMuestreo> EvidenciaMuestreo { get; set; } = new List<EvidenciaMuestreo>();
 
+    public virtual ICollection<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; } = new List<HistorialSustitucionLimites>();
+
     public virtual ProgramaMuestreo ProgramaMuestreo { get; set; } = null!;
 
     public virtual ICollection<ResultadoMuestreo> ResultadoMuestreo { get; set; } = new List<ResultadoMuestreo>();

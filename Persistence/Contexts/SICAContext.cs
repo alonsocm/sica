@@ -44,6 +44,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<GrupoParametro> GrupoParametro { get; set; }
 
+    public virtual DbSet<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; }
+
     public virtual DbSet<Laboratorios> Laboratorios { get; set; }
 
     public virtual DbSet<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; }
@@ -113,6 +115,8 @@ public partial class SicaContext : DbContext
     public virtual DbSet<TipoRegla> TipoRegla { get; set; }
 
     public virtual DbSet<TipoSitio> TipoSitio { get; set; }
+
+    public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
     public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
 
@@ -303,6 +307,28 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<GrupoParametro>(entity =>
         {
             entity.Property(e => e.Descripcion).HasMaxLength(15);
+        });
+
+        modelBuilder.Entity<HistorialSustitucionLimites>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07AA0BB2AD");
+
+            entity.Property(e => e.Fecha).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Muestreo).WithMany(p => p.HistorialSustitucionLimites)
+                .HasForeignKey(d => d.MuestreoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HistorialSustitucion_Muestreo");
+
+            entity.HasOne(d => d.TipoSustitucion).WithMany(p => p.HistorialSustitucionLimites)
+                .HasForeignKey(d => d.TipoSustitucionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HistorialSustitucion_TipoSustitucion");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.HistorialSustitucionLimites)
+                .HasForeignKey(d => d.UsuarioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_HistorialSustitucion_Usuario");
         });
 
         modelBuilder.Entity<Laboratorios>(entity =>
@@ -946,6 +972,15 @@ public partial class SicaContext : DbContext
         {
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<TipoSustitucion>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0783A7C692");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(20)
                 .IsUnicode(false);
         });
 
