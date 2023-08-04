@@ -87,10 +87,11 @@
                         </div>
                         <div class="col-md-6" style="border-left: solid 1px black;">
                             <p>2.&nbsp;Seleccione periodo:</p>
-                            <input id="rdActual" type="radio" formControlName="periodo" name="periodo" value="actual">
+                            <input id="rdActual" type="radio" formControlName="periodo" name="periodo" value="actual" (change)="validarArchivo">
                             <label for="rdActual">&nbsp;Actual</label><br>
-                            <input id="rdActualVencido" type="radio" formControlName="periodo" name="periodo"
-                                value="actualVencido">
+                            <input id="rdVencido" type="radio" formControlName="periodo" name="periodo" value="vencido" (change)="validarArchivo">
+                            <label for="rdVencido">&nbsp;Vencido</label><br>
+                            <input id="rdActualVencido" type="radio" formControlName="periodo" name="periodo" value="actualVencido" (change)="validarArchivo">
                             <label for="rdActualVencido">&nbsp;Actual y vencido</label>
                         </div>
                     </div>

@@ -78,7 +78,7 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   validarArchivo() {
     if (
       this.formOpcionesSustitucion.controls.origenLimites.value ==
-      'tablaTemporal'
+      '2'
     ) {
       this.formOpcionesSustitucion.controls.excelLimites.setValue('');
       this.formOpcionesSustitucion.controls.excelLimites.setValidators(
