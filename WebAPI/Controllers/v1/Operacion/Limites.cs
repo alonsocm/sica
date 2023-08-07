@@ -44,12 +44,20 @@ namespace WebAPI.Controllers.v1.Operacion
                 {
                     throw new Exception("El archivo está vacio");
                 }
-
             }
 
             await Mediator.Send(new SustitucionMaximoComunCommand { ParametrosSustitucion = parametrosSustitucionLimites });
 
             return Ok();
+        }
+
+        [HttpGet("ExisteSustitucionPrevia")]
+        public async Task<IActionResult> Get(string periodo)
+        {
+            return Ok(await Mediator.Send(new ValidarSustitucionPreviaQuery
+            {
+                Periodo = periodo
+            }));
         }
 
         [HttpGet()]
