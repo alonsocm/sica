@@ -30,7 +30,6 @@ export class LimitesService {
   }
 
   getResultadosParametrosEstatus(idEstatus: number) {
-
     let params = new HttpParams({
       fromObject: { estatusId: idEstatus, userId: this.authService.getUser().usuarioId },
     });
@@ -43,5 +42,12 @@ export class LimitesService {
 
   obtenerMuestreos(): Observable<Object> {
     return this.http.get(environment.apiUrl + '/Muestreos/ProgramaAnios');
+  }
+
+  validarSustitucionPrevia(periodo: string): Observable<Object> {
+    let params = new HttpParams({
+      fromObject: {periodo: periodo}
+    });
+    return this.http.get(environment.apiUrl + '/Limites/ExisteSustitucionPrevia', {params});
   }
 }

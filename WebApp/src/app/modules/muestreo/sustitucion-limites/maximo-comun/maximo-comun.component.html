@@ -112,3 +112,28 @@
         </form>
     </div>
 </div>
+<button id="btnMdlConfirmacionSustitucion" style="display:none" class="btn btn-primary rigth" type="button" data-toggle="modal"
+    data-target="#mdlConfirmacionSustitucion"></button>
+<div class="modal fade modal-dialog-centered" id="mdlConfirmacionSustitucion" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+        <form [formGroup]="formOpcionesSustitucion" (ngSubmit)="onSubmit()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmación sustitución</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>Se ha realizado una sustitución previamente. ¿Desea aplicar nuevamente la sustitución?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
+                        (click)="formOpcionesSustitucion.reset()">Cancelar</button>
+                    <button id="btnAceptarModal" type="submit" class="btn btn-primary">Aceptar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

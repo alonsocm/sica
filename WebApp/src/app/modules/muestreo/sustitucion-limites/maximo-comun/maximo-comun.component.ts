@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { LimitesService } from '../limites.service';
@@ -17,7 +17,7 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     super();
   }
 
-  muestreosFiltrados: Array<MuestreoSustitucion> = []; 
+  muestreosFiltrados: Array<MuestreoSustitucion> = [];
   muestreos: Array<MuestreoSustitucion> = [];
 
   formOpcionesSustitucion = new FormGroup({
@@ -32,20 +32,29 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   archivoLimites: File = {} as File;
   archivoRequerido: boolean = false;
   registros: Array<any> = [];
+  existeSustitucion: boolean = false;
 
   ngOnInit(): void {
     this.definirColumnas();
     this.obtenerMuestreosSustituidos();
   }
 
-  obtenerMuestreosSustituidos() {
+  existeSustitucionPrevia(periodo: string) {
+    this.limitesService.validarSustitucionPrevia('vencido').subscribe({
+      next: (response: any) => {
+        this.existeSustitucion = response.data;
+      },
+      error: (e) => console.error(e),
+    });
+  }
+
+  obtenerMuestreosSustituidos(): void {
     this.loading = true;
     this.limitesService.obtenerMuestreosSustituidos().subscribe({
       next: (response: any) => {
         this.loading = false;
         this.muestreos = response.data;
         this.muestreosFiltrados = response.data;
-        console.table(this.muestreos);
         this.establecerValoresFiltrosTabla();
       },
       error: (error) => {
@@ -61,25 +70,36 @@ export class MaximoComunComponent extends BaseService implements OnInit {
       periodo: this.formOpcionesSustitucion.controls.periodo.value,
     };
 
-    document.getElementById('btnMdlConfirmacion')?.click();
-    this.loading = true;
-    this.limitesService.sustituirLimites(configSustitucion).subscribe({      
-      next: (response: any) => {        
-        this.loading = false;
-        this.mostrarMensaje('Se ejecutó correctamente la sustitución de los límites máximos', TipoMensaje.Correcto)
-      },
-      error: (response) => {
-        this.loading = false;
-        this.mostrarMensaje('Ocurrió un error en el proceso de sustitución' + ' ' + response.error.Errors[0], TipoMensaje.Error)
-      },
-    });
+    this.existeSustitucionPrevia(configSustitucion.periodo ?? '');
+
+    if (!this.existeSustitucion) {
+      document.getElementById('btnMdlConfirmacion')?.click();
+      this.loading = true;
+      this.limitesService.sustituirLimites(configSustitucion).subscribe({
+        next: (response: any) => {
+          this.loading = false;
+          this.mostrarMensaje(
+            'Se ejecutó correctamente la sustitución de los límites máximos',
+            TipoMensaje.Correcto
+          );
+        },
+        error: (response) => {
+          this.loading = false;
+          this.mostrarMensaje(
+            'Ocurrió un error en el proceso de sustitución' +
+              ' ' +
+              response.error.Errors[0],
+            TipoMensaje.Error
+          );
+        },
+      });
+    } else {
+      document.getElementById('btnMdlConfirmacionSustitucion')?.click();
+    }
   }
 
   validarArchivo() {
-    if (
-      this.formOpcionesSustitucion.controls.origenLimites.value ==
-      '2'
-    ) {
+    if (this.formOpcionesSustitucion.controls.origenLimites.value == '2') {
       this.formOpcionesSustitucion.controls.excelLimites.setValue('');
       this.formOpcionesSustitucion.controls.excelLimites.setValidators(
         Validators.required
@@ -101,24 +121,22 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     }
   }
 
-  exportarResumen(){
-    this.loading = true;    
-    this.limitesService
-    .exportarResumenExcel()
-    .subscribe({
+  exportarResumen() {
+    this.loading = true;
+    this.limitesService.exportarResumenExcel().subscribe({
       next: (response: any) => {
         this.loading = false;
         FileService.download(response, 'resultados.xlsx');
       },
       error: (response: any) => {
-        this.loading = false
-      this.mostrarMensaje(
-        'No fue posible descargar la información',
-        TipoMensaje.Error
+        this.loading = false;
+        this.mostrarMensaje(
+          'No fue posible descargar la información',
+          TipoMensaje.Error
         );
-      this.hacerScroll();
-    },
-  });
+        this.hacerScroll();
+      },
+    });
   }
 
   filtrar() {
@@ -174,14 +192,10 @@ export class MaximoComunComponent extends BaseService implements OnInit {
         orden: 5,
         filtro: new Filter(),
       },
-      { nombre: 'anio', 
-        etiqueta: 'AÑO', 
-        orden: 6, 
-        filtro: new Filter() },
-      ]
-      this.columnas = nombresColumnas;
+      { nombre: 'anio', etiqueta: 'AÑO', orden: 6, filtro: new Filter() },
+    ];
+    this.columnas = nombresColumnas;
   }
-
 }
 
 interface MuestreoSustitucion {
@@ -191,6 +205,5 @@ interface MuestreoSustitucion {
   tipoCuerpoAgua: string;
   fechaRealizacion: string;
   anio: string;
-  resultados: Array<any>
+  resultados: Array<any>;
 }
-
