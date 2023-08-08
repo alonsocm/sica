@@ -46,13 +46,11 @@ namespace WebAPI.Controllers.v1.Operacion
                 }
             }
 
-            await Mediator.Send(new SustitucionMaximoComunCommand { ParametrosSustitucion = parametrosSustitucionLimites });
-
-            return Ok();
+            return Ok(await Mediator.Send(new SustitucionMaximoComunCommand { ParametrosSustitucion = parametrosSustitucionLimites }));
         }
 
         [HttpGet("ExisteSustitucionPrevia")]
-        public async Task<IActionResult> Get(string periodo)
+        public async Task<IActionResult> Get(int periodo)
         {
             return Ok(await Mediator.Send(new ValidarSustitucionPreviaQuery
             {

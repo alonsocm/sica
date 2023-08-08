@@ -311,27 +311,27 @@ namespace Persistence.Repository
             return datosParametros;
         }
 
-        public async Task<bool> ExisteSustitucionPrevia(string periodo)
+        public async Task<bool> ExisteSustitucionPrevia(int periodo)
         {
             bool existe = false;
 
             switch (periodo)
             {
-                case "Actual":
+                case 1:
                     existe = await (from m in _dbContext.Muestreo
                                     join hs in _dbContext.HistorialSustitucionLimites on m.Id equals hs.MuestreoId
                                     where m.FechaRealVisita.Value.Year >= DateTime.Now.Year && m.FechaRealVisita.Value <= DateTime.Now
                                     select hs
                               ).AnyAsync();
                     break;
-                case "Vencido":
+                case 2:
                     existe = await (from m in _dbContext.Muestreo
                                     join hs in _dbContext.HistorialSustitucionLimites on m.Id equals hs.MuestreoId
                                     where m.FechaRealVisita.Value.Year < DateTime.Now.Year
                                     select hs
                              ).AnyAsync();
                     break;
-                case "ActualVencido":
+                case 3:
                     existe = await (from m in _dbContext.Muestreo
                                     join hs in _dbContext.HistorialSustitucionLimites on m.Id equals hs.MuestreoId
                                     where m.FechaRealVisita.Value <= DateTime.Now

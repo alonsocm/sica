@@ -11,7 +11,7 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<ResultadoParametroReglasDto>> ObtenerResultadosParaReglas(long muestreoId);
         void ActualizarResultadosValidadosPorReglas(List<ResultadoParametroReglasDto> resultadosDto);
         List<CargaMuestreoDto> ActualizarValorResultado(List<CargaMuestreoDto> muestreosDto);
-        Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo();
+        Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo(int periodo);
         List<ResultadoParaSustitucionLimitesDto> ActualizarResultadoSustituidoPorLimite(List<ResultadoParaSustitucionLimitesDto> resultadosDto);
         Task<List<MuestreoSustituidoDto>> ObtenerResultadosSustituidos();
     }

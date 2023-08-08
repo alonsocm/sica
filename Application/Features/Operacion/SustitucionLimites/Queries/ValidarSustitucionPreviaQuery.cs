@@ -6,7 +6,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Queries
 {
     public class ValidarSustitucionPreviaQuery : IRequest<Response<bool>>
     {
-        public string Periodo { get; set; }
+        public int Periodo { get; set; }
     }
 
     public class ValidarSustitucionPreviaQueryHandler : IRequestHandler<ValidarSustitucionPreviaQuery, Response<bool>>

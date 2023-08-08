@@ -1,17 +1,10 @@
-﻿using Application.Enums;
-using Application.Interfaces.IRepositories;
+﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using Persistence.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.SustitucionLimites.Commands
 {
-    public class SustitucionLaboratorioCommand: IRequest<Response<bool>>
+    public class SustitucionLaboratorioCommand : IRequest<Response<bool>>
     {
         public int AnioOperacion { get; set; }
     }
@@ -33,8 +26,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
 
         public async Task<Response<bool>> Handle(SustitucionLaboratorioCommand request, CancellationToken cancellationToken)
         {
-
-            var resultadosSustituir = await _resultadosRepository.ObtenerResultadosParaSustitucionPorPeriodo();
+            var resultadosSustituir = await _resultadosRepository.ObtenerResultadosParaSustitucionPorPeriodo(1);
             var limites = await _vwLimiteLaboratorioRepository.ObtenerElementosPorCriterioAsync(x => request.AnioOperacion.Equals(x.Anio));
             foreach (var resultado in resultadosSustituir.ToList())
             {

@@ -2,6 +2,7 @@
 using Application.Enums;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
 using Persistence.Repository;
 
@@ -18,18 +19,31 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
         private readonly IMuestreoRepository _muestreoRepository;
         private readonly ILimiteParametroLaboratorioRepository _limiteParametroLaboratorioRepository;
         private readonly IVwLimiteMaximoComunRepository _vwLimiteMaximoComunRepository;
+        private readonly IHistorialSusticionLimiteRepository _historialSustitucionLimiteRepository;
 
-        public SustitucionMaximoComunCommandHandler(IResultado resultadosRepository, IMuestreoRepository muestreoRepository, ILimiteParametroLaboratorioRepository limiteParametroLaboratorioRepository, IVwLimiteMaximoComunRepository vwLimiteMaximoComunRepository)
+        public SustitucionMaximoComunCommandHandler(
+            IResultado resultadosRepository,
+            IMuestreoRepository muestreoRepository,
+            ILimiteParametroLaboratorioRepository limiteParametroLaboratorioRepository,
+            IVwLimiteMaximoComunRepository vwLimiteMaximoComunRepository,
+            IHistorialSusticionLimiteRepository historialSusticionLimiteRepository)
         {
             _resultadosRepository = resultadosRepository;
             _muestreoRepository = muestreoRepository;
             _limiteParametroLaboratorioRepository=limiteParametroLaboratorioRepository;
             _vwLimiteMaximoComunRepository=vwLimiteMaximoComunRepository;
+            _historialSustitucionLimiteRepository=historialSusticionLimiteRepository;
         }
 
         public async Task<Response<bool>> Handle(SustitucionMaximoComunCommand request, CancellationToken cancellationToken)
         {
-            var resultadosSustituir = await _resultadosRepository.ObtenerResultadosParaSustitucionPorPeriodo();
+            var resultadosSustituir = await _resultadosRepository.ObtenerResultadosParaSustitucionPorPeriodo(request.ParametrosSustitucion.Periodo);
+
+            if (!resultadosSustituir.Any())
+            {
+                return new Response<bool>(false, "No se encontraron resultados para el período seleccionado.");
+            }
+
             var parametrosFiltrados = resultadosSustituir.Select(s => s.IdParametro).Distinct();
 
             //Recorremos los resultados para buscar las cadenas <LPC, <LDM, <LD
@@ -90,7 +104,21 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
 
             //Ahora actualizamos los registros, pero solo a los que se haya sustituido el valor.
             var resultadosSustituidos = resultadosSustituir.Where(x => !string.IsNullOrEmpty(x.ValorSustituido));
+
+            //Obtenemos los muestreos de los resultados sustituidos para insertalo en el historial
+            var fechaSustitucion = DateTime.Now;
+            var historialSustitucionLimites = resultadosSustituidos.Select(s => s.IdMuestreo).Distinct().Select(x =>
+                new HistorialSustitucionLimites()
+                {
+                    MuestreoId = x,
+                    TipoSustitucionId = request.ParametrosSustitucion.Periodo,
+                    UsuarioId = request.ParametrosSustitucion.Usuario,
+                    Fecha = fechaSustitucion
+
+                }).ToList();
+
             _resultadosRepository.ActualizarResultadoSustituidoPorLimite(resultadosSustituidos.ToList());
+            _historialSustitucionLimiteRepository.InsertarRango(historialSustitucionLimites);
 
             return new Response<bool>(true);
         }

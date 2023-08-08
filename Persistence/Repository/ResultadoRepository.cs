@@ -131,19 +131,54 @@ namespace Persistence.Repository
             return resultadosNoEncontrados;
         }
 
-        public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo()
+        public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo(int periodo)
         {
-            var resultados = await (from r in _dbContext.ResultadoMuestreo
-                                    where r.Muestreo.AnioOperacion == 2022
-                                    select new ResultadoParaSustitucionLimitesDto
-                                    {
-                                        IdMuestreo = r.MuestreoId,
-                                        IdParametro = r.ParametroId,
-                                        IdResultado = r.Id,
-                                        ClaveParametro = r.Parametro.ClaveParametro,
-                                        ValorOriginal = r.Resultado,
-                                        LaboratorioId = r.LaboratorioId
-                                    }).ToListAsync();
+            IEnumerable<ResultadoParaSustitucionLimitesDto> resultados = new List<ResultadoParaSustitucionLimitesDto>();
+
+            switch (periodo)
+            {
+                case 1:
+                    resultados = await (from r in _dbContext.ResultadoMuestreo
+                                        where r.Muestreo.FechaRealVisita.Value.Year >= DateTime.Now.Year && r.Muestreo.FechaRealVisita.Value <= DateTime.Now
+                                        select new ResultadoParaSustitucionLimitesDto
+                                        {
+                                            IdMuestreo = r.MuestreoId,
+                                            IdParametro = r.ParametroId,
+                                            IdResultado = r.Id,
+                                            ClaveParametro = r.Parametro.ClaveParametro,
+                                            ValorOriginal = r.Resultado,
+                                            LaboratorioId = r.LaboratorioId
+                                        }).ToListAsync();
+                    break;
+                case 2:
+                    resultados = await (from r in _dbContext.ResultadoMuestreo
+                                        where r.Muestreo.FechaRealVisita.Value.Year < DateTime.Now.Year
+                                        select new ResultadoParaSustitucionLimitesDto
+                                        {
+                                            IdMuestreo = r.MuestreoId,
+                                            IdParametro = r.ParametroId,
+                                            IdResultado = r.Id,
+                                            ClaveParametro = r.Parametro.ClaveParametro,
+                                            ValorOriginal = r.Resultado,
+                                            LaboratorioId = r.LaboratorioId
+                                        }).ToListAsync();
+                    break;
+                case 3:
+                    resultados = await (from r in _dbContext.ResultadoMuestreo
+                                        where r.Muestreo.FechaRealVisita.Value <= DateTime.Now
+                                        select new ResultadoParaSustitucionLimitesDto
+                                        {
+                                            IdMuestreo = r.MuestreoId,
+                                            IdParametro = r.ParametroId,
+                                            IdResultado = r.Id,
+                                            ClaveParametro = r.Parametro.ClaveParametro,
+                                            ValorOriginal = r.Resultado,
+                                            LaboratorioId = r.LaboratorioId
+                                        }).ToListAsync();
+                    break;
+                default:
+                    break;
+            }
 
             return resultados;
         }
