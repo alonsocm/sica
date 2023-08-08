@@ -6,6 +6,7 @@ import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
+import { AuthService } from 'src/app/modules/login/services/auth.service';
 
 @Component({
   selector: 'app-maximo-comun',
@@ -13,7 +14,7 @@ import { Filter } from 'src/app/interfaces/filtro.interface';
   styleUrls: ['./maximo-comun.component.css'],
 })
 export class MaximoComunComponent extends BaseService implements OnInit {
-  constructor(private limitesService: LimitesService) {
+  constructor(private limitesService: LimitesService, private authService: AuthService) {
     super();
   }
 
@@ -39,10 +40,51 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     this.obtenerMuestreosSustituidos();
   }
 
-  existeSustitucionPrevia(periodo: string) {
-    this.limitesService.validarSustitucionPrevia('vencido').subscribe({
+  onSubmit() {
+    let configSustitucion = {
+      archivo: this.formOpcionesSustitucion.controls.archivo.value,
+      origenLimites: this.formOpcionesSustitucion.controls.origenLimites.value,
+      periodo: Number(this.formOpcionesSustitucion.controls.periodo.value),
+      usuario: this.authService.getUser().usuarioId
+    };
+
+    this.limitesService.validarSustitucionPrevia(configSustitucion.periodo).subscribe({
       next: (response: any) => {
         this.existeSustitucion = response.data;
+
+        if (!this.existeSustitucion) {
+          document.getElementById('btnMdlConfirmacion')?.click();
+          this.loading = true;
+          this.limitesService.sustituirLimites(configSustitucion).subscribe({
+            next: (response: any) => {
+              this.formOpcionesSustitucion.reset();
+              this.loading = false;
+              if (response.data === true) {
+                this.mostrarMensaje(
+                  'Se ejecutó correctamente la sustitución de los límites máximos',
+                  TipoMensaje.Correcto
+                );
+              }else{
+                this.mostrarMensaje(
+                  response.message,
+                  TipoMensaje.Alerta
+                );
+              }
+            },
+            error: (response) => {
+              this.formOpcionesSustitucion.reset();
+              this.loading = false;
+              this.mostrarMensaje(
+                'Ocurrió un error en el proceso de sustitución' +
+                  ' ' +
+                  response.error.Errors[0],
+                TipoMensaje.Error
+              );
+            },
+          });
+        } else {
+          document.getElementById('btnMdlConfirmacionSustitucion')?.click();
+        }
       },
       error: (e) => console.error(e),
     });
@@ -61,41 +103,6 @@ export class MaximoComunComponent extends BaseService implements OnInit {
         this.loading = false;
       },
     });
-  }
-
-  onSubmit() {
-    let configSustitucion = {
-      archivo: this.formOpcionesSustitucion.controls.archivo.value,
-      origenLimites: this.formOpcionesSustitucion.controls.origenLimites.value,
-      periodo: this.formOpcionesSustitucion.controls.periodo.value,
-    };
-
-    this.existeSustitucionPrevia(configSustitucion.periodo ?? '');
-
-    if (!this.existeSustitucion) {
-      document.getElementById('btnMdlConfirmacion')?.click();
-      this.loading = true;
-      this.limitesService.sustituirLimites(configSustitucion).subscribe({
-        next: (response: any) => {
-          this.loading = false;
-          this.mostrarMensaje(
-            'Se ejecutó correctamente la sustitución de los límites máximos',
-            TipoMensaje.Correcto
-          );
-        },
-        error: (response) => {
-          this.loading = false;
-          this.mostrarMensaje(
-            'Ocurrió un error en el proceso de sustitución' +
-              ' ' +
-              response.error.Errors[0],
-            TipoMensaje.Error
-          );
-        },
-      });
-    } else {
-      document.getElementById('btnMdlConfirmacionSustitucion')?.click();
-    }
   }
 
   validarArchivo() {

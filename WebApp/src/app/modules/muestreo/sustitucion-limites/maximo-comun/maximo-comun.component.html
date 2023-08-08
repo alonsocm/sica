@@ -39,12 +39,6 @@
                                 </ng-template>
                             </th>                            
                         </ng-container>
-                        <!-- <th>CLAVE SITIO</th>
-                        <th>CLAVE MONITOREO</th>
-                        <th>NOMBRE DEL SITIO</th>
-                        <th>TIPO CUERPO DE AGUA</th>
-                        <th>FECHA REALIZACIÓN</th>
-                        <th>AÑO</th> -->
                         <th *ngFor="let parametro of this.muestreos[1].resultados">{{parametro.claveParametro}}</th>
                     </tr>
                 </thead>
@@ -87,11 +81,11 @@
                         </div>
                         <div class="col-md-6" style="border-left: solid 1px black;">
                             <p>2.&nbsp;Seleccione periodo:</p>
-                            <input id="rdActual" type="radio" formControlName="periodo" name="periodo" value="actual" (change)="validarArchivo">
+                            <input id="rdActual" type="radio" formControlName="periodo" name="periodo" value="1" (change)="validarArchivo">
                             <label for="rdActual">&nbsp;Actual</label><br>
-                            <input id="rdVencido" type="radio" formControlName="periodo" name="periodo" value="vencido" (change)="validarArchivo">
+                            <input id="rdVencido" type="radio" formControlName="periodo" name="periodo" value="2" (change)="validarArchivo">
                             <label for="rdVencido">&nbsp;Vencido</label><br>
-                            <input id="rdActualVencido" type="radio" formControlName="periodo" name="periodo" value="actualVencido" (change)="validarArchivo">
+                            <input id="rdActualVencido" type="radio" formControlName="periodo" name="periodo" value="3" (change)="validarArchivo">
                             <label for="rdActualVencido">&nbsp;Actual y vencido</label>
                         </div>
                     </div>

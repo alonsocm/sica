@@ -15,6 +15,7 @@ export class LimitesService {
   sustituirLimites(parametrosSustitucion: any){
     let formData = new FormData();
 
+    formData.append('usuario', parametrosSustitucion.usuario);
     formData.append('archivo', parametrosSustitucion.archivo);
     formData.append('periodo', parametrosSustitucion.periodo);
     formData.append('origenLimites', parametrosSustitucion.origenLimites);
@@ -44,7 +45,7 @@ export class LimitesService {
     return this.http.get(environment.apiUrl + '/Muestreos/ProgramaAnios');
   }
 
-  validarSustitucionPrevia(periodo: string): Observable<Object> {
+  validarSustitucionPrevia(periodo: number): Observable<Object> {
     let params = new HttpParams({
       fromObject: {periodo: periodo}
     });
