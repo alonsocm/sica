@@ -54,6 +54,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<Muestreo> Muestreo { get; set; }
 
+    public virtual DbSet<MuestreoEmergencia> MuestreoEmergencia { get; set; }
+
     public virtual DbSet<Municipio> Municipio { get; set; }
 
     public virtual DbSet<Observaciones> Observaciones { get; set; }
@@ -470,6 +472,28 @@ public partial class SicaContext : DbContext
             entity.HasOne(d => d.UsuarioRevisionSecaia).WithMany(p => p.MuestreoUsuarioRevisionSecaia)
                 .HasForeignKey(d => d.UsuarioRevisionSecaiaid)
                 .HasConstraintName("FK_Muestreo_Usuario1");
+        });
+
+        modelBuilder.Entity<MuestreoEmergencia>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC076C84AF2F");
+
+            entity.Property(e => e.ClaveParametro).HasMaxLength(100);
+            entity.Property(e => e.ClaveUnica).HasMaxLength(150);
+            entity.Property(e => e.FechaProgramada).HasColumnType("date");
+            entity.Property(e => e.FechaRealVisita).HasColumnType("date");
+            entity.Property(e => e.GrupoParametro).HasMaxLength(100);
+            entity.Property(e => e.IdLaboratorio).HasMaxLength(10);
+            entity.Property(e => e.LaboratorioRealizoMuestreo).HasMaxLength(100);
+            entity.Property(e => e.LaboratorioSubrogado).HasMaxLength(100);
+            entity.Property(e => e.NombreEmergencia).HasMaxLength(250);
+            entity.Property(e => e.Numero).HasMaxLength(10);
+            entity.Property(e => e.Parametro).HasMaxLength(100);
+            entity.Property(e => e.Resultado).HasMaxLength(50);
+            entity.Property(e => e.Sitio).HasMaxLength(150);
+            entity.Property(e => e.SubtipoCuerpoAgua).HasMaxLength(100);
+            entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(100);
+            entity.Property(e => e.UnidadMedida).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Municipio>(entity =>
