@@ -5,13 +5,10 @@ using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
-using Application.Features.Operacion.Resultados.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
-using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
-using Persistence.Repository;
 using Shared.Utilities.Services;
 using WebAPI.Shared;
 
@@ -56,6 +53,33 @@ namespace WebAPI.Controllers.v1.Operacion
             System.IO.File.Delete(filePath);
 
             return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar=cargaMuestreos.Reemplazar }));
+        }
+
+        [HttpPost("CargaEmergencias")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post(IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = CargaEmergencia.ColumnasPropiedades;
+
+            var registros = ExcelService.Import<CargaMuestreoEmergenciaDto>(fileInfo, "EMERGENCIAS");
+
+            System.IO.File.Delete(filePath);
+
+            //return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar=cargaMuestreos.Reemplazar }));
+            return Ok();
         }
 
         [HttpPost("ExportarExcel")]
@@ -126,15 +150,12 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetAniosConOperacion()));
         }
 
-
         [HttpGet("ProgramaAnios")]
         public async Task<IActionResult> ProgramaAnios()
         {
             var datos = await _progrepor.ObtenerTodosElementosAsync();
             return Ok(datos);
         }
-          
-        
 
         [HttpGet("CambioEstatus")]
         public async Task<IActionResult> CambioEstatus(int estatus, long muestreoId)
@@ -145,12 +166,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPut("cambioEstatusMuestreos")]
         public async Task<IActionResult> CambioEstatusMuestreos(ActualizarEstatusListMuestreos datos)
         {
-          
-            return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { estatusId = datos.estatusId,muestreos = datos.muestreos }));
+            return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { estatusId = datos.estatusId, muestreos = datos.muestreos }));
         }
-
-       
-
-
     }
 }

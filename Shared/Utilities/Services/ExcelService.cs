@@ -43,7 +43,7 @@ namespace Shared.Utilities.Services
                     {
                         var mapping = Mappings.SingleOrDefault(m => m.Value == prop.Name);
                         colName = mapping.Key;
-                        var columna = columns.SingleOrDefault(c => c.ColName.ToString() == colName);
+                        var columna = columns.FirstOrDefault(c => c.ColName.ToString() == colName);
 
                         if (columna is null)
                         {
