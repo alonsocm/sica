@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public partial class MuestreoEmergencia
 {
@@ -13,7 +10,7 @@ public partial class MuestreoEmergencia
 
     public string ClaveUnica { get; set; } = null!;
 
-    public string IdLaboratorio { get; set; } = null!;
+    public string? IdLaboratorio { get; set; }
 
     public string Sitio { get; set; } = null!;
 
@@ -21,11 +18,11 @@ public partial class MuestreoEmergencia
 
     public DateTime FechaRealVisita { get; set; }
 
-    public TimeSpan HoraMuestreo { get; set; }
+    public string? HoraMuestreo { get; set; }
 
     public string TipoCuerpoAgua { get; set; } = null!;
 
-    public string SubtipoCuerpoAgua { get; set; } = null!;
+    public string? SubtipoCuerpoAgua { get; set; }
 
     public string LaboratorioRealizoMuestreo { get; set; } = null!;
 
@@ -38,6 +35,7 @@ public partial class MuestreoEmergencia
     public string Parametro { get; set; } = null!;
 
     public string Resultado { get; set; } = null!;
+    public string ResultadoSustituidoPorLimite { get; set; } = null!;
 
     public string? UnidadMedida { get; set; }
 }

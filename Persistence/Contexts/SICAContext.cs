@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -496,6 +494,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.SubtipoCuerpoAgua).HasMaxLength(100);
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(100);
             entity.Property(e => e.UnidadMedida).HasMaxLength(50);
+            entity.Property(e => e.ResultadoSustituidoPorLimite).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Municipio>(entity =>
@@ -1093,45 +1092,75 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<VwReplicaRevisionResultado>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToView("VwReplicaRevisionResultado");
+            entity.HasNoKey();
+
+            entity.ToView("Vw_ReplicaRevisionResultado");
+
+            entity.Property(e => e.ClasificacionObservacion).IsUnicode(false);
+
+            entity.Property(e => e.ClaveMonitoreo).HasMaxLength(4000);
 
             entity.Property(e => e.ClaveParametro).HasMaxLength(30);
+
             entity.Property(e => e.ClaveSitio).HasMaxLength(150);
-            entity.Property(e => e.ClaveUnica)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+
+            entity.Property(e => e.ClaveUnica).HasMaxLength(4000);
+
             entity.Property(e => e.ComentariosReplicaDiferente).IsUnicode(false);
+
             entity.Property(e => e.EsCorrectoOcdl).HasColumnName("EsCorrectoOCDL");
+
             entity.Property(e => e.EsCorrectoSecaia).HasColumnName("EsCorrectoSECAIA");
+
+            entity.Property(e => e.Estatus)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+
             entity.Property(e => e.EstatusSecaia).HasColumnName("EstatusSECAIA");
+
             entity.Property(e => e.FechaAprobRechazo).HasColumnType("datetime");
+
             entity.Property(e => e.FechaEstatusFinal).HasColumnType("datetime");
+
             entity.Property(e => e.FechaObservacionSrenameca)
                 .HasColumnType("datetime")
                 .HasColumnName("FechaObservacionSRENAMECA");
+
             entity.Property(e => e.Laboratorio)
                 .HasMaxLength(150)
                 .IsUnicode(false);
+
             entity.Property(e => e.NombreSitio).HasMaxLength(250);
+
+            entity.Property(e => e.NombreUsuario)
+                .HasMaxLength(252)
+                .IsUnicode(false);
+
+            entity.Property(e => e.NumeroEntrega)
+                .HasMaxLength(13)
+                .IsUnicode(false);
+
             entity.Property(e => e.ObservacionSrenameca)
                 .IsUnicode(false)
                 .HasColumnName("ObservacionSRENAMECA");
+
             entity.Property(e => e.ObservacionesOcdl)
-                .IsUnicode(false)
+                .HasMaxLength(100)
                 .HasColumnName("ObservacionesOCDL");
+
             entity.Property(e => e.ObservacionesSecaia)
-                .IsUnicode(false)
+                .HasMaxLength(100)
                 .HasColumnName("ObservacionesSECAIA");
+
             entity.Property(e => e.Resultado)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
             entity.Property(e => e.ResultadoActualizadoReplica).IsUnicode(false);
-            entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
-            entity.Property(e => e.TipoCuerpoAguaOriginal)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+
+            entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(150);
+
+            entity.Property(e => e.TipoCuerpoAguaOriginal).HasMaxLength(150);
         });
 
         modelBuilder.Entity<VwResultadosInicialReglas>(entity =>
