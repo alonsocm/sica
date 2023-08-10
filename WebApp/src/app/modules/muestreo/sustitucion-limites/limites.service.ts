@@ -4,15 +4,13 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/modules/login/services/auth.service';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LimitesService {
+  constructor(private http: HttpClient, public authService: AuthService) {}
 
-  constructor(private http: HttpClient, public authService: AuthService) { }
-
-  sustituirLimites(parametrosSustitucion: any){
+  sustituirLimites(parametrosSustitucion: any) {
     let formData = new FormData();
 
     formData.append('usuario', parametrosSustitucion.usuario);
@@ -20,10 +18,7 @@ export class LimitesService {
     formData.append('periodo', parametrosSustitucion.periodo);
     formData.append('origenLimites', parametrosSustitucion.origenLimites);
 
-    return this.http.post(
-      environment.apiUrl + '/Limites',
-      formData
-    );
+    return this.http.post(environment.apiUrl + '/Limites', formData);
   }
 
   obtenerMuestreosSustituidos(): Observable<Object> {
@@ -32,13 +27,21 @@ export class LimitesService {
 
   getResultadosParametrosEstatus(idEstatus: number) {
     let params = new HttpParams({
-      fromObject: { estatusId: idEstatus, userId: this.authService.getUser().usuarioId },
+      fromObject: {
+        estatusId: idEstatus,
+        userId: this.authService.getUser().usuarioId,
+      },
     });
-    return this.http.get(environment.apiUrl + '/Resultados/ResultadosParametrosEstatus', { params });
+    return this.http.get(
+      environment.apiUrl + '/Resultados/ResultadosParametrosEstatus',
+      { params }
+    );
   }
 
   exportarResumenExcel(): Observable<Object> {
-    return this.http.get(environment.apiUrl + '/Limites/ExportarExcel', {responseType: 'blob'});
+    return this.http.get(environment.apiUrl + '/Limites/ExportarExcel', {
+      responseType: 'blob',
+    });
   }
 
   obtenerMuestreos(): Observable<Object> {
@@ -47,8 +50,21 @@ export class LimitesService {
 
   validarSustitucionPrevia(periodo: number): Observable<Object> {
     let params = new HttpParams({
-      fromObject: {periodo: periodo}
+      fromObject: { periodo: periodo },
     });
-    return this.http.get(environment.apiUrl + '/Limites/ExisteSustitucionPrevia', {params});
+    return this.http.get(
+      environment.apiUrl + '/Limites/ExisteSustitucionPrevia',
+      { params }
+    );
+  }
+
+  cargaMuestreosEmergencia(archivoMuestreos: File) {
+    let formData = new FormData();
+    formData.append('archivo', archivoMuestreos, archivoMuestreos.name);
+
+    return this.http.post(
+      environment.apiUrl + '/Muestreos/CargaEmergencias',
+      formData
+    );
   }
 }

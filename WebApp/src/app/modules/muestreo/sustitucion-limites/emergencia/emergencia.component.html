@@ -18,7 +18,8 @@
             </select>
         </div>
         <div class="col-md-3 text-right">
-            <button type="button" class="btn btn-secondary" (click)="exportarResumen()">
+            <input type="file" style="display: none" (change)="cargarArchivoEmergencias($event)" accept=".xls, .xlsx" #inputExcelMonitoreosEmergencia>
+            <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreosEmergencia.click()">
                 <i class="bi bi-cloud-upload"></i>
                 Cargar emergencia
             </button>
@@ -47,7 +48,7 @@
                         <th>TIPO CUERPO DE AGUA</th>
                         <th>FECHA REALIZACIÓN</th>
                         <th>AÑO</th>
-                        <th *ngFor="let parametro of this.registros[1].resultados">{{parametro.descripcion}}</th>
+                        <th *ngFor="let parametro of this.registros[1].resultados">{{parametro.claveParametro}}</th>
                     </tr>
                 </thead>
                 <tbody>
