@@ -54,20 +54,19 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar=cargaMuestreos.Reemplazar }));
         }
-
         [HttpPost("CargaEmergencias")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Post(IFormFile archivo)
+        public async Task<IActionResult> Post([FromForm] CargaEmergenciasDto cargaMuestreos)
         {
             string filePath = string.Empty;
 
-            if (archivo.Length > 0)
+            if (cargaMuestreos.Archivo.Length > 0)
             {
                 filePath = Path.GetTempFileName();
 
                 using var stream = System.IO.File.Create(filePath);
 
-                await archivo.CopyToAsync(stream);
+                await cargaMuestreos.Archivo.CopyToAsync(stream);
             }
 
             FileInfo fileInfo = new(filePath);
