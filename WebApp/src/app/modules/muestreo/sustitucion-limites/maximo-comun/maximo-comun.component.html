@@ -91,13 +91,13 @@
                     </div>
                     <div class="row col-md-12" style="margin-top: 15px;"
                         *ngIf="this.formOpcionesSustitucion.controls.origenLimites.value == '2'">
-                        <p>Seleccione el archivo Excel de los límites máximos comunes:</p>
-                        <input type="file" accept=".xls, .xlsx" formControlName="excelLimites"
+                        <label for="archivoLimites">Seleccione el archivo Excel de los límites máximos comunes:</label>
+                        <input id="archivoLimites" type="file" accept=".xls, .xlsx" formControlName="excelLimites"
                             (change)="onFileChange($event)">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
+                    <button type="button" id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
                         (click)="formOpcionesSustitucion.reset()">Cancelar</button>
                     <button id="btnAceptarModal" type="submit" class="btn btn-primary"
                         [disabled]="!formOpcionesSustitucion.valid">Aceptar</button>
@@ -123,9 +123,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
+                    <button type="button" id="btnCancelarModalReemplazar" class="btn btn-secondary" data-dismiss="modal"
                         (click)="formOpcionesSustitucion.reset()">Cancelar</button>
-                    <button id="btnAceptarModal" type="submit" class="btn btn-primary">Aceptar</button>
+                    <button id="btnAceptarModalReemplazar" type="submit" class="btn btn-primary">Aceptar</button>
                 </div>
             </div>
         </form>
