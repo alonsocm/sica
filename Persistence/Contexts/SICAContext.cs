@@ -32,6 +32,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
+    public virtual DbSet<Emergencia> Emergencia { get; set; }
+
     public virtual DbSet<Estado> Estado { get; set; }
 
     public virtual DbSet<EstatusMuestreo> EstatusMuestreo { get; set; }
@@ -239,6 +241,28 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Emergencia>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
+
+            entity.ToTable("Emergencia", "Cat");
+
+            entity.Property(e => e.ClaveMunicipio).HasMaxLength(50);
+            entity.Property(e => e.ClaveSitio).HasMaxLength(200);
+            entity.Property(e => e.Cuenca).HasMaxLength(100);
+            entity.Property(e => e.CuerpoAgua).HasMaxLength(100);
+            entity.Property(e => e.Estado).HasMaxLength(50);
+            entity.Property(e => e.FechaRealizacion).HasColumnType("datetime");
+            entity.Property(e => e.Latitud).HasMaxLength(50);
+            entity.Property(e => e.Longitud).HasMaxLength(50);
+            entity.Property(e => e.Municipio).HasMaxLength(100);
+            entity.Property(e => e.NombreEmergencia).HasMaxLength(200);
+            entity.Property(e => e.NombreSitio).HasMaxLength(200);
+            entity.Property(e => e.OrganismoCuenca).HasMaxLength(100);
+            entity.Property(e => e.SubTipoCuerpoAgua).HasMaxLength(100);
+            entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Estado>(entity =>
