@@ -67,7 +67,7 @@ const routes: Routes = [
   { path: 'reglas-validar', component: ReglasValidarComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
   { path: 'limite-comun-maximo', component: MaximoComunComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
   { path: 'limite-laboratorio', component: LaboratorioComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
-  { path: 'limite-emergencia', component: EmergenciaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
+  { path: 'carga-resultados-emergencia', component: EmergenciaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
   { path: '**', component: NotFoundComponent }
 
 ];

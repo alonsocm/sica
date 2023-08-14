@@ -4,6 +4,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { FileService } from 'src/app/shared/services/file.service';
+import { FormControl } from '@angular/forms';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 @Component({
@@ -11,8 +12,9 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   templateUrl: './emergencia.component.html',
   styleUrls: ['./emergencia.component.css'],
 })
-export class EmergenciaComponent extends BaseService implements OnInit {
+export class EmergenciaComponent extends BaseService implements OnInit {  
   registros: Array<any> = [];
+  contratoSeleccionado : string = "Seleccionar";
   @ViewChild('inputExcelMonitoreosEmergencia') inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
   constructor(private limitesService: LimitesService) {
