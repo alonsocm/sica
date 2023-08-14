@@ -49,6 +49,35 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new SustitucionMaximoComunCommand { ParametrosSustitucion = parametrosSustitucionLimites }));
         }
 
+        [HttpPost]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> SustitucionEmergencias([FromForm] ParametrosSustitucionLimitesDto parametrosSustitucionLimites)
+        {
+            if (parametrosSustitucionLimites.OrigenLimites == (int)TipoSustitucionLimites.TablaTemporal)
+            {
+                if (parametrosSustitucionLimites.Archivo?.Length > 0)
+                {
+                    string filePath = Path.GetTempFileName();
+                    using (var fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                    {
+                        await parametrosSustitucionLimites.Archivo.CopyToAsync(fs);
+                    }
+
+                    FileInfo fileInfo = new(filePath);
+                    ExcelService.Mappings = ExcelLimitesComunes.keyValues;
+                    var registros = ExcelService.Import<LimiteMaximoComunDto>(fileInfo, "Límites 2012-2022");
+                    System.IO.File.Delete(filePath);
+                    parametrosSustitucionLimites.LimitesComunes = registros;
+                }
+                else
+                {
+                    throw new Exception("El archivo está vacio");
+                }
+            }
+
+            return Ok(await Mediator.Send(new SustitucionEmergenciasCommand { ParametrosSustitucion = parametrosSustitucionLimites }));
+        }
+
         [HttpGet("ExisteSustitucionPrevia")]
         public async Task<IActionResult> Get(int periodo)
         {

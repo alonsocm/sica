@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
 
 namespace Persistence.Repository
@@ -28,14 +29,44 @@ namespace Persistence.Repository
                                  SubtipoCuerpoAgua = cm.SubtipoCuerpoAgua,
                                  LaboratorioRealizoMuestreo = cm.LaboratorioRealizoMuestreo,
                                  LaboratorioSubrogado = cm.LaboratorioSubrogado,
-                                 GrupoParametro = cm.GrupoParametro,
-                                 ClaveParametro = p.ClaveParametro,
-                                 Parametro = p.Descripcion,
+                                 ParametroId = p.Id,
                                  Resultado = cm.Resultado,
-                                 UnidadMedida = cm.UnidadMedida
                              }).ToList();
 
             return muestreos;
+        }
+
+        public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucion()
+        {
+            IEnumerable<ResultadoParaSustitucionLimitesDto> resultados = new List<ResultadoParaSustitucionLimitesDto>();
+
+            resultados = await (from r in _dbContext.MuestreoEmergencia
+                                join l in _dbContext.Laboratorios on r.LaboratorioRealizoMuestreo equals l.Descripcion
+                                select new ResultadoParaSustitucionLimitesDto
+                                {
+                                    IdParametro = r.ParametroId,
+                                    IdResultado = r.Id,
+                                    ClaveParametro = r.Parametro.ClaveParametro,
+                                    ValorOriginal = r.Resultado,
+                                    LaboratorioId = l.Id
+                                }).ToListAsync();
+
+            return resultados;
+        }
+
+        public List<ResultadoParaSustitucionLimitesDto> ActualizarResultadoSustituidoPorLimite(List<ResultadoParaSustitucionLimitesDto> resultadosDto)
+        {
+            var resultadosNoEncontrados = new List<ResultadoParaSustitucionLimitesDto>();
+
+            resultadosDto.ForEach(resultadoDto =>
+            {
+                var resultado = _dbContext.MuestreoEmergencia.Where(x => x.Id == resultadoDto.IdResultado)
+                                                            .ExecuteUpdate(s => s.SetProperty(e => e.ResultadoSustituidoPorLimite, resultadoDto.ValorSustituido));
+                if (resultado == 0)
+                    resultadosNoEncontrados.Add(resultadoDto);
+            });
+
+            return resultadosNoEncontrados;
         }
     }
 }
