@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
 namespace Application.Interfaces.IRepositories
 {
@@ -20,7 +15,7 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<T>> ObtenerTodosElementosAsync();
         IEnumerable<T> ObtenerElementosPorCriterio(Expression<Func<T, bool>> predicado);
         Task<IEnumerable<T>> ObtenerElementosPorCriterioAsync(Expression<Func<T, bool>> predicado);
-        Task<bool> ExisteElemento(Expression<Func<T, bool>> predicado);
+        Task<bool> ExisteElementoAsync(Expression<Func<T, bool>> predicado);
         IQueryable<T> ObtenerElementoConInclusiones(Expression<Func<T, bool>> predicado, params Expression<Func<T, object>>[] propiedades);
     }
 }

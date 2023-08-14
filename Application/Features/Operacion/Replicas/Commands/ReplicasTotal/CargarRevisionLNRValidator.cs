@@ -19,7 +19,7 @@ namespace Application.Features.Operacion.Replicas.Commands.ReplicasTotal
             {
                 replica.RuleFor(x => x.ClaveUnica).Cascade(CascadeMode.Stop)
                                                   .NotEmpty().WithMessage(replica => $"La campo {{PropertyName}} no puede estar vacio. Linea: {replica.Linea}")
-                                                  .Must((replica, claveUnica) => _replicasRepository.ExisteElemento(x => x.ClaveUnica == claveUnica).Result)
+                                                  .Must((replica, claveUnica) => _replicasRepository.ExisteElementoAsync(x => x.ClaveUnica == claveUnica).Result)
                                                   .WithMessage((replica) => $"La clave única {{PropertyValue}} no se encontró registrada. Linea: {replica.Linea}");
             });
         }

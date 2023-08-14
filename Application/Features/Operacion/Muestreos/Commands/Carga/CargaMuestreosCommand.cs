@@ -64,7 +64,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
 
         public async Task<bool> ExisteNumeroEntrega(int numeroEntrega, int anio)
         {
-            return await _repository.ExisteElemento(w => w.NumeroEntrega == numeroEntrega && w.AnioOperacion == anio);
+            return await _repository.ExisteElementoAsync(w => w.NumeroEntrega == numeroEntrega && w.AnioOperacion == anio);
         }
     }
 }

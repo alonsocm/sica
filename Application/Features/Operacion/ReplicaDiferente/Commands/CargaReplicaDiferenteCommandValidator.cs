@@ -39,7 +39,7 @@ namespace Application.Features.ReplicaDiferente.Commands
 
         public async Task<bool> ExisteClaveUnica(string claveUnica, string noEntrega)
         {
-            return await  _vwReplicaRevisionResultado.ExisteElemento(x => x.NumeroEntrega == noEntrega && x.ClaveUnica == claveUnica);
+            return await  _vwReplicaRevisionResultado.ExisteElementoAsync(x => x.NumeroEntrega == noEntrega && x.ClaveUnica == claveUnica);
         }
         
     }

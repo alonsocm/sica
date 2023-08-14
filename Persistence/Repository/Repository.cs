@@ -119,7 +119,7 @@ namespace Persistence.Repository
             return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<bool> ExisteElemento(Expression<Func<T, bool>> predicado)
+        public async Task<bool> ExisteElementoAsync(Expression<Func<T, bool>> predicado)
         {
             return await _dbContext.Set<T>().AnyAsync(predicado);
         }
