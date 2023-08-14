@@ -19,16 +19,19 @@
             </select>
         </div>
         <div class="col-md-3 text-right">
-            <input type="file" style="display: none" (change)="cargarArchivoEmergencias($event)" accept=".xls, .xlsx" #inputExcelMonitoreosEmergencia>
-            <button type="button" class="btn btn-primary" [disabled]="this.contratoSeleccionado == 'Seleccionar'" (click)="inputExcelMonitoreosEmergencia.click()">
+            <input type="file" style="display: none" (change)="cargarArchivoEmergencias($event)" accept=".xls, .xlsx"
+                #inputExcelMonitoreosEmergencia>
+            <button type="button" class="btn btn-primary" [disabled]="this.contratoSeleccionado == 'Seleccionar'"
+                (click)="inputExcelMonitoreosEmergencia.click()">
                 <i class="bi bi-cloud-upload"></i>
                 Cargar emergencia
             </button>
         </div>
         <div class="col-md-3 text-left">
-            <button type="button" class="btn btn-secondary" (click)="exportarResumen()">
-                <i class="bi bi-cloud-upload"></i>
-                Cargar límites
+            <button type="button" class="btn btn-secondary" (click)="exportarResumen()" [disabled]="this.contratoSeleccionado == 'Seleccionar'" data-toggle="modal"
+            data-target="#mdlConfirmacion">
+                <i class="bi bi-arrow-repeat"></i>
+                Sustitución de límites
             </button>
         </div>
         <div class="col-md-4 text-right">
@@ -38,7 +41,7 @@
             </button>
         </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12 table-responsive dvTable" style="max-width: 1900px;">
             <table class="table table-striped table-hover">
                 <thead>
@@ -67,10 +70,9 @@
         </div>
         <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
         </pagination-controls>
-    </div>
+    </div> -->
 </div>
-<!-- <button id="btnMdlConfirmacion" style="display:none" class="btn btn-primary rigth" type="button" data-toggle="modal"
-    data-target="#mdlConfirmacion"></button>
+<button id="btnMdlConfirmacion" style="display:none" class="btn btn-primary rigth" type="button" data-toggle="modal" data-target="#mdlConfirmacion"></button>
 <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog">
         <form [formGroup]="formOpcionesSustitucion" (ngSubmit)="onSubmit()">
@@ -80,7 +82,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <p>1.&nbsp;Seleccione el origen de límites:</p>
                             <input id="rdCatalogo" type="radio" formControlName="origenLimites" name="origenLimites"
                                 value="1" (change)="validarArchivo()">
@@ -89,24 +91,16 @@
                                 value="2" (change)="validarArchivo()">
                             <label for="rdTblTemporal">&nbsp;Tabla temporal</label>
                         </div>
-                        <div class="col-md-6" style="border-left: solid 1px black;">
-                            <p>2.&nbsp;Seleccione periodo:</p>
-                            <input id="rdActual" type="radio" formControlName="periodo" name="periodo" value="actual">
-                            <label for="rdActual">&nbsp;Actual</label><br>
-                            <input id="rdActualVencido" type="radio" formControlName="periodo" name="periodo"
-                                value="actualVencido">
-                            <label for="rdActualVencido">&nbsp;Actual y vencido</label>
-                        </div>
                     </div>
                     <div class="row col-md-12" style="margin-top: 15px;"
                         *ngIf="this.formOpcionesSustitucion.controls.origenLimites.value == '2'">
-                        <p>Seleccione el archivo Excel de los límites máximos comunes:</p>
-                        <input type="file" accept=".xls, .xlsx" formControlName="excelLimites"
+                        <label for="archivoLimites">Seleccione el archivo Excel de los límites máximos comunes:</label>
+                        <input id="archivoLimites" type="file" accept=".xls, .xlsx" formControlName="excelLimites"
                             (change)="onFileChange($event)">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
+                    <button type="button" id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
                         (click)="formOpcionesSustitucion.reset()">Cancelar</button>
                     <button id="btnAceptarModal" type="submit" class="btn btn-primary"
                         [disabled]="!formOpcionesSustitucion.valid">Aceptar</button>
@@ -114,4 +108,4 @@
             </div>
         </form>
     </div>
-</div> -->
+</div>

@@ -4,7 +4,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { FileService } from 'src/app/shared/services/file.service';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 @Component({
@@ -15,6 +15,12 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 export class EmergenciaComponent extends BaseService implements OnInit {  
   registros: Array<any> = [];
   contratoSeleccionado : string = "Seleccionar";
+  formOpcionesSustitucion = new FormGroup({
+    origenLimites: new FormControl('', Validators.required),
+    periodo: new FormControl('', Validators.required),
+    excelLimites: new FormControl(),
+    archivo: new FormControl(),
+  });
   @ViewChild('inputExcelMonitoreosEmergencia') inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
   constructor(private limitesService: LimitesService) {
@@ -24,6 +30,12 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     // this.obtenerMuestreosSustituidos();
   }
+
+  onSubmit(){}
+
+  validarArchivo(){}
+
+  onFileChange(event: any){}
 
   cargarArchivoEmergencias(event: Event) {
     let archivo = (event.target as HTMLInputElement).files ?? new FileList();
