@@ -476,25 +476,27 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<MuestreoEmergencia>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC076C84AF2F");
+            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC07EB386B26");
 
-            entity.Property(e => e.ClaveParametro).HasMaxLength(100);
             entity.Property(e => e.ClaveUnica).HasMaxLength(150);
             entity.Property(e => e.FechaProgramada).HasColumnType("date");
             entity.Property(e => e.FechaRealVisita).HasColumnType("date");
-            entity.Property(e => e.GrupoParametro).HasMaxLength(100);
+            entity.Property(e => e.HoraMuestreo).HasMaxLength(20);
             entity.Property(e => e.IdLaboratorio).HasMaxLength(10);
             entity.Property(e => e.LaboratorioRealizoMuestreo).HasMaxLength(100);
             entity.Property(e => e.LaboratorioSubrogado).HasMaxLength(100);
             entity.Property(e => e.NombreEmergencia).HasMaxLength(250);
             entity.Property(e => e.Numero).HasMaxLength(10);
-            entity.Property(e => e.Parametro).HasMaxLength(100);
             entity.Property(e => e.Resultado).HasMaxLength(50);
+            entity.Property(e => e.ResultadoSustituidoPorLimite).HasMaxLength(50);
             entity.Property(e => e.Sitio).HasMaxLength(150);
             entity.Property(e => e.SubtipoCuerpoAgua).HasMaxLength(100);
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(100);
-            entity.Property(e => e.UnidadMedida).HasMaxLength(50);
-            entity.Property(e => e.ResultadoSustituidoPorLimite).HasMaxLength(50);
+
+            entity.HasOne(d => d.Parametro).WithMany(p => p.MuestreoEmergencia)
+                .HasForeignKey(d => d.ParametroId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MuestreoEmergencia_ParametroGrupo");
         });
 
         modelBuilder.Entity<Municipio>(entity =>
@@ -1060,34 +1062,6 @@ public partial class SicaContext : DbContext
                 .ToView("Vw_ClaveMuestreo");
 
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
-        });
-
-        modelBuilder.Entity<VwLimiteLaboratorio>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("VwLimiteLaboratorio");
-
-            entity.Property(e => e.Anio)
-                .HasMaxLength(4)
-                .HasColumnName("anio");
-            entity.Property(e => e.EsLdm).HasColumnName("EsLDM");
-            entity.Property(e => e.Ldm)
-                .HasMaxLength(30)
-                .HasColumnName("LDM");
-            entity.Property(e => e.Limite).HasMaxLength(30);
-            entity.Property(e => e.Lpc)
-                .HasMaxLength(30)
-                .HasColumnName("LPC");
-        });
-
-        modelBuilder.Entity<VwLimiteMaximoComun>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("VwLimiteMaximoComun");
-
-            entity.Property(e => e.Limite).HasMaxLength(30);
         });
 
         modelBuilder.Entity<VwReplicaRevisionResultado>(entity =>

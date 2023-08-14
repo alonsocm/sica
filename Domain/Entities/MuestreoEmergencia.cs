@@ -1,4 +1,7 @@
-﻿namespace Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Entities;
 
 public partial class MuestreoEmergencia
 {
@@ -28,14 +31,11 @@ public partial class MuestreoEmergencia
 
     public string? LaboratorioSubrogado { get; set; }
 
-    public string GrupoParametro { get; set; } = null!;
-
-    public string ClaveParametro { get; set; } = null!;
-
-    public string Parametro { get; set; } = null!;
+    public long ParametroId { get; set; }
 
     public string Resultado { get; set; } = null!;
-    public string ResultadoSustituidoPorLimite { get; set; } = null!;
 
-    public string? UnidadMedida { get; set; }
+    public string? ResultadoSustituidoPorLimite { get; set; }
+
+    public virtual ParametrosGrupo Parametro { get; set; } = null!;
 }

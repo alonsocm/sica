@@ -31,6 +31,8 @@ public partial class ParametrosGrupo
 
     public virtual ICollection<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; } = new List<LimiteParametroLaboratorio>();
 
+    public virtual ICollection<MuestreoEmergencia> MuestreoEmergencia { get; set; } = new List<MuestreoEmergencia>();
+
     public virtual ICollection<ParametrosCostos> ParametrosCostos { get; set; } = new List<ParametrosCostos>();
 
     public virtual ICollection<ParametrosReglasNoRelacion> ParametrosReglasNoRelacion { get; set; } = new List<ParametrosReglasNoRelacion>();
