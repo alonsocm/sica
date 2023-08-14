@@ -1064,6 +1064,34 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
         });
 
+        modelBuilder.Entity<VwLimiteLaboratorio>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VwLimiteLaboratorio");
+
+            entity.Property(e => e.Anio)
+                .HasMaxLength(4)
+                .HasColumnName("anio");
+            entity.Property(e => e.EsLdm).HasColumnName("EsLDM");
+            entity.Property(e => e.Ldm)
+                .HasMaxLength(30)
+                .HasColumnName("LDM");
+            entity.Property(e => e.Limite).HasMaxLength(30);
+            entity.Property(e => e.Lpc)
+                .HasMaxLength(30)
+                .HasColumnName("LPC");
+        });
+
+        modelBuilder.Entity<VwLimiteMaximoComun>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VwLimiteMaximoComun");
+
+            entity.Property(e => e.Limite).HasMaxLength(30);
+        });
+
         modelBuilder.Entity<VwReplicaRevisionResultado>(entity =>
         {
             entity.HasNoKey();
