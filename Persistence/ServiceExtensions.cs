@@ -97,7 +97,6 @@ namespace Persistence
             services.AddTransient<IVwLimiteLaboratorioRepository, VwLimiteLaboratorioRepository>();
             services.AddTransient<IHistorialSusticionLimiteRepository, HistorialSustitucionLimitesRepository>();
             services.AddTransient<IMuestreoEmergenciasRepository, MuestreoEmergenciasRepository>();
-            services.AddTransient<IEmergenciaRepository, EmergenciaRepository>();
             #endregion
         }
     }
