@@ -2,7 +2,7 @@
 {
     public enum TipoSustitucionLimites
     {
-        MaximoComun = 1,
+        CatalogoLimites = 1,
         TablaTemporal,
         Emergencia,
         Laboratorio

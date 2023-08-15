@@ -45,7 +45,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
             //Recorremos los resultados para buscar las cadenas <LPC, <LDM, <LD
             var siglas = new List<string> { "<LPC", "<LDM", "<LD" };
 
-            if (request.ParametrosSustitucion.OrigenLimites == (int)TipoSustitucionLimites.MaximoComun)
+            if (request.ParametrosSustitucion.OrigenLimites == (int)TipoSustitucionLimites.CatalogoLimites)
             {
                 var limitesParametros = await _vwLimiteMaximoComunRepository.ObtenerElementosPorCriterioAsync(x => parametrosFiltrados.Contains(x.ParametroId));
 
