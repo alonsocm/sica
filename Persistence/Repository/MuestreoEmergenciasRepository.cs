@@ -69,7 +69,7 @@ namespace Persistence.Repository
             return resultadosNoEncontrados;
         }
 
-        public async Task<bool> ExisteCargaPrevia(string nombreEmergencia, string nombreSitio)
+        public async Task<bool> ExisteCargaPreviaAsync(string nombreEmergencia, string nombreSitio)
         {
             var existeCargaPrevia = await (from m in _dbContext.MuestreoEmergencia
                                            join e in _dbContext.Emergencia on m.NombreEmergencia equals e.NombreEmergencia
