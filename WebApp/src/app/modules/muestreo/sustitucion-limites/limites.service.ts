@@ -58,10 +58,12 @@ export class LimitesService {
     );
   }
 
-  cargaMuestreosEmergencia(archivoMuestreos: File) {
+  cargaMuestreosEmergencia(archivoMuestreos: File, anio: string, reemplazar?: string) {
     let formData = new FormData();
     formData.append('archivo', archivoMuestreos, archivoMuestreos.name);
-
+    formData.append('anio', anio);
+    formData.append('reemplazar', reemplazar??'');
+    
     return this.http.post(
       environment.apiUrl + '/Muestreos/CargaEmergencias',
       formData

@@ -12,7 +12,8 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   templateUrl: './emergencia.component.html',
   styleUrls: ['./emergencia.component.css'],
 })
-export class EmergenciaComponent extends BaseService implements OnInit {  
+export class EmergenciaComponent extends BaseService implements OnInit {
+  archivo: any;  
   registros: Array<any> = [];
   contratoSeleccionado : string = "Seleccionar";
   formOpcionesSustitucion = new FormGroup({
@@ -38,15 +39,16 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   onFileChange(event: any){}
 
   cargarArchivoEmergencias(event: Event) {
-    let archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    this.procesarArchivoEmergencias();
+  }
 
-    console.log(archivo[0]);
-
-    if (archivo) {
+  procesarArchivoEmergencias(reemplazar?: string){
+    if (this.archivo) {
       this.loading = !this.loading;
 
       this.limitesService
-        .cargaMuestreosEmergencia(archivo[0])
+        .cargaMuestreosEmergencia(this.archivo[0],  this.contratoSeleccionado, reemplazar)
         .subscribe({
           next: (response: any) => {
             if (response.data.correcto) {
@@ -56,8 +58,10 @@ export class EmergenciaComponent extends BaseService implements OnInit {
                 TIPO_MENSAJE.exito
               );
               this.resetInputFile(this.inputExcelMonitoreos);
-            } else {
+            } else if(!response.Succeded) {
               this.loading = false;
+              document.getElementById('btnMdlConfirmacionReemplazar')?.click();
+              console.log(response);
             }
           },
           error: (error: any) => {
@@ -75,6 +79,11 @@ export class EmergenciaComponent extends BaseService implements OnInit {
           },
         });
     }
+  }
+
+  reemplazarResultadosPrevios(){
+    this.formOpcionesSustitucion.reset();
+    this.procesarArchivoEmergencias('true');
   }
 
   exportarResumen() {}
@@ -122,5 +131,10 @@ export class EmergenciaComponent extends BaseService implements OnInit {
       },
       { nombre: 'anio', etiqueta: 'AÑO', orden: 6, filtro: new Filter() },
     ];
+  }
+
+  cancelarEnvio(){
+    this.formOpcionesSustitucion.reset()
+    this.resetInputFile(this.inputExcelMonitoreos);
   }
 }

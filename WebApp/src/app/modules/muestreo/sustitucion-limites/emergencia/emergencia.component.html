@@ -109,3 +109,28 @@
         </form>
     </div>
 </div>
+<button id="btnMdlConfirmacionReemplazar" style="display:none" class="btn btn-primary rigth" type="button" data-toggle="modal" data-target="#mdlConfirmacionReemplazar"></button>
+<div class="modal fade modal-dialog-centered" id="mdlConfirmacionReemplazar" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+        <form [formGroup]="formOpcionesSustitucion" (ngSubmit)="onSubmit()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmación</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>Se encontraron resultados cargados previamente de las siguientes emergencias: </p>
+                            <p>¿Desea continuar y reemplazar los resultados anteriores?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
+                        (click)="cancelarEnvio()">Cancelar</button>
+                    <button id="btnAceptarModal" type="submit" class="btn btn-primary" (click)="reemplazarResultadosPrevios()">Aceptar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
