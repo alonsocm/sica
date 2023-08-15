@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
+using Application.Features.Catalogos.Emergencias.Commands;
 using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
@@ -7,6 +8,7 @@ using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
+using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -54,6 +56,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar=cargaMuestreos.Reemplazar }));
         }
+
         [HttpPost("CargaEmergencias")]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromForm] CargaEmergenciasDto cargaMuestreos)
@@ -63,19 +66,31 @@ namespace WebAPI.Controllers.v1.Operacion
             if (cargaMuestreos.Archivo.Length > 0)
             {
                 filePath = Path.GetTempFileName();
-
                 using var stream = System.IO.File.Create(filePath);
-
                 await cargaMuestreos.Archivo.CopyToAsync(stream);
             }
 
             FileInfo fileInfo = new(filePath);
-
             ExcelService.Mappings = CargaEmergencia.ColumnasPropiedades;
 
             var registros = ExcelService.Import<CargaMuestreoEmergenciaDto>(fileInfo, "EMERGENCIAS");
-
             System.IO.File.Delete(filePath);
+
+            var emergencias = registros.Select(x => new { x.NombreEmergencia, x.Sitio }).Distinct().ToList();
+
+            List<Emergencia> emergenciasNuevas = new();
+
+            emergencias.ForEach(async emergencia =>
+            {
+                var existeEmergenciaCatalogo = await Mediator.Send(new ExisteEmergenciaQuery { NombreEmergencia = emergencia.NombreEmergencia });
+
+                if (!existeEmergenciaCatalogo.Data)
+                {
+                    Emergencia nuevaEmergencia = new() { Anio = 2023, NombreEmergencia = emergencia.NombreEmergencia, NombreSitio = emergencia.Sitio };
+                    emergenciasNuevas.Add(nuevaEmergencia);
+                    await Mediator.Send(new AgregarEmergenciaCommand { Emergencia = nuevaEmergencia });
+                }
+            });
 
             return Ok(await Mediator.Send(new CargaMuestreosEmergenciaCommand { Muestreos = registros }));
         }
