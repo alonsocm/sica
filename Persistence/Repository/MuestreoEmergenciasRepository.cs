@@ -24,7 +24,7 @@ namespace Persistence.Repository
                                  Sitio = cm.Sitio,
                                  FechaProgramada = Convert.ToDateTime(cm.FechaProgramada),
                                  FechaRealVisita = Convert.ToDateTime(cm.FechaRealVisita),
-                                 HoraMuestreo = cm.HoraMuestreo,
+                                 HoraMuestreo = string.Empty,
                                  TipoCuerpoAgua = cm.TipoCuerpoAgua,
                                  SubtipoCuerpoAgua = cm.SubtipoCuerpoAgua,
                                  LaboratorioRealizoMuestreo = cm.LaboratorioRealizoMuestreo,

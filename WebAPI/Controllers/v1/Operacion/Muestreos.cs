@@ -1,16 +1,12 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
-using Application.Features.Catalogos.Emergencias.Commands;
 using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
-using Application.Features.Operacion.MuestreosEmergencias.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
-using Application.Wrappers;
-using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -78,38 +74,7 @@ namespace WebAPI.Controllers.v1.Operacion
             var registros = ExcelService.Import<CargaMuestreoEmergenciaDto>(fileInfo, "EMERGENCIAS");
             System.IO.File.Delete(filePath);
 
-            var emergencias = registros.Select(x => new { x.NombreEmergencia, x.Sitio }).Distinct().ToList();
-
-            List<Emergencia> emergenciasNuevas = new();
-            List<string> emergenciasPreviamenteCargadas = new();
-
-            emergencias.ForEach(async emergencia =>
-            {
-                var existeEmergenciaCatalogo = await Mediator.Send(new ExisteEmergenciaQuery { NombreEmergencia = emergencia.NombreEmergencia });
-
-                if (!existeEmergenciaCatalogo.Data)
-                {
-                    Emergencia nuevaEmergencia = new() { Anio = Convert.ToInt32(cargaMuestreos.Anio), NombreEmergencia = emergencia.NombreEmergencia, NombreSitio = emergencia.Sitio };
-                    emergenciasNuevas.Add(nuevaEmergencia);
-                    await Mediator.Send(new AgregarEmergenciaCommand { Emergencia = nuevaEmergencia });
-                }
-                else
-                {
-                    var existeCargaPrevia = await Mediator.Send(new ExisteMuestreoEmergenciaQuery { NombreEmergencia = emergencia.NombreEmergencia, NombreSitio = emergencia.Sitio });
-
-                    if (existeCargaPrevia.Data)
-                    {
-                        emergenciasPreviamenteCargadas.Add(emergencia.NombreEmergencia);
-                    }
-                }
-            });
-
-            if (emergenciasPreviamenteCargadas.Any())
-            {
-                return Ok(new Response<List<string>>() { Succeded=false, Data=emergenciasPreviamenteCargadas, Message="Se encontraron emergencias previamente cargadas" });
-            }
-
-            return Ok(await Mediator.Send(new CargaMuestreosEmergenciaCommand { Muestreos = registros }));
+            return Ok(await Mediator.Send(new CargaMuestreosEmergenciaCommand { Muestreos = registros, Anio = cargaMuestreos.Anio, Reemplazar = cargaMuestreos.Reemplazar }));
         }
 
         [HttpPost("ExportarExcel")]
