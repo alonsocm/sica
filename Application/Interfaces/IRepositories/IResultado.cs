@@ -14,5 +14,8 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo(int periodo);
         List<ResultadoParaSustitucionLimitesDto> ActualizarResultadoSustituidoPorLimite(List<ResultadoParaSustitucionLimitesDto> resultadosDto);
         Task<List<MuestreoSustituidoDto>> ObtenerResultadosSustituidos();
+        Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorAnios(List<int> anios);
+
+
     }
 }

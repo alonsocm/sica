@@ -44,8 +44,12 @@ export class LimitesService {
     });
   }
 
-  obtenerMuestreos(): Observable<Object> {
+  obtenerAnios(): Observable<Object> {
     return this.http.get(environment.apiUrl + '/Muestreos/ProgramaAnios');
+  }
+
+  esPrimeraVezSustLaboratorio(): Observable<Object> {
+    return this.http.get(environment.apiUrl + '/Limites/EsPrimeraVezSustitucionLaboratorio');
   }
 
   validarSustitucionPrevia(periodo: number): Observable<Object> {
@@ -69,4 +73,14 @@ export class LimitesService {
       formData
     );
   }
+
+  actualizarLimitesLaboratorio(anios: Array<number>) {
+    let request = { anios: anios }
+  
+      
+
+    return this.http.post(environment.apiUrl + '/Limites/ActualizarLimiteLaboratorio', request );
+  }
+
+
 }

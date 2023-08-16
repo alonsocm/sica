@@ -13,19 +13,18 @@
   <div class="row">
     <div class="col-md-3 ">
       <label for="anios">Año a sustituir:*</label>
-      <select class="form-control" name="anios" id="anios">
-        <option selected>Selecciona el año</option>
-        <option *ngFor="let anio of this.anios" value="{{anio.id}}">{{anio.anio}}</option>
+      <select disabled="this.esPrimeraVezSustitucion" class="form-control" name="anios" id="anios" multiple [(ngModel)]="this.aniosseleccionados">
+        <option *ngFor="let anio of this.anios" value="{{anio}}">{{anio}}</option>
       </select>
     </div>
     <div class="col-md-3 text-right">
       
-      <button type="button" class="btn btn-primary">
+      <button type="button" class="btn btn-primary" (click)="sustitucionLimite();">
         Sustituir Limites
       </button>
     </div>
     <div class="col-md-6 text-left">
-      <button type="button" class="btn btn-secondary" (click)="exportarExcel()">
+      <button type="button" class="btn btn-secondary" (click)="exportarExcel();">
         <i class="bi bi-cloud-download"></i>
         Descargar resumen
       </button>

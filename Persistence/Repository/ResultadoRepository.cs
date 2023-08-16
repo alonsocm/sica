@@ -234,5 +234,23 @@ namespace Persistence.Repository
 
             return muestreos;
         }
+
+        public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorAnios(List<int> anios)
+        {
+          var   resultados = await (from r in _dbContext.ResultadoMuestreo
+                                    where anios.Contains(r.Muestreo.AnioOperacion ?? 0)
+                                    select new ResultadoParaSustitucionLimitesDto
+                                    {
+                                        IdMuestreo = r.MuestreoId,
+                                        IdParametro = r.ParametroId,
+                                        IdResultado = r.Id,
+                                        ClaveParametro = r.Parametro.ClaveParametro,
+                                        ValorOriginal = r.Resultado,
+                                        LaboratorioId = r.LaboratorioId,
+                                        Anio = Convert.ToInt32(r.Muestreo.AnioOperacion)
+                                    }).ToListAsync();
+
+            return resultados;            
+        }
     }
 }
