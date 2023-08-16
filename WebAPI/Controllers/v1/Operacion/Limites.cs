@@ -1,14 +1,11 @@
 ﻿using Application.DTOs;
 using Application.Enums;
-using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.SustitucionLimites.Commands;
 using Application.Features.Operacion.SustitucionLimites.Queries;
 using Application.Interfaces.IRepositories;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
-using System.Reflection.Metadata.Ecma335;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -55,7 +52,7 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new SustitucionMaximoComunCommand { ParametrosSustitucion = parametrosSustitucionLimites }));
         }
 
-        [HttpPost]
+        [HttpPost("SustitucionEmergencias")]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> SustitucionEmergencias([FromForm] ParametrosSustitucionLimitesDto parametrosSustitucionLimites)
         {
@@ -88,6 +85,15 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> Get(int periodo)
         {
             return Ok(await Mediator.Send(new ValidarSustitucionPreviaQuery
+            {
+                Periodo = periodo
+            }));
+        }
+
+        [HttpGet("ExisteSustitucionPreviaEmergencias")]
+        public async Task<IActionResult> ExisteSustitucionPreviaEmergencias(int periodo)
+        {
+            return Ok(await Mediator.Send(new ValidarSustitucionPreviaEmergenciasQuery
             {
                 Periodo = periodo
             }));
@@ -131,14 +137,8 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> EsPrimeraVezSustLaboratorio()
         {
             var datosHistorial = await _historial.ObtenerElementosPorCriterioAsync(x => x.TipoSustitucionId == (int)TipoSustitucionLimites.Laboratorio);
-            bool esPrimeraVez = (datosHistorial.ToList().Count > 0) ? false : true;          
-            return Ok(esPrimeraVez );
+            bool esPrimeraVez = (datosHistorial.ToList().Count > 0) ? false : true;
+            return Ok(esPrimeraVez);
         }
-
-
-
-
-
-
     }
 }
