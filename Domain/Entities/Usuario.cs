@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public partial class Usuario
 {
@@ -34,6 +31,8 @@ public partial class Usuario
     public virtual DireccionLocal? DireccionLocal { get; set; }
 
     public virtual ICollection<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; } = new List<HistorialSustitucionLimites>();
+
+    public virtual ICollection<HistorialSustitucionEmergencia> HistorialSustitucionEmergencia { get; set; } = new List<HistorialSustitucionEmergencia>();
 
     public virtual ICollection<Muestreo> MuestreoUsuarioRevisionOcdl { get; set; } = new List<Muestreo>();
 

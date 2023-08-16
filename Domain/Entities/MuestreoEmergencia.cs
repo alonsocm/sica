@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public partial class MuestreoEmergencia
 {
@@ -36,6 +33,8 @@ public partial class MuestreoEmergencia
     public string Resultado { get; set; } = null!;
 
     public string? ResultadoSustituidoPorLimite { get; set; }
+
+    public virtual ICollection<HistorialSustitucionEmergencia> HistorialSustitucionEmergencia { get; set; } = new List<HistorialSustitucionEmergencia>();
 
     public virtual ParametrosGrupo Parametro { get; set; } = null!;
 }
