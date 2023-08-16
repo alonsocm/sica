@@ -13,16 +13,17 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./emergencia.component.css'],
 })
 export class EmergenciaComponent extends BaseService implements OnInit {
-  archivo: any;  
+  archivo: any;
   registros: Array<any> = [];
-  contratoSeleccionado : string = "Seleccionar";
+  contratoSeleccionado: string = 'Seleccionar';
   formOpcionesSustitucion = new FormGroup({
     origenLimites: new FormControl('', Validators.required),
     periodo: new FormControl('', Validators.required),
     excelLimites: new FormControl(),
     archivo: new FormControl(),
   });
-  @ViewChild('inputExcelMonitoreosEmergencia') inputExcelMonitoreos: ElementRef = {} as ElementRef;
+  @ViewChild('inputExcelMonitoreosEmergencia')
+  inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
   constructor(private limitesService: LimitesService) {
     super();
@@ -32,36 +33,39 @@ export class EmergenciaComponent extends BaseService implements OnInit {
     // this.obtenerMuestreosSustituidos();
   }
 
-  onSubmit(){}
+  onSubmit() {}
 
-  validarArchivo(){}
+  validarArchivo() {}
 
-  onFileChange(event: any){}
+  onFileChange(event: any) {}
 
   cargarArchivoEmergencias(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     this.procesarArchivoEmergencias();
   }
 
-  procesarArchivoEmergencias(reemplazar?: string){
+  procesarArchivoEmergencias(reemplazar?: string) {
     if (this.archivo) {
       this.loading = !this.loading;
 
       this.limitesService
-        .cargaMuestreosEmergencia(this.archivo[0],  this.contratoSeleccionado, reemplazar)
+        .cargaMuestreosEmergencia(
+          this.archivo[0],
+          this.contratoSeleccionado,
+          reemplazar
+        )
         .subscribe({
           next: (response: any) => {
-            if (response.data.correcto) {
+            if (response.succeded) {
+              this.resetInputFile(this.inputExcelMonitoreos);
               this.loading = false;
               this.mostrarMensaje(
                 'Archivo procesado correctamente.',
                 TIPO_MENSAJE.exito
               );
-              this.resetInputFile(this.inputExcelMonitoreos);
-            } else if(!response.Succeded) {
+            } else if (!response.succeded) {
               this.loading = false;
               document.getElementById('btnMdlConfirmacionReemplazar')?.click();
-              console.log(response);
             }
           },
           error: (error: any) => {
@@ -72,16 +76,17 @@ export class EmergenciaComponent extends BaseService implements OnInit {
             this.mostrarMensaje(
               'Se encontraron errores en el archivo procesado.',
               TIPO_MENSAJE.error
-              );
-              this.hacerScroll();
-              FileService.download(archivoErrores, 'errores.txt');
-              this.resetInputFile(this.inputExcelMonitoreos);
+            );
+            this.hacerScroll();
+            FileService.download(archivoErrores, 'errores.txt');
+            this.resetInputFile(this.inputExcelMonitoreos);
           },
         });
     }
   }
 
-  reemplazarResultadosPrevios(){
+  reemplazarResultadosPrevios() {
+    document.getElementById('btnMdlConfirmacionReemplazar')?.click();
     this.formOpcionesSustitucion.reset();
     this.procesarArchivoEmergencias('true');
   }
@@ -133,8 +138,8 @@ export class EmergenciaComponent extends BaseService implements OnInit {
     ];
   }
 
-  cancelarEnvio(){
-    this.formOpcionesSustitucion.reset()
+  cancelarEnvio() {
+    this.formOpcionesSustitucion.reset();
     this.resetInputFile(this.inputExcelMonitoreos);
   }
 }
