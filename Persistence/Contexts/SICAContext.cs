@@ -600,6 +600,10 @@ public partial class SicaContext : DbContext
             entity.HasOne(d => d.IdUnidadMedidaNavigation).WithMany(p => p.ParametrosGrupo)
                 .HasForeignKey(d => d.IdUnidadMedida)
                 .HasConstraintName("FK_ParametrosGrupo_UnidadMedida");
+
+            entity.HasOne(d => d.ParametroPadre).WithMany(p => p.InverseParametroPadre)
+                .HasForeignKey(d => d.ParametroPadreId)
+                .HasConstraintName("FK_ParametrosGrupo_ParametrosGrupo");
         });
 
         modelBuilder.Entity<ParametrosReglasNoRelacion>(entity =>

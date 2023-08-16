@@ -21,6 +21,8 @@ public partial class ParametrosGrupo
 
     public bool? EsLdm { get; set; }
 
+    public long? ParametroPadreId { get; set; }
+
     public virtual ICollection<FormaReporteEspecifica> FormaReporteEspecifica { get; set; } = new List<FormaReporteEspecifica>();
 
     public virtual GrupoParametro? GrupoParametro { get; set; }
@@ -29,9 +31,13 @@ public partial class ParametrosGrupo
 
     public virtual UnidadMedida? IdUnidadMedidaNavigation { get; set; }
 
+    public virtual ICollection<ParametrosGrupo> InverseParametroPadre { get; set; } = new List<ParametrosGrupo>();
+
     public virtual ICollection<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; } = new List<LimiteParametroLaboratorio>();
 
     public virtual ICollection<MuestreoEmergencia> MuestreoEmergencia { get; set; } = new List<MuestreoEmergencia>();
+
+    public virtual ParametrosGrupo? ParametroPadre { get; set; }
 
     public virtual ICollection<ParametrosCostos> ParametrosCostos { get; set; } = new List<ParametrosCostos>();
 
