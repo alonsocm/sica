@@ -10,5 +10,6 @@
         public string ValorSustituido { get; set; }
         public long LaboratorioId { get; set; }
         public long? LaboratorioSubrogadoId { get; set; }
+        public int Anio { get; set; }
     }
 }

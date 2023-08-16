@@ -9,6 +9,7 @@ using Application.Interfaces.IRepositories;
 using Application.Models;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
 using WebAPI.Shared;
 
@@ -149,7 +150,7 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> ProgramaAnios()
         {
             var datos = await _progrepor.ObtenerTodosElementosAsync();
-            return Ok(datos);
+            return Ok(datos.Select(x => Convert.ToInt32(x.Anio) ).ToList());
         }
 
         [HttpGet("CambioEstatus")]

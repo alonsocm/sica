@@ -1,10 +1,14 @@
 ﻿using Application.DTOs;
 using Application.Enums;
+using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.SustitucionLimites.Commands;
 using Application.Features.Operacion.SustitucionLimites.Queries;
+using Application.Interfaces.IRepositories;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
+using System.Reflection.Metadata.Ecma335;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -13,11 +17,13 @@ namespace WebAPI.Controllers.v1.Operacion
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly IHistorialSusticionLimiteRepository _historial;
 
-        public Limites(IConfiguration configuration, IWebHostEnvironment env)
+        public Limites(IConfiguration configuration, IWebHostEnvironment env, IHistorialSusticionLimiteRepository historial)
         {
             _configuration = configuration;
             _env = env;
+            _historial = historial;
         }
 
         [HttpPost]
@@ -114,5 +120,25 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok();
         }
+
+        [HttpPost("ActualizarLimiteLaboratorio")]
+        public async Task<IActionResult> Post([FromBody] SustitucionLaboratorioCommand request)
+        {
+            return Ok(await Mediator.Send(new SustitucionLaboratorioCommand { anios = request.anios }));
+        }
+
+        [HttpGet("EsPrimeraVezSustitucionLaboratorio")]
+        public async Task<IActionResult> EsPrimeraVezSustLaboratorio()
+        {
+            var datosHistorial = await _historial.ObtenerElementosPorCriterioAsync(x => x.TipoSustitucionId == (int)TipoSustitucionLimites.Laboratorio);
+            bool esPrimeraVez = (datosHistorial.ToList().Count > 0) ? false : true;          
+            return Ok(esPrimeraVez );
+        }
+
+
+
+
+
+
     }
 }

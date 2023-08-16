@@ -17,7 +17,10 @@ export class LaboratorioComponent extends BaseService implements OnInit {
   constructor(private limiteService: LimitesService) { 
     super();
   }
-  anios: Array<any> = [];
+  anios: Array<number> = [];
+  aniosseleccionados: Array<number> = [2020, 2021, 2022];
+  esPrimeraVezSustitucion: boolean = false;
+
   ngOnInit(): void {
 
     this.columnas = [
@@ -33,26 +36,23 @@ export class LaboratorioComponent extends BaseService implements OnInit {
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 0, filtro: new Filter() }
     ];
 
-    this.limiteService.obtenerMuestreos().subscribe({
+
+    this.limiteService.obtenerAnios().subscribe({
+      next: (response: any) => {      
+        this.anios = response;},
+      error: (error) => { },
+    });
+
+    this.limiteService.esPrimeraVezSustLaboratorio().subscribe({
       next: (response: any) => {
-        
-        this.anios = response;
-        console.log(response);
-        
+        this.esPrimeraVezSustitucion = response;   
       },
       error: (error) => { },
-    });   
-
+    });
 
     this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
-
-      next: (response: any) => {
-
-        
-        this.resultadosFiltradosn = response.data;
-     
-
-        console.log(this.resultadosFiltradosn);
+      next: (response: any) => {        
+        this.resultadosFiltradosn = response.data;          
         this.loading = false;
       },
       error: (error) => { this.loading = false; },
@@ -60,5 +60,15 @@ export class LaboratorioComponent extends BaseService implements OnInit {
   }
   seleccionar() { }
   exportarExcel() { }
+  sustitucionLimite() {
+    
+    this.limiteService.actualizarLimitesLaboratorio(this.aniosseleccionados).subscribe({
+      next: (response: any) => {             
+      },
+      error: (error) => {  },
+    });
+
+        
+  }
 
 }
