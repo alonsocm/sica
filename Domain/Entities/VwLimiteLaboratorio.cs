@@ -13,11 +13,15 @@ public partial class VwLimiteLaboratorio
 
     public long? LaboratorioMuestreoId { get; set; }
 
+    public string? LabMuestreo { get; set; }
+
     public int? Periodo { get; set; }
 
     public bool Activo { get; set; }
 
     public long? LaboratorioSubrogaId { get; set; }
+
+    public string? LabSubrogado { get; set; }
 
     public string? Ldm { get; set; }
 

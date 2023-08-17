@@ -46,9 +46,9 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<GrupoParametro> GrupoParametro { get; set; }
 
-    public virtual DbSet<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; }
-
     public virtual DbSet<HistorialSustitucionEmergencia> HistorialSustitucionEmergencia { get; set; }
+
+    public virtual DbSet<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; }
 
     public virtual DbSet<Laboratorios> Laboratorios { get; set; }
 
@@ -337,6 +337,23 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion).HasMaxLength(15);
         });
 
+        modelBuilder.Entity<HistorialSustitucionEmergencia>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_HistorialSustitucionEmergencia");
+
+            entity.Property(e => e.Fecha).HasColumnType("datetime");
+
+            entity.HasOne(d => d.MuestreoEmergencia).WithMany(p => p.HistorialSustitucionEmergencia)
+                .HasForeignKey(d => d.MuestreoEmergenciaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MuestreoEmergencia");
+
+            entity.HasOne(d => d.Usuario).WithMany(p => p.HistorialSustitucionEmergencia)
+                .HasForeignKey(d => d.UsuarioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Usuario");
+        });
+
         modelBuilder.Entity<HistorialSustitucionLimites>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07AA0BB2AD");
@@ -357,23 +374,6 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HistorialSustitucion_Usuario");
-        });
-
-        modelBuilder.Entity<HistorialSustitucionEmergencia>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_HistorialSustitucionEmergencia");
-
-            entity.Property(e => e.Fecha).HasColumnType("datetime");
-
-            entity.HasOne(d => d.MuestreoEmergencia).WithMany(p => p.HistorialSustitucionEmergencia)
-                .HasForeignKey(d => d.MuestreoEmergenciaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_MuestreoEmergencia");
-
-            entity.HasOne(d => d.Usuario).WithMany(p => p.HistorialSustitucionEmergencia)
-                .HasForeignKey(d => d.UsuarioId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Usuario");
         });
 
         modelBuilder.Entity<Laboratorios>(entity =>
@@ -1121,6 +1121,12 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(4)
                 .HasColumnName("anio");
             entity.Property(e => e.EsLdm).HasColumnName("EsLDM");
+            entity.Property(e => e.LabMuestreo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.LabSubrogado)
+                .HasMaxLength(20)
+                .IsUnicode(false);
             entity.Property(e => e.Ldm)
                 .HasMaxLength(30)
                 .HasColumnName("LDM");
