@@ -5,7 +5,8 @@ import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { FileService } from 'src/app/shared/services/file.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
+import { AuthService } from 'src/app/modules/login/services/auth.service';
+import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 
 @Component({
   selector: 'app-emergencia',
@@ -13,19 +14,19 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./emergencia.component.css'],
 })
 export class EmergenciaComponent extends BaseService implements OnInit {
+  existeSustitucion: boolean = true;
   archivo: any;
   registros: Array<any> = [];
   contratoSeleccionado: string = 'Seleccionar';
   formOpcionesSustitucion = new FormGroup({
     origenLimites: new FormControl('', Validators.required),
-    periodo: new FormControl('', Validators.required),
     excelLimites: new FormControl(),
     archivo: new FormControl(),
   });
   @ViewChild('inputExcelMonitoreosEmergencia')
   inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
-  constructor(private limitesService: LimitesService) {
+  constructor(private limitesService: LimitesService, private authService: AuthService) {
     super();
   }
 
@@ -33,11 +34,84 @@ export class EmergenciaComponent extends BaseService implements OnInit {
     // this.obtenerMuestreosSustituidos();
   }
 
-  onSubmit() {}
+  onSubmit() {    
+    this.loading = true;
+    this.limitesService.validarSustitucionPreviaEmergencias(Number(this.contratoSeleccionado)).subscribe({
+      next: (response: any) => {
+        this.existeSustitucion = response.data;
+        if (!this.existeSustitucion) {
+          this.sustituirLimites();
+        } else {
+          document.getElementById('btnMdlConfirmacionSustitucion')?.click();
+        }
+      },
+      error: (e) => console.error(e),
+    });
+  }
 
-  validarArchivo() {}
+  sustituirLimites(){
+    let configSustitucion = {
+      archivo: this.formOpcionesSustitucion.controls.archivo.value,
+      origenLimites: this.formOpcionesSustitucion.controls.origenLimites.value,
+      periodo: Number(this.contratoSeleccionado),
+      usuario: this.authService.getUser().usuarioId
+    };
 
-  onFileChange(event: any) {}
+    document.getElementById('btnMdlConfirmacion')?.click();
+    this.loading = true;
+
+    this.limitesService.sustituirLimitesEmergencias(configSustitucion).subscribe({
+      next: (response: any) => {
+        this.formOpcionesSustitucion.reset();
+        this.loading = false;
+        if (response.data === true) {
+          this.contratoSeleccionado = "Seleccionar";
+          this.mostrarMensaje(
+            'Se ejecutó correctamente la sustitución de los límites máximos',
+            TipoMensaje.Correcto
+          );
+        }else{
+          this.mostrarMensaje(
+            response.message,
+            TipoMensaje.Alerta
+          );
+        }
+      },
+      error: (response) => {
+        this.formOpcionesSustitucion.reset();
+        this.loading = false;
+        this.mostrarMensaje(
+          'Ocurrió un error en el proceso de sustitución' +
+            ' ' +
+            response.error.Errors[0],
+          TipoMensaje.Error
+        );
+      },
+    });
+  }
+
+  validarArchivo() {
+    if (this.formOpcionesSustitucion.controls.origenLimites.value == '2') {
+      this.formOpcionesSustitucion.controls.excelLimites.setValue('');
+      this.formOpcionesSustitucion.controls.excelLimites.setValidators(
+        Validators.required
+      );
+    } else {
+      this.formOpcionesSustitucion.controls.excelLimites.setValue('');
+      this.formOpcionesSustitucion.controls.excelLimites.setValidators(null);
+    }
+
+    this.formOpcionesSustitucion.controls.excelLimites.updateValueAndValidity();
+  }
+
+  onFileChange(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.formOpcionesSustitucion.patchValue({
+        archivo: file,
+      });
+    }
+  }
 
   cargarArchivoEmergencias(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
@@ -61,7 +135,7 @@ export class EmergenciaComponent extends BaseService implements OnInit {
               this.loading = false;
               this.mostrarMensaje(
                 'Archivo procesado correctamente.',
-                TIPO_MENSAJE.exito
+                TipoMensaje.Correcto
               );
             } else if (!response.succeded) {
               this.loading = false;
@@ -75,7 +149,7 @@ export class EmergenciaComponent extends BaseService implements OnInit {
             );
             this.mostrarMensaje(
               'Se encontraron errores en el archivo procesado.',
-              TIPO_MENSAJE.error
+              TipoMensaje.Error
             );
             this.hacerScroll();
             FileService.download(archivoErrores, 'errores.txt');

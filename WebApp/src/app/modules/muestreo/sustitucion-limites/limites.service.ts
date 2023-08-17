@@ -21,6 +21,17 @@ export class LimitesService {
     return this.http.post(environment.apiUrl + '/Limites', formData);
   }
 
+  sustituirLimitesEmergencias(parametrosSustitucion: any) {
+    let formData = new FormData();
+
+    formData.append('usuario', parametrosSustitucion.usuario);
+    formData.append('archivo', parametrosSustitucion.archivo);
+    formData.append('periodo', parametrosSustitucion.periodo);
+    formData.append('origenLimites', parametrosSustitucion.origenLimites);
+
+    return this.http.post(environment.apiUrl + '/Limites/SustitucionEmergencias', formData);
+  }
+
   obtenerMuestreosSustituidos(): Observable<Object> {
     return this.http.get(environment.apiUrl + '/Limites');
   }
@@ -58,6 +69,16 @@ export class LimitesService {
     });
     return this.http.get(
       environment.apiUrl + '/Limites/ExisteSustitucionPrevia',
+      { params }
+    );
+  }
+
+  validarSustitucionPreviaEmergencias(periodo: number): Observable<Object> {
+    let params = new HttpParams({
+      fromObject: { periodo: periodo },
+    });
+    return this.http.get(
+      environment.apiUrl + '/Limites/ExisteSustitucionPreviaEmergencias',
       { params }
     );
   }
