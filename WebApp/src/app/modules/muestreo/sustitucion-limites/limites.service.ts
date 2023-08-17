@@ -75,10 +75,7 @@ export class LimitesService {
   }
 
   actualizarLimitesLaboratorio(anios: Array<number>) {
-    let request = { anios: anios }
-  
-      
-
+    let request = { anios: anios }  
     return this.http.post(environment.apiUrl + '/Limites/ActualizarLimiteLaboratorio', request );
   }
 

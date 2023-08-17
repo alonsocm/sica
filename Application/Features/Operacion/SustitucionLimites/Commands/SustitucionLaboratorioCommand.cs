@@ -3,17 +3,18 @@ using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using Domain.Entities;
 using MediatR;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 
 namespace Application.Features.Operacion.SustitucionLimites.Commands
 {
-    public class SustitucionLaboratorioCommand : IRequest<Response<bool>>
+    public class SustitucionLaboratorioCommand : IRequest<Response<List<ResultadoParaSustitucionLimitesDto>>>
     {
-     
-         public List<int> anios { get; set; } = new List<int>();
+
+        public List<int> anios { get; set; } = new List<int>();
     }
 
-    public class SustitucionLaboratorioCommandHandler : IRequestHandler<SustitucionLaboratorioCommand, Response<bool>>
+    public class SustitucionLaboratorioCommandHandler : IRequestHandler<SustitucionLaboratorioCommand, Response<List<ResultadoParaSustitucionLimitesDto>>>
     {
         private readonly IResultado _resultadosRepository;
         private readonly IMuestreoRepository _muestreoRepository;
@@ -28,13 +29,13 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
             _vwLimiteLaboratorioRepository = vwLaboratorioRepository;
         }
 
-        public async Task<Response<bool>> Handle(SustitucionLaboratorioCommand request, CancellationToken cancellationToken)
+        public async Task<Response<List<ResultadoParaSustitucionLimitesDto>>> Handle(SustitucionLaboratorioCommand request, CancellationToken cancellationToken)
         {
             List<ResultadoParaSustitucionLimitesDto> lstResultadosSinLimite = new List<ResultadoParaSustitucionLimitesDto>();
             List<ResultadoParaSustitucionLimitesDto> lstResultadosMultiplesLimites = new List<ResultadoParaSustitucionLimitesDto>();
 
             var siglas = new List<string> { "<LPC", "<LDM", "<LD" };
-            var resultadosSustituir = await _resultadosRepository.ObtenerResultadosParaSustitucionPorAnios(request.anios);
+            var resultadosSustituir = await _resultadosRepository.ObtenerResultadosParaSustitucionPorAnios(request.anios);            
 
             List<ResultadoParaSustitucionLimitesDto> lstResultadosaSustituir = resultadosSustituir.Where(x => siglas.Contains(x.ValorOriginal.ToString())).ToList();
 
@@ -43,7 +44,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
             foreach (var resultado in lstResultadosaSustituir)
             {
                 List<VwLimiteLaboratorio> valr = new List<VwLimiteLaboratorio>();
-              
+
                 valr = limites.Where(x => x.LaboratorioMuestreoId == resultado.LaboratorioId && x.Anio == resultado.Anio.ToString()
                           && x.ParametroId == resultado.IdParametro).ToList();
 
@@ -55,12 +56,13 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
                     lstResultadosSinLimite.Add(resultadoSinLimite);
                 }
 
-                else if (valr.Count == 1) {
+                else if (valr.Count == 1)
+                {
                     bool esLimiteDecimal = decimal.TryParse(valr.FirstOrDefault().Limite, out decimal limiteDecimal);
                     resultado.ValorSustituido = $"<{limiteDecimal}";
                 }
 
-                else if (valr.Count > 1)
+                else
 
                 {
                     ResultadoParaSustitucionLimitesDto MultiplesLimites = new ResultadoParaSustitucionLimitesDto();
@@ -69,20 +71,11 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
                     MultiplesLimites.LaboratorioId = resultado.LaboratorioId;
                     MultiplesLimites.IdMuestreo = resultado.IdMuestreo;
                     lstResultadosMultiplesLimites.Add(MultiplesLimites);
-                }
+                }               
+            }           
 
-               
-
-            }
-
-            string valor = "";
-            
-           
-            return new Response<bool>(true);
+            var lstSinlimite = lstResultadosSinLimite.Select(x => new { x.ClaveParametro, x.Anio }).Distinct().ToList();
+            return new Response<List<ResultadoParaSustitucionLimitesDto>>(lstResultadosSinLimite);
         }
     }
-
-
-
-
 }

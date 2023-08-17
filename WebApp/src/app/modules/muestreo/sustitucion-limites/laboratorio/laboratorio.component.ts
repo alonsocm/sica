@@ -20,6 +20,7 @@ export class LaboratorioComponent extends BaseService implements OnInit {
   anios: Array<number> = [];
   aniosseleccionados: Array<number> = [2020, 2021, 2022];
   esPrimeraVezSustitucion: boolean = false;
+  parametrosSinLimite: Array<any> = [];
 
   ngOnInit(): void {
 
@@ -45,7 +46,8 @@ export class LaboratorioComponent extends BaseService implements OnInit {
 
     this.limiteService.esPrimeraVezSustLaboratorio().subscribe({
       next: (response: any) => {
-        this.esPrimeraVezSustitucion = response;   
+        this.esPrimeraVezSustitucion = response;
+        if (this.esPrimeraVezSustitucion == true) { this.mostrarMensaje("Es la primera vez que se realizará la sustitución, da clic en 'Sustituir limites'", 'warning'); }
       },
       error: (error) => { },
     });
