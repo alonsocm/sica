@@ -41,9 +41,10 @@ namespace Persistence.Repository
             IEnumerable<ResultadoParaSustitucionLimitesDto> resultados = new List<ResultadoParaSustitucionLimitesDto>();
 
             resultados = await (from r in _dbContext.MuestreoEmergencia
-                                join l in _dbContext.Laboratorios on r.LaboratorioRealizoMuestreo equals l.Descripcion
+                                join l in _dbContext.Laboratorios on r.LaboratorioRealizoMuestreo equals l.Nomenclatura
                                 select new ResultadoParaSustitucionLimitesDto
                                 {
+                                    IdMuestreo = r.Id,
                                     IdParametro = r.ParametroId,
                                     IdResultado = r.Id,
                                     ClaveParametro = r.Parametro.ClaveParametro,

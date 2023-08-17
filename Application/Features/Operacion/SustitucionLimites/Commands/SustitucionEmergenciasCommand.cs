@@ -12,18 +12,18 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
         public ParametrosSustitucionLimitesDto ParametrosSustitucion { get; set; }
     }
 
-    public class SustitucionEmergenciasCommandHandler : IRequestHandler<SustitucionMaximoComunCommand, Response<bool>>
+    public class SustitucionEmergenciasCommandHandler : IRequestHandler<SustitucionEmergenciasCommand, Response<bool>>
     {
         private readonly IMuestreoEmergenciasRepository _muestreoEmergenciaRepository;
         private readonly ILimiteParametroLaboratorioRepository _limiteParametroLaboratorioRepository;
         private readonly IVwLimiteMaximoComunRepository _vwLimiteMaximoComunRepository;
-        private readonly IHistorialSusticionLimiteRepository _historialSustitucionLimiteRepository;
+        private readonly IHistorialSusticionEmergenciaRepository _historialSustitucionLimiteRepository;
 
         public SustitucionEmergenciasCommandHandler(
             IMuestreoEmergenciasRepository muestreoEmergenciasRepository,
             ILimiteParametroLaboratorioRepository limiteParametroLaboratorioRepository,
             IVwLimiteMaximoComunRepository vwLimiteMaximoComunRepository,
-            IHistorialSusticionLimiteRepository historialSusticionLimiteRepository)
+            IHistorialSusticionEmergenciaRepository historialSusticionLimiteRepository)
         {
             _muestreoEmergenciaRepository = muestreoEmergenciasRepository;
             _limiteParametroLaboratorioRepository=limiteParametroLaboratorioRepository;
@@ -31,7 +31,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
             _historialSustitucionLimiteRepository=historialSusticionLimiteRepository;
         }
 
-        public async Task<Response<bool>> Handle(SustitucionMaximoComunCommand request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(SustitucionEmergenciasCommand request, CancellationToken cancellationToken)
         {
             var resultadosSustituir = await _muestreoEmergenciaRepository.ObtenerResultadosParaSustitucion();
 
@@ -100,8 +100,21 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
 
             //Ahora actualizamos los registros, pero solo a los que se haya sustituido el valor.
             var resultadosSustituidos = resultadosSustituir.Where(x => !string.IsNullOrEmpty(x.ValorSustituido));
-
             _muestreoEmergenciaRepository.ActualizarResultadoSustituidoPorLimite(resultadosSustituidos.ToList());
+
+            //Insertamos en el historial
+            var fechaSustitucion = DateTime.Now;
+
+            foreach (var resultado in resultadosSustituidos)
+            {
+                _historialSustitucionLimiteRepository.Insertar(new Domain.Entities.HistorialSustitucionEmergencia
+                {
+                    MuestreoEmergenciaId = resultado.IdMuestreo,
+                    Anio = resultado.Anio,
+                    UsuarioId = request.ParametrosSustitucion.Usuario,
+                    Fecha = fechaSustitucion
+                }); ;
+            }
 
             return new Response<bool>(true);
         }
