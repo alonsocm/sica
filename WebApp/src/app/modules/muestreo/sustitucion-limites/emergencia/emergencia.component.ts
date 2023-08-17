@@ -64,7 +64,7 @@ export class EmergenciaComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.formOpcionesSustitucion.reset();
         this.loading = false;
-        if (response.data === true) {
+        if (response.succeded === true) {
           this.contratoSeleccionado = "Seleccionar";
           this.mostrarMensaje(
             'Se ejecutó correctamente la sustitución de los límites máximos',
