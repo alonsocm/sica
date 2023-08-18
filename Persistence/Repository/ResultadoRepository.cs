@@ -4,6 +4,8 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
+using System;
+using Application.Enums;
 
 namespace Persistence.Repository
 {
@@ -237,8 +239,9 @@ namespace Persistence.Repository
 
         public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorAnios(List<int> anios)
         {
-          var   resultados = await (from r in _dbContext.ResultadoMuestreo
-                                    where anios.Contains(r.Muestreo.AnioOperacion ?? 0)
+            var resultados = await (from r in _dbContext.ResultadoMuestreo
+                                    where anios.Contains(r.Muestreo.AnioOperacion ?? 0) 
+                                    && r.Muestreo.EstatusId == (int)Application.Enums.EstatusMuestreo.AprobacionResultado
                                     select new ResultadoParaSustitucionLimitesDto
                                     {
                                         IdMuestreo = r.MuestreoId,
@@ -247,7 +250,9 @@ namespace Persistence.Repository
                                         ClaveParametro = r.Parametro.ClaveParametro,
                                         ValorOriginal = r.Resultado,
                                         LaboratorioId = r.LaboratorioId,
-                                        Anio = Convert.ToInt32(r.Muestreo.AnioOperacion)
+                                        Anio = Convert.ToInt32(r.Muestreo.AnioOperacion),
+                                        LaboratorioMuestreo = r.Laboratorio.Nomenclatura
+                                        
                                     }).ToListAsync();
 
             return resultados;            

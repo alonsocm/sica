@@ -11,5 +11,7 @@
         public long LaboratorioId { get; set; }
         public long? LaboratorioSubrogadoId { get; set; }
         public int Anio { get; set; }
+        public string? LaboratorioMuestreo { get; set; }
+        public string? LaboratorioSubrogado { get; set; }
     }
 }
