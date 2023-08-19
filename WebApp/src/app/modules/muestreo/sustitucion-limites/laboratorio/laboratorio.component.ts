@@ -4,6 +4,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from '../../../../interfaces/filtro.interface';
 import { estatusMuestreo } from '../../../../shared/enums/estatusMuestreo';
 import { LimitesService } from '../limites.service';
+import { FileService } from 'src/app/shared/services/file.service';
 
 
 
@@ -52,20 +53,26 @@ export class LaboratorioComponent extends BaseService implements OnInit {
       error: (error) => { },
     });
 
-    this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
-      next: (response: any) => {        
-        this.resultadosFiltradosn = response.data;          
-        this.loading = false;
-      },
-      error: (error) => { this.loading = false; },
-    }); 
+    //this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
+    //  next: (response: any) => {        
+    //    this.resultadosFiltradosn = response.data;          
+    //    this.loading = false;
+    //  },
+    //  error: (error) => { this.loading = false; },
+    //}); 
   }
   seleccionar() { }
   exportarExcel() { }
   sustitucionLimite() {
     
     this.limiteService.actualizarLimitesLaboratorio(this.aniosseleccionados).subscribe({
-      next: (response: any) => {             
+      next: (response: any) => {
+        console.log(response);
+        let archivoErrores = this.generarArchivoDeErrores(response.message);
+        this.mostrarMensaje(
+          'La sustitución no ha sido realizada.', 'danger');
+        this.hacerScroll();
+        FileService.download(archivoErrores, 'Parámetros faltantes.txt');
       },
       error: (error) => {  },
     });

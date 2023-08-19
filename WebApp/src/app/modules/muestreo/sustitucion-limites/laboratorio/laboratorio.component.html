@@ -30,7 +30,7 @@
       </button>
     </div>
   </div>
-  <div class="row">
+  <div class="row" *ngFor ="this.resultadosFiltradosn.count > 0">
     <div class="col-md-12 table-responsive dvTable">
       <table class="table table-striped">
         <thead>
@@ -78,9 +78,7 @@
             <td style="text-align: center;"> {{(muestreo.tipoCuerpoAgua)}}</td>
             <td *ngFor="let resultado of this.muestreo.lstParametros">{{resultado.resulatdo}}</td>
 
-            <!--<ng-container *ngFor="let parametrotot of muestreo.lstParametros">
-              <td>{{ parametrotot }}</td>
-            </ng-container>-->
+      
           </tr>
           <tr>
             <td colspan="24">
@@ -98,7 +96,8 @@
     
 
   </div>
-  ol
+  <br /><br />
+
   
 
 </div>  
