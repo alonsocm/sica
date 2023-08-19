@@ -9,7 +9,6 @@ using Application.Interfaces.IRepositories;
 using Application.Models;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
 using WebAPI.Shared;
 
@@ -76,6 +75,19 @@ namespace WebAPI.Controllers.v1.Operacion
             System.IO.File.Delete(filePath);
 
             return Ok(await Mediator.Send(new CargaMuestreosEmergenciaCommand { Muestreos = registros, Anio = cargaMuestreos.Anio, Reemplazar = cargaMuestreos.Reemplazar }));
+        }
+
+        [HttpGet("ExportarExcelEmergenciasPrevias")]
+        public IActionResult Get([FromHeader] List<string> emergencias)
+        {
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("EmergenciasPreviamenteCargadas");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportToExcel(emergencias, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
         [HttpPost("ExportarExcel")]
@@ -150,7 +162,7 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> ProgramaAnios()
         {
             var datos = await _progrepor.ObtenerTodosElementosAsync();
-            return Ok(datos.Select(x => Convert.ToInt32(x.Anio) ).ToList());
+            return Ok(datos.Select(x => Convert.ToInt32(x.Anio)).ToList());
         }
 
         [HttpGet("CambioEstatus")]
