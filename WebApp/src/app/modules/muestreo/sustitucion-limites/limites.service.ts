@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -29,7 +29,10 @@ export class LimitesService {
     formData.append('periodo', parametrosSustitucion.periodo);
     formData.append('origenLimites', parametrosSustitucion.origenLimites);
 
-    return this.http.post(environment.apiUrl + '/Limites/SustitucionEmergencias', formData);
+    return this.http.post(
+      environment.apiUrl + '/Limites/SustitucionEmergencias',
+      formData
+    );
   }
 
   obtenerMuestreosSustituidos(): Observable<Object> {
@@ -60,7 +63,9 @@ export class LimitesService {
   }
 
   esPrimeraVezSustLaboratorio(): Observable<Object> {
-    return this.http.get(environment.apiUrl + '/Limites/EsPrimeraVezSustitucionLaboratorio');
+    return this.http.get(
+      environment.apiUrl + '/Limites/EsPrimeraVezSustitucionLaboratorio'
+    );
   }
 
   validarSustitucionPrevia(periodo: number): Observable<Object> {
@@ -83,22 +88,40 @@ export class LimitesService {
     );
   }
 
-  cargaMuestreosEmergencia(archivoMuestreos: File, anio: string, reemplazar?: string) {
+  cargaMuestreosEmergencia(
+    archivoMuestreos: File,
+    anio: string,
+    reemplazar?: string
+  ) {
     let formData = new FormData();
     formData.append('archivo', archivoMuestreos, archivoMuestreos.name);
     formData.append('anio', anio);
-    formData.append('reemplazar', reemplazar??'');
-    
+    formData.append('reemplazar', reemplazar ?? '');
+
     return this.http.post(
       environment.apiUrl + '/Muestreos/CargaEmergencias',
       formData
     );
   }
 
-  actualizarLimitesLaboratorio(anios: Array<number>) {
-    let request = { anios: anios }  
-    return this.http.post(environment.apiUrl + '/Limites/ActualizarLimiteLaboratorio', request );
+  exportarEmergenciasPreviasExcel(
+    emergencias: Array<string>
+  ): Observable<Object> {
+    const headers = new HttpHeaders({
+      emergencias,
+    });
+
+    return this.http.get(
+      environment.apiUrl + '/Muestreos/ExportarExcelEmergenciasPrevias',
+      { headers, responseType: 'blob' }
+    );
   }
 
-
+  actualizarLimitesLaboratorio(anios: Array<number>) {
+    let request = { anios: anios };
+    return this.http.post(
+      environment.apiUrl + '/Limites/ActualizarLimiteLaboratorio',
+      request
+    );
+  }
 }

@@ -18,15 +18,20 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   archivo: any;
   registros: Array<any> = [];
   contratoSeleccionado: string = 'Seleccionar';
+  emergenciasPrevias: Array<string> = [];
+  @ViewChild('inputExcelMonitoreosEmergencia')
+  inputExcelMonitoreos: ElementRef = {} as ElementRef;
+
   formOpcionesSustitucion = new FormGroup({
     origenLimites: new FormControl('', Validators.required),
     excelLimites: new FormControl(),
     archivo: new FormControl(),
   });
-  @ViewChild('inputExcelMonitoreosEmergencia')
-  inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
-  constructor(private limitesService: LimitesService, private authService: AuthService) {
+  constructor(
+    private limitesService: LimitesService,
+    private authService: AuthService
+  ) {
     super();
   }
 
@@ -34,60 +39,61 @@ export class EmergenciaComponent extends BaseService implements OnInit {
     // this.obtenerMuestreosSustituidos();
   }
 
-  onSubmit() {    
+  onSubmit() {
     this.loading = true;
-    this.limitesService.validarSustitucionPreviaEmergencias(Number(this.contratoSeleccionado)).subscribe({
-      next: (response: any) => {
-        this.existeSustitucion = response.data;
-        if (!this.existeSustitucion) {
-          this.sustituirLimites();
-        } else {
-          document.getElementById('btnMdlConfirmacionSustitucion')?.click();
-        }
-      },
-      error: (e) => console.error(e),
-    });
+    this.limitesService
+      .validarSustitucionPreviaEmergencias(Number(this.contratoSeleccionado))
+      .subscribe({
+        next: (response: any) => {
+          this.existeSustitucion = response.data;
+          if (!this.existeSustitucion) {
+            this.sustituirLimites();
+          } else {
+            document.getElementById('btnMdlConfirmacionSustitucion')?.click();
+          }
+        },
+        error: (e) => console.error(e),
+      });
   }
 
-  sustituirLimites(){
+  sustituirLimites() {
     let configSustitucion = {
       archivo: this.formOpcionesSustitucion.controls.archivo.value,
       origenLimites: this.formOpcionesSustitucion.controls.origenLimites.value,
       periodo: Number(this.contratoSeleccionado),
-      usuario: this.authService.getUser().usuarioId
+      usuario: this.authService.getUser().usuarioId,
     };
 
     document.getElementById('btnMdlConfirmacion')?.click();
     this.loading = true;
 
-    this.limitesService.sustituirLimitesEmergencias(configSustitucion).subscribe({
-      next: (response: any) => {
-        this.formOpcionesSustitucion.reset();
-        this.loading = false;
-        if (response.succeded === true) {
-          this.contratoSeleccionado = "Seleccionar";
+    this.limitesService
+      .sustituirLimitesEmergencias(configSustitucion)
+      .subscribe({
+        next: (response: any) => {
+          this.formOpcionesSustitucion.reset();
+          this.loading = false;
+          if (response.succeded === true) {
+            this.contratoSeleccionado = 'Seleccionar';
+            this.mostrarMensaje(
+              'Se ejecutó correctamente la sustitución de los límites máximos',
+              TipoMensaje.Correcto
+            );
+          } else {
+            this.mostrarMensaje(response.message, TipoMensaje.Alerta);
+          }
+        },
+        error: (response) => {
+          this.formOpcionesSustitucion.reset();
+          this.loading = false;
           this.mostrarMensaje(
-            'Se ejecutó correctamente la sustitución de los límites máximos',
-            TipoMensaje.Correcto
+            'Ocurrió un error en el proceso de sustitución' +
+              ' ' +
+              response.error.Errors[0],
+            TipoMensaje.Error
           );
-        }else{
-          this.mostrarMensaje(
-            response.message,
-            TipoMensaje.Alerta
-          );
-        }
-      },
-      error: (response) => {
-        this.formOpcionesSustitucion.reset();
-        this.loading = false;
-        this.mostrarMensaje(
-          'Ocurrió un error en el proceso de sustitución' +
-            ' ' +
-            response.error.Errors[0],
-          TipoMensaje.Error
-        );
-      },
-    });
+        },
+      });
   }
 
   validarArchivo() {
@@ -138,6 +144,7 @@ export class EmergenciaComponent extends BaseService implements OnInit {
                 TipoMensaje.Correcto
               );
             } else if (!response.succeded) {
+              this.emergenciasPrevias = response.data;
               this.loading = false;
               document.getElementById('btnMdlConfirmacionReemplazar')?.click();
             }
@@ -166,6 +173,26 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   }
 
   exportarResumen() {}
+
+  exportarEmergenciasPreviasExcel() {
+    let emergencias = this.emergenciasPrevias;
+
+    this.loading = true;
+    this.limitesService.exportarEmergenciasPreviasExcel(emergencias).subscribe({
+      next: (response: any) => {
+        this.loading = false;
+        FileService.download(response, 'resultados.xlsx');
+      },
+      error: (response: any) => {
+        this.loading = false;
+        this.mostrarMensaje(
+          'No fue posible descargar la información',
+          TipoMensaje.Error
+        );
+        this.hacerScroll();
+      },
+    });
+  }
 
   obtenerMuestreosSustituidos() {
     this.limitesService.obtenerMuestreosSustituidos().subscribe({
