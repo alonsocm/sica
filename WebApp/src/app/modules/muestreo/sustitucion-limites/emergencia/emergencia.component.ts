@@ -71,6 +71,7 @@ export class EmergenciaComponent extends BaseService implements OnInit {
       .sustituirLimitesEmergencias(configSustitucion)
       .subscribe({
         next: (response: any) => {
+          let respuestaSustitucion = response;
           this.formOpcionesSustitucion.reset();
           this.loading = false;
           if (response.succeded === true) {
@@ -80,7 +81,22 @@ export class EmergenciaComponent extends BaseService implements OnInit {
               TipoMensaje.Correcto
             );
           } else {
-            this.mostrarMensaje(response.message, TipoMensaje.Alerta);
+            let parametrosSinLimite = response.data;
+            this.limitesService.exportarParametrosSinLimiteExcel(parametrosSinLimite).subscribe({
+              next: (response: any) => {
+                this.loading = false;
+                this.mostrarMensaje(respuestaSustitucion.message, TipoMensaje.Alerta);
+                FileService.download(response, 'SustitucionEmergencias-ParametrosSinLimites.xlsx');
+              },
+              error: (response: any) => {
+                this.loading = false;
+                this.mostrarMensaje(
+                  'No fue posible descargar la información',
+                  TipoMensaje.Error
+                );
+                this.hacerScroll();
+              },
+            });
           }
         },
         error: (response) => {

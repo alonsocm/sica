@@ -117,6 +117,19 @@ export class LimitesService {
     );
   }
 
+  exportarParametrosSinLimiteExcel(
+    parametros: Array<string>
+  ): Observable<Object> {
+    const headers = new HttpHeaders({
+      parametros: parametros,
+    });
+
+    return this.http.get(
+      environment.apiUrl + '/Limites/ExportarExcelParametrosSinLimite',
+      { headers, responseType: 'blob' }
+    );
+  }
+
   actualizarLimitesLaboratorio(anios: Array<number>) {
     let request = { anios: anios };
     return this.http.post(
