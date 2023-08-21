@@ -81,6 +81,19 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new SustitucionEmergenciasCommand { ParametrosSustitucion = parametrosSustitucionLimites }));
         }
 
+        [HttpGet("ExportarExcelParametrosSinLimite")]
+        public IActionResult ExportarExcelParametrosSinLimite([FromHeader] List<string> parametros)
+        {
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("SustitucionEmergencias-ParametrosSinLimites");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportToExcel(parametros, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
+
         [HttpGet("ExisteSustitucionPrevia")]
         public async Task<IActionResult> Get(int periodo)
         {

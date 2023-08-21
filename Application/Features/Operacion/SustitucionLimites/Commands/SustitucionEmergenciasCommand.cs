@@ -40,93 +40,93 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
                 return new Response<List<string>>() { Succeded = false, Message = "No se encontraron resultados para el período seleccionado." };
             }
 
-            var parametrosFiltrados = resultadosSustituir.Select(s => s.IdParametro).Distinct();
-
-            //Recorremos los resultados para buscar las cadenas <LPC, <LDM, <LD
             var siglas = new List<string> { "<LPC", "<LDM", "<LD" };
+            var resultadosConLetras = resultadosSustituir.Where(w => siglas.Contains(w.ValorOriginal)).Select(s => s.IdParametro).Distinct();
 
-            if (request.ParametrosSustitucion.OrigenLimites == (int)TipoSustitucionLimites.CatalogoLimites)
+            if (resultadosConLetras.Any())
             {
-                var limitesParametros = await _vwLimiteMaximoComunRepository.ObtenerElementosPorCriterioAsync(x => parametrosFiltrados.Contains(x.ParametroId));
-
-                var parametrosSinLimites = resultadosSustituir.Select(s => new { s.IdParametro, s.ClaveParametro }).Distinct().Where(r => !limitesParametros.Select(s => s.ParametroId).Contains(r.IdParametro));
-
-                if (parametrosSinLimites.Any())
+                if (request.ParametrosSustitucion.OrigenLimites == (int)TipoSustitucionLimites.CatalogoLimites)
                 {
-                    return new Response<List<string>>() { Data = parametrosSinLimites.Select(s => s.ClaveParametro).ToList(), Succeded=false, Message = "No se encontraron los límites de algunos parámetros" };
-                }
+                    var limitesParametros = await _vwLimiteMaximoComunRepository.ObtenerElementosPorCriterioAsync(x => resultadosConLetras.Contains(x.ParametroId));
+                    var parametrosSinLimites = resultadosSustituir.Select(s => new { s.IdParametro, s.ClaveParametro }).Distinct().Where(r => !limitesParametros.Select(s => s.ParametroId).Contains(r.IdParametro));
 
-                foreach (var resultado in resultadosSustituir.ToList())
-                {
-                    //Vamos por el límite que le corresponde al parámetro
-                    var limiteParametro = limitesParametros.Where(x => x.ParametroId == resultado.IdParametro).Select(s => s.Limite).FirstOrDefault()??string.Empty;
-
-                    if (!string.IsNullOrEmpty(limiteParametro))
+                    if (parametrosSinLimites.Any())
                     {
-                        //Convertimos el límite y el resultado a decimal
-                        bool esLimiteDecimal = decimal.TryParse(limiteParametro, out decimal limiteDecimal);
-                        bool esResultadoDecimal = decimal.TryParse(resultado.ValorOriginal, out decimal resultadoDecimal);
+                        return new Response<List<string>>() { Data = parametrosSinLimites.Select(s => s.ClaveParametro).ToList(), Succeded=false, Message = "No se encontraron los límites de algunos parámetros" };
+                    }
 
-                        if (esLimiteDecimal && esResultadoDecimal && (resultadoDecimal < limiteDecimal))
+                    foreach (var resultado in resultadosSustituir.ToList())
+                    {
+                        //Vamos por el límite que le corresponde al parámetro
+                        var limiteParametro = limitesParametros.Where(x => x.ParametroId == resultado.IdParametro).Select(s => s.Limite).FirstOrDefault()??string.Empty;
+
+                        if (!string.IsNullOrEmpty(limiteParametro))
                         {
-                            resultado.ValorSustituido = $"<{limiteDecimal}";
-                        }
-                        else if (siglas.Contains(resultado.ValorOriginal))
-                        {
-                            resultado.ValorSustituido = $"<{limiteDecimal}";
+                            //Convertimos el límite y el resultado a decimal
+                            bool esLimiteDecimal = decimal.TryParse(limiteParametro, out decimal limiteDecimal);
+                            bool esResultadoDecimal = decimal.TryParse(resultado.ValorOriginal, out decimal resultadoDecimal);
+
+                            if (esLimiteDecimal && esResultadoDecimal && (resultadoDecimal < limiteDecimal))
+                            {
+                                resultado.ValorSustituido = $"<{limiteDecimal}";
+                            }
+                            else if (siglas.Contains(resultado.ValorOriginal))
+                            {
+                                resultado.ValorSustituido = $"<{limiteDecimal}";
+                            }
                         }
                     }
                 }
-            }
-            else if (request.ParametrosSustitucion.OrigenLimites == (int)TipoSustitucionLimites.TablaTemporal)
-            {
-                var tablaTemporalLimites = request.ParametrosSustitucion.LimitesComunes;
-                var parametrosSinLimites = resultadosSustituir.Select(s => s.ClaveParametro).Distinct().Where(r => !request.ParametrosSustitucion.LimitesComunes.Select(s => s.ClaveParametro).Contains(r));
-
-                if (parametrosSinLimites.Any())
+                else if (request.ParametrosSustitucion.OrigenLimites == (int)TipoSustitucionLimites.TablaTemporal)
                 {
-                    return new Response<List<string>>() { Data = parametrosSinLimites.ToList(), Succeded=false, Message = "La tabla temporal no contiene los límites de los parámetros indicados" };
-                }
+                    var tablaTemporalLimites = request.ParametrosSustitucion.LimitesComunes;
+                    var parametrosSinLimites = resultadosSustituir.Select(s => s.ClaveParametro).Distinct().Where(r => !request.ParametrosSustitucion.LimitesComunes.Select(s => s.ClaveParametro).Contains(r));
 
-                foreach (var resultado in resultadosSustituir.ToList())
-                {
-                    //Vamos por el límite que le corresponde al parámetro
-                    var limiteParametro = tablaTemporalLimites?.Where(x => x.ClaveParametro == resultado.ClaveParametro).Select(s => s.LimiteConsiderado == "LDM" ? s.LDM : s.LPC).FirstOrDefault();
-
-                    if (!string.IsNullOrEmpty(limiteParametro))
+                    if (parametrosSinLimites.Any())
                     {
-                        //Convertimos el límite y el resultado a decimal
-                        bool esLimiteDecimal = decimal.TryParse(limiteParametro, out decimal limiteDecimal);
-                        bool esResultadoDecimal = decimal.TryParse(resultado.ValorOriginal, out decimal resultadoDecimal);
+                        return new Response<List<string>>() { Data = parametrosSinLimites.ToList(), Succeded=false, Message = "La tabla temporal no contiene los límites de los parámetros indicados" };
+                    }
 
-                        if (esLimiteDecimal && esResultadoDecimal && (resultadoDecimal < limiteDecimal))
+                    foreach (var resultado in resultadosSustituir.ToList())
+                    {
+                        //Vamos por el límite que le corresponde al parámetro
+                        var limiteParametro = tablaTemporalLimites?.Where(x => x.ClaveParametro == resultado.ClaveParametro).Select(s => s.LimiteConsiderado == "LDM" ? s.LDM : s.LPC).FirstOrDefault();
+
+                        if (!string.IsNullOrEmpty(limiteParametro))
                         {
-                            resultado.ValorSustituido = $"<{limiteDecimal}";
-                        }
-                        else if (siglas.Contains(resultado.ValorOriginal))
-                        {
-                            resultado.ValorSustituido = $"<{limiteDecimal}";
+                            //Convertimos el límite y el resultado a decimal
+                            bool esLimiteDecimal = decimal.TryParse(limiteParametro, out decimal limiteDecimal);
+                            bool esResultadoDecimal = decimal.TryParse(resultado.ValorOriginal, out decimal resultadoDecimal);
+
+                            if (esLimiteDecimal && esResultadoDecimal && (resultadoDecimal < limiteDecimal))
+                            {
+                                resultado.ValorSustituido = $"<{limiteDecimal}";
+                            }
+                            else if (siglas.Contains(resultado.ValorOriginal))
+                            {
+                                resultado.ValorSustituido = $"<{limiteDecimal}";
+                            }
                         }
                     }
                 }
-            }
 
-            //Ahora actualizamos los registros, pero solo a los que se haya sustituido el valor.
-            var resultadosSustituidos = resultadosSustituir.Where(x => !string.IsNullOrEmpty(x.ValorSustituido));
-            _muestreoEmergenciaRepository.ActualizarResultadoSustituidoPorLimite(resultadosSustituidos.ToList());
+                //Ahora actualizamos los registros, pero solo a los que se haya sustituido el valor.
+                var resultadosSustituidos = resultadosSustituir.Where(x => !string.IsNullOrEmpty(x.ValorSustituido));
+                _muestreoEmergenciaRepository.ActualizarResultadoSustituidoPorLimite(resultadosSustituidos.ToList());
 
-            //Insertamos en el historial
-            var fechaSustitucion = DateTime.Now;
+                //Insertamos en el historial
+                var fechaSustitucion = DateTime.Now;
 
-            foreach (var resultado in resultadosSustituidos)
-            {
-                _historialSustitucionLimiteRepository.Insertar(new Domain.Entities.HistorialSustitucionEmergencia
+                foreach (var resultado in resultadosSustituidos)
                 {
-                    MuestreoEmergenciaId = resultado.IdMuestreo,
-                    Anio = resultado.Anio,
-                    UsuarioId = request.ParametrosSustitucion.Usuario,
-                    Fecha = fechaSustitucion
-                }); ;
+                    _historialSustitucionLimiteRepository.Insertar(new Domain.Entities.HistorialSustitucionEmergencia
+                    {
+                        MuestreoEmergenciaId = resultado.IdMuestreo,
+                        Anio = resultado.Anio,
+                        UsuarioId = request.ParametrosSustitucion.Usuario,
+                        Fecha = fechaSustitucion
+                    });
+                }
             }
 
             return new Response<List<string>>() { Succeded=true };
