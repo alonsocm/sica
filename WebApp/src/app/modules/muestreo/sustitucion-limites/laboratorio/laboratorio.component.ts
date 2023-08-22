@@ -29,7 +29,7 @@ export class LaboratorioComponent extends BaseService implements OnInit {
 
     this.columnas = [
       { nombre: 'noEntregaOCDL', etiqueta: 'N°. ENTREGA A REVISAR', orden: 1, filtro: new Filter() },
-      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 2, filtro: new Filter() },     
+      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 2, filtro: new Filter() },
       { nombre: 'claveSitio', etiqueta: 'CLAVE SITIO', orden: 3, filtro: new Filter() },
       { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 4, filtro: new Filter() },
       { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 5, filtro: new Filter() },
@@ -40,26 +40,30 @@ export class LaboratorioComponent extends BaseService implements OnInit {
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new Filter() }
     ];
     this.limiteService.obtenerAnios().subscribe({
-      next: (response: any) => {      
-        this.anios = response;},
+      next: (response: any) => {
+        this.anios = response;
+      },
       error: (error) => { },
     });
     this.limiteService.esPrimeraVezSustLaboratorio().subscribe({
-      next: (response: any) => {       
+      next: (response: any) => {
         this.esprimeravez = response;
         if (this.esprimeravez == true) { this.mostrarMensaje(MensajesSustitución.PrimeraVez, TipoMensaje.Alerta); }
       },
       error: (error) => { },
     });
 
-    if (!this.esprimeravez) { this.obtenerMuestreosSustituidos(); }
-    //this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
-    //  next: (response: any) => {       
-    //    this.resultadosFiltradosn = response.data;          
-    //    this.loading = false;
-    //  },
-    //  error: (error) => { this.loading = false; },
-    //}); 
+    /*if (!this.esprimeravez) { this.obtenerMuestreosSustituidos(); }*/
+    if (!this.esprimeravez) {
+      this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
+        next: (response: any) => {
+          this.muestreos = response.data;
+          this.resultadosFiltradosn = response.data;
+
+        },
+        error: (error) => { },
+      });
+    }
   }
   seleccionar() { }
   exportarExcel() { }
@@ -97,8 +101,7 @@ export class LaboratorioComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.loading = false;
         this.muestreos = response.data;
-        this.resultadosFiltradosn = response.data;
-        //this.establecerValoresFiltrosTabla();
+        this.resultadosFiltradosn = response.data;  
       },
       error: (error) => {
         this.loading = false;
