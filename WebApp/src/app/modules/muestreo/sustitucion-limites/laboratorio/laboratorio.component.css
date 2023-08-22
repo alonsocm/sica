@@ -1,0 +1,82 @@
+p {
+  font-weight: 500;
+}
+
+label {
+  font-weight: 100;
+  
+}
+.sticky-col {
+  position: -webkit-sticky;
+  position: sticky;
+  background-color: white;
+  font-size:11px;
+}
+
+.primera-col {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 0px;
+}
+
+.segunda-col {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 100px;
+}
+
+.tercera-col {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 200px;
+}
+
+.cuarta-col {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 300px;
+}
+
+.quinta-col {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 400px;
+}
+
+.sexta-col {
+  width: 100px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 500px;
+}
+
+.septima-col {
+  width: 100px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 600px;
+}
+
+.octava-col {
+  width: 100px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 700px;
+}
+.novena-col {
+  width: 100px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 800px;
+}
+.decima-col {
+  width: 100px;
+  min-width: 150px;
+  max-width: 150px;
+  left: 900px;
+}
