@@ -50,8 +50,8 @@
                             <th class="sticky-col" [ngClass]="{'primera-col': columna.orden == 1, 'segunda-col': columna.orden == 2, 'tercera-col': columna.orden == 3, 'cuarta-col': columna.orden == 4, 'quinta-col': columna.orden == 5, 'sexta-col': columna.orden == 6}">
                             {{columna.etiqueta}}
                             <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                                (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-                                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+                                (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()" [itemTemplate]="itemTemplate"
                                 placeholder="seleccione">
                             </ng-autocomplete>
                             <ng-template #itemTemplate let-item>
@@ -62,8 +62,8 @@
                         <th *ngFor="let parametro of this.registros[1].resultados">{{parametro.claveParametro}}</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr *ngFor="let registro of this.registros | paginate: { itemsPerPage:30, currentPage: page }">
+                <tbody style="position: relative; z-index: -1;">
+                    <tr *ngFor="let registro of this.registrosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
                         <td class="sticky-col primera-col">{{registro.nombreEmergencia}}</td>
                         <td class="sticky-col segunda-col">{{registro.sitio}}</td>
                         <td class="sticky-col tercera-col">{{registro.fechaRealizacion}}</td>

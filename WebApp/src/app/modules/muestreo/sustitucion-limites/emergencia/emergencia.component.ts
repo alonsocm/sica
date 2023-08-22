@@ -17,6 +17,7 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   existeSustitucion: boolean = true;
   archivo: any;
   registros: Array<any> = [];
+  registrosFiltrados: Array<any> = [];
   contratoSeleccionado: string = 'Seleccionar';
   emergenciasPrevias: Array<string> = [];
   @ViewChild('inputExcelMonitoreosEmergencia')
@@ -223,6 +224,8 @@ export class EmergenciaComponent extends BaseService implements OnInit {
     this.limitesService.obtenerMuestreosEmergencias(anios).subscribe({
       next: (response: any) => {
         this.registros = response.data;
+        this.registrosFiltrados = this.registros;
+        this.establecerValoresFiltrosTabla();
       },
       error: (error) => {},
     });
@@ -267,5 +270,26 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   cancelarEnvio() {
     this.formOpcionesSustitucion.reset();
     this.resetInputFile(this.inputExcelMonitoreos);
+  }
+
+  filtrar() {
+    this.registrosFiltrados = this.registros;
+    this.columnas.forEach((columna) => {
+      this.registrosFiltrados = this.registrosFiltrados.filter((f: any) => {
+        return columna.filtro.selectedValue == 'Seleccione'
+          ? true
+          : f[columna.nombre] == columna.filtro.selectedValue;
+      });
+    });
+
+    this.establecerValoresFiltrosTabla();
+  }
+
+  private establecerValoresFiltrosTabla() {
+    this.columnas.forEach((f) => {
+      f.filtro.values = [
+        ...new Set(this.registrosFiltrados.map((m: any) => m[f.nombre])),
+      ];
+    });
   }
 }
