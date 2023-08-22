@@ -137,4 +137,11 @@ export class LimitesService {
       request
     );
   }
+
+  obtenerMuestreosEmergencias(anios: Array<number>): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: { anios: anios },
+    });
+    return this.http.get(environment.apiUrl + '/MuestreosEmergencias/', {params});
+  }
 }

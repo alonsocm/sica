@@ -36,7 +36,15 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.obtenerMuestreosSustituidos();
+    this.columnas = [
+      { nombre: 'nombreEmergencia', etiqueta: 'NOMBRE EMERGENCIA', orden: 1, filtro: new Filter() },
+      { nombre: 'sitio', etiqueta: 'SITIO', orden: 2, filtro: new Filter() },     
+      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 3, filtro: new Filter() },
+      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 4, filtro: new Filter() },
+      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 5, filtro: new Filter() },
+    ];
+
+    this.obtenerMuestreosSustituidos();
   }
 
   onSubmit() {
@@ -211,7 +219,8 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   }
 
   obtenerMuestreosSustituidos() {
-    this.limitesService.obtenerMuestreosSustituidos().subscribe({
+    let anios = [2023];
+    this.limitesService.obtenerMuestreosEmergencias(anios).subscribe({
       next: (response: any) => {
         this.registros = response.data;
       },
