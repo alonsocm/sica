@@ -27,7 +27,8 @@
                 <thead>
                     <tr>
                         <ng-container *ngFor="let columna of this.columnas">
-                            <th class="sticky-col" [ngClass]="{'primera-col': columna.orden == 1, 'segunda-col': columna.orden == 2, 'tercera-col': columna.orden == 3, 'cuarta-col': columna.orden == 4, 'quinta-col': columna.orden == 5, 'sexta-col': columna.orden == 6}">
+                            <th class="sticky-col"
+                                [ngClass]="{'primera-col': columna.orden == 1, 'segunda-col': columna.orden == 2, 'tercera-col': columna.orden == 3, 'cuarta-col': columna.orden == 4, 'quinta-col': columna.orden == 5, 'sexta-col': columna.orden == 6}">
                                 {{columna.etiqueta}}
                                 <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                                     (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -37,13 +38,14 @@
                                 <ng-template #itemTemplate let-item>
                                     <a [innerHTML]="item"></a>
                                 </ng-template>
-                            </th>                            
+                            </th>
                         </ng-container>
                         <th *ngFor="let parametro of this.muestreos[1].resultados">{{parametro.claveParametro}}</th>
                     </tr>
                 </thead>
                 <tbody style="position: relative; z-index: -1;">
-                    <tr *ngFor="let registro of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
+                    <tr
+                        *ngFor="let registro of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
                         <td class="sticky-col primera-col">{{registro.claveSitio}}</td>
                         <td class="sticky-col segunda-col">{{registro.claveMonitoreo}}</td>
                         <td class="sticky-col tercera-col">{{registro.nombreSitio}}</td>
@@ -81,11 +83,14 @@
                         </div>
                         <div class="col-md-6" style="border-left: solid 1px black;">
                             <p>2.&nbsp;Seleccione periodo:</p>
-                            <input id="rdActual" type="radio" formControlName="periodo" name="periodo" value="1" (change)="validarArchivo">
+                            <input id="rdActual" type="radio" formControlName="periodo" name="periodo" value="1"
+                                (change)="validarArchivo">
                             <label for="rdActual">&nbsp;Actual</label><br>
-                            <input id="rdVencido" type="radio" formControlName="periodo" name="periodo" value="2" (change)="validarArchivo">
+                            <input id="rdVencido" type="radio" formControlName="periodo" name="periodo" value="2"
+                                (change)="validarArchivo">
                             <label for="rdVencido">&nbsp;Vencido</label><br>
-                            <input id="rdActualVencido" type="radio" formControlName="periodo" name="periodo" value="3" (change)="validarArchivo">
+                            <input id="rdActualVencido" type="radio" formControlName="periodo" name="periodo" value="3"
+                                (change)="validarArchivo">
                             <label for="rdActualVencido">&nbsp;Actual y vencido</label>
                         </div>
                     </div>
@@ -106,28 +111,28 @@
         </form>
     </div>
 </div>
-<button id="btnMdlConfirmacionSustitucion" style="display:none" class="btn btn-primary rigth" type="button" data-toggle="modal"
-    data-target="#mdlConfirmacionSustitucion"></button>
-<div class="modal fade modal-dialog-centered" id="mdlConfirmacionSustitucion" data-bs-backdrop="static" data-toggle="modal">
+<button id="btnMdlConfirmacionSustitucion" style="display:none" class="btn btn-primary rigth" type="button"
+    data-toggle="modal" data-target="#mdlConfirmacionSustitucion"></button>
+<div class="modal fade modal-dialog-centered" id="mdlConfirmacionSustitucion" data-bs-backdrop="static"
+    data-toggle="modal">
     <div class="modal-dialog">
-        <form [formGroup]="formOpcionesSustitucion" (ngSubmit)="onSubmit()">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmación sustitución</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p>Se ha realizado una sustitución previamente. ¿Desea aplicar nuevamente la sustitución?</p>
-                        </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmación sustitución</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>Se ha realizado una sustitución previamente. ¿Desea aplicar nuevamente la sustitución?</p>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" id="btnCancelarModalReemplazar" class="btn btn-secondary" data-dismiss="modal"
-                        (click)="formOpcionesSustitucion.reset()">Cancelar</button>
-                    <button id="btnAceptarModalReemplazar" type="submit" class="btn btn-primary">Aceptar</button>
-                </div>
             </div>
-        </form>
+            <div class="modal-footer">
+                <button type="button" id="btnCancelarModalReemplazar" class="btn btn-secondary" data-dismiss="modal"
+                    (click)="formOpcionesSustitucion.reset()">Cancelar</button>
+                <button id="btnAceptarModalReemplazar" type="button" (click)="sustituirLimites()"
+                    class="btn btn-primary">Aceptar</button>
+            </div>
+        </div>
     </div>
 </div>

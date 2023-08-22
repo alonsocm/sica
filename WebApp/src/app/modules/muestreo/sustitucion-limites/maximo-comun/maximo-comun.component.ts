@@ -14,7 +14,10 @@ import { AuthService } from 'src/app/modules/login/services/auth.service';
   styleUrls: ['./maximo-comun.component.css'],
 })
 export class MaximoComunComponent extends BaseService implements OnInit {
-  constructor(private limitesService: LimitesService, private authService: AuthService) {
+  constructor(
+    private limitesService: LimitesService,
+    private authService: AuthService
+  ) {
     super();
   }
 
@@ -41,52 +44,62 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
+    this.limitesService
+      .validarSustitucionPrevia(
+        Number(this.formOpcionesSustitucion.controls.periodo.value)
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.loading = false;
+          this.existeSustitucion = response.data;
+
+          if (!this.existeSustitucion) {
+
+            this.sustituirLimites();
+          } else {
+            document.getElementById('btnMdlConfirmacionSustitucion')?.click();
+          }
+        },
+        error: (e) => console.error(e),
+      });
+  }
+
+  sustituirLimites() {
     let configSustitucion = {
       archivo: this.formOpcionesSustitucion.controls.archivo.value,
       origenLimites: this.formOpcionesSustitucion.controls.origenLimites.value,
       periodo: Number(this.formOpcionesSustitucion.controls.periodo.value),
-      usuario: this.authService.getUser().usuarioId
+      usuario: this.authService.getUser().usuarioId,
     };
+    
+    document.getElementById('btnMdlConfirmacionSustitucion')?.click();
+    document.getElementById('btnMdlConfirmacion')?.click();
+    this.loading = true;
 
-    this.limitesService.validarSustitucionPrevia(configSustitucion.periodo).subscribe({
+    this.limitesService.sustituirLimites(configSustitucion).subscribe({
       next: (response: any) => {
-        this.existeSustitucion = response.data;
-
-        if (!this.existeSustitucion) {
-          document.getElementById('btnMdlConfirmacion')?.click();
-          this.loading = true;
-          this.limitesService.sustituirLimites(configSustitucion).subscribe({
-            next: (response: any) => {
-              this.formOpcionesSustitucion.reset();
-              this.loading = false;
-              if (response.data === true) {
-                this.mostrarMensaje(
-                  'Se ejecutó correctamente la sustitución de los límites máximos',
-                  TipoMensaje.Correcto
-                );
-              }else{
-                this.mostrarMensaje(
-                  response.message,
-                  TipoMensaje.Alerta
-                );
-              }
-            },
-            error: (response) => {
-              this.formOpcionesSustitucion.reset();
-              this.loading = false;
-              this.mostrarMensaje(
-                'Ocurrió un error en el proceso de sustitución' +
-                  ' ' +
-                  response.error.Errors[0],
-                TipoMensaje.Error
-              );
-            },
-          });
+        this.formOpcionesSustitucion.reset();
+        this.loading = false;
+        if (response.data === true) {
+          this.mostrarMensaje(
+            'Se ejecutó correctamente la sustitución de los límites máximos',
+            TipoMensaje.Correcto
+          );
         } else {
-          document.getElementById('btnMdlConfirmacionSustitucion')?.click();
+          this.mostrarMensaje(response.message, TipoMensaje.Alerta);
         }
       },
-      error: (e) => console.error(e),
+      error: (response) => {
+        this.formOpcionesSustitucion.reset();
+        this.loading = false;
+        this.mostrarMensaje(
+          'Ocurrió un error en el proceso de sustitución' +
+            ' ' +
+            response.error.Errors[0],
+          TipoMensaje.Error
+        );
+      },
     });
   }
 
