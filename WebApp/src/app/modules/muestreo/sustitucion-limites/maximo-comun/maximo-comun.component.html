@@ -28,7 +28,7 @@
                     <tr>
                         <ng-container *ngFor="let columna of this.columnas">
                             <th class="sticky-col"
-                                [ngClass]="{'primera-col': columna.orden == 1, 'segunda-col': columna.orden == 2, 'tercera-col': columna.orden == 3, 'cuarta-col': columna.orden == 4, 'quinta-col': columna.orden == 5, 'sexta-col': columna.orden == 6}">
+                                [ngClass]="{'primera-col': columna.orden == 1, 'segunda-col': columna.orden == 2, 'tercera-col': columna.orden == 3, 'cuarta-col': columna.orden == 4, 'quinta-col': columna.orden == 5, 'sexta-col': columna.orden == 6, 'septima-col': columna.orden == 7, 'octava-col': columna.orden == 8, 'novena-col': columna.orden == 9, 'decima-col': columna.orden == 10}">
                                 {{columna.etiqueta}}
                                 <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                                     (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -46,12 +46,16 @@
                 <tbody style="position: relative; z-index: -1;">
                     <tr
                         *ngFor="let registro of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
-                        <td class="sticky-col primera-col">{{registro.claveSitio}}</td>
-                        <td class="sticky-col segunda-col">{{registro.claveMonitoreo}}</td>
-                        <td class="sticky-col tercera-col">{{registro.nombreSitio}}</td>
-                        <td class="sticky-col cuarta-col">{{registro.tipoCuerpoAgua}}</td>
-                        <td class="sticky-col quinta-col">{{registro.fechaRealizacion}}</td>
-                        <td class="sticky-col sexta-col">{{registro.anio}}</td>
+                        <td class="sticky-col primera-col">{{registro.noEntrega}}</td>
+                        <td class="sticky-col segunda-col">{{registro.tipoSitio}}</td>
+                        <td class="sticky-col tercera-col">{{registro.claveSitio}}</td>
+                        <td class="sticky-col cuarta-col">{{registro.nombreSitio}}</td>
+                        <td class="sticky-col quinta-col">{{registro.claveMonitoreo}}</td>
+                        <td class="sticky-col sexta-col">{{registro.fechaRealizacion}}</td>
+                        <td class="sticky-col septima-col">{{registro.laboratorio}}</td>
+                        <td class="sticky-col octava-col">{{registro.cuerpoAgua}}</td>
+                        <td class="sticky-col novena-col">{{registro.tipoCuerpoAguaOriginal}}</td>
+                        <td class="sticky-col decima-col">{{registro.tipoCuerpoAgua}}</td>
                         <td *ngFor="let resultado of this.registro.resultados">{{resultado.valor}}</td>
                     </tr>
                 </tbody>

@@ -52,3 +52,31 @@ label{
     max-width: 150px;
     left: 750px;
 }
+
+.septima-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 900px;
+}
+
+.octava-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 1050px;
+}
+
+.novena-col {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 1200px;
+}
+
+.decima-col {
+    width: 100px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 1350px;
+}

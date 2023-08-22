@@ -181,47 +181,94 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Columna> = [
       {
-        nombre: 'claveSitio',
-        etiqueta: 'CLAVE SITIO',
+        nombre: 'noEntrega',
+        etiqueta: 'No. Entrega',
         orden: 1,
         filtro: new Filter(),
       },
       {
-        nombre: 'claveMonitoreo',
-        etiqueta: 'CLAVE MONITOREO',
+        nombre: 'tipoSitio',
+        etiqueta: 'TIPO DE SITIO',
         orden: 2,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'claveSitio',
+        etiqueta: 'CLAVE SITIO',
+        orden: 3,
         filtro: new Filter(),
       },
       {
         nombre: 'nombreSitio',
         etiqueta: 'NOMBRE DEL SITIO',
-        orden: 3,
+        orden: 4,
         filtro: new Filter(),
       },
       {
-        nombre: 'tipoCuerpoAgua',
-        etiqueta: 'TIPO CUERPO DE AGUA',
-        orden: 4,
+        nombre: 'claveMonitoreo',
+        etiqueta: 'CLAVE MONITOREO',
+        orden: 5,
         filtro: new Filter(),
       },
       {
         nombre: 'fechaRealizacion',
         etiqueta: 'FECHA REALIZACIÓN',
-        orden: 5,
+        orden: 6,
         filtro: new Filter(),
       },
-      { nombre: 'anio', etiqueta: 'AÑO', orden: 6, filtro: new Filter() },
+      {
+        nombre: 'laboratorio',
+        etiqueta: 'LABORATORIO',
+        orden: 7,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'cuerpoAgua',
+        etiqueta: 'CUERPO DE AGUA',
+        orden: 8,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'tipoCuerpoAguaOriginal',
+        etiqueta: 'TIPO CUERPO AGUA ORIGINAL',
+        orden: 9,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'tipoCuerpoAgua',
+        etiqueta: 'TIPO CUERPO AGUA',
+        orden: 10,
+        filtro: new Filter(),
+      },
     ];
     this.columnas = nombresColumnas;
+  }
+  
+  definirColumna(ordenColuma: number){
+    switch (ordenColuma) {
+      case 1:
+        return 'col-1'
+        break;
+        case 2:
+          return 'col-2'
+          break;
+      default:
+        break;
+    }
+    return 'primera-col'
   }
 }
 
 interface MuestreoSustitucion {
+  noEntrega: string;
+  tipoSitio: string;
   claveSitio: string;
-  claveMonitoreo: string;
   nombreSitio: string;
-  tipoCuerpoAgua: string;
+  claveMonitoreo: string;
   fechaRealizacion: string;
-  anio: string;
+  laboratorio: string;
+  cuerpoAgua: string;
+  tipoCuerpoAguaOriginal: string;
+  tipoCuerpoAgua: string;
   resultados: Array<any>;
 }
