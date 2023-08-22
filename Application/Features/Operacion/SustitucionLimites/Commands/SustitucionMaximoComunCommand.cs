@@ -111,7 +111,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
                 new HistorialSustitucionLimites()
                 {
                     MuestreoId = x,
-                    TipoSustitucionId = request.ParametrosSustitucion.Periodo,
+                    TipoSustitucionId = request.ParametrosSustitucion.OrigenLimites,
                     UsuarioId = request.ParametrosSustitucion.Usuario,
                     Fecha = fechaSustitucion
 

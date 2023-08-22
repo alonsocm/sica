@@ -11,12 +11,10 @@ namespace Application.Features.Operacion.SustitucionLimites.Queries
 
     public class ResultadosSustituidosQueryHandler : IRequestHandler<ResultadosSustituidosQuery, Response<List<MuestreoSustituidoDto>>>
     {
-        private readonly IMuestreoRepository _muestreoRepository;
         private readonly IResultado _resultadosRepository;
 
-        public ResultadosSustituidosQueryHandler(IMuestreoRepository muestreoRepository, IResultado repositoryAsync)
+        public ResultadosSustituidosQueryHandler(IResultado repositoryAsync)
         {
-            _muestreoRepository = muestreoRepository;
             _resultadosRepository=repositoryAsync;
         }
 
