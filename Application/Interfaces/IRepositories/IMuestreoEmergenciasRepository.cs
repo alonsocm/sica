@@ -9,5 +9,6 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucion();
         List<ResultadoParaSustitucionLimitesDto> ActualizarResultadoSustituidoPorLimite(List<ResultadoParaSustitucionLimitesDto> resultadosDto);
         Task<bool> ExisteCargaPreviaAsync(string nombreEmergencia, string nombreSitio);
+        Task<IEnumerable<ResultadoMuestreoEmergenciaDto>> ObtenerResultadosEmergenciasPorAnio();
     }
 }
