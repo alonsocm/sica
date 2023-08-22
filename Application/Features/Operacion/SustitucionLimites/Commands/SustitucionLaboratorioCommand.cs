@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Enums;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using Domain.Entities;
@@ -20,13 +21,16 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
         private readonly IMuestreoRepository _muestreoRepository;
         private readonly ILimiteParametroLaboratorioRepository _limiteParametroLaboratorioRepository;
         private readonly IVwLimiteLaboratorioRepository _vwLimiteLaboratorioRepository;
+        private readonly IHistorialSusticionLimiteRepository _historialSustitucionLimiteRepository;
 
-        public SustitucionLaboratorioCommandHandler(IResultado resultadosRepository, IMuestreoRepository muestreoRepository, ILimiteParametroLaboratorioRepository limiteParametroLaboratorioRepository, IVwLimiteLaboratorioRepository vwLaboratorioRepository)
+        public SustitucionLaboratorioCommandHandler(IResultado resultadosRepository, IMuestreoRepository muestreoRepository, ILimiteParametroLaboratorioRepository limiteParametroLaboratorioRepository, 
+                                                    IVwLimiteLaboratorioRepository vwLaboratorioRepository, IHistorialSusticionLimiteRepository historialSustitucionLimiteRepository)
         {
             _resultadosRepository = resultadosRepository;
             _muestreoRepository = muestreoRepository;
             _limiteParametroLaboratorioRepository = limiteParametroLaboratorioRepository;
             _vwLimiteLaboratorioRepository = vwLaboratorioRepository;
+            _historialSustitucionLimiteRepository = historialSustitucionLimiteRepository;
         }
 
         public async Task<Response<string>> Handle(SustitucionLaboratorioCommand request, CancellationToken cancellationToken)
@@ -38,68 +42,90 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
 
             var siglas = new List<string> { "<LPC", "<LDM", "<LD", "<CMC" };
             var resultadosSustituir = await _resultadosRepository.ObtenerResultadosParaSustitucionPorAnios(request.anios);
-                
             List<ResultadoParaSustitucionLimitesDto> lstResultadosaSustituir = resultadosSustituir.Where(x => siglas.Contains(x.ValorOriginal.ToString())).ToList();
 
-            var limites = await _vwLimiteLaboratorioRepository.ObtenerElementosPorCriterioAsync(x => request.anios.Contains(Convert.ToInt32(x.Anio)));
 
-            foreach (var resultado in lstResultadosaSustituir)
+            if (lstResultadosaSustituir.Count > 0)
             {
-                List<VwLimiteLaboratorio> valr = new List<VwLimiteLaboratorio>();
+                var limites = await _vwLimiteLaboratorioRepository.ObtenerElementosPorCriterioAsync(x => request.anios.Contains(Convert.ToInt32(x.Anio)));
 
-                valr = limites.Where(x => x.LaboratorioId == resultado.LaboratorioId && x.Anio == resultado.Anio.ToString()
-                          && x.ParametroId == resultado.IdParametro).ToList();
-
-                if (valr.Count == 0)
+                foreach (var resultado in lstResultadosaSustituir)
                 {
-                    ResultadoParaSustitucionLimitesDto resultadoSinLimite = new ResultadoParaSustitucionLimitesDto();
-                    resultadoSinLimite.ClaveParametro = resultado.ClaveParametro;
-                    resultadoSinLimite.Anio = resultado.Anio;
-                    resultadoSinLimite.LaboratorioMuestreo = resultado.LaboratorioMuestreo;
-                    lstResultadosSinLimite.Add(resultadoSinLimite);
-                }
+                    List<VwLimiteLaboratorio> valr = new List<VwLimiteLaboratorio>();
+                    valr = limites.Where(x => x.LaboratorioId == resultado.LaboratorioId && x.Anio == resultado.Anio.ToString()
+                              && x.ParametroId == resultado.IdParametro).ToList();
 
-                else if (valr.Count == 1)
-                {
-                   
-                    bool esLimiteDecimal = decimal.TryParse(valr.FirstOrDefault().Limite, out decimal limiteDecimal);
-                    if (esLimiteDecimal)
+                    if (valr.Count == 0)
                     {
-                        resultado.ValorSustituido = $"<{limiteDecimal}";
+                        ResultadoParaSustitucionLimitesDto resultadoSinLimite = new ResultadoParaSustitucionLimitesDto();
+                        resultadoSinLimite.ClaveParametro = resultado.ClaveParametro;
+                        resultadoSinLimite.Anio = resultado.Anio;
+                        resultadoSinLimite.LaboratorioMuestreo = resultado.LaboratorioMuestreo;
+                        lstResultadosSinLimite.Add(resultadoSinLimite);
                     }
-                    else {
-                        var limitesubrogado = limites.Where(x => x.LaboratorioId == valr[0].LaboratorioSubrogaId && x.Anio == resultado.Anio.ToString()
-                    && x.ParametroId == resultado.IdParametro).ToList();
-                        bool esLimiteDecimalsubrogado = decimal.TryParse(limitesubrogado.FirstOrDefault().Limite, out decimal limiteDecimalsubrogado);
-                        resultado.ValorSustituido = $"<{limiteDecimalsubrogado}";
+
+                    else if (valr.Count == 1)
+                    {
+                        if (valr[0].LaboratorioSubrogaId != null)
+                        {
+                            resultado.LaboratorioSubrogadoId = valr[0].LaboratorioSubrogaId;
+                            var limitesubrogado = limites.Where(x => x.LaboratorioId == valr[0].LaboratorioSubrogaId && x.Anio == resultado.Anio.ToString()
+                                                  && x.ParametroId == resultado.IdParametro).ToList();
+                            bool esLimiteDecimalsubrogado = decimal.TryParse(limitesubrogado.FirstOrDefault().Limite, out decimal limiteDecimalsubrogado);
+                            resultado.ValorSustituido = (esLimiteDecimalsubrogado) ? $"<{limiteDecimalsubrogado}" : $"<{limitesubrogado.FirstOrDefault().Limite}";
+                        }
+                        else
+                        {
+                            bool esLimiteDecimal = decimal.TryParse(valr.FirstOrDefault().Limite, out decimal limiteDecimal);
+                            resultado.ValorSustituido = (esLimiteDecimal) ? $"<{limiteDecimal}" : $"<{valr.FirstOrDefault().Limite}";
+                        }
                     }
-                    
+
+                    else
+                    {
+                        ResultadoParaSustitucionLimitesDto MultiplesLimites = new ResultadoParaSustitucionLimitesDto();
+                        MultiplesLimites.ClaveParametro = resultado.ClaveParametro;
+                        MultiplesLimites.Anio = resultado.Anio;
+                        MultiplesLimites.LaboratorioId = resultado.LaboratorioId;
+                        MultiplesLimites.IdMuestreo = resultado.IdMuestreo;
+                        lstResultadosMultiplesLimites.Add(MultiplesLimites);
+                        vwMultiplesLimites.AddRange(valr);
+                    }
+
                 }
 
+
+                if (lstResultadosSinLimite.Count > 0)
+                {
+                    var lstSinlimite = lstResultadosSinLimite.Select(x => new { x.ClaveParametro, x.Anio, x.LaboratorioMuestreo }).Distinct().ToList();
+                    foreach (var clave in lstSinlimite.ToList())
+                    { parametros += "No existe limite para el parámetro " + clave.ClaveParametro + " del año " + clave.Anio + " y laboratorio " + clave.LaboratorioMuestreo + ","; }
+                }
                 else
                 {
-                    ResultadoParaSustitucionLimitesDto MultiplesLimites = new ResultadoParaSustitucionLimitesDto();
-                    MultiplesLimites.ClaveParametro = resultado.ClaveParametro;
-                    MultiplesLimites.Anio = resultado.Anio;
-                    MultiplesLimites.LaboratorioId = resultado.LaboratorioId;
-                    MultiplesLimites.IdMuestreo = resultado.IdMuestreo;
-                    lstResultadosMultiplesLimites.Add(MultiplesLimites);
-                    vwMultiplesLimites.AddRange(valr);
-                }               
+                    //Actualización historico              
+                    var fechaSustitucion = DateTime.Now;
+                    var historialSustitucionLimites = lstResultadosaSustituir.Select(s => s.IdMuestreo).Distinct().Select(x =>
+                        new HistorialSustitucionLimites()
+                        {
+                            MuestreoId = x,
+                            TipoSustitucionId = (int)TipoSustitucionLimites.Laboratorio,
+                            UsuarioId = 43,
+                            Fecha = fechaSustitucion
+
+                        }).ToList();
+                    _resultadosRepository.ActualizarResultadoSustituidoPorLimite(lstResultadosaSustituir);
+                    _historialSustitucionLimiteRepository.InsertarRango(historialSustitucionLimites);                   
+                }
             }
+            else { parametros = "No existen resultados a sustituir para los años seleccionados";  }
 
 
-            if (lstResultadosSinLimite.Count > 0)
-            {
-                var lstSinlimite = lstResultadosSinLimite.Select(x => new { x.ClaveParametro, x.Anio, x.LaboratorioMuestreo }).Distinct().ToList();
-                foreach (var clave in lstSinlimite.ToList())
-                { parametros += "No existe limite para el parámetro " + clave.ClaveParametro + " del año " + clave.Anio + " y laboratorio " + clave.LaboratorioMuestreo + ","; }
-            }
             return new Response<string>(parametros);
-           
+
         }
 
 
-        
+
     }
 }

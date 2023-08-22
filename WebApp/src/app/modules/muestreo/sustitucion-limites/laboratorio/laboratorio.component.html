@@ -13,12 +13,12 @@
   <div class="row">
     <div class="col-md-3 ">
       <label for="anios">Año a sustituir:*</label>
-      <select disabled="this.esPrimeraVezSustitucion" class="form-control" name="anios" id="anios" multiple [(ngModel)]="this.aniosseleccionados">
+      <select (disabled)="this.esprimeravez" class="form-control" name="anios" id="anios" multiple [(ngModel)]="this.aniosseleccionados">
         <option *ngFor="let anio of this.anios" value="{{anio}}">{{anio}}</option>
       </select>
     </div>
     <div class="col-md-3 text-right">
-      
+
       <button type="button" class="btn btn-primary" (click)="sustitucionLimite();">
         Sustituir Limites
       </button>
@@ -30,55 +30,56 @@
       </button>
     </div>
   </div>
-  <div class="row" *ngFor ="this.resultadosFiltradosn.count > 0">
-    <div class="col-md-12 table-responsive dvTable">
-      <table class="table table-striped">
+  <div class="row" *ngIf="this.resultadosFiltradosn.length>0">
+    <div class="col-md-12 table-responsive dvTable" style="max-width: 1900px; padding-left: 0;">
+      <table class="table table-striped table-hover">
         <thead>
           <tr>
             <th class="checkBox-center" style="text-align:center">
-              <label for="chckAll">SELECCIONAR TODOS</label>
+              <label style="font-size:11px" for="chckAll">SELECCIONAR TODOS</label>
               <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
                      (change)="seleccionarAll(this.resultadosFiltradosn)" />
             </th>
-            <th *ngFor="let columna of columnas">
-              {{columna.etiqueta}}
-              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                               (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                               placeholder="seleccione">
-              </ng-autocomplete>
-              <ng-template #itemTemplate let-item>
-                <a [innerHTML]="item"></a>
-              </ng-template>
-            </th>
-            <th *ngFor="let parametro of this.resultadosFiltradosn[0].lstParametros">
+            <ng-container *ngFor="let columna of columnas">
+              <th class="sticky-col" [ngClass]="{'primera-col': columna.orden == 1, 'segunda-col': columna.orden == 2,
+                  'tercera-col': columna.orden == 3, 'cuarta-col': columna.orden == 4, 'quinta-col': columna.orden == 5,
+                  'sexta-col': columna.orden == 6, 'septima-col': columna.orden == 7, 'octava-col':columna.orden == 8,
+                  'novena-col':columna.orden == 9, 'decima-col':columna.orden == 10}">
+                {{columna.etiqueta}}
+                <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                                 (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+                                 (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+                                 placeholder="seleccione">
+                </ng-autocomplete>
+                <ng-template #itemTemplate let-item>
+                  <a [innerHTML]="item"></a>
+                </ng-template>
+              </th>
+            </ng-container>
+            <th style="font-size:11px" *ngFor="let parametro of this.resultadosFiltradosn[0].resultados">
               {{parametro.claveParametro}}
-
             </th>
-
-
           </tr>
         </thead>
-        <tbody style="text-align:left;">
+        <tbody style="position: relative; z-index: -1;">
           <tr *ngFor="let muestreo of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
             <td style="text-align:center" class="checkBox-center">
               <input type="checkbox" [(ngModel)]="muestreo.isChecked"
                      (change)="seleccionar()">
             </td>
-            <td style="text-align: center;">{{muestreo.noEntregaOCDL}}</td>
-            <td style="text-align: center;">{{muestreo.tipoSitio}}</td>
-            <td style="text-align: center;">{{muestreo.claveSitio}}</td>
-            <td style="text-align: center;">{{muestreo.nombreSitio}}</td>
-            <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
-            <td style="text-align: center;">{{muestreo.fechaRealizacion}}</td>
-            <td style="text-align: center;">{{muestreo.laboratorio}}</td>
+            <td  class="sticky-col primera-col" style="text-align: center;">{{muestreo.noEntregaOCDL}}</td>
+            <td  class="sticky-col segunda-col" style="text-align: center;">{{muestreo.tipoSitio}}</td>
+            <td  class="sticky-col tercera-col" style="text-align: center;">{{muestreo.claveSitio}}</td>
+            <td  class="sticky-col cuarta-col" style="text-align: center;">{{muestreo.nombreSitio}}</td>
+            <td  class="sticky-col quinta-col" style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
+            <td  class="sticky-col sexta-col" style="text-align: center;">{{muestreo.fechaRealizacion}}</td>
+            <td  class="sticky-col septima-col" style="text-align: center;">{{muestreo.laboratorio}}</td>
+            <td  class="sticky-col octava-col" style="text-align: center;"> {{(muestreo.cuerpoAgua)}}</td>
+            <td  class="sticky-col novena-col" style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
+            <td  class="sticky-col decima-col" style="text-align: center;"> {{(muestreo.tipoCuerpoAgua)}}</td>
+            <td *ngFor="let resultado of this.muestreo.resultados">{{resultado.valor}}</td>
 
-            <td style="text-align: center;"> {{(muestreo.cuerpoAgua)}}</td>
-            <td style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
-            <td style="text-align: center;"> {{(muestreo.tipoCuerpoAgua)}}</td>
-            <td *ngFor="let resultado of this.muestreo.lstParametros">{{resultado.resulatdo}}</td>
 
-      
           </tr>
           <tr>
             <td colspan="24">
@@ -93,11 +94,13 @@
     <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
     </pagination-controls>
     ol
-    
 
-  </div>
+
+  </div> 
+
+
   <br /><br />
 
-  
+
 
 </div>  
