@@ -104,7 +104,7 @@
                 <div class="modal-footer">
                     <button type="button" id="btnCancelarModal" class="btn btn-secondary" data-dismiss="modal"
                         (click)="formOpcionesSustitucion.reset()">Cancelar</button>
-                    <button id="btnAceptarModal" type="submit" class="btn btn-primary"
+                    <button id="btnAceptarModal" type="submit" class="btn btn-primary" 
                         [disabled]="!formOpcionesSustitucion.valid">Aceptar</button>
                 </div>
             </div>
@@ -130,7 +130,7 @@
             <div class="modal-footer">
                 <button type="button" id="btnCancelarModalReemplazar" class="btn btn-secondary" data-dismiss="modal"
                     (click)="formOpcionesSustitucion.reset()">Cancelar</button>
-                <button id="btnAceptarModalReemplazar" type="button" (click)="sustituirLimites()"
+                <button id="btnAceptarModalReemplazar" type="button" (click)="sustituirLimites()" data-dismiss="modal"
                     class="btn btn-primary">Aceptar</button>
             </div>
         </div>

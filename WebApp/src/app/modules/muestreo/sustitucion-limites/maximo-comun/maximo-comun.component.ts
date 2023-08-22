@@ -44,6 +44,7 @@ export class MaximoComunComponent extends BaseService implements OnInit {
   }
 
   onSubmit() {
+    document.getElementById('btnMdlConfirmacion')?.click();
     this.loading = true;
     this.limitesService
       .validarSustitucionPrevia(
@@ -55,7 +56,6 @@ export class MaximoComunComponent extends BaseService implements OnInit {
           this.existeSustitucion = response.data;
 
           if (!this.existeSustitucion) {
-
             this.sustituirLimites();
           } else {
             document.getElementById('btnMdlConfirmacionSustitucion')?.click();
@@ -72,9 +72,7 @@ export class MaximoComunComponent extends BaseService implements OnInit {
       periodo: Number(this.formOpcionesSustitucion.controls.periodo.value),
       usuario: this.authService.getUser().usuarioId,
     };
-    
-    document.getElementById('btnMdlConfirmacionSustitucion')?.click();
-    document.getElementById('btnMdlConfirmacion')?.click();
+
     this.loading = true;
 
     this.limitesService.sustituirLimites(configSustitucion).subscribe({
