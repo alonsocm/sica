@@ -388,25 +388,35 @@ namespace Persistence.Repository
 
             lstResultados.ForEach(f =>
             {
-                var resultados = (from parametro in _dbContext.ParametrosGrupo
-                                  join resultado in _dbContext.ResultadoMuestreo on
-                                  new { ParametroId = (int)parametro.Id, f.MuestreoId } equals new { ParametroId = (int)resultado.ParametroId, resultado.MuestreoId } into gp
-                                  from subresultado in gp.DefaultIfEmpty()
-                                  orderby parametro.Orden
-                                  select new ParametrosDto
-                                  {                                       
-                                      Id = parametro.Id, 
-                                      Orden = parametro.Orden ?? 0,
-                                      NombreParametro = parametro.Descripcion,
-                                      Resulatdo = subresultado.Resultado ?? string.Empty, 
-                                      ClaveParametro = parametro.ClaveParametro
+                try
+                {
+                    var resultados = (from parametro in _dbContext.ParametrosGrupo
+                                      join resultado in _dbContext.ResultadoMuestreo on
+                                      new { ParametroId = (int)parametro.Id, f.MuestreoId } equals new { ParametroId = (int)resultado.ParametroId, resultado.MuestreoId } into gp
+                                      from subresultado in gp.DefaultIfEmpty()
+                                      orderby parametro.Orden
+                                      select new ParametrosDto
+                                      {
+                                          Id = parametro.Id,
+                                          Orden = parametro.Orden ?? 0,
+                                          NombreParametro = parametro.Descripcion,
+                                          Resulatdo = string.IsNullOrEmpty(subresultado.ResultadoSustituidoPorLimite) ? subresultado.Resultado : (subresultado.ResultadoSustituidoPorLimite ?? string.Empty),
+                                          ClaveParametro = parametro.ClaveParametro
 
-                                  }
+                                      }
                                  ).ToList();
 
-                f.lstParametros = resultados;
+                    f.lstParametros = resultados;
+                }
+                catch (Exception ex)
+                {
+
+                    throw new ApplicationException(ex.Message);
+                }
+
+                
             });
             return lstResultados;
-        }
+         }
     }
 }
