@@ -80,6 +80,7 @@ export class MaximoComunComponent extends BaseService implements OnInit {
         this.formOpcionesSustitucion.reset();
         this.loading = false;
         if (response.data === true) {
+          this.obtenerMuestreosSustituidos();
           this.mostrarMensaje(
             'Se ejecutó correctamente la sustitución de los límites máximos',
             TipoMensaje.Correcto
@@ -141,7 +142,8 @@ export class MaximoComunComponent extends BaseService implements OnInit {
 
   exportarResumen() {
     this.loading = true;
-    this.limitesService.exportarResumenExcel().subscribe({
+    let muestreosSeleccionados = this.obtenerSeleccionados().map((s) => s.muestreoId.toString());
+    this.limitesService.exportarResumenExcel(muestreosSeleccionados).subscribe({
       next: (response: any) => {
         this.loading = false;
         FileService.download(response, 'resultados.xlsx');
@@ -265,6 +267,7 @@ export class MaximoComunComponent extends BaseService implements OnInit {
 }
 
 interface MuestreoSustitucion {
+  muestreoId: number;
   noEntrega: string;
   tipoSitio: string;
   claveSitio: string;

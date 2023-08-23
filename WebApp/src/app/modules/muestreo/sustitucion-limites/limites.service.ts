@@ -52,9 +52,12 @@ export class LimitesService {
     );
   }
 
-  exportarResumenExcel(): Observable<Object> {
+  exportarResumenExcel(muestreos: Array<string>): Observable<Object> {
+    const headers = new HttpHeaders({
+      muestreos: muestreos,
+    });
     return this.http.get(environment.apiUrl + '/Limites/ExportarExcel', {
-      responseType: 'blob',
+      headers, responseType: 'blob',
     });
   }
 

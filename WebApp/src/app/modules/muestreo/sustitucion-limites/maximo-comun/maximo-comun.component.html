@@ -45,7 +45,9 @@
                                 </ng-template>
                             </th>
                         </ng-container>
-                        <th *ngFor="let parametro of this.muestreos[1].resultados">{{parametro.claveParametro}}</th>
+                        <ng-container *ngIf="this.muestreos.length > 0">
+                            <th *ngFor=" let parametro of this.muestreos[1].resultados">{{parametro.claveParametro}}</th>
+                        </ng-container>
                     </tr>
                 </thead>
                 <tbody>
