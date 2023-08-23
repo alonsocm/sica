@@ -2,9 +2,9 @@ p{
     font-weight: 500;
 }
 
-label{
+/* label{
     font-weight: 100;
-}
+} */
 .sticky-col {
     position: -webkit-sticky;
     position: sticky;
@@ -79,4 +79,11 @@ label{
     min-width: 150px;
     max-width: 150px;
     left: 1350px;
+}
+
+.onceava-col {
+    width: 100px;
+    min-width: 150px;
+    max-width: 150px;
+    left: 1500px;
 }

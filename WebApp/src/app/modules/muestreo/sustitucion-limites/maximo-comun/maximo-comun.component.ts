@@ -157,6 +157,21 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     });
   }
 
+  seleccionarTodos(): void {
+    this.muestreosFiltrados.map((m) => {
+      if (this.seleccionarTodosChck) {
+        m.isChecked ? true : (m.isChecked = true);
+      } else {
+        m.isChecked ? (m.isChecked = false) : true;
+      }
+    });
+    this.obtenerSeleccionados();
+  }
+
+  obtenerSeleccionados(): Array<MuestreoSustitucion> {
+    return this.muestreosFiltrados.filter((f) => f.isChecked);
+  }
+
   filtrar() {
     this.muestreosFiltrados = this.muestreos;
     this.columnas.forEach((columna) => {
@@ -168,6 +183,10 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     });
 
     this.establecerValoresFiltrosTabla();
+  }
+
+  seleccionar(): void {
+    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
   }
 
   private establecerValoresFiltrosTabla() {
@@ -182,80 +201,66 @@ export class MaximoComunComponent extends BaseService implements OnInit {
     let nombresColumnas: Array<Columna> = [
       {
         nombre: 'noEntrega',
-        etiqueta: 'No. Entrega',
-        orden: 1,
+        etiqueta: 'No. ENTREGA',
+        orden: 2,
         filtro: new Filter(),
       },
       {
         nombre: 'tipoSitio',
         etiqueta: 'TIPO DE SITIO',
-        orden: 2,
+        orden: 3,
         filtro: new Filter(),
       },
       {
         nombre: 'claveSitio',
         etiqueta: 'CLAVE SITIO',
-        orden: 3,
+        orden: 4,
         filtro: new Filter(),
       },
       {
         nombre: 'nombreSitio',
         etiqueta: 'NOMBRE DEL SITIO',
-        orden: 4,
+        orden: 5,
         filtro: new Filter(),
       },
       {
         nombre: 'claveMonitoreo',
         etiqueta: 'CLAVE MONITOREO',
-        orden: 5,
+        orden: 6,
         filtro: new Filter(),
       },
       {
         nombre: 'fechaRealizacion',
         etiqueta: 'FECHA REALIZACIÓN',
-        orden: 6,
+        orden: 7,
         filtro: new Filter(),
       },
       {
         nombre: 'laboratorio',
         etiqueta: 'LABORATORIO',
-        orden: 7,
+        orden: 8,
         filtro: new Filter(),
       },
       {
         nombre: 'cuerpoAgua',
         etiqueta: 'CUERPO DE AGUA',
-        orden: 8,
+        orden: 9,
         filtro: new Filter(),
       },
       {
         nombre: 'tipoCuerpoAguaOriginal',
         etiqueta: 'TIPO CUERPO AGUA ORIGINAL',
-        orden: 9,
+        orden: 10,
         filtro: new Filter(),
       },
       {
         nombre: 'tipoCuerpoAgua',
         etiqueta: 'TIPO CUERPO AGUA',
-        orden: 10,
+        orden: 11,
         filtro: new Filter(),
       },
     ];
     this.columnas = nombresColumnas;
-  }
-  
-  definirColumna(ordenColuma: number){
-    switch (ordenColuma) {
-      case 1:
-        return 'col-1'
-        break;
-        case 2:
-          return 'col-2'
-          break;
-      default:
-        break;
-    }
-    return 'primera-col'
   }
 }
 
@@ -271,4 +276,5 @@ interface MuestreoSustitucion {
   tipoCuerpoAguaOriginal: string;
   tipoCuerpoAgua: string;
   resultados: Array<any>;
+  isChecked: boolean;
 }
