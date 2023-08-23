@@ -6,7 +6,7 @@ import { Resultado } from 'src/app/interfaces/Resultado.interface';
   providedIn: 'root',
 })
 export class BaseService {
-  public page: number = 1;  
+  public page: number = 1;
   public NoPage: number = 30;
 
   noRegistro: string = 'No se encontraron registros';
@@ -20,10 +20,10 @@ export class BaseService {
   seleccionarTodosChck: boolean = false;
 
   columnas: Array<Columna> = [];
-  resultadosFiltradosn: Array<any> = [];  
+  resultadosFiltradosn: Array<any> = [];
 
-  resultadosn: Array<any> = [];    
-  sufijos: Array<string> = ['E','M','S','D','R','O','A','V','C'];
+  resultadosn: Array<any> = [];
+  sufijos: Array<string> = ['E', 'M', 'S', 'D', 'R', 'O', 'A', 'V', 'C'];
 
   @ViewChild('mensajes') mensajes: any;
   @ViewChildren('filtros') filtros: any;
@@ -37,14 +37,14 @@ export class BaseService {
     setTimeout(() => {
       this.mostrarAlerta = false;
     }, 10000);
-  };
+  }
 
   hacerScroll() {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
-  };
+  }
 
   generarArchivoDeErrores(errores: string) {
     const blob = new Blob([String(errores).replaceAll(',', '\n')], {
@@ -52,10 +52,10 @@ export class BaseService {
     });
 
     return blob;
-  };
+  }
 
   filtrarn() {
-    this.resultadosFiltradosn = this.resultadosn;   
+    this.resultadosFiltradosn = this.resultadosn;
     this.columnas.forEach((columna) => {
       this.resultadosFiltradosn = this.resultadosFiltradosn.filter((f: any) => {
         return columna.filtro.selectedValue == 'Seleccione'
@@ -64,7 +64,7 @@ export class BaseService {
       });
     });
     this.establecerValoresFiltrosTablan();
-  };
+  }
 
   establecerValoresFiltrosTablan() {
     this.columnas.forEach((f) => {
@@ -73,7 +73,7 @@ export class BaseService {
       ];
       this.page = 1;
     });
-  };
+  }
 
   limpiarFiltrosn() {
     this.columnas.forEach((f) => {
@@ -82,20 +82,20 @@ export class BaseService {
     this.filtrarn();
     document.getElementById('dvMessage')?.click();
     this.establecerValoresFiltrosTablan();
-  };
+  }
 
   seleccionarAll(resultadosFiltrados: Array<any>): void {
     resultadosFiltrados.map((m) => {
-      m.isChecked = (this.seleccionarTodosChck) ? true : false;      
+      m.isChecked = this.seleccionarTodosChck ? true : false;
     });
-  };
+  }
 
   //sustituye a obtenerseleccionados()
   Seleccionados(Seleccionados: Array<any>) {
     return Seleccionados.filter((f) => f.isChecked);
   }
 
-  descargarArchivo(file: any, fileName: string){
+  descargarArchivo(file: any, fileName: string) {
     const downloadInstance = document.createElement('a');
     downloadInstance.href = URL.createObjectURL(file);
     downloadInstance.target = '_blank';
@@ -105,15 +105,13 @@ export class BaseService {
     downloadInstance.click();
     document.body.removeChild(downloadInstance);
   }
-  
-  resetInputFile(input: ElementRef)
-  {
+
+  resetInputFile(input: ElementRef) {
     input.nativeElement.value = null;
   }
 
   seleccionarn(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
-   
   }
-};
+}

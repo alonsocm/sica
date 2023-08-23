@@ -1,1 +1,78 @@
 <app-menu></app-menu>
+<div class="container-fluid">
+    <h3>Supervisión de muestreo.</h3>
+    <hr class="red">
+    <div class="message-container">
+        <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+            [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i>
+                Registrar supervisión de muestreo
+            </button>
+        </div>
+        <div class="col-md-8 text-right">
+            <button class="btn btn-secondary" type="button" title="Clic para descargar el formato de supervisión">
+                <i class="bi bi-cloud-download"></i>
+                Formato de Supervisión de Muestreo
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-responsive dvTable">
+            <div class="table table-striped">
+                <thead>
+                    <tr>
+                        <ng-container *ngFor="let columna of this.columnas">
+                            <th>
+                                {{columna.etiqueta}}
+                                <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                                    (selected)="columna.filtro.selectedValue = $event;"
+                                    (inputCleared)="columna.filtro.selectedValue = 'Seleccione';"
+                                    [itemTemplate]="itemTemplate" placeholder="seleccione">
+                                </ng-autocomplete>
+                                <ng-template #itemTemplate let-item>
+                                    <a [innerHTML]="item"></a>
+                                </ng-template>
+                            </th>
+                        </ng-container>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr
+                        *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
+                        <td class="checkBox-center">
+                            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()">
+                        </td>
+                        <td>{{muestreo.numeroEntrega}}</td>
+                        <td>-</td>
+                        <td>{{muestreo.claveSitio}}</td>
+                        <td>{{muestreo.claveMonitoreo}}</td>
+                        <td>{{muestreo.nombreSitio}}</td>
+                        <td>{{muestreo.ocdl}}</td>
+                        <td>{{muestreo.cuerpoAgua}}</td>
+                        <td>-</td>
+                        <td>{{muestreo.tipoCuerpoAgua}}</td>
+                        <td>{{muestreo.tipoSitio}}</td>
+                        <td>{{muestreo.laboratorio}}</td>
+                        <td>-</td>
+                        <td>{{muestreo.fechaProgramada}}</td>
+                        <td>{{muestreo.fechaRealizacion}}</td>
+                        <td>{{muestreo.programaAnual}}</td>
+                        <td>{{muestreo.horaInicio}}</td>
+                        <td>{{muestreo.horaFin}}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr> -->
+                </tbody>
+            </div>
+        </div>
+        <div class="row-group">
+            <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
+        </div>
+    </div>
+</div>
