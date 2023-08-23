@@ -37,14 +37,7 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   }
 
   ngOnInit(): void {
-    this.columnas = [
-      { nombre: 'nombreEmergencia', etiqueta: 'NOMBRE EMERGENCIA', orden: 1, filtro: new Filter() },
-      { nombre: 'sitio', etiqueta: 'SITIO', orden: 2, filtro: new Filter() },     
-      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 3, filtro: new Filter() },
-      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 4, filtro: new Filter() },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 5, filtro: new Filter() },
-    ];
-
+    this.definirColumnas();
     this.obtenerMuestreosSustituidos();
   }
 
@@ -232,38 +225,12 @@ export class EmergenciaComponent extends BaseService implements OnInit {
   }
 
   definirColumnas() {
-    let nombresColumnas: Array<Columna> = [
-      {
-        nombre: 'claveSitio',
-        etiqueta: 'CLAVE SITIO',
-        orden: 1,
-        filtro: new Filter(),
-      },
-      {
-        nombre: 'claveMonitoreo',
-        etiqueta: 'CLAVE MONITOREO',
-        orden: 2,
-        filtro: new Filter(),
-      },
-      {
-        nombre: 'nombreSitio',
-        etiqueta: 'NOMBRE DEL SITIO',
-        orden: 3,
-        filtro: new Filter(),
-      },
-      {
-        nombre: 'tipoCuerpoAgua',
-        etiqueta: 'TIPO CUERPO DE AGUA',
-        orden: 4,
-        filtro: new Filter(),
-      },
-      {
-        nombre: 'fechaRealizacion',
-        etiqueta: 'FECHA REALIZACIÓN',
-        orden: 5,
-        filtro: new Filter(),
-      },
-      { nombre: 'anio', etiqueta: 'AÑO', orden: 6, filtro: new Filter() },
+    this.columnas = [
+      { nombre: 'nombreEmergencia', etiqueta: 'NOMBRE EMERGENCIA', orden: 2, filtro: new Filter() },
+      { nombre: 'sitio', etiqueta: 'SITIO', orden: 3, filtro: new Filter() },     
+      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 4, filtro: new Filter() },
+      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 5, filtro: new Filter() },
+      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 6, filtro: new Filter() },
     ];
   }
 
@@ -291,5 +258,25 @@ export class EmergenciaComponent extends BaseService implements OnInit {
         ...new Set(this.registrosFiltrados.map((m: any) => m[f.nombre])),
       ];
     });
+  }
+
+  seleccionarTodos(): void {
+    this.registrosFiltrados.map((m) => {
+      if (this.seleccionarTodosChck) {
+        m.isChecked ? true : (m.isChecked = true);
+      } else {
+        m.isChecked ? (m.isChecked = false) : true;
+      }
+    });
+    
+    this.obtenerSeleccionados();
+  }
+
+  seleccionar(): void {
+    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
+  }
+
+  obtenerSeleccionados() {
+    return this.registrosFiltrados.filter((f) => f.isChecked);
   }
 }
