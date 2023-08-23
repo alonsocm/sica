@@ -1,6 +1,5 @@
 function mayus(e) {
-    e.value = e.value.toUpperCase();
-    console.log('pruab validaciones');
+    e.value = e.value.toUpperCase();    
 }
 
 function validarAlfanumerico(evento) {

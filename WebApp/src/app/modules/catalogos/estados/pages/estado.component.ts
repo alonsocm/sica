@@ -45,8 +45,7 @@ export class EstadoComponent implements OnInit {
 
   ngOnInit() {
     this.EstadoService.getAllEstado().subscribe(
-      (result) => {
-        console.log(result);
+      (result) => {      
         this.Estados = result.data;
         this._estados = result.data;
       },

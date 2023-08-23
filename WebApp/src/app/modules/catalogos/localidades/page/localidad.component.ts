@@ -41,8 +41,7 @@ export class LocalidadComponent implements OnInit {
 
   ngOnInit(): void {
     this.LocalidadService.getAllLocalidad().subscribe(
-      (result) => {
-        console.log(result);
+      (result) => {     
         this.Localidades = result.data;
         this._localidades = result.data;
       },

@@ -55,8 +55,7 @@ export class MunicipiosComponent implements OnInit {
     this._municipio = this.municipio.filter(
       (x) => x.estado.nombre.toLowerCase().indexOf(val.toLowerCase()) !== -1
     );
-    this._Filtrado = this._municipio;
-    console.log( document.getElementById('autoEstado')?.textContent)
+    this._Filtrado = this._municipio;   
     // this._municipio = this.municipio.filter(
     //     (x) => x.estado.nombre.toLowerCase().indexOf(val.toLowerCase()) !== -1
     //   );

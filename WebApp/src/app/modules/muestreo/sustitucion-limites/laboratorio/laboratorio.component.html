@@ -13,7 +13,7 @@
   <div class="row">
     <div class="col-md-3 ">
       <label for="anios">Año a sustituir:*</label>
-      <select (disabled)="this.esprimeravez" class="form-control" name="anios" id="anios" multiple [(ngModel)]="this.aniosseleccionados">
+      <select  (disabled)="this.esprimeravez" class="form-control" name="anios" id="anios" multiple [(ngModel)]="this.aniosseleccionados">
         <option *ngFor="let anio of this.anios" value="{{anio}}">{{anio}}</option>
       </select>
     </div>
@@ -30,7 +30,7 @@
       </button>
     </div>
   </div>
-  <div class="row" *ngIf="this.resultadosFiltradosn.length>0">
+  <div class="row" *ngIf="this.resultadosFiltradosn.length>0 && this.esprimeravez == false">
     <div class="col-md-12 table-responsive dvTable" style="max-width: 1900px; padding-left: 0;">
       <table class="table table-striped table-hover">
         <thead>
@@ -65,7 +65,7 @@
           <tr *ngFor="let muestreo of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
             <td style="text-align:center" class="checkBox-center">
               <input type="checkbox" [(ngModel)]="muestreo.isChecked"
-                     (change)="seleccionar()">
+                     (change)="seleccionarn()">
             </td>
             <td  class="sticky-col primera-col" style="text-align: center;">{{muestreo.noEntregaOCDL}}</td>
             <td  class="sticky-col segunda-col" style="text-align: center;">{{muestreo.tipoSitio}}</td>

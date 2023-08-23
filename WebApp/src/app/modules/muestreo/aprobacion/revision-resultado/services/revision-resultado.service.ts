@@ -53,11 +53,7 @@ export class RevisionResultadoService {
       fromObject: { 
         muestreoId:muestreoId,
         estatus: estatusMuestreo.OriginalesAprobados 
-      }});     
-
-      // console.log(params);
-      // console.log(muestreoId);
-      // console.log(estatusMuestreo.OriginalesAprobados);
+      }});       
       //return this.http.post(environment.apiUrl +'/Muestreos/CambioEstatus?estatus='+estatusMuestreo.OriginalesAprobados + "&muestreoId="+ muestreoId,'');
       return this.http.get(environment.apiUrl +'/Muestreos/CambioEstatus',{ params}); 
     }

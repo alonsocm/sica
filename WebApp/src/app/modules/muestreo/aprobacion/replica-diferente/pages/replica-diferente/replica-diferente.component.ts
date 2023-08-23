@@ -91,8 +91,7 @@ export class ReplicaDiferenteComponent extends BaseService implements OnInit {
   consultarMonitoreos(): void {
     this.resultadosService.getReplicaDiferente().subscribe({
       next: (response: any) => {
-        this.muestreos = response.data;
-        console.log(response.data);
+        this.muestreos = response.data;       
         this.muestreosFiltrados = this.muestreos;
         this.establecerValoresFiltrosTabla();
 
@@ -422,8 +421,7 @@ export class ReplicaDiferenteComponent extends BaseService implements OnInit {
       resultados[index].usuarioRevisionId =
         this.authService.getUser().usuarioId;
       resultados[index].seApruebaResultadodespuesdelaReplica = 'NO';
-    }
-    console.log(resultados);
+    }    
     this.resultadosService.aprobacionPorBloque(
      resultados
     ).subscribe({

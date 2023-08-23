@@ -70,8 +70,7 @@ export class UsuarioComponent implements OnInit {
     }, error => console.error(error));
 
     this.userService.getDLocales().subscribe(direcciones => {
-        this.direccionL = direcciones.data;
-        console.log(direcciones);
+        this.direccionL = direcciones.data;       
       }, error => console.log(error));
 
     this.userService.getCuencas().subscribe(result => {

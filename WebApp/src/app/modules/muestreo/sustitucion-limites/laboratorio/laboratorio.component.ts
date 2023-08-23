@@ -1,4 +1,4 @@
-/// <reference path="../limites.service.ts" />
+
 import { Component, OnInit } from '@angular/core';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Filter } from '../../../../interfaces/filtro.interface';
@@ -6,6 +6,9 @@ import { estatusMuestreo } from '../../../../shared/enums/estatusMuestreo';
 import { LimitesService } from '../limites.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { MensajesSustitución, TipoMensaje } from '../../../../shared/enums/tipoMensaje';
+import { ResultadoDescarga } from '../../../../interfaces/Resultado.interface';
+
+import { TotalService } from '../../revision/services/total.service';
 
 
 
@@ -16,7 +19,7 @@ import { MensajesSustitución, TipoMensaje } from '../../../../shared/enums/tipo
 })
 export class LaboratorioComponent extends BaseService implements OnInit {
 
-  constructor(private limiteService: LimitesService) { 
+  constructor(private limiteService: LimitesService, private totalService: TotalService) { 
     super();
   }
   anios: Array<number> = [];
@@ -24,6 +27,7 @@ export class LaboratorioComponent extends BaseService implements OnInit {
   esprimeravez: boolean = false;
   parametrosSinLimite: Array<any> = [];
   muestreos: Array<any> = [];
+  camposDescarga: Array<ResultadoDescarga> = [];
 
   ngOnInit(): void {
 
@@ -49,53 +53,69 @@ export class LaboratorioComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.esprimeravez = response;
         if (this.esprimeravez == true) { this.mostrarMensaje(MensajesSustitución.PrimeraVez, TipoMensaje.Alerta); }
+        else { this.obtenerMuestreosSustituidos(); }
       },
       error: (error) => { },
     });
 
     /*if (!this.esprimeravez) { this.obtenerMuestreosSustituidos(); }*/
-    if (!this.esprimeravez) {
-      this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
-        next: (response: any) => {
-          this.muestreos = response.data;
-          this.resultadosFiltradosn = response.data;
-
-        },
-        error: (error) => { },
-      });
-    }
+   
   }
-  seleccionar() { }
-  exportarExcel() { }
+  seleccionar(): void {
+    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
+    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);    
+  }
+  exportarExcel(): void {
+    this.loading = true;
+      this.limiteService.exportExcelParametrosSustituidosLab(this.resultadosFiltradosn)
+        .subscribe({
+          next: (response: any) => {           
+            FileService.download(response, 'ParamerosSustituidos.xlsx');
+            this.loading = false;
+            this.hacerScroll();
+          },
+          error: (response: any) => {
+            this.mostrarMensaje(
+              'No fue posible descargar la información',
+              'danger'
+            );
+            this.loading = false;
+            this.hacerScroll();
+          },
+        });
+  }
   sustitucionLimite() {
-    
-    this.limiteService.actualizarLimitesLaboratorio(this.aniosseleccionados).subscribe({
-      next: (response: any) => {       
+    this.loading = true; 
+    this.limiteService.actualizarLimitesLaboratorio(this.aniosseleccionados).subscribe({     
+      next: (response: any) => {               
         if (response.message != "") {
-          if (response.message == MensajesSustitución.NoExistenResultados) {
+          if (response.message == MensajesSustitución.NoExistenResultados) {         
             this.mostrarMensaje(
               MensajesSustitución.NoExistenResultados, TipoMensaje.Alerta);
-            this.hacerScroll();
           }
           else {
-            let archivoErrores = this.generarArchivoDeErrores(response.message);
+            let archivoErrores = this.generarArchivoDeErrores(response.message);                
             this.mostrarMensaje(
               'La sustitución no ha sido realizada.', TipoMensaje.Error);
-            this.hacerScroll();
-            FileService.download(archivoErrores, 'Parámetros faltantes.txt');
+            
+            FileService.download(archivoErrores, 'Parámetros faltantes.txt');            
           }
+          this.hacerScroll();
+          this.loading = false;
         }
         else {
+          this.hacerScroll();
+          this.loading = false;
           this.mostrarMensaje(
-            'La sustitución fue realizada con éxito.', TipoMensaje.Correcto);
+            'La sustitución fue realizada con éxito.', TipoMensaje.Correcto);         
         }
       },
-      error: (error) => {  },
+      error: (error) => {    },
     });
 
         
   }
-  obtenerMuestreosSustituidos(): void {
+  obtenerMuestreosSustituidosl(): void {
     this.loading = true;
     this.limiteService.obtenerMuestreosSustituidos().subscribe({
       next: (response: any) => {
@@ -108,5 +128,15 @@ export class LaboratorioComponent extends BaseService implements OnInit {
       },
     });
   }
-
+  obtenerMuestreosSustituidos() {
+    this.loading = true;
+    this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
+      next: (response: any) => {        
+        this.muestreos = response.data;
+        this.resultadosFiltradosn = response.data;
+        this.loading = false;
+      },
+      error: (error) => { this.loading = false; },
+    });
+  }
 }

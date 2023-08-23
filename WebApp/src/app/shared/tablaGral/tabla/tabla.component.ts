@@ -31,8 +31,7 @@ export class TablaComponent implements OnInit {
   ngOnInit(): void {
     
     //COMPONENTE QUE RECIBE LA INFORMACION
-    this.Dtransfer.trigger.subscribe(data => {
-      console.log(data.data)
+    this.Dtransfer.trigger.subscribe(data => {      
       this.Headers = data.encabezados,
         this.Data = data.datos,
         this.Title = data.title

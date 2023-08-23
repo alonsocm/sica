@@ -459,8 +459,7 @@ export class RevisionResultadoComponent extends BaseService implements OnInit {
       this.ResultadosAprobados = this.ResultadosAprobados.filter(
         (f) => f.apruebaResultado == 'SI'
         && f.estatusResultadoId == estatusMuestreo.EnviadoResultadosAprobados
-      );
-      console.log(this.ResultadosAprobados);
+      );    
       countAp = this.ResultadosAprobados.length;
 
       if (count == countAp) {       
