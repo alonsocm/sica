@@ -122,9 +122,9 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ExportarExcel")]
-        public async Task<IActionResult> Get(int? anio)
+        public async Task<IActionResult> Get([FromHeader] List<long> muestreos)
         {
-            var registros = await Mediator.Send(new ResultadosSustituidosQuery { });
+            var registros = await Mediator.Send(new ResultadosSustituidosQuery { MuestreosId = muestreos });
 
             if (registros.Data.Count > 0)
             {

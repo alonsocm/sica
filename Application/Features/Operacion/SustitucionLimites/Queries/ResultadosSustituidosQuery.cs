@@ -7,6 +7,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Queries
 {
     public class ResultadosSustituidosQuery : IRequest<Response<List<MuestreoSustituidoDto>>>
     {
+        public List<long>? MuestreosId;
     }
 
     public class ResultadosSustituidosQueryHandler : IRequestHandler<ResultadosSustituidosQuery, Response<List<MuestreoSustituidoDto>>>
@@ -20,7 +21,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Queries
 
         public async Task<Response<List<MuestreoSustituidoDto>>> Handle(ResultadosSustituidosQuery request, CancellationToken cancellationToken)
         {
-            var muestreos = await _resultadosRepository.ObtenerResultadosSustituidos();
+            var muestreos = await _resultadosRepository.ObtenerResultadosSustituidos(request.MuestreosId);
 
             return new Response<List<MuestreoSustituidoDto>>(muestreos);
         }

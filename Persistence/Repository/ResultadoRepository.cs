@@ -198,17 +198,18 @@ namespace Persistence.Repository
             return resultadosNoEncontrados;
         }
 
-        public async Task<List<MuestreoSustituidoDto>> ObtenerResultadosSustituidos()
+        public async Task<List<MuestreoSustituidoDto>> ObtenerResultadosSustituidos(List<long>? muestreosId)
         {
-            var muestreos = await (from muestreo in _dbContext.Muestreo
-                                   join vw in _dbContext.VwClaveMuestreo on muestreo.ProgramaMuestreoId equals vw.ProgramaMuestreoId
+            var muestreos = await (from hs in _dbContext.HistorialSustitucionLimites
+                                   join muestreo in _dbContext.Muestreo on hs.MuestreoId equals muestreo.Id
+                                   where muestreosId == null || muestreosId.Contains(muestreo.Id)
                                    select new MuestreoSustituidoDto
                                    {
                                        NoEntrega = muestreo.NumeroEntrega.ToString()??string.Empty,
                                        TipoSitio = muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion,
                                        ClaveSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                        NombreSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
-                                       ClaveMonitoreo = vw.ClaveMuestreo,
+                                       ClaveMonitoreo = muestreo.ProgramaMuestreo.NombreCorrectoArchivo,
                                        FechaRealizacion = muestreo.FechaRealVisita != null ? muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy") : string.Empty,
                                        Laboratorio = muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura,
                                        CuerpoAgua = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
@@ -217,6 +218,8 @@ namespace Persistence.Repository
                                        MuestreoId = muestreo.Id,
                                        Anio = string.IsNullOrEmpty(muestreo.AnioOperacion.ToString()) ? string.Empty : muestreo.AnioOperacion.ToString()
                                    }).ToListAsync();
+
+            muestreos = muestreos.Distinct().ToList();
 
             muestreos.ForEach(f =>
             {
