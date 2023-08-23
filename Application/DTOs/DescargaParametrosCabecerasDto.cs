@@ -21,8 +21,6 @@ namespace Application.DTOs
         public string TipoSitio { get; set; }
 
     }
-
-
     public class DescargaSecaia : DescargaParametrosCabecerasDto
     {
         public string NoEntregaOCDL { get; set; }
@@ -36,20 +34,6 @@ namespace Application.DTOs
     }
     public class DescargaParametrosCabecerasDto
     {
-        //public string noEntregaOCDL { get; set; }
-        //public string ocdl { get; set; }
-        //public string nombreSitio { get; set; }
-        //public string claveMonitoreo { get; set; }
-        //public string fechaRealizacion { get; set; }
-        //public string laboratorio { get; set; }
-        //public string tipoCuerpoAgua { get; set; }
-
-        ////
-        //public string claveSitioOriginal { get; set; }
-        //public string claveSitio { get; set; }
-        //public string tipoCuerpoAguaOriginal { get; set; }
-        //public string tipoSitio { get; set; }
-
         public string param1 { get; set; }
         public string param2 { get; set; }
         public string param3 { get; set; }
@@ -1348,6 +1332,34 @@ public DescargaParametrosCabecerasDto()
 
 
 }
+
+    }
+
+    public class DescargaParametrosSustitucion : DescargaParametrosCabecerasDto
+    {
+        public string NoEntregaOCDL { get; set; }
+        public string TipoSitio { get; set; }
+        public string ClaveSitio { get; set; }
+        public string NombreSitio { get; set; }
+        public string ClaveMonitoreo { get; set; }
+        public string FechaRealizacion { get; set; }
+        public string Laboratorio { get; set; }
+        public string CuerpoAgua { get; set; }
+        public string TipoCuerpoAguaOriginal { get; set; }
+        public string TipoCuerpoAgua { get; set; }
+        public DescargaParametrosSustitucion()
+        {
+            this.NoEntregaOCDL = string.Empty;
+            this.TipoSitio = string.Empty;
+            this.ClaveSitio = string.Empty;
+            this.NombreSitio = string.Empty;
+            this.ClaveMonitoreo = string.Empty;
+            this.FechaRealizacion = string.Empty;
+            this.Laboratorio = string.Empty;
+            this.CuerpoAgua = string.Empty;
+            this.TipoCuerpoAguaOriginal = string.Empty;
+            this.TipoCuerpoAgua = string.Empty;
+        }        
 
     }
 }

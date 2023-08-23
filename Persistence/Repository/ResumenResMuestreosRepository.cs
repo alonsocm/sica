@@ -3,6 +3,7 @@ using Application.Interfaces.IRepositories;
 using Ardalis.Specification.EntityFrameworkCore;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Persistence.Contexts;
 
 namespace Persistence.Repository
@@ -366,7 +367,7 @@ namespace Persistence.Repository
                                 LaboratorioId = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Id,
                                 CuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                 TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion,
-                                TipoHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion,
+                                TipoHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion ?? "",
                                 FechaRevision = m.FechaRevisionOcdl.ToString() ?? string.Empty,
                                 NombreUsuario = m.UsuarioRevisionOcdl.Nombre + ' ' + m.UsuarioRevisionOcdl.ApellidoPaterno + ' ' + m.UsuarioRevisionOcdl.ApellidoMaterno,
                                 EstatusResultado = m.Estatus.Descripcion,
@@ -379,7 +380,7 @@ namespace Persistence.Repository
                                 EstatusOCDL = m.EstatusOcdl,
                                 EstatusSECAIA = m.EstatusSecaia,
                                 TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado == null ? string.Empty :
-                                                         m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion,
+                                                         m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion ?? "",
                                 TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion ?? string.Empty
 
                             };
@@ -400,7 +401,7 @@ namespace Persistence.Repository
                                           Id = parametro.Id,
                                           Orden = parametro.Orden ?? 0,
                                           NombreParametro = parametro.Descripcion,
-                                          Resulatdo = string.IsNullOrEmpty(subresultado.ResultadoSustituidoPorLimite) ? subresultado.Resultado : (subresultado.ResultadoSustituidoPorLimite ?? string.Empty),
+                                          Resulatdo = string.IsNullOrEmpty(subresultado.ResultadoSustituidoPorLimite) ? (subresultado.Resultado??string.Empty) : (subresultado.ResultadoSustituidoPorLimite),
                                           ClaveParametro = parametro.ClaveParametro
 
                                       }

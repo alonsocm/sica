@@ -242,8 +242,7 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
         return columna.filtro.selectedValue == 'Seleccione'
           ? true
           : f[columna.nombre] == columna.filtro.selectedValue;
-      });
-      console.log("resultadosFiltrados",this.resultadosFiltrados);
+      });    
     });
     this.loading = false;    
     this.establecerValoresFiltrosTabla();

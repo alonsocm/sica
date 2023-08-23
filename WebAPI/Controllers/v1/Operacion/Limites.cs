@@ -3,9 +3,11 @@ using Application.Enums;
 using Application.Features.Operacion.SustitucionLimites.Commands;
 using Application.Features.Operacion.SustitucionLimites.Queries;
 using Application.Interfaces.IRepositories;
+using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
+using System.Reflection;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -152,6 +154,47 @@ namespace WebAPI.Controllers.v1.Operacion
             var datosHistorial = await _historial.ObtenerElementosPorCriterioAsync(x => x.TipoSustitucionId == (int)TipoSustitucionLimites.Laboratorio);
             bool esPrimeraVez = (datosHistorial.ToList().Count > 0) ? false : true;
             return Ok(esPrimeraVez);
+        }
+
+        [HttpPost("exportExcelSustituidos")]
+        public IActionResult exportExcelSustituidos(List<ResultadoMuestreoDto> muestreos)
+        {
+            List<DescargaParametrosSustitucion> lstParamSustituidos = new List<DescargaParametrosSustitucion>();
+            foreach (var item in muestreos)
+            {
+
+                DescargaParametrosSustitucion resultado = new DescargaParametrosSustitucion();
+                resultado.NoEntregaOCDL = item.NoEntregaOCDL;
+                resultado.TipoSitio = item.TipoSitio;
+                resultado.ClaveSitio = item.ClaveSitio;
+                resultado.NombreSitio = item.NombreSitio;
+                resultado.ClaveMonitoreo = item.ClaveMonitoreo;
+                resultado.FechaRealizacion = item.FechaRealizacion;
+                resultado.Laboratorio = item.Laboratorio;
+                resultado.CuerpoAgua = item.CuerpoAgua;
+                resultado.TipoCuerpoAguaOriginal = item.TipoCuerpoAguaOriginal;
+                resultado.TipoCuerpoAgua = item.TipoCuerpoAgua;
+             
+                int num = 0;             
+
+                PropertyInfo[] propiedad = typeof(DescargaParametrosCabecerasDto).GetProperties();
+                foreach (PropertyInfo p in propiedad)
+                {                  
+                        p.SetValue(resultado, item.lstParametros[num].Resulatdo.ToString());
+                    num++;
+                }
+                lstParamSustituidos.Add(resultado);
+                
+             
+            }
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ResultadosSustituidosLaboratorio");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);           
+                ExcelService.ExportToExcel(lstParamSustituidos, fileInfo, true);          
+          
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
     }
 }

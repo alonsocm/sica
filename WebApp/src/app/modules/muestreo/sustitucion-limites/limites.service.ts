@@ -147,4 +147,11 @@ export class LimitesService {
     });
     return this.http.get(environment.apiUrl + '/MuestreosEmergencias/', {params});
   }
+
+  exportExcelParametrosSustituidosLab(muestreos: Array<any> = []) { 
+    return this.http.post(environment.apiUrl + '/Limites/exportExcelSustituidos', muestreos, { responseType: 'blob' });
+  }
+
+
+
 }

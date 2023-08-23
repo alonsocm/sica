@@ -223,8 +223,7 @@ export class ReplicaTotalComponent extends BaseService implements OnInit {
     this.replicaTotalService.obtenerRegistros().subscribe({
       next: (response: any) => {
         this.resultados = response.data;
-        this.resultadosFiltrados = response.data;
-        console.log(this.resultadosFiltrados)
+        this.resultadosFiltrados = response.data;        
         this.establecerValoresFiltrosTabla();
       },
       error: (error) => {},
