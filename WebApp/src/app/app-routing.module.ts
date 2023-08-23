@@ -35,6 +35,7 @@ import { ReglasValidarComponent } from './modules/muestreo/validacion/pages/regl
 import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/maximo-comun/maximo-comun.component';
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
+import { SupervisionComponent } from './modules/muestreo/supervision/supervision.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch:'full' },
@@ -68,6 +69,7 @@ const routes: Routes = [
   { path: 'limite-comun-maximo', component: MaximoComunComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
   { path: 'limite-laboratorio', component: LaboratorioComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
   { path: 'carga-resultados-emergencia', component: EmergenciaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
+  { path: 'muestreo-supervision', component: SupervisionComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
   { path: '**', component: NotFoundComponent }
 
 ];
