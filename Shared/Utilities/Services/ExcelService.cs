@@ -193,7 +193,6 @@ namespace Shared.Utilities.Services
                     worksheet.Cells[fila, 3].Value = muestreo.NombreSitio;
                     worksheet.Cells[fila, 4].Value = muestreo.TipoCuerpoAgua;
                     worksheet.Cells[fila, 5].Value = muestreo.FechaRealizacion;
-                    worksheet.Cells[fila, 6].Value = muestreo.Anio;
 
                     var columna = 7;
                     foreach (var parametro in muestreo.Resultados.OrderBy(x => x.Orden))

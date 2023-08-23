@@ -4,8 +4,6 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System;
-using Application.Enums;
 
 namespace Persistence.Repository
 {
@@ -206,12 +204,17 @@ namespace Persistence.Repository
                                    join vw in _dbContext.VwClaveMuestreo on muestreo.ProgramaMuestreoId equals vw.ProgramaMuestreoId
                                    select new MuestreoSustituidoDto
                                    {
-                                       MuestreoId = muestreo.Id,
+                                       NoEntrega = muestreo.NumeroEntrega.ToString()??string.Empty,
+                                       TipoSitio = muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion,
                                        ClaveSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
-                                       ClaveMonitoreo = vw.ClaveMuestreo,
                                        NombreSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
-                                       TipoCuerpoAgua = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                                       ClaveMonitoreo = vw.ClaveMuestreo,
                                        FechaRealizacion = muestreo.FechaRealVisita != null ? muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy") : string.Empty,
+                                       Laboratorio = muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura,
+                                       CuerpoAgua = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                                       TipoCuerpoAguaOriginal = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion,
+                                       TipoCuerpoAgua = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion,
+                                       MuestreoId = muestreo.Id,
                                        Anio = string.IsNullOrEmpty(muestreo.AnioOperacion.ToString()) ? string.Empty : muestreo.AnioOperacion.ToString()
                                    }).ToListAsync();
 
@@ -240,7 +243,7 @@ namespace Persistence.Repository
         public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorAnios(List<int> anios)
         {
             var resultados = await (from r in _dbContext.ResultadoMuestreo
-                                    where anios.Contains(r.Muestreo.AnioOperacion ?? 0) 
+                                    where anios.Contains(r.Muestreo.AnioOperacion ?? 0)
                                     && r.Muestreo.EstatusId == (int)Application.Enums.EstatusMuestreo.AprobacionResultado
                                     select new ResultadoParaSustitucionLimitesDto
                                     {
@@ -252,10 +255,10 @@ namespace Persistence.Repository
                                         LaboratorioId = r.LaboratorioId,
                                         Anio = Convert.ToInt32(r.Muestreo.AnioOperacion),
                                         LaboratorioMuestreo = r.Laboratorio.Nomenclatura
-                                        
+
                                     }).ToListAsync();
 
-            return resultados;            
+            return resultados;
         }
     }
 }
