@@ -7,19 +7,63 @@
             [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col text-right">
             <button type="button" class="btn btn-primary">
                 <i class="bi bi-pencil-square"></i>
                 Registrar supervisión de muestreo
             </button>
         </div>
-        <div class="col-md-8 text-right">
+        <div class=" col text-right">
             <button class="btn btn-secondary" type="button" title="Clic para descargar el formato de supervisión">
                 <i class="bi bi-cloud-download"></i>
                 Formato de Supervisión de Muestreo
             </button>
         </div>
     </div>
+    <form>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="input1">OC/DL que realiza la supervisión:</label>
+                    <input type="text" class="form-control" id="input1">
+                </div>
+                <div class="form-group">
+                    <label for="input2">Laboratorio que realizó el muestro:</label>
+                    <input type="text" class="form-control" id="input2">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="input3">Sitio:</label>
+                    <input type="text" class="form-control" id="input3">
+                </div>
+                <div class="form-group">
+                    <label for="input4">Clave del muestreo:</label>
+                    <input type="text" class="form-control" id="input4">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="input5">Fecha del muestreo:</label>
+                    <input type="text" class="form-control" id="input5">
+                </div>
+                <div class="form-group">
+                    <label for="input6">Tipo de cuerpo de agua:</label>
+                    <input type="text" class="form-control" id="input6">
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label for="input7">Puntaje obtenido:</label>
+                    <input type="text" class="form-control" id="input7">
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" id="input8">
+                        <i class="bi bi-search"></i>&nbsp; Buscar</button>
+                </div>
+            </div>
+        </div>
+    </form>
     <div class="row">
         <div class="col-md-12 table-responsive dvTable">
             <div class="table table-striped">

@@ -57,7 +57,7 @@ export class SupervisionComponent extends BaseService implements OnInit {
       },
       {
         nombre: 'puntuaje',
-        etiqueta: 'Puntuaje obtenido',
+        etiqueta: 'Puntaje obtenido',
         orden: 8,
         filtro: new Filter(),
       },
