@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { SupervisionBusqueda } from './models/SupervisionBusqueda';
 
 @Component({
   selector: 'app-supervision',
@@ -12,6 +14,16 @@ export class SupervisionComponent extends BaseService implements OnInit {
   constructor() {
     super();
   }
+
+  supervisionBusquedaForm = new FormGroup({
+    ocdl: new FormControl(''),
+    sitio: new FormControl(''),
+    fechaMuestreo: new FormControl(''),
+    puntaje: new FormControl(''),
+    laboratorio: new FormControl(''),
+    claveMuestreo: new FormControl(''),
+    tipoCuerpoAgua: new FormControl(''),
+  });
 
   ngOnInit(): void {
     this.definirColumnas();
@@ -62,5 +74,9 @@ export class SupervisionComponent extends BaseService implements OnInit {
         filtro: new Filter(),
       },
     ];
+  }
+
+  buscarSupervision() {
+    console.log(this.supervisionBusquedaForm.value);
   }
 }
