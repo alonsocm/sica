@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { SupervisionBusqueda } from './models/SupervisionBusqueda';
 
 @Component({
   selector: 'app-supervision',

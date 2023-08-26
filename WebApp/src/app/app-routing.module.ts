@@ -1,10 +1,8 @@
-
-
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './modules/login/pages/login.component';
 import { UsuarioComponent } from './modules/usuario/pages/usuario.component';
-import { HomeComponent } from './modules/home/pages/home.component'
+import { HomeComponent } from './modules/home/pages/home.component';
 import { AuthGuardService } from './core/guards/auth-guard.service';
 import { NavRootComponent } from './shared/navigation/nav-root/nav-root.component';
 import { NotFoundComponent } from './core/pages/not-found/not-found.component';
@@ -13,7 +11,7 @@ import { ResumenComponent } from './modules/muestreo/revision/OCDL/resultados-re
 import { ValidadosComponent } from './modules/muestreo/revision/OCDL/resultados-validados/pages/validados/validados.component';
 import { TotalComponent } from './modules/muestreo/revision/OCDL/resultados-total/pages/total/total.component';
 import { EstadoComponent } from './modules/catalogos/estados/pages/estado.component';
-import { MunicipiosComponent }from './modules/catalogos/municipios/pages/municipios.component';
+import { MunicipiosComponent } from './modules/catalogos/municipios/pages/municipios.component';
 import { LocalidadComponent } from './modules/catalogos/localidades/page/localidad.component';
 import { CargaResultadosComponent } from './modules/muestreo/carga/pages/carga-resultados/carga-resultados.component';
 import { RevisionResultadoComponent } from './modules/muestreo/aprobacion/revision-resultado/pages/revision-resultado.component';
@@ -35,47 +33,190 @@ import { ReglasValidarComponent } from './modules/muestreo/validacion/pages/regl
 import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/maximo-comun/maximo-comun.component';
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
-import { SupervisionComponent } from './modules/muestreo/supervision/supervision.component';
+import { SupervisionComponent } from './modules/muestreo/supervision/consulta/supervision.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch:'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'usuario', component: UsuarioComponent, children: [{path:'', outlet:'menu', component: NavRootComponent}], canActivate: [AuthGuardService] },
-  { path: 'home', component: HomeComponent, children: [{path:'', outlet:'menu', component: NavRootComponent}], canActivate: [AuthGuardService] },
-  { path: 'liberacion-muestreo', component: CargaComponent, children: [{path:'', outlet:'menu', component: NavRootComponent}], canActivate: [AuthGuardService]},
-  { path: 'resumen', component: ResumenComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'validados-muestreo', component: ValidadosComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
-  { path: 'revision-totales', component: TotalComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService]},
-  { path: 'estados', component: EstadoComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'municipios', component: MunicipiosComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'localidades', component: LocalidadComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] , canActivate: [AuthGuardService]},
-  { path: 'carga-resultados', component: CargaResultadosComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'revision-resultado', component: RevisionResultadoComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'replica-total', component: ReplicaTotalComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },  
-  { path: 'revision-totalesSecaia', component: TotalSecaiaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'revision-validadosSecaia', component: ValidadosSecaiaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'revision-resumenSecaia', component: ResumenSecaiaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'replica-diferente', component: ReplicaDiferenteComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'replica-resumen', component: ReplicaResumenComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'formato-resultado', component: FormatoResultadoComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'evidencias', component: EvidenciasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'consulta-resultado', component: ConsultaResultadoComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'consulta-evidencia', component: ConsultaEvidenciaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'validacion-reglas', component: ValidacionReglasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
-  { path: 'acumulacion-resultados', component: AcumulacionResultadosComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'resumen-validacion', component: ResumenReglasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'inicial-reglas', component: InicialReglasComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'reglas-validar', component: ReglasValidarComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }], canActivate: [AuthGuardService] },
-  { path: 'limite-comun-maximo', component: MaximoComunComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
-  { path: 'limite-laboratorio', component: LaboratorioComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
-  { path: 'carga-resultados-emergencia', component: EmergenciaComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
-  { path: 'muestreo-supervision', component: SupervisionComponent, children: [{ path: '', outlet: 'menu', component: NavRootComponent }] },
-  { path: '**', component: NotFoundComponent }
-
+  {
+    path: 'usuario',
+    component: UsuarioComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'liberacion-muestreo',
+    component: CargaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'resumen',
+    component: ResumenComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'validados-muestreo',
+    component: ValidadosComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'revision-totales',
+    component: TotalComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'estados',
+    component: EstadoComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'municipios',
+    component: MunicipiosComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'localidades',
+    component: LocalidadComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'carga-resultados',
+    component: CargaResultadosComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'revision-resultado',
+    component: RevisionResultadoComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'replica-total',
+    component: ReplicaTotalComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'revision-totalesSecaia',
+    component: TotalSecaiaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'revision-validadosSecaia',
+    component: ValidadosSecaiaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'revision-resumenSecaia',
+    component: ResumenSecaiaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'replica-diferente',
+    component: ReplicaDiferenteComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'replica-resumen',
+    component: ReplicaResumenComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'formato-resultado',
+    component: FormatoResultadoComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'evidencias',
+    component: EvidenciasComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'consulta-resultado',
+    component: ConsultaResultadoComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'consulta-evidencia',
+    component: ConsultaEvidenciaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'validacion-reglas',
+    component: ValidacionReglasComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'acumulacion-resultados',
+    component: AcumulacionResultadosComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'resumen-validacion',
+    component: ResumenReglasComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'inicial-reglas',
+    component: InicialReglasComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'reglas-validar',
+    component: ReglasValidarComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: 'limite-comun-maximo',
+    component: MaximoComunComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'limite-laboratorio',
+    component: LaboratorioComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'carga-resultados-emergencia',
+    component: EmergenciaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'muestreo-supervision',
+    component: SupervisionComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

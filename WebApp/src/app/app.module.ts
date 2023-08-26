@@ -27,7 +27,7 @@ import { ResumenComponent } from './modules/muestreo/revision/OCDL/resultados-re
 import { AlertComponent } from './shared/alert/alert.component';
 import { TotalComponent } from './modules/muestreo/revision/OCDL/resultados-total/pages/total/total.component';
 import { MuestreosTotalesComponent } from './modules/muestreo/liberacion/components/muestreos-totales/muestreos-totales.component';
-import {EstadoComponent} from './modules/catalogos/estados/pages/estado.component';
+import { EstadoComponent } from './modules/catalogos/estados/pages/estado.component';
 import { MunicipiosComponent } from './modules/catalogos/municipios/pages/municipios.component';
 import { LocalidadComponent } from './modules/catalogos/localidades/page/localidad.component';
 import { CargaResultadosComponent } from './modules/muestreo/carga/pages/carga-resultados/carga-resultados.component';
@@ -50,8 +50,7 @@ import { ResumenReglasComponent } from './modules/muestreo/validacion/pages/resu
 import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/maximo-comun/maximo-comun.component';
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
-import { SupervisionComponent } from './modules/muestreo/supervision/supervision.component';
-
+import { SupervisionComponent } from './modules/muestreo/supervision/consulta/supervision.component';
 
 @NgModule({
   declarations: [
@@ -94,17 +93,26 @@ import { SupervisionComponent } from './modules/muestreo/supervision/supervision
     MaximoComunComponent,
     LaboratorioComponent,
     EmergenciaComponent,
-    SupervisionComponent
+    SupervisionComponent,
   ],
   imports: [
-    BrowserModule, HttpClientModule,
-    AppRoutingModule, ReactiveFormsModule,
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
-    FormsModule, NgxPaginationModule,
-    AutocompleteLibModule
+    FormsModule,
+    NgxPaginationModule,
+    AutocompleteLibModule,
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi:true},
-              {provide: ErrorHandler, useClass: GlobalerrorHandlerServiceService}],
-  bootstrap: [AppComponent]
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpInterceptorService,
+      multi: true,
+    },
+    { provide: ErrorHandler, useClass: GlobalerrorHandlerServiceService },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
