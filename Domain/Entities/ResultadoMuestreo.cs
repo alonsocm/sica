@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public partial class ResultadoMuestreo
 {
@@ -62,6 +59,7 @@ public partial class ResultadoMuestreo
     public string? ResultadoReglas { get; set; }
 
     public string? ResultadoSustituidoPorLimite { get; set; }
+    public string? ResultadoSustituidoPorLaboratorio { get; set; }
 
     public long? LaboratorioSubrogadoId { get; set; }
 

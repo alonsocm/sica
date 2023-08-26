@@ -905,6 +905,7 @@ public partial class SicaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.ResultadoReplica).IsUnicode(false);
             entity.Property(e => e.ResultadoSustituidoPorLimite).HasMaxLength(50);
+            entity.Property(e => e.ResultadoSustituidoPorLaboratorio).HasMaxLength(50);
 
             entity.HasOne(d => d.EstatusResultadoNavigation).WithMany(p => p.ResultadoMuestreo)
                 .HasForeignKey(d => d.EstatusResultado)
