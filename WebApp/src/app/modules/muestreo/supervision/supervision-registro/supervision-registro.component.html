@@ -92,13 +92,13 @@
         </div>
     </div>
 </div>
-<div class="row">
+<div *ngFor="let clasificacion of this.clasificaciones" class="row">
     <div class="col">
-        <table class="table table-bordered">
+        <table class="table table-responsive">
             <thead>
                 <tr>
                     <th></th>
-                    <th>CRÍTERIO</th>
+                    <th>{{clasificacion.descripcion}}</th>
                     <th>PUNTAJE</th>
                     <th>CUMPLE</th>
                     <th>NO CUMPLE</th>
@@ -107,7 +107,27 @@
                 </tr>
             </thead>
             <tbody>
-
+                <ng-container *ngFor="let criterio of clasificacion.criterios">
+                    <tr>
+                        <td>{{criterio.numero}}</td>
+                        <td>{{criterio.descripcion}}</td>
+                        <td>{{criterio.puntaje}}</td>
+                        <td>
+                            <input type="checkbox" [(ngModel)]="this.criterio.cumple"
+                                title="Seleccione si el criterio cumple" />
+                        </td>
+                        <td>
+                            <input type="checkbox" [(ngModel)]="this.criterio.noCumple"
+                                title="Seleccione si el criterio no cumple" />
+                        </td>
+                        <td>
+                            <input type="checkbox" [(ngModel)]="this.criterio.noAplica"
+                                title="Seleccione si el criterio no aplica" />
+                        </td>
+                        <td><textarea [(ngModel)]="this.criterio.observacion"
+                                title="Escriba las observaciones para el criterio"></textarea></td>
+                    </tr>
+                </ng-container>
             </tbody>
         </table>
     </div>
