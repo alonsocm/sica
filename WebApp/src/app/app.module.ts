@@ -51,6 +51,7 @@ import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/max
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
 import { SupervisionComponent } from './modules/muestreo/supervision/consulta/supervision.component';
+import { SupervisionRegistroComponent } from './modules/muestreo/supervision/supervision-registro/supervision-registro.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +95,7 @@ import { SupervisionComponent } from './modules/muestreo/supervision/consulta/su
     LaboratorioComponent,
     EmergenciaComponent,
     SupervisionComponent,
+    SupervisionRegistroComponent,
   ],
   imports: [
     BrowserModule,

@@ -34,6 +34,7 @@ import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/max
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
 import { SupervisionComponent } from './modules/muestreo/supervision/consulta/supervision.component';
+import { SupervisionRegistroComponent } from './modules/muestreo/supervision/supervision-registro/supervision-registro.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -210,6 +211,11 @@ const routes: Routes = [
   {
     path: 'muestreo-supervision',
     component: SupervisionComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'supervision-registro',
+    component: SupervisionRegistroComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   { path: '**', component: NotFoundComponent },
