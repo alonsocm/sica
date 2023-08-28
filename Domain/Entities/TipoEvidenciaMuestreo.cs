@@ -14,4 +14,6 @@ public partial class TipoEvidenciaMuestreo
     public string Extension { get; set; } = null!;
 
     public virtual ICollection<EvidenciaMuestreo> EvidenciaMuestreo { get; set; } = new List<EvidenciaMuestreo>();
+
+    public virtual ICollection<EvidenciaSupervisionMuestreo> EvidenciaSupervisionMuestreo { get; set; } = new List<EvidenciaSupervisionMuestreo>();
 }

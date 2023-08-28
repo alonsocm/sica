@@ -1,4 +1,7 @@
-﻿namespace Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Entities;
 
 public partial class ResultadoMuestreo
 {
@@ -59,9 +62,10 @@ public partial class ResultadoMuestreo
     public string? ResultadoReglas { get; set; }
 
     public string? ResultadoSustituidoPorLimite { get; set; }
-    public string? ResultadoSustituidoPorLaboratorio { get; set; }
 
     public long? LaboratorioSubrogadoId { get; set; }
+
+    public string? ResultadoSustituidoPorLaboratorio { get; set; }
 
     public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = new List<AprobacionResultadoMuestreo>();
 

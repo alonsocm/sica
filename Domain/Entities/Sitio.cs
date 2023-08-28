@@ -42,4 +42,6 @@ public partial class Sitio
     public virtual Municipio Municipio { get; set; } = null!;
 
     public virtual ICollection<ProgramaSitio> ProgramaSitio { get; set; } = new List<ProgramaSitio>();
+
+    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreo { get; set; } = new List<SupervisionMuestreo>();
 }

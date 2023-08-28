@@ -24,4 +24,6 @@ public partial class Laboratorios
     public virtual ICollection<ResultadoMuestreo> ResultadoMuestreoLaboratorio { get; set; } = new List<ResultadoMuestreo>();
 
     public virtual ICollection<ResultadoMuestreo> ResultadoMuestreoLaboratorioSubrogado { get; set; } = new List<ResultadoMuestreo>();
+
+    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreo { get; set; } = new List<SupervisionMuestreo>();
 }
