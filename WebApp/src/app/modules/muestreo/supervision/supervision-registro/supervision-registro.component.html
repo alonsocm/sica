@@ -92,9 +92,9 @@
         </div>
     </div>
 </div>
-<div *ngFor="let clasificacion of this.clasificaciones" class="row">
+<div *ngFor="let clasificacion of this.clasificaciones" class="row" role="form">
     <div class="col">
-        <table class="table table-responsive">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th></th>
@@ -113,19 +113,23 @@
                         <td>{{criterio.descripcion}}</td>
                         <td>{{criterio.puntaje}}</td>
                         <td>
-                            <input type="checkbox" [(ngModel)]="this.criterio.cumple"
-                                title="Seleccione si el criterio cumple" />
+                            <input type="radio" [name]="criterio.descripcion" value="cumple"
+                                [(ngModel)]="this.criterio.cumplimiento" title="Seleccione si el criterio cumple" />
                         </td>
                         <td>
-                            <input type="checkbox" [(ngModel)]="this.criterio.noCumple"
-                                title="Seleccione si el criterio no cumple" />
+                            <input type="radio" [name]="criterio.descripcion" value="noCumple"
+                                [(ngModel)]="this.criterio.cumplimiento" title="Seleccione si el criterio no cumple" />
                         </td>
                         <td>
-                            <input type="checkbox" [(ngModel)]="this.criterio.noAplica"
-                                title="Seleccione si el criterio no aplica" />
+                            <input type="radio" [name]="criterio.descripcion" value="noAplica"
+                                [(ngModel)]="this.criterio.cumplimiento" title="Seleccione si el criterio no aplica" />
                         </td>
                         <td><textarea [(ngModel)]="this.criterio.observacion"
-                                title="Escriba las observaciones para el criterio"></textarea></td>
+                                title="Escriba las observaciones para el criterio"></textarea>
+                            <div *ngIf="this.criterio.cumplimiento === 'noAplica' && this.criterio.observacion == ''">
+                                Observaciones requeridas.
+                            </div>
+                        </td>
                     </tr>
                 </ng-container>
             </tbody>
