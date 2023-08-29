@@ -190,7 +190,7 @@ namespace Persistence.Repository
             resultadosDto.ForEach(resultadoDto =>
             {
                 var resultado = _dbContext.ResultadoMuestreo.Where(x => x.Id == resultadoDto.IdResultado)
-                                                            .ExecuteUpdate(s => s.SetProperty(e => e.ResultadoSustituidoPorLimite, resultadoDto.ValorSustituido));
+                                                            .ExecuteUpdate(s => (resultadoDto.esSustitucionLaboratorio) ? s.SetProperty(e => e.ResultadoSustituidoPorLaboratorio, resultadoDto.ValorSustituido) : s.SetProperty(e => e.ResultadoSustituidoPorLimite, resultadoDto.ValorSustituido));
                 if (resultado == 0)
                     resultadosNoEncontrados.Add(resultadoDto);
             });

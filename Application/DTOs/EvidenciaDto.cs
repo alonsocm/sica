@@ -11,7 +11,7 @@ namespace Application.DTOs
         public string NombreArchivo { get; set; }
         public byte[] Archivo { get; set; }
         public long TipoEvidencia { get; set; }
-        public string Sufijo { get; set; }
+        public string Sufijo { get; set; }        
 
         public EvidenciaDto()
         {
@@ -21,4 +21,5 @@ namespace Application.DTOs
             this.Archivo = new byte[0];
         }
     }
+   
 }

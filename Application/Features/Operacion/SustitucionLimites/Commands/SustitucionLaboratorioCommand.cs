@@ -51,6 +51,7 @@ namespace Application.Features.Operacion.SustitucionLimites.Commands
 
                 foreach (var resultado in lstResultadosaSustituir)
                 {
+                    resultado.esSustitucionLaboratorio = true;
                     List<VwLimiteLaboratorio> valr = new List<VwLimiteLaboratorio>();
                     valr = limites.Where(x => x.LaboratorioId == resultado.LaboratorioId && x.Anio == resultado.Anio.ToString()
                               && x.ParametroId == resultado.IdParametro).ToList();
