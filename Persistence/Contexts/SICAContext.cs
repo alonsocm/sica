@@ -146,6 +146,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwLimiteMaximoComun> VwLimiteMaximoComun { get; set; }
 
+    public virtual DbSet<VwOrganismosDirecciones> VwOrganismosDirecciones { get; set; }
+
     public virtual DbSet<VwReplicaRevisionResultado> VwReplicaRevisionResultado { get; set; }
 
     public virtual DbSet<VwResultadosInicialReglas> VwResultadosInicialReglas { get; set; }
@@ -1248,6 +1250,18 @@ public partial class SicaContext : DbContext
                 .ToView("VwLimiteMaximoComun");
 
             entity.Property(e => e.Limite).HasMaxLength(30);
+        });
+
+
+        modelBuilder.Entity<VwOrganismosDirecciones>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VwOrganismosDirecciones");
+
+            entity.Property(e => e.OrganismoCuencaDireccionLocal)
+                .HasMaxLength(201)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<VwReplicaRevisionResultado>(entity =>
