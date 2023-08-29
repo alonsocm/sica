@@ -11,7 +11,7 @@ namespace Application.DTOs
         public string NombreArchivo { get; set; }
         public byte[] Archivo { get; set; }
         public long TipoEvidencia { get; set; }
-        public string Sufijo { get; set; }
+        public string Sufijo { get; set; }        
 
         public EvidenciaDto()
         {
@@ -19,6 +19,15 @@ namespace Application.DTOs
             this.TipoEvidencia = 0;
             this.Sufijo = string.Empty;
             this.Archivo = new byte[0];
+        }
+    }
+
+    public class EvidenciaSupervisionDto: EvidenciaDto
+    {
+        public long SupervisionEvidenciaId { get; set; }
+        public EvidenciaSupervisionDto()
+        {
+            this.SupervisionEvidenciaId = 0;
         }
     }
 }
