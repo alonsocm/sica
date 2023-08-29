@@ -13,5 +13,6 @@
         public int Anio { get; set; }
         public string? LaboratorioMuestreo { get; set; }
         public string? LaboratorioSubrogado { get; set; }
+        public bool esSustitucionLaboratorio { get; set; }
     }
 }

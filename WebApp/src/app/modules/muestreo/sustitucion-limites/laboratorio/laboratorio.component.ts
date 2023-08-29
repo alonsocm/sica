@@ -84,7 +84,7 @@ export class LaboratorioComponent extends BaseService implements OnInit {
           },
         });
   }
-  sustitucionLimite() {
+    sustitucionLimite() {
     this.loading = true; 
     this.limiteService.actualizarLimitesLaboratorio(this.aniosseleccionados).subscribe({     
       next: (response: any) => {               
