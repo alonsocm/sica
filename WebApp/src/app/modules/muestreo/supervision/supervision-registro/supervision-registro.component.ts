@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ClasificacionCriterio } from '../models/clasificacion-criterio';
 import { Supervision } from '../models/supervision';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { ValidacionReglasComponent } from '../../validacion/pages/validacion-reglas/validacion-reglas.component';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -8,11 +14,39 @@ import { Supervision } from '../models/supervision';
   styleUrls: ['./supervision-registro.component.css'],
 })
 export class SupervisionRegistroComponent implements OnInit {
+  public supervisionForm: FormGroup;
   supervision: Supervision = {
     clasificaciones: [],
   };
-  url: string = '';
-  constructor() {}
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.supervisionForm.controls;
+  }
+  submitted = false;
+  constructor() {
+    this.supervisionForm = new FormGroup({
+      fechaMuestreo: new FormControl('', Validators.required),
+      horaInicio: new FormControl('', Validators.required),
+      horaFin: new FormControl('', Validators.required),
+      horaTomaMuestra: new FormControl('', Validators.required),
+      puntajeObtenido: new FormControl('', Validators.required),
+      ocdlRealiza: new FormControl('', Validators.required),
+      nombreSupervisor: new FormControl('', Validators.required),
+      ocdlReporta: new FormControl('', Validators.required),
+      claveSitio: new FormControl('', Validators.required),
+      claveMuestreo: new FormControl('', Validators.required),
+      nombreSitio: new FormControl('', Validators.required),
+      tipoCuerpoAgua: new FormControl('', Validators.required),
+      latitudSitio: new FormControl('', Validators.required),
+      longitudSitio: new FormControl('', Validators.required),
+      latitudToma: new FormControl('', Validators.required),
+      longitudToma: new FormControl('', Validators.required),
+      laboratorio: new FormControl('', Validators.required),
+      nombreResponsableMuestra: new FormControl('', Validators.required),
+      nombreResponsableMediciones: new FormControl('', Validators.required),
+      observacionesMuestreo: new FormControl(''),
+    });
+  }
 
   ngOnInit(): void {
     this.supervision.clasificaciones = [
@@ -57,5 +91,12 @@ export class SupervisionRegistroComponent implements OnInit {
 
   onFileChangeEvidencias(event: any) {
     this.supervision.archivosEvidencias = event.target.files;
+  }
+
+  guardar() {
+    this.submitted = true;
+    if (this.supervisionForm.invalid) {
+      return;
+    }
   }
 }
