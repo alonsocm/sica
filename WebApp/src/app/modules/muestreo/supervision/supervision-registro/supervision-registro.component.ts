@@ -6,7 +6,6 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ValidacionReglasComponent } from '../../validacion/pages/validacion-reglas/validacion-reglas.component';
 
 @Component({
   selector: 'app-supervision-registro',

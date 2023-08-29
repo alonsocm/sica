@@ -67,23 +67,17 @@
         </div>
     </form>
     <div class="row">
-        <div class="col-md-12 table-responsive dvTable">
-            <div class="table table-striped">
-                <thead>
+        <div class="col table-responsive">
+            <table class="table">
+                <thead class="thead-light">
                     <tr>
-                        <ng-container *ngFor="let columna of this.columnas">
-                            <th>
-                                {{columna.etiqueta}}
-                                <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                                    (selected)="columna.filtro.selectedValue = $event;"
-                                    (inputCleared)="columna.filtro.selectedValue = 'Seleccione';"
-                                    [itemTemplate]="itemTemplate" placeholder="seleccione">
-                                </ng-autocomplete>
-                                <ng-template #itemTemplate let-item>
-                                    <a [innerHTML]="item"></a>
-                                </ng-template>
-                            </th>
-                        </ng-container>
+                        <th>OC/DL realiza la supervisión</th>
+                        <th>Laboratorio que realizó muestreo</th>
+                        <th>Sitio</th>
+                        <th>Clave del muestreo</th>
+                        <th>Fecha de muestreo</th>
+                        <th>Tipo de cuerpo de agua</th>
+                        <th>Puntaje obtenido</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,11 +108,11 @@
                         <td>-</td>
                     </tr> -->
                 </tbody>
-            </div>
+            </table>
         </div>
-        <div class="row-group">
-            <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-            </pagination-controls>
-        </div>
+    </div>
+    <div class="row-group">
+        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
     </div>
 </div>
