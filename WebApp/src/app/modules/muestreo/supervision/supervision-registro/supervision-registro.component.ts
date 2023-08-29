@@ -1,7 +1,6 @@
-import { ANALYZE_FOR_ENTRY_COMPONENTS, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ClasificacionCriterio } from '../models/clasificacion-criterio';
-import { Criterio } from '../models/criterio';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Supervision } from '../models/supervision';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -9,12 +8,14 @@ import { FormControl, FormGroup } from '@angular/forms';
   styleUrls: ['./supervision-registro.component.css'],
 })
 export class SupervisionRegistroComponent implements OnInit {
-  clasificaciones: Array<ClasificacionCriterio> = [];
-
+  supervision: Supervision = {
+    clasificaciones: [],
+  };
+  url: string = '';
   constructor() {}
 
   ngOnInit(): void {
-    this.clasificaciones = [
+    this.supervision.clasificaciones = [
       {
         numero: 1,
         descripcion: 'PREVIO A LA TOMA DE MUESTRAS',
@@ -36,7 +37,7 @@ export class SupervisionRegistroComponent implements OnInit {
           'VERIFICACIÓN DE EQUIPO Y MATERIAL PARA MEDICIONES DE CAMPO Y MUESTREO',
         criterios: [
           {
-            critico: false,
+            critico: true,
             numero: 1,
             descripcion:
               'Cuenta con termómetro o termopar para la medición de temperatura del agua con resolución de  0.1°C . *',
@@ -47,5 +48,14 @@ export class SupervisionRegistroComponent implements OnInit {
         ],
       },
     ];
+  }
+
+  onFileChange(event: any) {
+    this.supervision.archivoPdfSupervision = event.target.files[0];
+    console.log(this.supervision.archivoPdfSupervision);
+  }
+
+  onFileChangeEvidencias(event: any) {
+    this.supervision.archivosEvidencias = event.target.files;
   }
 }

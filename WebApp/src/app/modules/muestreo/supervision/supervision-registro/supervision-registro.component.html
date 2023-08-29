@@ -92,47 +92,79 @@
         </div>
     </div>
 </div>
-<div *ngFor="let clasificacion of this.clasificaciones" class="row" role="form">
+<div *ngFor="let clasificacion of this.supervision.clasificaciones" class="row">
     <div class="col">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>{{clasificacion.descripcion}}</th>
-                    <th>PUNTAJE</th>
-                    <th>CUMPLE</th>
-                    <th>NO CUMPLE</th>
-                    <th>NO APLICA</th>
-                    <th>OBSERVACIONES</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let criterio of clasificacion.criterios">
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
                     <tr>
-                        <td>{{criterio.numero}}</td>
-                        <td>{{criterio.descripcion}}</td>
-                        <td>{{criterio.puntaje}}</td>
-                        <td>
-                            <input type="radio" [name]="criterio.descripcion" value="cumple"
-                                [(ngModel)]="this.criterio.cumplimiento" title="Seleccione si el criterio cumple" />
-                        </td>
-                        <td>
-                            <input type="radio" [name]="criterio.descripcion" value="noCumple"
-                                [(ngModel)]="this.criterio.cumplimiento" title="Seleccione si el criterio no cumple" />
-                        </td>
-                        <td>
-                            <input type="radio" [name]="criterio.descripcion" value="noAplica"
-                                [(ngModel)]="this.criterio.cumplimiento" title="Seleccione si el criterio no aplica" />
-                        </td>
-                        <td><textarea [(ngModel)]="this.criterio.observacion"
-                                title="Escriba las observaciones para el criterio"></textarea>
-                            <div *ngIf="this.criterio.cumplimiento === 'noAplica' && this.criterio.observacion == ''">
-                                Observaciones requeridas.
-                            </div>
-                        </td>
+                        <th></th>
+                        <th>{{clasificacion.descripcion}}</th>
+                        <th>PUNTAJE</th>
+                        <th>CUMPLE</th>
+                        <th>NO CUMPLE</th>
+                        <th>NO APLICA</th>
+                        <th>OBSERVACIONES</th>
                     </tr>
-                </ng-container>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let criterio of clasificacion.criterios">
+                        <tr
+                            [ngClass]="{'table-warning': this.criterio.cumplimiento == 'noAplica' && this.criterio.critico}">
+                            <td>{{criterio.numero}}</td>
+                            <td>{{criterio.descripcion}}</td>
+                            <td>{{criterio.puntaje}}</td>
+                            <td>
+                                <input type="radio" [name]="criterio.descripcion" value="cumple"
+                                    [(ngModel)]="this.criterio.cumplimiento" title="Seleccione si el criterio cumple" />
+                            </td>
+                            <td>
+                                <input type="radio" [name]="criterio.descripcion" value="noCumple"
+                                    [(ngModel)]="this.criterio.cumplimiento"
+                                    title="Seleccione si el criterio no cumple" />
+                            </td>
+                            <td>
+                                <input type="radio" [name]="criterio.descripcion" value="noAplica"
+                                    [(ngModel)]="this.criterio.cumplimiento"
+                                    title="Seleccione si el criterio no aplica" />
+                            </td>
+                            <td><textarea [(ngModel)]="this.criterio.observacion"
+                                    title="Escriba las observaciones para el criterio"></textarea>
+                                <div
+                                    *ngIf="this.criterio.critico && this.criterio.cumplimiento === 'noAplica' && this.criterio.observacion == ''">
+                                    Observaciones requeridas.
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="form-group">
+            <label class="control-label" for="archivo-supervision">Archivo de supervisión de muestreo:</label>
+            <input type="file" id="archivo-supervision" accept=".pdf" (change)="onFileChange($event)">
+            <div>
+                {{this.supervision.archivoPdfSupervision?.name}}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="form-group">
+            <label class="control-label" for="evidencias-fotograficas">Evidencias fotográficas:</label>
+            <input type="file" id="evidencias-fotograficas" accept=".jpg" multiple
+                (change)="onFileChangeEvidencias($event)">
+            <div *ngFor="let evidencia of this.supervision.archivosEvidencias">
+                {{evidencia?.name}}
+            </div>
+            <img [src]="url">
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="button" class="btn btn-secondary mr-5">Cancelar</button>
+        <button type="button" class="btn btn-primary">Guardar</button>
     </div>
 </div>
