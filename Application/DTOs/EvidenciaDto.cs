@@ -21,13 +21,5 @@ namespace Application.DTOs
             this.Archivo = new byte[0];
         }
     }
-
-    public class EvidenciaSupervisionDto: EvidenciaDto
-    {
-        public long SupervisionEvidenciaId { get; set; }
-        public EvidenciaSupervisionDto()
-        {
-            this.SupervisionEvidenciaId = 0;
-        }
-    }
+   
 }

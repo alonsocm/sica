@@ -31,9 +31,13 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
 
         public async Task<Response<bool>> Handle(SupervisionMuestreoCommand request, CancellationToken cancellationToken)
         {
+           
             if (request.supervision.Id != 0) { }
             else
-            { }
+            {
+               
+
+            }
 
 
 

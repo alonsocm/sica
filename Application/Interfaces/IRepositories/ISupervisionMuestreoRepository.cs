@@ -10,7 +10,8 @@ namespace Application.Interfaces.IRepositories
 {
     public interface ISupervisionMuestreoRepository: IRepository<SupervisionMuestreo>
     {
-        SupervisionMuestreoDto ActualizarSupervision(SupervisionMuestreoDto supervisionDto);
+        
+        
 
     }
 }
