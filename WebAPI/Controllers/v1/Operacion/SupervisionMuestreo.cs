@@ -13,10 +13,12 @@ namespace WebAPI.Controllers.v1.Operacion
     {
         private readonly IMuestreadoresRepository _muestrador;
         private readonly ISitioRepository _sitioRepository;
+        private readonly IVwOrganismosDireccionesRepository _organismoDirecRepository;
 
-        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository)
+        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository)
         {
             _muestrador = muestreador; _sitioRepository = sitioRepository;
+            _organismoDirecRepository = organismoDirecRepository;
         }
 
         [HttpPost("SupervisionMuestreo")]
@@ -39,6 +41,13 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             var datos = await _sitioRepository.ObtenerElementosPorCriterioAsync(x => x.CuencaDireccionesLocalesId == cuencaDireccionId);
             return Ok(datos.ToList());
+        }
+
+        [HttpGet("OrganismosDirecciones")]
+        public async Task<IActionResult> OrganismosDirecciones()
+        {
+            var datos = await _organismoDirecRepository.ObtenerTodosElementosAsync();
+            return Ok("ok");
         }
     }
 
