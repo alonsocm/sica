@@ -101,6 +101,8 @@ namespace Persistence
             services.AddTransient<IHistorialSusticionEmergenciaRepository, HistorialSustitucionEmergenciaRepository>();
             services.AddTransient<ISupervisionMuestreoRepository, SupervisionMuestreoRepository>();
             services.AddTransient<IVwOrganismosDireccionesRepository, VwOrganismosDireccionesRepository>();
+            services.AddTransient<IMuestreadoresRepository, MuestreadoresRepository>();
+            
             #endregion
         }
     }
