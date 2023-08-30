@@ -1390,6 +1390,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
             entity.Property(e => e.NombreSitio).HasMaxLength(250);
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
+            entity.Property(e => e.ClaveSitio).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);
