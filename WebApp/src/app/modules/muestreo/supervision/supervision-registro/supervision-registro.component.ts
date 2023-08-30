@@ -6,6 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { SupervisionService } from '../supervision.service';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -15,6 +16,9 @@ import {
 export class SupervisionRegistroComponent implements OnInit {
   public supervisionForm: FormGroup;
   supervision: Supervision = {
+    fechaMuestreo: new Date('2023/08/28'),
+    horaInicio: '09:24',
+    horaFin: '10:14',
     clasificaciones: [],
   };
 
@@ -22,29 +26,89 @@ export class SupervisionRegistroComponent implements OnInit {
     return this.supervisionForm.controls;
   }
   submitted = false;
-  constructor() {
+  constructor(private supervisionService: SupervisionService) {
     this.supervisionForm = new FormGroup({
-      fechaMuestreo: new FormControl('', Validators.required),
-      horaInicio: new FormControl('', Validators.required),
-      horaFin: new FormControl('', Validators.required),
-      horaTomaMuestra: new FormControl('', Validators.required),
-      puntajeObtenido: new FormControl('', Validators.required),
-      ocdlRealiza: new FormControl('', Validators.required),
-      nombreSupervisor: new FormControl('', Validators.required),
-      ocdlReporta: new FormControl('', Validators.required),
-      claveSitio: new FormControl('', Validators.required),
-      claveMuestreo: new FormControl('', Validators.required),
-      nombreSitio: new FormControl('', Validators.required),
-      tipoCuerpoAgua: new FormControl('', Validators.required),
-      latitudSitio: new FormControl('', Validators.required),
-      longitudSitio: new FormControl('', Validators.required),
-      latitudToma: new FormControl('', Validators.required),
-      longitudToma: new FormControl('', Validators.required),
-      laboratorio: new FormControl('', Validators.required),
-      nombreResponsableMuestra: new FormControl('', Validators.required),
-      nombreResponsableMediciones: new FormControl('', Validators.required),
-      observacionesMuestreo: new FormControl(''),
+      fechaMuestreo: new FormControl(
+        this.supervision.fechaMuestreo?.toISOString().split('T')[0],
+        Validators.required
+      ),
+      horaInicio: new FormControl(
+        this.supervision.horaInicio,
+        Validators.required
+      ),
+      horaFin: new FormControl(this.supervision.horaFin, Validators.required),
+      horaTomaMuestra: new FormControl(
+        this.supervision.horaTomaMuestra,
+        Validators.required
+      ),
+      puntajeObtenido: new FormControl(
+        this.supervision.puntajeObtenido,
+        Validators.required
+      ),
+      ocdlRealiza: new FormControl(
+        this.supervision.ocdlRealiza,
+        Validators.required
+      ),
+      nombreSupervisor: new FormControl(
+        this.supervision.nombreSupervisor,
+        Validators.required
+      ),
+      ocdlReporta: new FormControl(
+        this.supervision.ocdlReporta,
+        Validators.required
+      ),
+      claveSitio: new FormControl(
+        this.supervision.claveSitio,
+        Validators.required
+      ),
+      claveMuestreo: new FormControl(
+        this.supervision.claveMuestreo,
+        Validators.required
+      ),
+      nombreSitio: new FormControl(
+        this.supervision.nombreSitio,
+        Validators.required
+      ),
+      tipoCuerpoAgua: new FormControl(
+        this.supervision.tipoCuerpoAgua,
+        Validators.required
+      ),
+      latitudSitio: new FormControl(
+        this.supervision.latitudSitio,
+        Validators.required
+      ),
+      longitudSitio: new FormControl(
+        this.supervision.longitudSitio,
+        Validators.required
+      ),
+      latitudToma: new FormControl(
+        this.supervision.latitudToma,
+        Validators.required
+      ),
+      longitudToma: new FormControl(
+        this.supervision.longitudToma,
+        Validators.required
+      ),
+      laboratorio: new FormControl(
+        this.supervision.laboratorio,
+        Validators.required
+      ),
+      nombreResponsableMuestra: new FormControl(
+        this.supervision.nombreResponsableMuestra,
+        Validators.required
+      ),
+      nombreResponsableMediciones: new FormControl(
+        this.supervision.nombreResponsableMediciones,
+        Validators.required
+      ),
+      observacionesMuestreo: new FormControl(
+        this.supervision.observacionesMuestreo
+      ),
     });
+    this.supervisionService.data.subscribe((data) => {
+      console.log(data);
+    });
+    this.supervisionService.updateData(2);
   }
 
   ngOnInit(): void {
@@ -97,5 +161,33 @@ export class SupervisionRegistroComponent implements OnInit {
     if (this.supervisionForm.invalid) {
       return;
     }
+
+    this.supervision.fechaMuestreo = this.supervisionForm.value.fechaMuestreo;
+    this.supervision.horaInicio = this.supervisionForm.value.horaInicio;
+    this.supervision.horaFin = this.supervisionForm.value.horaFin;
+    this.supervision.horaTomaMuestra =
+      this.supervisionForm.value.horaTomaMuestra;
+    this.supervision.puntajeObtenido =
+      this.supervisionForm.value.puntajeObtenido;
+    this.supervision.ocdlRealiza = this.supervisionForm.value.ocdlRealiza;
+    this.supervision.nombreSupervisor =
+      this.supervisionForm.value.nombreSupervisor;
+    this.supervision.ocdlReporta = this.supervisionForm.value.ocdlReporta;
+    this.supervision.claveSitio = this.supervisionForm.value.claveSitio;
+    this.supervision.claveMuestreo = this.supervisionForm.value.claveMuestreo;
+    this.supervision.nombreSitio = this.supervisionForm.value.nombreSitio;
+    this.supervision.tipoCuerpoAgua = this.supervisionForm.value.tipoCuerpoAgua;
+    this.supervision.laboratorio = this.supervisionForm.value.laboratorio;
+    this.supervision.latitudSitio = this.supervisionForm.value.latitudSitio;
+    this.supervision.longitudSitio = this.supervisionForm.value.longitudSitio;
+    this.supervision.latitudToma = this.supervisionForm.value.latitudToma;
+    this.supervision.longitudSitio = this.supervisionForm.value.longitudSitio;
+    this.supervision.nombreResponsableMuestra =
+      this.supervisionForm.value.nombreResponsableMuestra;
+    this.supervision.nombreResponsableMediciones =
+      this.supervisionForm.value.nombreResponsableMediciones;
+    this.supervision.observacionesMuestreo =
+      this.supervisionForm.value.observacionesMuestreo;
+    console.log(this.supervision);
   }
 }

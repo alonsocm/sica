@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from 'src/app/shared/services/base.service';
@@ -10,7 +11,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
   styleUrls: ['./supervision.component.css'],
 })
 export class SupervisionComponent extends BaseService implements OnInit {
-  constructor() {
+  constructor(private router: Router) {
     super();
   }
 
@@ -77,5 +78,9 @@ export class SupervisionComponent extends BaseService implements OnInit {
 
   buscarSupervision() {
     console.log(this.supervisionBusquedaForm.value);
+  }
+
+  registrarSupervision() {
+    this.router.navigate(['/supervision-registro']);
   }
 }

@@ -2,9 +2,9 @@ import { ClasificacionCriterio } from './clasificacion-criterio';
 
 export interface Supervision {
   fechaMuestreo?: Date;
-  horaInicio?: Date;
-  horaFin?: Date;
-  horaTomaMuestra?: Date;
+  horaInicio?: string;
+  horaFin?: string;
+  horaTomaMuestra?: string;
   puntajeObtenido?: Date;
   ocdlRealiza?: string;
   nombreSupervisor?: string;
