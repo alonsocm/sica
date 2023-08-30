@@ -1,8 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Features.Operacion.SupervisionMuestreo.Commands;
-using Application.Features.Operacion.SustitucionLimites.Commands;
 using Application.Interfaces.IRepositories;
-using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -23,7 +21,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpPost("SupervisionMuestreo")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Post([FromForm] SupervisionMuestreoDto supervision)
+        public async Task<IActionResult> Post([FromBody] SupervisionMuestreoDto supervision)
         {
             return Ok(await Mediator.Send(new SupervisionMuestreoCommand { supervision = supervision }));
 

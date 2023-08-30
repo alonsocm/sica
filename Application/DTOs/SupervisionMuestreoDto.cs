@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTOs
+﻿namespace Application.DTOs
 {
     public class SupervisionMuestreoDto
     {
@@ -26,8 +20,8 @@ namespace Application.DTOs
         public int ResponsableToma { get; set; }
         public int ResponsableMediciones { get; set; }
         public string? ObservacionesMuestreo { get; set; }
-        public List<ValoresSupervisionDto> lstValoresSupervision { get; set; }
-        public List<EvidenciaSupervisionDto> lstEvidencia { get; set; }
+        public List<ClasificacionCriterioDto> Clasificaciones { get; set; }
+        public List<EvidenciaSupervisionDto> LstEvidencia { get; set; }
 
         public SupervisionMuestreoDto()
         {
@@ -35,7 +29,7 @@ namespace Application.DTOs
             this.HoraInicio = string.Empty;
             this.HoraTermino = string.Empty;
             this.HoraTomaMuestra = string.Empty;
-            this.PuntajeObtenido = 0;            
+            this.PuntajeObtenido = 0;
             this.OrganismoCuencaReporta = 0;
             this.SupervisorConagua = string.Empty;
             this.SitioId = 0;
@@ -44,10 +38,8 @@ namespace Application.DTOs
             this.LongitudToma = 0;
             this.LaboratorioRealiza = 0;
             this.ResponsableToma = 0;
-            this.ResponsableMediciones = 0;            
-            this.lstValoresSupervision = new List<ValoresSupervisionDto>();
-            this.lstEvidencia = new List<EvidenciaSupervisionDto>();
-
+            this.ResponsableMediciones = 0;
+            this.LstEvidencia = new List<EvidenciaSupervisionDto>();
         }
     }
 }
