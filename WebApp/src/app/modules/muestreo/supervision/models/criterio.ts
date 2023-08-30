@@ -1,7 +1,7 @@
 export interface Criterio {
-  critico: boolean;
-  numero: number;
+  id: number;
   descripcion: string;
+  obligatorio: boolean;
   puntaje: number;
   cumplimiento: string;
   observacion: string;

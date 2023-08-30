@@ -60,7 +60,7 @@
                     <label for="oc-dl">OC/DL Realiza supervisión:*</label>
                     <select class="form-control" id="oc-dl" formControlName="ocdlRealiza"
                         [ngClass]="{'is-invalid': submitted && f['ocdlRealiza'].errors}">
-                        <option>Hidalgo</option>
+                        <option>Golfo Centro/Hidalgo</option>
                     </select>
                     <div *ngIf="f['ocdlRealiza'].errors" class="invalid-feedback">
                         <div *ngIf="f['ocdlRealiza'].errors['required']">Campo requerido</div>
@@ -79,10 +79,10 @@
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="oc-dl-informe">OC/DL que reportará en el informe mensual:*</label>
+                    <label for="oc-dl-informe">OC que reportará en el informe mensual:*</label>
                     <select class="form-control" id="oc-dl-informe" formControlName="ocdlReporta"
                         [ngClass]="{'is-invalid': submitted && f['ocdlReporta'].errors}">
-                        <option>Hidalgo</option>
+                        <option>Golfo Centro/Hidalgo</option>
                     </select>
                     <div *ngIf="f['ocdlReporta'].errors" class="invalid-feedback">
                         <div *ngIf="f['ocdlReporta'].errors['required']">Campo requerido</div>
@@ -94,7 +94,7 @@
                     <label for="clave-sitio">Clave de sitio:*</label>
                     <select class="form-control" id="clave-sitio" formControlName="claveSitio"
                         [ngClass]="{'is-invalid': submitted && f['claveSitio'].errors}">
-                        <option>OCBAJ</option>
+                        <option>OCLSP3823M1</option>
                     </select>
                     <div *ngIf="f['claveSitio'].errors" class="invalid-feedback">
                         <div *ngIf="f['claveSitio'].errors['required']">Campo requerido</div>
@@ -128,7 +128,7 @@
                     <label for="tipo-cuerpo-agua">Tipo de cuerpo de agua:*</label>
                     <select class="form-control" id="tipo-cuerpo-agua" formControlName="tipoCuerpoAgua"
                         [ngClass]="{'is-invalid': submitted && f['tipoCuerpoAgua'].errors}">
-                        <option>Hidalgo</option>
+                        <option>Costero (humedal)</option>
                     </select>
                     <div *ngIf="f['tipoCuerpoAgua'].errors" class="invalid-feedback">
                         <div *ngIf="f['tipoCuerpoAgua'].errors['required']">Campo requerido</div>
@@ -140,7 +140,7 @@
                     <label for="laboratorio">Laboratorio:*</label>
                     <select class="form-control" id="laboratorio" formControlName="laboratorio"
                         [ngClass]=" {'is-invalid': submitted && f['laboratorio'].errors}">
-                        <option>LAB</option>
+                        <option>ABC MATRIZ</option>
                     </select>
                     <div *ngIf="f['laboratorio'].errors" class="invalid-feedback">
                         <div *ngIf="f['laboratorio'].errors['required']">Campo requerido</div>
@@ -198,7 +198,7 @@
                     <label for="responsable-muestra">Responsable de la toma de muestra:*</label>
                     <select class="form-control" id="responsable-muestra" formControlName="nombreResponsableMuestra"
                         [ngClass]="{'is-invalid': submitted && f['nombreResponsableMuestra'].errors}">
-                        <option>Nombre persona</option>
+                        <option>VICTOR RAMÍREZ ÁNGULO</option>
                     </select>
                     <div *ngIf="f['nombreResponsableMuestra'].errors" class="invalid-feedback">
                         <div *ngIf="f['nombreResponsableMuestra'].errors['required']">Campo requerido</div>
@@ -211,7 +211,7 @@
                     <select class="form-control" id="responsable-mediciones"
                         formControlName="nombreResponsableMediciones"
                         [ngClass]="{'is-invalid': submitted && f['nombreResponsableMediciones'].errors}">
-                        <option>Nombre persona</option>
+                        <option>FELIX ALVARADO CRUZ</option>
                     </select>
                     <div *ngIf="f['nombreResponsableMediciones'].errors" class="invalid-feedback">
                         <div *ngIf="f['nombreResponsableMediciones'].errors['required']">Campo requerido</div>
@@ -253,8 +253,8 @@
                     <tbody>
                         <ng-container *ngFor="let criterio of clasificacion.criterios">
                             <tr
-                                [ngClass]="{'table-warning': this.criterio.cumplimiento == 'noAplica' && this.criterio.critico}">
-                                <td>{{criterio.numero}}</td>
+                                [ngClass]="{'table-warning': this.criterio.cumplimiento == 'noAplica' && this.criterio.obligatorio}">
+                                <td>{{criterio.id}}</td>
                                 <td>{{criterio.descripcion}}</td>
                                 <td>{{criterio.puntaje}}</td>
                                 <td>
@@ -275,7 +275,7 @@
                                 <td><textarea [(ngModel)]="this.criterio.observacion"
                                         title="Escriba las observaciones para el criterio"></textarea>
                                     <div
-                                        *ngIf="this.criterio.critico && this.criterio.cumplimiento === 'noAplica' && this.criterio.observacion == ''">
+                                        *ngIf="this.criterio.obligatorio && this.criterio.cumplimiento === 'noAplica' && this.criterio.observacion == ''">
                                         Observaciones requeridas.
                                     </div>
                                 </td>

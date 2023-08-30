@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Supervision } from '../models/supervision';
 import {
   AbstractControl,
+  CheckboxControlValueAccessor,
   FormControl,
   FormGroup,
   Validators,
@@ -14,18 +15,36 @@ import { SupervisionService } from '../supervision.service';
   styleUrls: ['./supervision-registro.component.css'],
 })
 export class SupervisionRegistroComponent implements OnInit {
+  submitted = false;
   public supervisionForm: FormGroup;
   supervision: Supervision = {
     fechaMuestreo: new Date('2023/08/28'),
     horaInicio: '09:24',
-    horaFin: '10:14',
+    horaTermino: '10:14',
+    horaTomaMuestra: '11:14',
+    puntajeObtenido: '0',
+    ocdlRealiza: 'Golfo Centro/Hidalgo',
+    nombreSupervisor: 'Luis Eduardo Alfaro Sánchez',
+    ocdlReporta: 'Golfo Centro/Hidalgo',
+    claveSitio: 'OCLSP3823M1',
+    claveMuestreo: 'OCLSP3827-210822',
+    nombreSitio: 'PRESA SAN ONOFRE CENTRO',
+    tipoCuerpoAgua: 'Costero (humedal)',
+    laboratorio: 'ABC MATRIZ',
+    latitudSitio: 232614,
+    longitudSitio: 232614,
+    latitudToma: 232614,
+    longitudToma: 232614,
+    nombreResponsableMuestra: 'VICTOR RAMÍREZ ÁNGULO',
+    nombreResponsableMediciones: 'FELIX ALVARADO CRUZ',
+    observacionesMuestreo: '',
     clasificaciones: [],
   };
 
   get f(): { [key: string]: AbstractControl } {
     return this.supervisionForm.controls;
   }
-  submitted = false;
+
   constructor(private supervisionService: SupervisionService) {
     this.supervisionForm = new FormGroup({
       fechaMuestreo: new FormControl(
@@ -36,7 +55,10 @@ export class SupervisionRegistroComponent implements OnInit {
         this.supervision.horaInicio,
         Validators.required
       ),
-      horaFin: new FormControl(this.supervision.horaFin, Validators.required),
+      horaFin: new FormControl(
+        this.supervision.horaTermino,
+        Validators.required
+      ),
       horaTomaMuestra: new FormControl(
         this.supervision.horaTomaMuestra,
         Validators.required
@@ -105,21 +127,23 @@ export class SupervisionRegistroComponent implements OnInit {
         this.supervision.observacionesMuestreo
       ),
     });
+
     this.supervisionService.data.subscribe((data) => {
       console.log(data);
     });
+
     this.supervisionService.updateData(2);
   }
 
   ngOnInit(): void {
     this.supervision.clasificaciones = [
       {
-        numero: 1,
+        id: 1,
         descripcion: 'PREVIO A LA TOMA DE MUESTRAS',
         criterios: [
           {
-            critico: false,
-            numero: 1,
+            obligatorio: false,
+            id: 1,
             descripcion:
               'El sitio de muestreo es el correcto (verifican coordenadas y cumple con la base actualizada).*',
             puntaje: 2.5,
@@ -129,13 +153,13 @@ export class SupervisionRegistroComponent implements OnInit {
         ],
       },
       {
-        numero: 2,
+        id: 2,
         descripcion:
           'VERIFICACIÓN DE EQUIPO Y MATERIAL PARA MEDICIONES DE CAMPO Y MUESTREO',
         criterios: [
           {
-            critico: true,
-            numero: 1,
+            obligatorio: true,
+            id: 1,
             descripcion:
               'Cuenta con termómetro o termopar para la medición de temperatura del agua con resolución de  0.1°C . *',
             puntaje: 2.5,
@@ -164,7 +188,7 @@ export class SupervisionRegistroComponent implements OnInit {
 
     this.supervision.fechaMuestreo = this.supervisionForm.value.fechaMuestreo;
     this.supervision.horaInicio = this.supervisionForm.value.horaInicio;
-    this.supervision.horaFin = this.supervisionForm.value.horaFin;
+    this.supervision.horaTermino = this.supervisionForm.value.horaFin;
     this.supervision.horaTomaMuestra =
       this.supervisionForm.value.horaTomaMuestra;
     this.supervision.puntajeObtenido =
@@ -189,5 +213,12 @@ export class SupervisionRegistroComponent implements OnInit {
     this.supervision.observacionesMuestreo =
       this.supervisionForm.value.observacionesMuestreo;
     console.log(this.supervision);
+
+    this.supervisionService.postSupervision(this.supervision).subscribe({
+      next: (response: any) => {
+        console.log(response);
+      },
+      error: (error) => {},
+    });
   }
 }

@@ -1,7 +1,7 @@
 import { Criterio } from './criterio';
 
 export interface ClasificacionCriterio {
-  numero: number;
+  id: number;
   descripcion: string;
   criterios: Array<Criterio>;
 }
