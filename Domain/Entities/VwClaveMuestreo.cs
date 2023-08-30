@@ -10,4 +10,6 @@ public partial class VwClaveMuestreo
     public string ClaveMuestreo { get; set; } = null!;
 
     public int Cargado { get; set; }
+
+    public long SitioId { get; set; }
 }

@@ -152,6 +152,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwResultadosInicialReglas> VwResultadosInicialReglas { get; set; }
 
+    public virtual DbSet<VwSitios> VwSitios { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -1252,7 +1254,6 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Limite).HasMaxLength(30);
         });
 
-
         modelBuilder.Entity<VwOrganismosDirecciones>(entity =>
         {
             entity
@@ -1378,6 +1379,17 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAgua)
                 .HasMaxLength(50)
                 .HasColumnName("Tipo cuerpo agua");
+        });
+
+        modelBuilder.Entity<VwSitios>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_Sitios");
+
+            entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
+            entity.Property(e => e.NombreSitio).HasMaxLength(250);
+            entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);
