@@ -59,11 +59,13 @@
                 <div class="form-group">
                     <label for="oc-dl">OC/DL Realiza supervisión:*</label>
                     <select class="form-control" id="oc-dl" formControlName="ocdlRealiza"
-                        [ngClass]="{'is-invalid': submitted && f['ocdlRealiza'].errors}">
-                        <option>Golfo Centro/Hidalgo</option>
+                        [ngClass]="{'is-invalid': submitted && f['ocdlRealiza'].errors }">
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let ocdl of this.organismosDirecciones" [value]="ocdl.id">
+                            {{ocdl.organismoCuencaDireccionLocal}}</option>
                     </select>
                     <div *ngIf="f['ocdlRealiza'].errors" class="invalid-feedback">
-                        <div *ngIf="f['ocdlRealiza'].errors['required']">Campo requerido</div>
+                        <div *ngIf="f['ocdlRealiza'].errors['min']">Campo requerido</div>
                     </div>
                 </div>
             </div>
@@ -82,10 +84,11 @@
                     <label for="oc-dl-informe">OC que reportará en el informe mensual:*</label>
                     <select class="form-control" id="oc-dl-informe" formControlName="ocdlReporta"
                         [ngClass]="{'is-invalid': submitted && f['ocdlReporta'].errors}">
-                        <option>Golfo Centro/Hidalgo</option>
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let cuenca of this.cuencas" [value]="cuenca.id">{{cuenca.descripcion}}</option>
                     </select>
                     <div *ngIf="f['ocdlReporta'].errors" class="invalid-feedback">
-                        <div *ngIf="f['ocdlReporta'].errors['required']">Campo requerido</div>
+                        <div *ngIf="f['ocdlReporta'].errors['min']">Campo requerido</div>
                     </div>
                 </div>
             </div>
@@ -94,10 +97,10 @@
                     <label for="clave-sitio">Clave de sitio:*</label>
                     <select class="form-control" id="clave-sitio" formControlName="claveSitio"
                         [ngClass]="{'is-invalid': submitted && f['claveSitio'].errors}">
-                        <option>OCLSP3823M1</option>
+                        <option [value]="0">seleccione</option>
                     </select>
                     <div *ngIf="f['claveSitio'].errors" class="invalid-feedback">
-                        <div *ngIf="f['claveSitio'].errors['required']">Campo requerido</div>
+                        <div *ngIf="f['claveSitio'].errors['min']">Campo requerido</div>
                     </div>
                 </div>
             </div>
@@ -126,10 +129,8 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="form-group">
                     <label for="tipo-cuerpo-agua">Tipo de cuerpo de agua:*</label>
-                    <select class="form-control" id="tipo-cuerpo-agua" formControlName="tipoCuerpoAgua"
-                        [ngClass]="{'is-invalid': submitted && f['tipoCuerpoAgua'].errors}">
-                        <option>Costero (humedal)</option>
-                    </select>
+                    <input type="text" class="form-control" id="tipo-cuerpo-agua" formControlName="tipoCuerpoAgua"
+                        [ngClass]="{'is-invalid': submitted && f['tipoCuerpoAgua'].errors}" [disabled]="submitted" />
                     <div *ngIf="f['tipoCuerpoAgua'].errors" class="invalid-feedback">
                         <div *ngIf="f['tipoCuerpoAgua'].errors['required']">Campo requerido</div>
                     </div>
@@ -139,8 +140,10 @@
                 <div class="form-group">
                     <label for="laboratorio">Laboratorio:*</label>
                     <select class="form-control" id="laboratorio" formControlName="laboratorio"
-                        [ngClass]=" {'is-invalid': submitted && f['laboratorio'].errors}">
-                        <option>ABC MATRIZ</option>
+                        [ngClass]=" {'is-invalid': submitted && f['laboratorio'].errors}"
+                        (change)="refreshMuestreadores()">
+                        <option value="1">ABC MATRIZ</option>
+                        <option value="2">SAS</option>
                     </select>
                     <div *ngIf="f['laboratorio'].errors" class="invalid-feedback">
                         <div *ngIf="f['laboratorio'].errors['required']">Campo requerido</div>
@@ -198,10 +201,13 @@
                     <label for="responsable-muestra">Responsable de la toma de muestra:*</label>
                     <select class="form-control" id="responsable-muestra" formControlName="nombreResponsableMuestra"
                         [ngClass]="{'is-invalid': submitted && f['nombreResponsableMuestra'].errors}">
-                        <option>VICTOR RAMÍREZ ÁNGULO</option>
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let muestreador of this.muestreadoresLaboratorio" [value]="">
+                            {{muestreador.nombre + ' ' + muestreador.apellidoPaterno + ' ' +
+                            muestreador.apellidoMaterno}}</option>
                     </select>
                     <div *ngIf="f['nombreResponsableMuestra'].errors" class="invalid-feedback">
-                        <div *ngIf="f['nombreResponsableMuestra'].errors['required']">Campo requerido</div>
+                        <div *ngIf="f['nombreResponsableMuestra'].errors['min']">Campo requerido</div>
                     </div>
                 </div>
             </div>
@@ -211,10 +217,13 @@
                     <select class="form-control" id="responsable-mediciones"
                         formControlName="nombreResponsableMediciones"
                         [ngClass]="{'is-invalid': submitted && f['nombreResponsableMediciones'].errors}">
-                        <option>FELIX ALVARADO CRUZ</option>
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let muestreador of this.muestreadoresLaboratorio" [value]="">
+                            {{muestreador.nombre + ' ' + muestreador.apellidoPaterno + ' ' +
+                            muestreador.apellidoMaterno}}</option>
                     </select>
                     <div *ngIf="f['nombreResponsableMediciones'].errors" class="invalid-feedback">
-                        <div *ngIf="f['nombreResponsableMediciones'].errors['required']">Campo requerido</div>
+                        <div *ngIf="f['nombreResponsableMediciones'].errors['min']">Campo requerido</div>
                     </div>
                 </div>
             </div>

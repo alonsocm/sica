@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -20,6 +20,31 @@ export class SupervisionService {
     return this.http.post(
       environment.apiUrl + '/creacionsupervisionmuestreo/supervisionmuestreo',
       supervision
+    );
+  }
+
+  getOCDL() {
+    return this.http.get(
+      environment.apiUrl + '/creacionsupervisionmuestreo/organismosdirecciones'
+    );
+  }
+
+  getCuencas() {
+    return this.http.get(environment.apiUrl + '/OrganismosCuenca');
+  }
+
+  getLaboratorios() {
+    return this.http.get(environment.apiUrl + '/Laboratorios');
+  }
+
+  getMuestreadoresLaboratorio(laboratorio: number) {
+    const params = new HttpParams({
+      fromObject: { laboratorioId: laboratorio },
+    });
+    return this.http.get(
+      environment.apiUrl +
+        '/creacionsupervisionmuestreo/ResponsablesMuestreadores',
+      { params }
     );
   }
 }
