@@ -9,13 +9,13 @@ namespace WebAPI.Controllers.v1.Operacion
 {
     [ApiVersion("1.0")]
     [ApiController]
-    public class SupervisionMuestreo : BaseApiController
+    public class CreacionSupervisionMuestreo : BaseApiController
     {
         private readonly IMuestreadoresRepository _muestrador;
         private readonly ISitioRepository _sitioRepository;
         private readonly IVwOrganismosDireccionesRepository _organismoDirecRepository;
 
-        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository)
+        public CreacionSupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository)
         {
             _muestrador = muestreador; _sitioRepository = sitioRepository;
             _organismoDirecRepository = organismoDirecRepository;
@@ -47,7 +47,7 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> OrganismosDirecciones()
         {
             var datos = await _organismoDirecRepository.ObtenerTodosElementosAsync();
-            return Ok("ok");
+            return Ok(datos.ToList());
         }
     }
 
