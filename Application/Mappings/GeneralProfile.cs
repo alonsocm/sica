@@ -47,7 +47,7 @@ namespace Application.Mappings
             CreateMap<TipoHomologado, TipoHomologadoDto>();
             CreateMap<SupervisionMuestreo, SupervisionMuestreoDto>();
             CreateMap<Laboratorios, LaboratoriosDto>();
-            CreateMap<EvidenciaSupervisionDto, EvidenciaSupervisionMuestreo>();
+            CreateMap<EvidenciaSupervisionMuestreo, EvidenciaSupervisionDto>();
             #endregion
         }
     }

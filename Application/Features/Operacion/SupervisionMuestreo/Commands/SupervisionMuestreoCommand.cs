@@ -25,11 +25,12 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
         private readonly IValoresSupervisionMuestreoRepository _valoresrepository;
         private readonly IMapper _mapper;
         private readonly IEvidenciaSupervisionMuestreoRepository _evidenciasupervisionrepository;
-        public SupervisionMuestreoCommandHandler(ISupervisionMuestreoRepository repository, IValoresSupervisionMuestreoRepository valoresrepository, IMapper mapper, IEvidenciaSupervisionMuestreoRepository evidenciasupervisionrepository)
+        public SupervisionMuestreoCommandHandler(ISupervisionMuestreoRepository repository, IValoresSupervisionMuestreoRepository valoresrepository, 
+            IMapper mapper, IEvidenciaSupervisionMuestreoRepository evidenciasupervisionrepository)
         {
             _repository = repository;
             _valoresrepository = valoresrepository;
-            _mapper = mapper;
+             _mapper = mapper;
             _evidenciasupervisionrepository = evidenciasupervisionrepository;
         }
 
@@ -46,7 +47,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
                     List<ValoresSupervisionMuestreo> lstValores = _valoresrepository.ConvertiraValoresSupervisionMuestreo(request.supervision.Clasificaciones, supervison.Id);
                     _valoresrepository.InsertarRango(lstValores);
                 }
-                if (request.supervision.LstEvidencia.Count > 0) {                   
+                if (request.supervision.LstEvidencia.Count > 0) {
                     List<EvidenciaSupervisionMuestreo> lstevidencias = _mapper.Map<List<EvidenciaSupervisionMuestreo>>(request.supervision.LstEvidencia);
                     _evidenciasupervisionrepository.InsertarRango(lstevidencias);
                 }

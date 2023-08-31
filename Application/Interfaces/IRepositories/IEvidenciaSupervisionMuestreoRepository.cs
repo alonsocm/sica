@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.IRepositories
 {
-    public interface IEvidenciaSupervisionMuestreoRepository : IRepository<EvidenciaSupervisionMuestreo>
+    public interface IEvidenciaSupervisionMuestreoRepository:IRepository<EvidenciaSupervisionMuestreo>
     {
     }
 }
