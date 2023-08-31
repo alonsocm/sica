@@ -9,7 +9,7 @@ namespace WebAPI.Controllers.v1.Operacion
 {
     [ApiVersion("1.0")]
     [ApiController]
-    public class CreacionSupervisionMuestreo : BaseApiController
+    public class SupervisionMuestreo : BaseApiController
     {
         private readonly IMuestreadoresRepository _muestrador;
         private readonly ISitioRepository _sitioRepository;
@@ -17,7 +17,7 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
 
-        public CreacionSupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env)
+        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env)
         {
             _muestrador = muestreador; _sitioRepository = sitioRepository;
             _organismoDirecRepository = organismoDirecRepository;
@@ -25,7 +25,7 @@ namespace WebAPI.Controllers.v1.Operacion
             _env = env;
         }
 
-        [HttpPost("SupervisionMuestreo")]
+        [HttpPost]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromBody] SupervisionMuestreoDto supervision)
         {
@@ -75,15 +75,15 @@ namespace WebAPI.Controllers.v1.Operacion
             return NotFound();
         }
 
-        [HttpPost("ClaveSitiosPorCuencaDireccionId")]
-        public async Task<IActionResult> ClaveSitiosPorCuencaDireccionId([FromBody] long OrgaismoDireccionId)
+        [HttpGet("ClaveSitiosPorCuencaDireccionId")]
+        public async Task<IActionResult> ClaveSitiosPorCuencaDireccionId(long OrgaismoDireccionId)
         {
             return Ok(await Mediator.Send(new GetClavesSitiosQuery { OrganismosDireccionesRealizaId = OrgaismoDireccionId }));
         }
 
 
-        [HttpPost("ObtenerSitioPorClave")]
-        public async Task<IActionResult> ObtenerSitioPorClave([FromBody] string claveSitio)
+        [HttpGet("ObtenerSitioPorClave")]
+        public async Task<IActionResult> ObtenerSitioPorClave(string claveSitio)
         {
             return Ok(await Mediator.Send(new GetSitioPorClaveQuery { claveSitio = claveSitio }));
         }
