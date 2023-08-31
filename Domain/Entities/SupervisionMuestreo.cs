@@ -17,9 +17,7 @@ public partial class SupervisionMuestreo
 
     public decimal PuntajeObtenido { get; set; }
 
-    public long? OrganismoCuencaRealizaId { get; set; }
-
-    public long? DireccionLocalRealizaId { get; set; }
+    public long OrganismosDireccionesRealizaId { get; set; }
 
     public long OrganismoCuencaReportaId { get; set; }
 
@@ -41,15 +39,13 @@ public partial class SupervisionMuestreo
 
     public string? ObservacionesMuestreo { get; set; }
 
-    public virtual DireccionLocal? DireccionLocalRealiza { get; set; }
-
     public virtual ICollection<EvidenciaSupervisionMuestreo> EvidenciaSupervisionMuestreo { get; set; } = new List<EvidenciaSupervisionMuestreo>();
 
     public virtual Laboratorios LaboratorioRealiza { get; set; } = null!;
 
-    public virtual OrganismoCuenca? OrganismoCuencaRealiza { get; set; }
-
     public virtual OrganismoCuenca OrganismoCuencaReporta { get; set; } = null!;
+
+    public virtual CuencaDireccionesLocales OrganismosDireccionesRealiza { get; set; } = null!;
 
     public virtual Muestreadores ResponsableMediciones { get; set; } = null!;
 

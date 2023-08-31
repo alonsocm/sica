@@ -15,7 +15,5 @@ public partial class DireccionLocal
 
     public virtual ICollection<Sitio> Sitio { get; set; } = new List<Sitio>();
 
-    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreo { get; set; } = new List<SupervisionMuestreo>();
-
     public virtual ICollection<Usuario> Usuario { get; set; } = new List<Usuario>();
 }

@@ -1067,33 +1067,30 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(1, 1)");
             entity.Property(e => e.SupervisorConagua).HasMaxLength(100);
 
-            entity.HasOne(d => d.DireccionLocalRealiza).WithMany(p => p.SupervisionMuestreo)
-                .HasForeignKey(d => d.DireccionLocalRealizaId)
-                .HasConstraintName("FK_SupervisionMuestreo_DireccionLocal");
-
             entity.HasOne(d => d.LaboratorioRealiza).WithMany(p => p.SupervisionMuestreo)
                 .HasForeignKey(d => d.LaboratorioRealizaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SupervisionMuestreo_SupervisionMuestreo");
 
-            entity.HasOne(d => d.OrganismoCuencaRealiza).WithMany(p => p.SupervisionMuestreoOrganismoCuencaRealiza)
-                .HasForeignKey(d => d.OrganismoCuencaRealizaId)
-                .HasConstraintName("FK_SupervisionMuestreo_OrganismoCuenca");
-
-            entity.HasOne(d => d.OrganismoCuencaReporta).WithMany(p => p.SupervisionMuestreoOrganismoCuencaReporta)
+            entity.HasOne(d => d.OrganismoCuencaReporta).WithMany(p => p.SupervisionMuestreo)
                 .HasForeignKey(d => d.OrganismoCuencaReportaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SupervisionMuestreo_OrganismoCuenca1");
+                .HasConstraintName("FK_SupervisionMuestreo_OrganismoCuenca");
+
+            entity.HasOne(d => d.OrganismosDireccionesRealiza).WithMany(p => p.SupervisionMuestreo)
+                .HasForeignKey(d => d.OrganismosDireccionesRealizaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SupervisionMuestreo_CuencaDireccionesLocales");
 
             entity.HasOne(d => d.ResponsableMediciones).WithMany(p => p.SupervisionMuestreoResponsableMediciones)
                 .HasForeignKey(d => d.ResponsableMedicionesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SupervisionMuestreo_Muestreadores1");
+                .HasConstraintName("FK_SupervisionMuestreo_MuestradoresMediciones");
 
             entity.HasOne(d => d.ResponsableToma).WithMany(p => p.SupervisionMuestreoResponsableToma)
                 .HasForeignKey(d => d.ResponsableTomaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SupervisionMuestreo_Muestreadores");
+                .HasConstraintName("FK_SupervisionMuestreo_MuestradoresToma");
 
             entity.HasOne(d => d.Sitio).WithMany(p => p.SupervisionMuestreo)
                 .HasForeignKey(d => d.SitioId)
@@ -1388,9 +1385,9 @@ public partial class SicaContext : DbContext
                 .ToView("Vw_Sitios");
 
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
+            entity.Property(e => e.ClaveSitio).HasMaxLength(150);
             entity.Property(e => e.NombreSitio).HasMaxLength(250);
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
-            entity.Property(e => e.ClaveSitio).HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);

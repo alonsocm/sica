@@ -15,9 +15,7 @@ public partial class OrganismoCuenca
 
     public virtual ICollection<Sitio> Sitio { get; set; } = new List<Sitio>();
 
-    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreoOrganismoCuencaRealiza { get; set; } = new List<SupervisionMuestreo>();
-
-    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreoOrganismoCuencaReporta { get; set; } = new List<SupervisionMuestreo>();
+    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreo { get; set; } = new List<SupervisionMuestreo>();
 
     public virtual ICollection<Usuario> Usuario { get; set; } = new List<Usuario>();
 }

@@ -18,4 +18,6 @@ public partial class CuencaDireccionesLocales
     public virtual OrganismoCuenca Ocuenca { get; set; } = null!;
 
     public virtual ICollection<Sitio> Sitio { get; set; } = new List<Sitio>();
+
+    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreo { get; set; } = new List<SupervisionMuestreo>();
 }
