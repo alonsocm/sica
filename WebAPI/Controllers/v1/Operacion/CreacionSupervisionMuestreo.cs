@@ -2,6 +2,7 @@
 using Application.Features.Operacion.SupervisionMuestreo.Commands;
 using Application.Interfaces.IRepositories;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
 {
@@ -12,11 +13,15 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IMuestreadoresRepository _muestrador;
         private readonly ISitioRepository _sitioRepository;
         private readonly IVwOrganismosDireccionesRepository _organismoDirecRepository;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
 
-        public CreacionSupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository)
+        public CreacionSupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env)
         {
             _muestrador = muestreador; _sitioRepository = sitioRepository;
             _organismoDirecRepository = organismoDirecRepository;
+            _configuration = configuration;
+            _env = env;
         }
 
         [HttpPost("SupervisionMuestreo")]
@@ -47,7 +52,19 @@ namespace WebAPI.Controllers.v1.Operacion
             var datos = await _organismoDirecRepository.ObtenerTodosElementosAsync();
             return Ok(datos.ToList());
         }
+
+        [HttpGet("FormatoSupervisionMuestreo")]
+        public async Task<IActionResult> FormatoSupervisionMuestreo()
+        {
+            var plantilla = new Plantilla(_configuration, _env);
+            string path = plantilla.ObtenerRutaPlantilla("SupervisionMuestreo");
+
+            if (System.IO.File.Exists(path))
+            {
+                return File(System.IO.File.OpenRead(path), "application/octet-stream", Path.GetFileName(path));
+            }
+
+            return NotFound();
+        }
     }
-
-
 }
