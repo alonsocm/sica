@@ -32,6 +32,13 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
+        [HttpPost("ArchivosMuestreo")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromForm] ArchivosSupervisionDto archivosSupervision)
+        {
+            return Ok();
+        }
+
         [HttpGet("ResponsablesMuestreadores")]
         public async Task<IActionResult> ResponsablesMuestreadores(long laboratorioId)
         {
