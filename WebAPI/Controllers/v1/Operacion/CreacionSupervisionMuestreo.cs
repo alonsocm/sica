@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Features.Operacion.SupervisionMuestreo.Commands;
+using Application.Features.Operacion.SupervisionMuestreo.Queries;
 using Application.Interfaces.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
@@ -72,6 +73,19 @@ namespace WebAPI.Controllers.v1.Operacion
             }
 
             return NotFound();
+        }
+
+        [HttpPost("ClaveSitiosPorCuencaDireccionId")]
+        public async Task<IActionResult> ClaveSitiosPorCuencaDireccionId([FromBody] long OrgaismoDireccionId)
+        {
+            return Ok(await Mediator.Send(new GetClavesSitiosQuery { OrganismosDireccionesRealizaId = OrgaismoDireccionId }));
+        }
+
+
+        [HttpPost("ObtenerSitioPorClave")]
+        public async Task<IActionResult> ObtenerSitioPorClave([FromBody] string claveSitio)
+        {
+            return Ok(await Mediator.Send(new GetSitioPorClaveQuery { claveSitio = claveSitio }));
         }
     }
 }

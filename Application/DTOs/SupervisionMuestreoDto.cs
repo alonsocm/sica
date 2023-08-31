@@ -8,8 +8,7 @@
         public string HoraTermino { get; set; }
         public string HoraTomaMuestra { get; set; }
         public decimal PuntajeObtenido { get; set; }
-        public long? OrganismoCuencaRealiza { get; set; }
-        public long? DireccionLocalRealiza { get; set; }
+        public long OrganismosDireccionesRealizaId { get; set; }
         public long OrganismoCuencaReporta { get; set; }
         public string SupervisorConagua { get; set; }
         public long SitioId { get; set; }
