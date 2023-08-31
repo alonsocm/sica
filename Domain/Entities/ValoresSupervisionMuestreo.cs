@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public partial class ValoresSupervisionMuestreo
 {
@@ -9,9 +6,9 @@ public partial class ValoresSupervisionMuestreo
 
     public int CriterioSupervisionId { get; set; }
 
-    public bool Cumple { get; set; }
+    public bool? Cumple { get; set; }
 
-    public bool NoAplica { get; set; }
+    public bool? NoAplica { get; set; }
 
     public string? ObservacionesCriterio { get; set; }
 
