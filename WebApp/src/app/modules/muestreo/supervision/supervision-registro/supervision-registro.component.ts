@@ -229,6 +229,23 @@ export class SupervisionRegistroComponent implements OnInit {
 
   onFileChangeEvidencias(event: any) {
     this.supervision.archivosEvidencias = event.target.files;
+
+    this.uploadArcchivosSupervision();
+  }
+
+  uploadArcchivosSupervision() {
+    this.supervisionService
+      .postArchivosSupervision(
+        this.supervision.archivoPdfSupervision,
+        this.supervision.archivosEvidencias ?? []
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.laboratorios = response.data;
+          console.log(this.cuencas);
+        },
+        error: (error) => {},
+      });
   }
 
   guardar() {

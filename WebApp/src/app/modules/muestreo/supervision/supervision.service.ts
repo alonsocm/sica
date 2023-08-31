@@ -61,4 +61,21 @@ export class SupervisionService {
       }
     );
   }
+
+  postArchivosSupervision(
+    archivoSupervision: any,
+    evidencias: Array<any>
+  ): Observable<any> {
+    const formData = new FormData();
+    formData.append('supervisionId', '1');
+    formData.append('archivoSupervision', archivoSupervision);
+    Array.from(evidencias).forEach((archivo) => {
+      formData.append('evidencias', archivo);
+    });
+
+    return this.http.post(
+      environment.apiUrl + '/creacionsupervisionmuestreo/ArchivosMuestreo',
+      formData
+    );
+  }
 }

@@ -97,7 +97,7 @@
                     <label for="clave-sitio">Clave de sitio:*</label>
                     <select class="form-control" id="clave-sitio" formControlName="claveSitio"
                         [ngClass]="{'is-invalid': submitted && f['claveSitio'].errors}">
-                        <option [value]="0">seleccione</option>
+                        <option [value]="1">seleccione</option>
                     </select>
                     <div *ngIf="f['claveSitio'].errors" class="invalid-feedback">
                         <div *ngIf="f['claveSitio'].errors['min']">Campo requerido</div>
