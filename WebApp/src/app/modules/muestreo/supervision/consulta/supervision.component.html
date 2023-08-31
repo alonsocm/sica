@@ -14,22 +14,31 @@
             </button>
         </div>
         <div class=" col text-right">
-            <button class="btn btn-secondary" type="button" title="Clic para descargar el formato de supervisión">
+            <button class="btn btn-secondary" type="button" title="Clic para descargar el formato de supervisión"
+                (click)="downloadFormatoSupervision()">
                 <i class="bi bi-cloud-download"></i>
                 Formato de Supervisión de Muestreo
             </button>
         </div>
     </div>
-    <form [formGroup]="supervisionBusquedaForm" (ngSubmit)="buscarSupervision()">
+    <form [formGroup]="supervisionBusquedaForm" (ngSubmit)="search()">
         <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="ocdl">OC/DL que realiza la supervisión:</label>
-                    <input type="text" class="form-control" id="ocdl" formControlName="ocdl">
+                    <label for="oc-dl">OC/DL que realiza la supervisión:</label>
+                    <select class="form-control" id="oc-dl" formControlName="ocdlRealiza">
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let ocdl of this.organismosDirecciones" [value]="ocdl.id">
+                            {{ocdl.organismoCuencaDireccionLocal}}</option>
+                    </select>
                 </div>
-                <div class="form-group">
+                <div class=" form-group">
                     <label for="laboratorio">Laboratorio que realizó el muestro:</label>
-                    <input type="text" class="form-control" id="laboratorio" formControlName="laboratorio">
+                    <select class="form-control" id="laboratorio" formControlName="laboratorio">
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let laboratorio of this.laboratorios" [value]="laboratorio.id">
+                            {{laboratorio.descripcion}}</option>
+                    </select>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12">
@@ -45,17 +54,21 @@
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="form-group">
                     <label for="fechaMuestreo">Fecha del muestreo:</label>
-                    <input type="text" class="form-control" id="fechaMuestreo" formControlName="fechaMuestreo">
+                    <input type="date" class="form-control" id="fechaMuestreo" formControlName="fechaMuestreo">
                 </div>
                 <div class="form-group">
-                    <label for="input6">Tipo de cuerpo de agua:</label>
-                    <input type="text" class="form-control" id="input6" formControlName="tipoCuerpoAgua">
+                    <label for="tipo-cuerpo-agua">Tipo de cuerpo de agua:</label>
+                    <select class="form-control" id="tipo-cuerpo-agua" formControlName="tipoCuerpoAgua">
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let tipoCuerpoAgua of this.tiposCuerpoAgua" [value]="tipoCuerpoAgua.id">
+                            {{tipoCuerpoAgua.descripcion}}</option>
+                    </select>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="form-group">
                     <label for="puntaje">Puntaje obtenido:</label>
-                    <input type="text" class="form-control" id="puntaje" formControlName="puntaje">
+                    <input type="number" class="form-control" id="puntaje" formControlName="puntaje">
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary mr-3">
@@ -81,32 +94,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr
-                        *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
-                        <td class="checkBox-center">
-                            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()">
-                        </td>
-                        <td>{{muestreo.numeroEntrega}}</td>
-                        <td>-</td>
-                        <td>{{muestreo.claveSitio}}</td>
-                        <td>{{muestreo.claveMonitoreo}}</td>
-                        <td>{{muestreo.nombreSitio}}</td>
-                        <td>{{muestreo.ocdl}}</td>
-                        <td>{{muestreo.cuerpoAgua}}</td>
-                        <td>-</td>
-                        <td>{{muestreo.tipoCuerpoAgua}}</td>
-                        <td>{{muestreo.tipoSitio}}</td>
-                        <td>{{muestreo.laboratorio}}</td>
-                        <td>-</td>
-                        <td>{{muestreo.fechaProgramada}}</td>
-                        <td>{{muestreo.fechaRealizacion}}</td>
-                        <td>{{muestreo.programaAnual}}</td>
-                        <td>{{muestreo.horaInicio}}</td>
-                        <td>{{muestreo.horaFin}}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                    </tr> -->
+
+                    <tr
+                        *ngFor="let supervision of this.supervisiones | paginate: { itemsPerPage:30, currentPage: page }">
+                        <td>{{supervision.ocdlRealiza}}</td>
+                        <td>{{supervision.laboratorio}}</td>
+                        <td>{{supervision.nombreSitio}}</td>
+                        <td>{{supervision.claveMuestreo}}</td>
+                        <td>{{supervision.fechaMuestreo}}</td>
+                        <td>{{supervision.tipoCuerpoAgua}}</td>
+                        <td>{{supervision.puntajeObtenido}}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

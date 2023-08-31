@@ -47,4 +47,18 @@ export class SupervisionService {
       { params }
     );
   }
+
+  getTiposCuerpoAgua() {
+    return this.http.get(environment.apiUrl + '/CuerpoDeAgua/TipoHomologado');
+  }
+
+  getFormatoSupervision() {
+    return this.http.get(
+      environment.apiUrl +
+        '/creacionsupervisionmuestreo/FormatoSupervisionMuestreo',
+      {
+        responseType: 'blob',
+      }
+    );
+  }
 }

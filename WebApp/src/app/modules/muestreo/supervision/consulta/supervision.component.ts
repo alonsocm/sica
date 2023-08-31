@@ -4,6 +4,12 @@ import { Router } from '@angular/router';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { SupervisionService } from '../supervision.service';
+import { OrganismoDireccion } from '../models/organismo-direccion';
+import { Laboratorio } from '../models/laboratorio';
+import { TipoCuerpoAgua } from '../models/tipo-cuerpo-agua';
+import { SupervisionBase } from '../models/supervision-base';
+import { FileService } from 'src/app/shared/services/file.service';
 
 @Component({
   selector: 'app-supervision',
@@ -11,22 +17,41 @@ import { BaseService } from 'src/app/shared/services/base.service';
   styleUrls: ['./supervision.component.css'],
 })
 export class SupervisionComponent extends BaseService implements OnInit {
-  constructor(private router: Router) {
+  organismosDirecciones: Array<OrganismoDireccion> = [];
+  laboratorios: Array<Laboratorio> = [];
+  tiposCuerpoAgua: Array<TipoCuerpoAgua> = [];
+  supervisiones: Array<SupervisionBase> = [];
+
+  constructor(
+    private router: Router,
+    private supervisionService: SupervisionService
+  ) {
     super();
   }
 
   supervisionBusquedaForm = new FormGroup({
-    ocdl: new FormControl(''),
+    ocdlRealiza: new FormControl(0),
     sitio: new FormControl(''),
     fechaMuestreo: new FormControl(''),
     puntaje: new FormControl(''),
-    laboratorio: new FormControl(''),
+    laboratorio: new FormControl(0),
     claveMuestreo: new FormControl(''),
-    tipoCuerpoAgua: new FormControl(''),
+    tipoCuerpoAgua: new FormControl(0),
   });
 
   ngOnInit(): void {
     this.definirColumnas();
+    this.getOrganismosDirecciones();
+    this.getTiposCuerpoAgua();
+    this.supervisiones.push({
+      ocdlRealiza: 'Golfo Centro/Hidalgo',
+      nombreSitio: '0',
+      fechaMuestreo: new Date('08/28/2023').toLocaleDateString('es-MX'),
+      puntajeObtenido: 0,
+      laboratorio: 'ABC MATRIZ',
+      claveMuestreo: 'OCLSP3827-210822',
+      tipoCuerpoAgua: 'Costero (humedal)',
+    });
   }
 
   definirColumnas() {
@@ -76,8 +101,47 @@ export class SupervisionComponent extends BaseService implements OnInit {
     ];
   }
 
-  buscarSupervision() {
+  getOrganismosDirecciones() {
+    this.supervisionService.getOCDL().subscribe({
+      next: (response: any) => {
+        this.organismosDirecciones = response;
+        console.log(this.organismosDirecciones);
+      },
+      error: (error) => {},
+    });
+  }
+
+  getLaboratorios() {
+    this.supervisionService.getLaboratorios().subscribe({
+      next: (response: any) => {
+        this.laboratorios = response.data;
+        console.log(this.laboratorios);
+      },
+      error: (error) => {},
+    });
+  }
+
+  getTiposCuerpoAgua() {
+    this.supervisionService.getTiposCuerpoAgua().subscribe({
+      next: (response: any) => {
+        this.tiposCuerpoAgua = response.data;
+        console.log(this.laboratorios);
+      },
+      error: (error) => {},
+    });
+  }
+
+  search() {
     console.log(this.supervisionBusquedaForm.value);
+  }
+
+  downloadFormatoSupervision() {
+    this.supervisionService.getFormatoSupervision().subscribe({
+      next: (response: any) => {
+        FileService.download(response, 'supervisionMuestreo.pdf');
+      },
+      error: (error) => {},
+    });
   }
 
   registrarSupervision() {
