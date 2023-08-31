@@ -21,16 +21,16 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
 
     public class SupervisionMuestreoCommandHandler :  IRequestHandler<SupervisionMuestreoCommand, Response<bool>>
     {
-        private readonly IRepositoryAsync<Domain.Entities.SupervisionMuestreo> _repositoryAsync;
-        
-        private IMapper _mapper;
-     
-
-        public SupervisionMuestreoCommandHandler(IRepositoryAsync<Domain.Entities.SupervisionMuestreo> repositoryAsync, IMapper mapper )
+        private readonly ISupervisionMuestreoRepository _repository;
+        private readonly IValoresSupervisionMuestreoRepository _valoresrepository;
+        private readonly IMapper _mapper;
+        private readonly IEvidenciaSupervisionMuestreoRepository _evidenciasupervisionrepository;
+        public SupervisionMuestreoCommandHandler(ISupervisionMuestreoRepository repository, IValoresSupervisionMuestreoRepository valoresrepository, IMapper mapper, IEvidenciaSupervisionMuestreoRepository evidenciasupervisionrepository)
         {
-            _repositoryAsync = repositoryAsync;           
+            _repository = repository;
+            _valoresrepository = valoresrepository;
             _mapper = mapper;
-      
+            _evidenciasupervisionrepository = evidenciasupervisionrepository;
         }
 
         public async Task<Response<bool>> Handle(SupervisionMuestreoCommand request, CancellationToken cancellationToken)
@@ -38,9 +38,21 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
          
             if (request.supervision.Id != 0) { }
             else
-            {                
-               var newSupervision = _mapper.Map<Domain.Entities.SupervisionMuestreo>(request);
-               var data =  await _repositoryAsync.AddAsync(newSupervision);
+            {
+                Domain.Entities.SupervisionMuestreo supervison = _repository.ConvertirSupervisionMuestreo(request.supervision);
+                var dato = _repository.Insertar(supervison);
+
+                if (request.supervision.Clasificaciones.Count > 0) {                   
+                    List<ValoresSupervisionMuestreo> lstValores = _valoresrepository.ConvertiraValoresSupervisionMuestreo(request.supervision.Clasificaciones, supervison.Id);
+                    _valoresrepository.InsertarRango(lstValores);
+                }
+                if (request.supervision.LstEvidencia.Count > 0) {                   
+                    List<EvidenciaSupervisionMuestreo> lstevidencias = _mapper.Map<List<EvidenciaSupervisionMuestreo>>(request.supervision.LstEvidencia);
+                    _evidenciasupervisionrepository.InsertarRango(lstevidencias);
+                }
+
+
+
             }
             return new Response<bool>(true);
 

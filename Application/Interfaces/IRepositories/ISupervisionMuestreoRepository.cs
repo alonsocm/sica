@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Users;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.IRepositories
 {
-    public interface ISupervisionMuestreoRepository: IRepository<SupervisionMuestreo>
+    public interface ISupervisionMuestreoRepository : IRepository<SupervisionMuestreo>
     {
-        
-        
-
+        SupervisionMuestreo ConvertirSupervisionMuestreo(SupervisionMuestreoDto supervisionMuestreo);
     }
 }

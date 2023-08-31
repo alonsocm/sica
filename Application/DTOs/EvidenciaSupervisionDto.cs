@@ -8,10 +8,10 @@ namespace Application.DTOs
 {
     public class EvidenciaSupervisionDto:EvidenciaDto
     {
-        public long SupervisionEvidenciaId { get; set; }
+        public long SupervisionMuestreoId { get; set; }
         public EvidenciaSupervisionDto()
         {
-            this.SupervisionEvidenciaId = 0;
+            this.SupervisionMuestreoId = 0;
         }
     }
 }
