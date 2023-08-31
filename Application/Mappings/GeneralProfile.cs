@@ -46,6 +46,7 @@ namespace Application.Mappings
             CreateMap<ParametrosGrupo, ParametrosDto>();
             CreateMap<TipoHomologado, TipoHomologadoDto>();
             CreateMap<SupervisionMuestreo, SupervisionMuestreoDto>();
+            CreateMap<Laboratorios, LaboratoriosDto>();
             #endregion
         }
     }
