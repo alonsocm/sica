@@ -3,6 +3,7 @@
     public class CriterioDto
     {
         public int Id { get; set; }
+        public int? ValoresSupervisonMuestreoId { get; set; }
         public string Descripcion { get; set; }
         public bool Obligatorio { get; set; }
         public decimal Puntaje { get; set; }
