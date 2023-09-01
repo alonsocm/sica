@@ -13,6 +13,7 @@ import { Cuenca } from '../models/cuenca';
 import { Muestreador } from '../models/muestreador';
 import { Laboratorio } from '../models/laboratorio';
 import { Sitio } from '../models/sitio';
+import { Criterio } from '../models/criterio';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -33,7 +34,7 @@ export class SupervisionRegistroComponent implements OnInit {
     horaInicio: '09:24',
     horaTermino: '10:14',
     horaTomaMuestra: '11:14',
-    puntajeObtenido: '0',
+    puntajeObtenido: 0,
     // ocdlRealiza: 'Golfo Centro/Hidalgo',
     supervisorConagua: 'Luis Eduardo Alfaro Sánchez',
     // ocdlReporta: 'Golfo Centro/Hidalgo',
@@ -264,6 +265,28 @@ export class SupervisionRegistroComponent implements OnInit {
     this.getClavesSitios(organismoDireccionId);
   }
 
+  onCumplimientoChange() {
+    this.supervision.puntajeObtenido = this.supervision.clasificaciones.reduce(
+      (accumulator, currentValue) => {
+        return (
+          accumulator +
+          currentValue.criterios
+            .filter((x) => x.cumplimiento === 'CUMPLE')
+            .reduce((acc, val) => acc + val.puntaje, 0)
+        );
+      },
+      0
+    );
+  }
+
+  getPuntaje() {
+    const sum = this.supervision.clasificaciones.filter((item) =>
+      item.criterios
+        .filter((c) => c.cumplimiento === 'CUMPLE')
+        .reduce((sum, current) => sum + current.puntaje, 0)
+    );
+  }
+
   onFileChange(event: any) {
     this.supervision.archivoPdfSupervision = event.target.files[0];
   }
@@ -271,10 +294,10 @@ export class SupervisionRegistroComponent implements OnInit {
   onFileChangeEvidencias(event: any) {
     this.supervision.archivosEvidencias = event.target.files;
 
-    this.uploadArcchivosSupervision();
+    this.uploadArchivosSupervision();
   }
 
-  uploadArcchivosSupervision() {
+  uploadArchivosSupervision() {
     this.supervisionService
       .postArchivosSupervision(
         this.supervision.archivoPdfSupervision,

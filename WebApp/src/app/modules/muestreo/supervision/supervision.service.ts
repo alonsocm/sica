@@ -87,9 +87,9 @@ export class SupervisionService {
   ): Observable<any> {
     const formData = new FormData();
     formData.append('supervisionId', '1');
-    formData.append('archivoSupervision', archivoSupervision);
+    formData.append('archivos', archivoSupervision);
     Array.from(evidencias).forEach((archivo) => {
-      formData.append('evidencias', archivo);
+      formData.append('archivos', archivo);
     });
 
     return this.http.post(
