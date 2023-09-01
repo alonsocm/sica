@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
+using Microsoft.Extensions.Options;
 using Persistence.Contexts;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace Persistence.Repository
                 clasificacionDto.Criterios.ForEach(criterioDto =>
                 {
                     ValoresSupervisionMuestreo valor = new ValoresSupervisionMuestreo();
+                    valor.Id = criterioDto.Id;
                     valor.CriterioSupervisionId = criterioDto.Id;
                     valor.Cumple = (criterioDto.Cumplimiento == cumple) ? true : ((criterioDto.Cumplimiento == incumplimiento) ? false : null);
                     valor.NoAplica = (criterioDto.Cumplimiento == na) ? true : null;

@@ -36,32 +36,29 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
 
         public async Task<Response<bool>> Handle(SupervisionMuestreoCommand request, CancellationToken cancellationToken)
         {
-         
-            if (request.supervision.Id != 0) { }
+            Domain.Entities.SupervisionMuestreo supervison = _repository.ConvertirSupervisionMuestreo(request.supervision);
+            if (request.supervision.Id != 0) { _repository.Actualizar(supervison); }
             else
-            {
-                Domain.Entities.SupervisionMuestreo supervison = _repository.ConvertirSupervisionMuestreo(request.supervision);
-                var dato = _repository.Insertar(supervison);
+            { var dato = _repository.Insertar(supervison); }
 
-                if (request.supervision.Clasificaciones.Count > 0) {                   
-                    List<ValoresSupervisionMuestreo> lstValores = _valoresrepository.ConvertiraValoresSupervisionMuestreo(request.supervision.Clasificaciones, supervison.Id);
-                    _valoresrepository.InsertarRango(lstValores);
-                }
-                if (request.supervision.LstEvidencia.Count > 0) {
-                    List<EvidenciaSupervisionMuestreo> lstevidencias = _mapper.Map<List<EvidenciaSupervisionMuestreo>>(request.supervision.LstEvidencia);
-                    _evidenciasupervisionrepository.InsertarRango(lstevidencias);
-                }
-
-
-
+            if (request.supervision.Clasificaciones.Count > 0)
+            {                
+                List<ValoresSupervisionMuestreo> lstValores = _valoresrepository.ConvertiraValoresSupervisionMuestreo(request.supervision.Clasificaciones, supervison.Id);
+                List<ValoresSupervisionMuestreo> lstValoresActualizar = lstValores.Where(x => x.Id != 0).ToList();
+                List<ValoresSupervisionMuestreo> lstValoresNuevos = lstValores.Where(x => x.Id == 0).ToList();
+                if (lstValoresNuevos.Count > 0) { _valoresrepository.InsertarRango(lstValoresNuevos); }
+                if (lstValoresActualizar.Count > 0) { await _valoresrepository.ActualizarBulkAsync(lstValoresActualizar); }
+                
             }
+            if (request.supervision.LstEvidencia.Count > 0)
+            {
+                List<EvidenciaSupervisionMuestreo> lstevidencias = _mapper.Map<List<EvidenciaSupervisionMuestreo>>(request.supervision.LstEvidencia);
+                List<EvidenciaSupervisionMuestreo> lstevidenciasActualizar = lstevidencias.Where(x => x.Id != 0).ToList();
+                   List<EvidenciaSupervisionMuestreo> lstevidenciasNuevas = lstevidencias.Where(x => x.Id == 0).ToList();
+                if (lstevidenciasNuevas.Count > 0) { _evidenciasupervisionrepository.InsertarRango(lstevidencias); }
+                if (lstevidenciasActualizar.Count > 0) { await _evidenciasupervisionrepository.ActualizarBulkAsync(lstevidenciasActualizar); }
+            }
+
             return new Response<bool>(true);
-
-        }
-
-
-
-    }
-
-
+        }}
 }

@@ -8,6 +8,7 @@ namespace Application.DTOs
 {
     public class EvidenciaDto
     {
+        public long Id { get; set; }
         public string NombreArchivo { get; set; }
         public byte[] Archivo { get; set; }
         public long TipoEvidencia { get; set; }
