@@ -34,21 +34,21 @@ export class SupervisionRegistroComponent implements OnInit {
     horaTermino: '10:14',
     horaTomaMuestra: '11:14',
     puntajeObtenido: '0',
-    ocdlRealiza: 'Golfo Centro/Hidalgo',
-    nombreSupervisor: 'Luis Eduardo Alfaro Sánchez',
-    ocdlReporta: 'Golfo Centro/Hidalgo',
-    claveSitio: '0',
+    // ocdlRealiza: 'Golfo Centro/Hidalgo',
+    supervisorConagua: 'Luis Eduardo Alfaro Sánchez',
+    // ocdlReporta: 'Golfo Centro/Hidalgo',
+    // claveSitio: '0',
     claveMuestreo: 'OCLSP3827-210822',
-    nombreSitio: 'PRESA SAN ONOFRE CENTRO',
+    // nombreSitio: 'PRESA SAN ONOFRE CENTRO',
     // tipoCuerpoAgua: '0',
-    laboratorio: '0',
+    // laboratorio: '0',
     // latitudSitio: 0,
     // longitudSitio: 0,
     latitudToma: 232614,
     longitudToma: 232614,
-    nombreResponsableMuestra: 'VICTOR RAMÍREZ ÁNGULO',
-    nombreResponsableMediciones: 'FELIX ALVARADO CRUZ',
-    observacionesMuestreo: '',
+    // nombreResponsableMuestra: 'VICTOR RAMÍREZ ÁNGULO',
+    // nombreResponsableMediciones: 'FELIX ALVARADO CRUZ',
+    // observacionesMuestreo: '',
     clasificaciones: [],
   };
 
@@ -59,41 +59,47 @@ export class SupervisionRegistroComponent implements OnInit {
   constructor(private supervisionService: SupervisionService) {
     this.supervisionForm = new FormGroup({
       fechaMuestreo: new FormControl(
-        this.supervision.fechaMuestreo?.toISOString().split('T')[0],
+        this.supervision.fechaMuestreo?.toISOString().split('T')[0] ?? '',
         Validators.required
       ),
       horaInicio: new FormControl(
-        this.supervision.horaInicio,
+        this.supervision.horaInicio ?? '',
         Validators.required
       ),
       horaFin: new FormControl(
-        this.supervision.horaTermino,
+        this.supervision.horaTermino ?? '',
         Validators.required
       ),
       horaTomaMuestra: new FormControl(
-        this.supervision.horaTomaMuestra,
+        this.supervision.horaTomaMuestra ?? '',
         Validators.required
       ),
       puntajeObtenido: new FormControl(
-        { value: this.supervision.puntajeObtenido, disabled: true },
+        { value: this.supervision.puntajeObtenido ?? '', disabled: true },
         Validators.required
       ),
-      ocdlRealiza: new FormControl(0, [Validators.required, Validators.min(1)]),
+      ocdlRealiza: new FormControl(
+        this.supervision.organismosDireccionesRealizaId ?? 0,
+        [Validators.required, Validators.min(1)]
+      ),
       nombreSupervisor: new FormControl(
-        this.supervision.nombreSupervisor,
+        this.supervision.supervisorConagua ?? '',
         Validators.required
       ),
-      ocdlReporta: new FormControl(0, [Validators.required, Validators.min(1)]),
-      claveSitio: new FormControl(this.supervision.claveSitio, [
+      ocdlReporta: new FormControl(
+        this.supervision.organismoCuencaReportaId ?? 0,
+        [Validators.required, Validators.min(1)]
+      ),
+      claveSitio: new FormControl(this.supervision.claveSitio ?? 0, [
         Validators.required,
         Validators.min(1),
       ]),
       claveMuestreo: new FormControl(
-        this.supervision.claveMuestreo,
+        this.supervision.claveMuestreo ?? '',
         Validators.required
       ),
       nombreSitio: new FormControl(
-        { value: this.sitio.nombre, disabled: true },
+        { value: this.supervision.nombreSitio ?? '', disabled: true },
         Validators.required
       ),
       tipoCuerpoAgua: new FormControl(
@@ -109,27 +115,27 @@ export class SupervisionRegistroComponent implements OnInit {
         Validators.required
       ),
       latitudToma: new FormControl(
-        this.supervision.latitudToma,
+        this.supervision.latitudToma ?? '',
         Validators.required
       ),
       longitudToma: new FormControl(
-        this.supervision.longitudToma,
+        this.supervision.longitudToma ?? '',
         Validators.required
       ),
-      laboratorio: new FormControl(this.supervision.laboratorio, [
+      laboratorio: new FormControl(this.supervision.laboratorioRealizaId ?? 0, [
         Validators.required,
         Validators.min(1),
       ]),
-      nombreResponsableMuestra: new FormControl(0, [
-        Validators.required,
-        Validators.min(1),
-      ]),
-      nombreResponsableMediciones: new FormControl(0, [
-        Validators.required,
-        Validators.min(1),
-      ]),
+      nombreResponsableMuestra: new FormControl(
+        this.supervision.responsableTomaId ?? 0,
+        [Validators.required, Validators.min(1)]
+      ),
+      nombreResponsableMediciones: new FormControl(
+        this.supervision.responsableMedicionesId ?? 0,
+        [Validators.required, Validators.min(1)]
+      ),
       observacionesMuestreo: new FormControl(
-        this.supervision.observacionesMuestreo
+        this.supervision.observacionesMuestreo ?? ''
       ),
     });
 
@@ -282,7 +288,7 @@ export class SupervisionRegistroComponent implements OnInit {
       });
   }
 
-  guardar() {
+  onSubmit() {
     this.submitted = true;
     if (this.supervisionForm.invalid) {
       return;
@@ -293,29 +299,25 @@ export class SupervisionRegistroComponent implements OnInit {
     this.supervision.horaTermino = this.supervisionForm.value.horaFin;
     this.supervision.horaTomaMuestra =
       this.supervisionForm.value.horaTomaMuestra;
-    this.supervision.puntajeObtenido =
-      this.supervisionForm.value.puntajeObtenido;
-    this.supervision.ocdlRealiza = this.supervisionForm.value.ocdlRealiza;
-    this.supervision.nombreSupervisor =
+    this.supervision.organismosDireccionesRealizaId =
+      this.supervisionForm.value.ocdlRealiza;
+    this.supervision.supervisorConagua =
       this.supervisionForm.value.nombreSupervisor;
-    this.supervision.ocdlReporta = this.supervisionForm.value.ocdlReporta;
+    this.supervision.organismoCuencaReportaId =
+      this.supervisionForm.value.ocdlReporta;
     this.supervision.claveSitio = this.supervisionForm.value.claveSitio;
+    this.supervision.sitioId = this.sitio.sitioId;
     this.supervision.claveMuestreo = this.supervisionForm.value.claveMuestreo;
-    this.supervision.nombreSitio = this.supervisionForm.value.nombreSitio;
-    this.supervision.tipoCuerpoAgua = this.supervisionForm.value.tipoCuerpoAgua;
-    this.supervision.laboratorio = this.supervisionForm.value.laboratorio;
-    this.supervision.latitudSitio = this.supervisionForm.value.latitudSitio;
-    this.supervision.longitudSitio = this.supervisionForm.value.longitudSitio;
+    this.supervision.laboratorioRealizaId =
+      this.supervisionForm.value.laboratorio;
     this.supervision.latitudToma = this.supervisionForm.value.latitudToma;
-    this.supervision.longitudSitio = this.supervisionForm.value.longitudSitio;
-    this.supervision.nombreResponsableMuestra =
+    this.supervision.longitudToma = this.supervisionForm.value.longitudToma;
+    this.supervision.responsableTomaId =
       this.supervisionForm.value.nombreResponsableMuestra;
-    this.supervision.nombreResponsableMediciones =
+    this.supervision.responsableMedicionesId =
       this.supervisionForm.value.nombreResponsableMediciones;
     this.supervision.observacionesMuestreo =
       this.supervisionForm.value.observacionesMuestreo;
-
-    console.log(this.supervision);
 
     this.supervisionService.postSupervision(this.supervision).subscribe({
       next: (response: any) => {},

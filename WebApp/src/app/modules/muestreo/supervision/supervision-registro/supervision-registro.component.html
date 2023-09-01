@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <h3>Registro de supervisión de muestreo</h3>
     <hr class="red">
-    <form [formGroup]="supervisionForm" (submit)="guardar()">
+    <form [formGroup]="supervisionForm" (submit)="onSubmit()">
         <div class="row">
             <div class="col-lg-2 col-md-6 col-sm-12">
                 <div class="form-group ">
@@ -271,29 +271,29 @@
                     <tbody>
                         <ng-container *ngFor="let criterio of clasificacion.criterios">
                             <tr
-                                [ngClass]="{'table-warning': this.criterio.cumplimiento == 'noAplica' && this.criterio.obligatorio}">
+                                [ngClass]="{'table-warning': this.criterio.cumplimiento == 'NOAPLICA' && this.criterio.obligatorio}">
                                 <td>{{criterio.id}}</td>
                                 <td>{{criterio.descripcion}}</td>
                                 <td>{{criterio.puntaje}}</td>
                                 <td>
-                                    <input type="radio" [name]="criterio.descripcion" value="cumple"
+                                    <input type="radio" [name]="criterio.descripcion" value="CUMPLE"
                                         [(ngModel)]="this.criterio.cumplimiento"
                                         title="Seleccione si el criterio cumple" />
                                 </td>
                                 <td>
-                                    <input type="radio" [name]="criterio.descripcion" value="noCumple"
+                                    <input type="radio" [name]="criterio.descripcion" value="NOCUMPLE"
                                         [(ngModel)]="this.criterio.cumplimiento"
                                         title="Seleccione si el criterio no cumple" />
                                 </td>
                                 <td>
-                                    <input type="radio" [name]="criterio.descripcion" value="noAplica"
+                                    <input type="radio" [name]="criterio.descripcion" value="NOAPLICA"
                                         [(ngModel)]="this.criterio.cumplimiento"
                                         title="Seleccione si el criterio no aplica" />
                                 </td>
                                 <td><textarea [(ngModel)]="this.criterio.observacion"
                                         title="Escriba las observaciones para el criterio"></textarea>
                                     <div
-                                        *ngIf="this.criterio.obligatorio && this.criterio.cumplimiento === 'noAplica' && this.criterio.observacion == ''">
+                                        *ngIf="this.criterio.obligatorio && this.criterio.cumplimiento === 'NOAPLICA' && this.criterio.observacion == ''">
                                         Observaciones requeridas.
                                     </div>
                                 </td>
@@ -326,7 +326,7 @@
         </div>
         <div class="col-12">
             <button type="button" class="btn btn-secondary mr-5">Cancelar</button>
-            <button type="button" class="btn btn-primary" (click)="guardar()">Guardar</button>
+            <button type="button" class="btn btn-primary" (click)="onSubmit()">Guardar</button>
         </div>
     </div>
 </div>
