@@ -76,9 +76,9 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ClaveSitiosPorCuencaDireccionId")]
-        public async Task<IActionResult> ClaveSitiosPorCuencaDireccionId(long OrgaismoDireccionId)
+        public async Task<IActionResult> ClaveSitiosPorCuencaDireccionId(long organismoDireccionId)
         {
-            return Ok(await Mediator.Send(new GetClavesSitiosQuery { OrganismosDireccionesRealizaId = OrgaismoDireccionId }));
+            return Ok(await Mediator.Send(new GetClavesSitiosQuery { OrganismosDireccionesRealizaId = organismoDireccionId }));
         }
 
 

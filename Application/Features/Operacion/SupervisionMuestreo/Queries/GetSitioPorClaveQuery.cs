@@ -36,7 +36,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
             sitioDto.ClaveMuestreo = sitios.ClaveMuestreo.ToString();
             sitioDto.ClaveSitio = sitios.ClaveSitio;
             sitioDto.SitioId = sitios.SitioId;
-            sitioDto.NombreSito = sitios.NombreSitio;
+            sitioDto.Nombre = sitios.NombreSitio;
             sitioDto.CuencaDireccionLocalId = sitios.CuencaDireccionesLocalesId;
             sitioDto.Latitud = sitios.Latitud.ToString();
             sitioDto.Longitud = sitios.Longitud.ToString();
