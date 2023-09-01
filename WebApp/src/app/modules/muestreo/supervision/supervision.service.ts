@@ -18,14 +18,35 @@ export class SupervisionService {
 
   postSupervision(supervision: any): Observable<any> {
     return this.http.post(
-      environment.apiUrl + '/creacionsupervisionmuestreo/supervisionmuestreo',
+      environment.apiUrl + '/supervisionmuestreo/',
       supervision
     );
   }
 
   getOCDL() {
     return this.http.get(
-      environment.apiUrl + '/creacionsupervisionmuestreo/organismosdirecciones'
+      environment.apiUrl + '/supervisionmuestreo/organismosdirecciones'
+    );
+  }
+
+  getClavesSitios(organismoDireccion: number) {
+    const params = new HttpParams({
+      fromObject: { organismoDireccionId: organismoDireccion },
+    });
+    return this.http.get(
+      environment.apiUrl +
+        '/supervisionmuestreo/ClaveSitiosPorCuencaDireccionId',
+      { params }
+    );
+  }
+
+  getSitio(claveSitio: string) {
+    const params = new HttpParams({
+      fromObject: { claveSitio: claveSitio },
+    });
+    return this.http.get(
+      environment.apiUrl + '/supervisionmuestreo/obtenersitioporclave',
+      { params }
     );
   }
 
@@ -34,7 +55,7 @@ export class SupervisionService {
   }
 
   getLaboratorios() {
-    return this.http.get(environment.apiUrl + '/Laboratorios');
+    return this.http.get(environment.apiUrl + '/Laboratorios/laboratorios');
   }
 
   getMuestreadoresLaboratorio(laboratorio: number) {
@@ -42,8 +63,7 @@ export class SupervisionService {
       fromObject: { laboratorioId: laboratorio },
     });
     return this.http.get(
-      environment.apiUrl +
-        '/creacionsupervisionmuestreo/ResponsablesMuestreadores',
+      environment.apiUrl + '/supervisionmuestreo/ResponsablesMuestreadores',
       { params }
     );
   }
@@ -54,8 +74,7 @@ export class SupervisionService {
 
   getFormatoSupervision() {
     return this.http.get(
-      environment.apiUrl +
-        '/creacionsupervisionmuestreo/FormatoSupervisionMuestreo',
+      environment.apiUrl + '/supervisionmuestreo/FormatoSupervisionMuestreo',
       {
         responseType: 'blob',
       }
@@ -74,7 +93,7 @@ export class SupervisionService {
     });
 
     return this.http.post(
-      environment.apiUrl + '/creacionsupervisionmuestreo/ArchivosMuestreo',
+      environment.apiUrl + '/supervisionmuestreo/ArchivosMuestreo',
       formData
     );
   }

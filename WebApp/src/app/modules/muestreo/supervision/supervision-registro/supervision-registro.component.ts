@@ -12,6 +12,7 @@ import { OrganismoDireccion } from '../models/organismo-direccion';
 import { Cuenca } from '../models/cuenca';
 import { Muestreador } from '../models/muestreador';
 import { Laboratorio } from '../models/laboratorio';
+import { Sitio } from '../models/sitio';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -20,6 +21,8 @@ import { Laboratorio } from '../models/laboratorio';
 })
 export class SupervisionRegistroComponent implements OnInit {
   organismosDirecciones: Array<OrganismoDireccion> = [];
+  clavesSitios: Array<string> = [];
+  sitio: Sitio = {};
   cuencas: Array<Cuenca> = [];
   laboratorios: Array<Laboratorio> = [];
   muestreadoresLaboratorio: Array<Muestreador> = [];
@@ -37,10 +40,10 @@ export class SupervisionRegistroComponent implements OnInit {
     claveSitio: '0',
     claveMuestreo: 'OCLSP3827-210822',
     nombreSitio: 'PRESA SAN ONOFRE CENTRO',
-    tipoCuerpoAgua: 'Costero (humedal)',
-    laboratorio: 'ABC MATRIZ',
-    latitudSitio: 232614,
-    longitudSitio: 232614,
+    // tipoCuerpoAgua: '0',
+    laboratorio: '0',
+    // latitudSitio: 0,
+    // longitudSitio: 0,
     latitudToma: 232614,
     longitudToma: 232614,
     nombreResponsableMuestra: 'VICTOR RAMÍREZ ÁNGULO',
@@ -90,19 +93,19 @@ export class SupervisionRegistroComponent implements OnInit {
         Validators.required
       ),
       nombreSitio: new FormControl(
-        { value: this.supervision.nombreSitio, disabled: true },
+        { value: this.sitio.nombre, disabled: true },
         Validators.required
       ),
       tipoCuerpoAgua: new FormControl(
-        { value: this.supervision.tipoCuerpoAgua, disabled: true },
+        { value: this.supervision.tipoCuerpoAgua ?? '', disabled: true },
         Validators.required
       ),
       latitudSitio: new FormControl(
-        this.supervision.latitudSitio,
+        { value: this.supervision.latitudSitio ?? '', disabled: true },
         Validators.required
       ),
       longitudSitio: new FormControl(
-        this.supervision.longitudSitio,
+        { value: this.supervision.longitudSitio ?? '', disabled: true },
         Validators.required
       ),
       latitudToma: new FormControl(
@@ -113,10 +116,10 @@ export class SupervisionRegistroComponent implements OnInit {
         this.supervision.longitudToma,
         Validators.required
       ),
-      laboratorio: new FormControl(
-        this.supervision.laboratorio,
-        Validators.required
-      ),
+      laboratorio: new FormControl(this.supervision.laboratorio, [
+        Validators.required,
+        Validators.min(1),
+      ]),
       nombreResponsableMuestra: new FormControl(0, [
         Validators.required,
         Validators.min(1),
@@ -130,9 +133,7 @@ export class SupervisionRegistroComponent implements OnInit {
       ),
     });
 
-    this.supervisionService.data.subscribe((data) => {
-      console.log(data);
-    });
+    this.supervisionService.data.subscribe((data) => {});
 
     this.supervisionService.updateData(2);
   }
@@ -173,14 +174,13 @@ export class SupervisionRegistroComponent implements OnInit {
     ];
     this.getOrganismosDirecciones();
     this.getCuencas();
-    this.getMuestreadoresLaboratorio(1);
+    this.getLaboratorios();
   }
 
   getOrganismosDirecciones() {
     this.supervisionService.getOCDL().subscribe({
       next: (response: any) => {
         this.organismosDirecciones = response;
-        console.log(this.organismosDirecciones);
       },
       error: (error) => {},
     });
@@ -190,7 +190,36 @@ export class SupervisionRegistroComponent implements OnInit {
     this.supervisionService.getCuencas().subscribe({
       next: (response: any) => {
         this.cuencas = response.data;
-        console.log(this.cuencas);
+      },
+      error: (error) => {},
+    });
+  }
+
+  getClavesSitios(organismoDireccion: number) {
+    this.supervisionService.getClavesSitios(organismoDireccion).subscribe({
+      next: (response: any) => {
+        this.clavesSitios = response.data;
+      },
+      error: (error) => {},
+    });
+  }
+
+  onClaveSitioChange() {
+    let claveSitio = this.supervisionForm.value.claveSitio;
+    if (claveSitio != '0') {
+      this.getSitio(claveSitio);
+    } else {
+      this.sitio.nombre = '';
+      this.sitio.tipoCuerpoAgua = '';
+      this.sitio.latitud = '';
+      this.sitio.longitud = '';
+    }
+  }
+
+  getSitio(claveSitio: string) {
+    this.supervisionService.getSitio(claveSitio).subscribe({
+      next: (response: any) => {
+        this.sitio = response.data;
       },
       error: (error) => {},
     });
@@ -200,7 +229,6 @@ export class SupervisionRegistroComponent implements OnInit {
     this.supervisionService.getLaboratorios().subscribe({
       next: (response: any) => {
         this.laboratorios = response.data;
-        console.log(this.cuencas);
       },
       error: (error) => {},
     });
@@ -210,21 +238,28 @@ export class SupervisionRegistroComponent implements OnInit {
     this.supervisionService.getMuestreadoresLaboratorio(laboratorio).subscribe({
       next: (response: any) => {
         this.muestreadoresLaboratorio = response;
-        console.log(this.muestreadoresLaboratorio);
       },
       error: (error) => {},
     });
   }
 
-  refreshMuestreadores() {
+  onLaboratorioChange() {
+    this.supervisionForm.patchValue({
+      nombreResponsableMuestra: 0,
+      nombreResponsableMediciones: 0,
+    });
+
     this.getMuestreadoresLaboratorio(this.supervisionForm.value.laboratorio);
-    this.supervisionForm.value.nombreResponsableMediciones = 0;
-    this.supervisionForm.value.nombreResponsableMuestra = 0;
+  }
+
+  onOrganismosDireccionesChange() {
+    this.supervisionForm.patchValue({ claveSitio: '0' });
+    let organismoDireccionId = this.supervisionForm.value.ocdlRealiza;
+    this.getClavesSitios(organismoDireccionId);
   }
 
   onFileChange(event: any) {
     this.supervision.archivoPdfSupervision = event.target.files[0];
-    console.log(this.supervision.archivoPdfSupervision);
   }
 
   onFileChangeEvidencias(event: any) {
@@ -242,7 +277,6 @@ export class SupervisionRegistroComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.laboratorios = response.data;
-          console.log(this.cuencas);
         },
         error: (error) => {},
       });
@@ -280,12 +314,11 @@ export class SupervisionRegistroComponent implements OnInit {
       this.supervisionForm.value.nombreResponsableMediciones;
     this.supervision.observacionesMuestreo =
       this.supervisionForm.value.observacionesMuestreo;
+
     console.log(this.supervision);
 
     this.supervisionService.postSupervision(this.supervision).subscribe({
-      next: (response: any) => {
-        console.log(response);
-      },
+      next: (response: any) => {},
       error: (error) => {},
     });
   }
