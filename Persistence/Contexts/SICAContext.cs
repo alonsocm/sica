@@ -1064,7 +1064,7 @@ public partial class SicaContext : DbContext
         {
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(50);
             entity.Property(e => e.FehaMuestreo).HasColumnType("datetime");
-            entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(3, 1)");
+            entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
             entity.Property(e => e.SupervisorConagua).HasMaxLength(100);
 
             entity.HasOne(d => d.LaboratorioRealiza).WithMany(p => p.SupervisionMuestreo)
