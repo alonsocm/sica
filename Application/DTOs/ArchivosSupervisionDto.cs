@@ -5,7 +5,6 @@ namespace Application.DTOs
     public class ArchivosSupervisionDto
     {
         public int SupervisionId { get; set; }
-        public IFormFile ArchivoSupervision { get; set; }
-        public IFormFileCollection Evidencias { get; set; }
+        public IFormFileCollection Archivos { get; set; }
     }
 }
