@@ -11,16 +11,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Enums;
 using System.Numerics;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repository
 {
-  
-    public class SupervisionMuestreoRepository:Repository<SupervisionMuestreo>,ISupervisionMuestreoRepository
+
+    public class SupervisionMuestreoRepository : Repository<SupervisionMuestreo>, ISupervisionMuestreoRepository
     {
-        
+
         public SupervisionMuestreoRepository(SicaContext dbContext) : base(dbContext)
         {
-           
+
         }
         public SupervisionMuestreo ConvertirSupervisionMuestreo(SupervisionMuestreoDto supervisionMuestreo)
         {
@@ -45,7 +46,37 @@ namespace Persistence.Repository
 
             return supervision;
         }
-       
+        public async Task<IEnumerable<ClasificacionCriterioDto>> ObtenerCriterios()
+        {
+            var datos = await (from r in _dbContext.CriteriosSupervisionMuestreo
+                               join l in _dbContext.ClasificacionCriterio on r.ClasificacionCriterioId equals l.Id
+
+                               select new ClasificacionCriterioDto
+                               {
+                                   Id = l.Id,
+                                   Descripcion = l.Descripcion,
+                                   Criterios = new List<CriterioDto>()
+                               }).ToListAsync();
+
+            foreach (var clasificacion in datos)
+            {
+                var criterios = await (from r in _dbContext.CriteriosSupervisionMuestreo
+                                       where r.ClasificacionCriterioId == clasificacion.Id
+                                       select new CriterioDto
+                                       {
+                                           Id = r.Id,
+                                           Descripcion = r.Descripcion,
+                                           Obligatorio = r.Obligatorio,
+                                           Puntaje = r.Valor
+                                       }).ToListAsync();
+                clasificacion.Criterios = criterios;
+            }
+            return datos;
+
+
+        }
+
+
 
 
     }

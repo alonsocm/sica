@@ -28,6 +28,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromBody] SupervisionMuestreoDto supervision)
+
         {
             return Ok(await Mediator.Send(new SupervisionMuestreoCommand { supervision = supervision }));
 
@@ -87,5 +88,13 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new GetSitioPorClaveQuery { claveSitio = claveSitio }));
         }
+
+        [HttpGet("ObtenerClasificacionCriterios")]
+        public async Task<IActionResult> ObtenerClasificacionCriterios()
+        {
+            return Ok(await Mediator.Send(new GetClasificacionCriteriosQuery { }));
+        }
+
+
     }
 }
