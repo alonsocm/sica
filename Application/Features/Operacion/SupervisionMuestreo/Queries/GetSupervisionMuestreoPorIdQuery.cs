@@ -19,15 +19,19 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
     public class GetSupervisionMuestreoPorIdHandler : IRequestHandler<GetSupervisionMuestreoPorIdQuery, Response<SupervisionMuestreoDto>>
     {
         private readonly ISupervisionMuestreoRepository _supervisionRepository;
-        public GetSupervisionMuestreoPorIdHandler(ISupervisionMuestreoRepository supervisionRepository)
+        private readonly IValoresSupervisionMuestreoRepository _valoresSupevisionRepositiry;
+        public GetSupervisionMuestreoPorIdHandler(ISupervisionMuestreoRepository supervisionRepository, IValoresSupervisionMuestreoRepository valoresSupevisionRepositiry)
         {
             _supervisionRepository = supervisionRepository;
+            _valoresSupevisionRepositiry = valoresSupevisionRepositiry;
         }
 
         public async Task<Response<SupervisionMuestreoDto>> Handle(GetSupervisionMuestreoPorIdQuery request, CancellationToken cancellationToken)
         {
             SupervisionMuestreoDto supervision = new SupervisionMuestreoDto();
             var supervisionDetalle = await _supervisionRepository.ObtenerElementoPorIdAsync(request.supervisionMuestreoId);
+            var valoresDetalle = await _valoresSupevisionRepositiry.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == request.supervisionMuestreoId);
+           
 
             supervision.FechaMuestreo = supervisionDetalle.FehaMuestreo.ToString();
             supervision.HoraInicio = supervisionDetalle.HoraInicio.ToString();
@@ -55,18 +59,11 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                          supervision.LstEvidencia.Add(evidenciaDto);
                      });
             }
-            if (supervisionDetalle.ValoresSupervisionMuestreo.Count > 0) {
+            if (valoresDetalle.ToList().Count > 0) {
 
-
+                supervision.Clasificaciones = _valoresSupevisionRepositiry.ValoresSupervisionMuestreoDtoPorId(valoresDetalle.ToList()).Result.ToList();
                
-                supervisionDetalle.ValoresSupervisionMuestreo .ToList().ForEach(valor =>
-                {
-                    var criteriodto = new ClasificacionCriterioDto()
-                    {
-                 
-                    };
-                    supervision.Clasificaciones.Add(criteriodto);
-                });
+            
 
             }
 

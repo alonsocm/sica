@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
 
 namespace Persistence.Repository
@@ -35,6 +36,33 @@ namespace Persistence.Repository
             });
 
             return lstValoresMuestreo;
+        }
+
+        public async Task<IEnumerable<ClasificacionCriterioDto>> ValoresSupervisionMuestreoDtoPorId(List<ValoresSupervisionMuestreo> valores)
+        {
+            //var valores = _dbContext.ValoresSupervisionMuestreo.Where(x => x.SupervisionMuestreoId == supervisionMuestreoId).ToList();
+            List<int> criteriosSupervisionId = valores.Select(x => x.CriterioSupervisionId).ToList();
+            List<ClasificacionCriterioDto> lstClasificacionCriterioDto = new List<ClasificacionCriterioDto>();
+
+            foreach (var datoValor in valores)
+            {
+                lstClasificacionCriterioDto = await (from l in _dbContext.ClasificacionCriterio
+                                   select new ClasificacionCriterioDto
+                                   {
+                                       Id = l.Id,
+                                       Descripcion = l.Descripcion,
+                                       Criterios = (from r in _dbContext.CriteriosSupervisionMuestreo
+                                                    where r.ClasificacionCriterioId == l.Id && criteriosSupervisionId.Contains(r.Id)
+                                                    select new CriterioDto
+                                                    {
+                                                        Id = r.Id,
+                                                        Descripcion = r.Descripcion,
+                                                        Obligatorio = r.Obligatorio,
+                                                        Puntaje = r.Valor
+                                                    }).ToList()
+                                   }).ToListAsync();
+            }         
+            return lstClasificacionCriterioDto;
         }
     }
 }
