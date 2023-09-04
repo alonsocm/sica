@@ -89,8 +89,8 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetSitioPorClaveQuery { claveSitio = claveSitio }));
         }
 
-        [HttpGet("ObtenerClasificacionCriterios")]
-        public async Task<IActionResult> ObtenerClasificacionCriterios()
+        [HttpGet("ClasificacionCriterios")]
+        public async Task<IActionResult> ClasificacionCriterios()
         {
             return Ok(await Mediator.Send(new GetClasificacionCriteriosQuery { }));
         }
