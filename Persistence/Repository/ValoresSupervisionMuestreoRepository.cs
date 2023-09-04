@@ -1,17 +1,11 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
-using Microsoft.Extensions.Options;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
-    public class ValoresSupervisionMuestreoRepository : Repository<ValoresSupervisionMuestreo>,IValoresSupervisionMuestreoRepository
+    public class ValoresSupervisionMuestreoRepository : Repository<ValoresSupervisionMuestreo>, IValoresSupervisionMuestreoRepository
     {
         const string cumple = "CUMPLE";
         const string incumplimiento = "NOCUMPLE";
@@ -22,22 +16,24 @@ namespace Persistence.Repository
         }
         public List<ValoresSupervisionMuestreo> ConvertiraValoresSupervisionMuestreo(List<ClasificacionCriterioDto> lstClasificacionesCriterio, long supervisionMuestreoId)
         {
-            List<ValoresSupervisionMuestreo> lstValoresMuestreo = new List<ValoresSupervisionMuestreo>();
+            List<ValoresSupervisionMuestreo> lstValoresMuestreo = new();
 
             lstClasificacionesCriterio.ForEach(clasificacionDto =>
             {
                 clasificacionDto.Criterios.ForEach(criterioDto =>
                 {
-                    ValoresSupervisionMuestreo valor = new ValoresSupervisionMuestreo();
-                    valor.Id = criterioDto.Id;
-                    valor.CriterioSupervisionId = criterioDto.Id;
-                    valor.Cumple = (criterioDto.Cumplimiento == cumple) ? true : ((criterioDto.Cumplimiento == incumplimiento) ? false : null);
-                    valor.NoAplica = (criterioDto.Cumplimiento == na) ? true : null;
-                    valor.ObservacionesCriterio = criterioDto.Observacion;
-                    valor.SupervisionMuestreoId = supervisionMuestreoId;
+                    ValoresSupervisionMuestreo valor = new()
+                    {
+                        Id = criterioDto.Id,
+                        CriterioSupervisionId = criterioDto.Id,
+                        Resultado = criterioDto.Cumplimiento,
+                        ObservacionesCriterio = criterioDto.Observacion,
+                        SupervisionMuestreoId = supervisionMuestreoId
+                    };
                     lstValoresMuestreo.Add(valor);
                 });
             });
+
             return lstValoresMuestreo;
         }
     }
