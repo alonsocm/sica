@@ -72,6 +72,12 @@ export class SupervisionService {
     return this.http.get(environment.apiUrl + '/CuerpoDeAgua/TipoHomologado');
   }
 
+  getClasificacionesCriterios() {
+    return this.http.get(
+      environment.apiUrl + '/supervisionmuestreo/ClasificacionCriterios'
+    );
+  }
+
   getFormatoSupervision() {
     return this.http.get(
       environment.apiUrl + '/supervisionmuestreo/FormatoSupervisionMuestreo',

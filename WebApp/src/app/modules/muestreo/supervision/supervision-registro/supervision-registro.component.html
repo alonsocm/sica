@@ -1,6 +1,10 @@
 <div class="container-fluid">
     <h3>Registro de supervisión de muestreo</h3>
     <hr class="red">
+    <div class="message-container">
+        <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+            [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    </div>
     <form [formGroup]="supervisionForm" (submit)="onSubmit()">
         <div class="row">
             <div class="col-lg-2 col-md-6 col-sm-12">
@@ -248,11 +252,11 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-md-12">
                 <button class="btn btn-primary" type="submit">Guardar</button>
             </div>
-        </div>
+        </div> -->
     </form>
     <hr>
     <div *ngFor="let clasificacion of this.supervision.clasificaciones" class="row">
@@ -261,7 +265,7 @@
                 <table class="table">
                     <thead class="thead-light">
                         <tr>
-                            <th></th>
+                            <th>{{clasificacion.id}}</th>
                             <th>{{clasificacion.descripcion}}</th>
                             <th>PUNTAJE</th>
                             <th>CUMPLE</th>

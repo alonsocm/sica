@@ -14,13 +14,19 @@ import { Muestreador } from '../models/muestreador';
 import { Laboratorio } from '../models/laboratorio';
 import { Sitio } from '../models/sitio';
 import { Criterio } from '../models/criterio';
+import { BaseService } from 'src/app/shared/services/base.service';
+import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 
 @Component({
   selector: 'app-supervision-registro',
   templateUrl: './supervision-registro.component.html',
   styleUrls: ['./supervision-registro.component.css'],
 })
-export class SupervisionRegistroComponent implements OnInit {
+export class SupervisionRegistroComponent
+  extends BaseService
+  implements OnInit
+{
+  supervisionId: number = 0;
   organismosDirecciones: Array<OrganismoDireccion> = [];
   clavesSitios: Array<string> = [];
   sitio: Sitio = {};
@@ -58,6 +64,7 @@ export class SupervisionRegistroComponent implements OnInit {
   }
 
   constructor(private supervisionService: SupervisionService) {
+    super();
     this.supervisionForm = new FormGroup({
       fechaMuestreo: new FormControl(
         this.supervision.fechaMuestreo?.toISOString().split('T')[0] ?? '',
@@ -140,45 +147,48 @@ export class SupervisionRegistroComponent implements OnInit {
       ),
     });
 
-    this.supervisionService.data.subscribe((data) => {});
-
-    this.supervisionService.updateData(2);
+    this.supervisionService.data.subscribe((data) => {
+      this.supervisionId = data;
+    });
   }
 
   ngOnInit(): void {
-    this.supervision.clasificaciones = [
-      {
-        id: 1,
-        descripcion: 'PREVIO A LA TOMA DE MUESTRAS',
-        criterios: [
-          {
-            obligatorio: false,
-            id: 1,
-            descripcion:
-              'El sitio de muestreo es el correcto (verifican coordenadas y cumple con la base actualizada).*',
-            puntaje: 2.5,
-            cumplimiento: '',
-            observacion: 'observación uno',
-          },
-        ],
-      },
-      {
-        id: 2,
-        descripcion:
-          'VERIFICACIÓN DE EQUIPO Y MATERIAL PARA MEDICIONES DE CAMPO Y MUESTREO',
-        criterios: [
-          {
-            obligatorio: true,
-            id: 1,
-            descripcion:
-              'Cuenta con termómetro o termopar para la medición de temperatura del agua con resolución de  0.1°C . *',
-            puntaje: 2.5,
-            cumplimiento: '',
-            observacion: '',
-          },
-        ],
-      },
-    ];
+    // this.supervision.clasificaciones = [
+    //   {
+    //     id: 1,
+    //     descripcion: 'PREVIO A LA TOMA DE MUESTRAS',
+    //     criterios: [
+    //       {
+    //         obligatorio: false,
+    //         id: 1,
+    //         descripcion:
+    //           'El sitio de muestreo es el correcto (verifican coordenadas y cumple con la base actualizada).*',
+    //         puntaje: 2.5,
+    //         cumplimiento: '',
+    //         observacion: 'observación uno',
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     id: 2,
+    //     descripcion:
+    //       'VERIFICACIÓN DE EQUIPO Y MATERIAL PARA MEDICIONES DE CAMPO Y MUESTREO',
+    //     criterios: [
+    //       {
+    //         obligatorio: true,
+    //         id: 1,
+    //         descripcion:
+    //           'Cuenta con termómetro o termopar para la medición de temperatura del agua con resolución de  0.1°C . *',
+    //         puntaje: 2.5,
+    //         cumplimiento: '',
+    //         observacion: '',
+    //       },
+    //     ],
+    //   },
+    // ];
+    if (this.supervisionId === 0) {
+      this.getClasificacionesCriterios();
+    }
     this.getOrganismosDirecciones();
     this.getCuencas();
     this.getLaboratorios();
@@ -250,6 +260,15 @@ export class SupervisionRegistroComponent implements OnInit {
     });
   }
 
+  getClasificacionesCriterios() {
+    this.supervisionService.getClasificacionesCriterios().subscribe({
+      next: (response: any) => {
+        this.supervision.clasificaciones = response.data;
+      },
+      error: (error) => {},
+    });
+  }
+
   onLaboratorioChange() {
     this.supervisionForm.patchValue({
       nombreResponsableMuestra: 0,
@@ -305,18 +324,44 @@ export class SupervisionRegistroComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          this.laboratorios = response.data;
+          this.mostrarMensaje(
+            'Supervisión de muestreo registrada correctamente',
+            TipoMensaje.Correcto
+          );
         },
-        error: (error) => {},
+        error: (error) => {
+          console.log(error);
+          this.mostrarMensaje(
+            'Error al guardar supervisión de muestreo',
+            TipoMensaje.Error
+          );
+        },
       });
   }
 
   onSubmit() {
     this.submitted = true;
     if (this.supervisionForm.invalid) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
       return;
     }
 
+    this.setSupervisionMuestreoValues();
+
+    this.supervisionService.postSupervision(this.supervision).subscribe({
+      next: (response: any) => {
+        if (response.data.success) {
+          this.uploadArchivosSupervision();
+        }
+      },
+      error: (error) => {},
+    });
+  }
+
+  setSupervisionMuestreoValues() {
     this.supervision.fechaMuestreo = this.supervisionForm.value.fechaMuestreo;
     this.supervision.horaInicio = this.supervisionForm.value.horaInicio;
     this.supervision.horaTermino = this.supervisionForm.value.horaFin;
@@ -341,10 +386,5 @@ export class SupervisionRegistroComponent implements OnInit {
       this.supervisionForm.value.nombreResponsableMediciones;
     this.supervision.observacionesMuestreo =
       this.supervisionForm.value.observacionesMuestreo;
-
-    this.supervisionService.postSupervision(this.supervision).subscribe({
-      next: (response: any) => {},
-      error: (error) => {},
-    });
   }
 }
