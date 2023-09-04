@@ -38,7 +38,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
             {
                 List<ValoresSupervisionMuestreo> lstValores = _valoresrepository.ConvertiraValoresSupervisionMuestreo(request.supervision.Clasificaciones, supervison.Id);
                 List<ValoresSupervisionMuestreo> lstValoresActualizar = lstValores.Where(x => x.Id != 0).ToList();
-                List<ValoresSupervisionMuestreo> lstValoresNuevos = lstValores.Where(x => x.Id == 0).ToList();
+                List<ValoresSupervisionMuestreo> lstValoresNuevos = lstValores.Where(x => x.Id == 0 && x.Resultado != null).ToList();
                 if (lstValoresNuevos.Count > 0) { _valoresrepository.InsertarRango(lstValoresNuevos); }
                 if (lstValoresActualizar.Count > 0) { await _valoresrepository.ActualizarBulkAsync(lstValoresActualizar); }
 
