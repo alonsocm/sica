@@ -1202,6 +1202,8 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<ValoresSupervisionMuestreo>(entity =>
         {
+            entity.Property(e => e.Resultado).HasMaxLength(8);
+
             entity.HasOne(d => d.SupervisionMuestreo).WithMany(p => p.ValoresSupervisionMuestreo)
                 .HasForeignKey(d => d.SupervisionMuestreoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
