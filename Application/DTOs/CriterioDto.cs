@@ -7,7 +7,7 @@
         public string Descripcion { get; set; }
         public bool Obligatorio { get; set; }
         public decimal Puntaje { get; set; }
-        public string Cumplimiento { get; set; }
-        public string Observacion { get; set; }
+        public string? Cumplimiento { get; set; }
+        public string? Observacion { get; set; }
     }
 }

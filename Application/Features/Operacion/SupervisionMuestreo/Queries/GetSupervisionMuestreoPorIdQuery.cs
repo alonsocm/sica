@@ -1,19 +1,13 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
-using Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.SupervisionMuestreo.Queries
 {
-    public class GetSupervisionMuestreoPorIdQuery: IRequest<Response<SupervisionMuestreoDto>>
+    public class GetSupervisionMuestreoPorIdQuery : IRequest<Response<SupervisionMuestreoDto>>
     {
-        public long supervisionMuestreoId { get; set; }
+        public long SupervisionMuestreoId { get; set; }
     }
 
     public class GetSupervisionMuestreoPorIdHandler : IRequestHandler<GetSupervisionMuestreoPorIdQuery, Response<SupervisionMuestreoDto>>
@@ -29,9 +23,9 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
         public async Task<Response<SupervisionMuestreoDto>> Handle(GetSupervisionMuestreoPorIdQuery request, CancellationToken cancellationToken)
         {
             SupervisionMuestreoDto supervision = new SupervisionMuestreoDto();
-            var supervisionDetalle = await _supervisionRepository.ObtenerElementoPorIdAsync(request.supervisionMuestreoId);
-            var valoresDetalle = await _valoresSupevisionRepositiry.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == request.supervisionMuestreoId);
-           
+            var supervisionDetalle = await _supervisionRepository.ObtenerElementoPorIdAsync(request.SupervisionMuestreoId);
+            var valoresDetalle = await _valoresSupevisionRepositiry.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == request.SupervisionMuestreoId);
+
 
             supervision.FechaMuestreo = supervisionDetalle.FehaMuestreo.ToString();
             supervision.HoraInicio = supervisionDetalle.HoraInicio.ToString();
@@ -48,22 +42,26 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
             supervision.ResponsableTomaId = supervisionDetalle.ResponsableTomaId;
             supervision.ResponsableMedicionesId = supervisionDetalle.ResponsableMedicionesId;
 
-            if (supervisionDetalle.EvidenciaSupervisionMuestreo.Count > 0) {             
-              
-                     supervisionDetalle.EvidenciaSupervisionMuestreo.ToList().ForEach(evidencia =>
-                     {
-                         var evidenciaDto = new EvidenciaSupervisionDto()
-                         { SupervisionMuestreoId = evidencia.SupervisionMuestreoId,
-                         NombreArchivo = evidencia.NombreArchivo,
-                         TipoEvidencia =evidencia.TipoEvidenciaId};
-                         supervision.LstEvidencia.Add(evidenciaDto);
-                     });
+            if (supervisionDetalle.EvidenciaSupervisionMuestreo.Count > 0)
+            {
+
+                supervisionDetalle.EvidenciaSupervisionMuestreo.ToList().ForEach(evidencia =>
+                {
+                    var evidenciaDto = new EvidenciaSupervisionDto()
+                    {
+                        SupervisionMuestreoId = evidencia.SupervisionMuestreoId,
+                        NombreArchivo = evidencia.NombreArchivo,
+                        TipoEvidencia =evidencia.TipoEvidenciaId
+                    };
+                    supervision.LstEvidencia.Add(evidenciaDto);
+                });
             }
-            if (valoresDetalle.ToList().Count > 0) {
+            if (valoresDetalle.ToList().Count > 0)
+            {
 
                 supervision.Clasificaciones = _valoresSupevisionRepositiry.ValoresSupervisionMuestreoDtoPorId(valoresDetalle.ToList()).Result.ToList();
-               
-            
+
+
 
             }
 
