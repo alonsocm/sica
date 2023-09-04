@@ -25,7 +25,7 @@ namespace Persistence.Repository
                 {
                     ValoresSupervisionMuestreo valor = new()
                     {
-                        Id = criterioDto.Id,
+                        Id =  criterioDto.ValoresSupervisonMuestreoId ?? 0,
                         CriterioSupervisionId = criterioDto.Id,
                         Resultado = criterioDto.Cumplimiento,
                         ObservacionesCriterio = criterioDto.Observacion,
