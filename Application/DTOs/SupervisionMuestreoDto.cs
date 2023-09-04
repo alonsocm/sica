@@ -39,6 +39,7 @@
             this.ResponsableTomaId = 0;
             this.ResponsableMedicionesId = 0;
             this.LstEvidencia = new List<EvidenciaSupervisionDto>();
+            this.Clasificaciones = new List<ClasificacionCriterioDto>();
         }
     }
 }
