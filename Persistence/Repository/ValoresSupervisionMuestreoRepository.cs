@@ -44,8 +44,7 @@ namespace Persistence.Repository
             List<int> criteriosSupervisionId = valores.Select(x => x.CriterioSupervisionId).ToList();
             List<ClasificacionCriterioDto> lstClasificacionCriterioDto = new List<ClasificacionCriterioDto>();
 
-            foreach (var datoValor in valores)
-            {
+          
                 lstClasificacionCriterioDto = await (from l in _dbContext.ClasificacionCriterio
                                    select new ClasificacionCriterioDto
                                    {
@@ -58,10 +57,26 @@ namespace Persistence.Repository
                                                         Id = r.Id,
                                                         Descripcion = r.Descripcion,
                                                         Obligatorio = r.Obligatorio,
-                                                        Puntaje = r.Valor
+                                                        Puntaje = r.Valor      
                                                     }).ToList()
                                    }).ToListAsync();
-            }         
+
+
+
+            foreach (var dato in lstClasificacionCriterioDto)
+            {
+                foreach (var item in dato.Criterios)
+                {
+                    var valSupervision = valores.Where(x => x.CriterioSupervisionId == item.Id).FirstOrDefault();
+                    item.ValoresSupervisonMuestreoId = valSupervision.Id;
+                    item.Cumplimiento = valSupervision.Resultado;
+
+
+                }
+
+            }
+
+                    
             return lstClasificacionCriterioDto;
         }
     }

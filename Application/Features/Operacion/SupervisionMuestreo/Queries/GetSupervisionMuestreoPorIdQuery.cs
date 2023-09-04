@@ -51,18 +51,14 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                     {
                         SupervisionMuestreoId = evidencia.SupervisionMuestreoId,
                         NombreArchivo = evidencia.NombreArchivo,
-                        TipoEvidencia =evidencia.TipoEvidenciaId
+                        TipoEvidencia = evidencia.TipoEvidenciaId
                     };
                     supervision.LstEvidencia.Add(evidenciaDto);
                 });
             }
             if (valoresDetalle.ToList().Count > 0)
             {
-
                 supervision.Clasificaciones = _valoresSupevisionRepositiry.ValoresSupervisionMuestreoDtoPorId(valoresDetalle.ToList()).Result.ToList();
-
-
-
             }
 
             return new Response<SupervisionMuestreoDto>(supervision);
