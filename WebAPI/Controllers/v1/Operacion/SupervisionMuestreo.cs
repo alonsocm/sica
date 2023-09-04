@@ -95,6 +95,14 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetClasificacionCriteriosQuery { }));
         }
 
+        [HttpGet("ObtenerSupervisionMuestreoPorId")]
+        public async Task<IActionResult> ObtenerSupervisionMuestreoPorId(long supervisionMuestreoId)
+
+        {
+            return Ok(await Mediator.Send(new GetSupervisionMuestreoPorIdQuery { supervisionMuestreoId = supervisionMuestreoId }));
+
+        }
+
 
     }
 }
