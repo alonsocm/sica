@@ -36,48 +36,6 @@ namespace Persistence.Repository
             });
 
             return lstValoresMuestreo;
-        }
-
-        public async Task<IEnumerable<ClasificacionCriterioDto>> ValoresSupervisionMuestreoDtoPorId(List<ValoresSupervisionMuestreo> valores)
-        {
-            //var valores = _dbContext.ValoresSupervisionMuestreo.Where(x => x.SupervisionMuestreoId == supervisionMuestreoId).ToList();
-            List<int> criteriosSupervisionId = valores.Select(x => x.CriterioSupervisionId).ToList();
-            List<ClasificacionCriterioDto> lstClasificacionCriterioDto = new List<ClasificacionCriterioDto>();
-
-          
-                lstClasificacionCriterioDto = await (from l in _dbContext.ClasificacionCriterio
-                                   select new ClasificacionCriterioDto
-                                   {
-                                       Id = l.Id,
-                                       Descripcion = l.Descripcion,
-                                       Criterios = (from r in _dbContext.CriteriosSupervisionMuestreo
-                                                    where r.ClasificacionCriterioId == l.Id && criteriosSupervisionId.Contains(r.Id)
-                                                    select new CriterioDto
-                                                    {
-                                                        Id = r.Id,
-                                                        Descripcion = r.Descripcion,
-                                                        Obligatorio = r.Obligatorio,
-                                                        Puntaje = r.Valor      
-                                                    }).ToList()
-                                   }).ToListAsync();
-
-
-
-            foreach (var dato in lstClasificacionCriterioDto)
-            {
-                foreach (var item in dato.Criterios)
-                {
-                    var valSupervision = valores.Where(x => x.CriterioSupervisionId == item.Id).FirstOrDefault();
-                    item.ValoresSupervisonMuestreoId = valSupervision.Id;
-                    item.Cumplimiento = valSupervision.Resultado;
-
-
-                }
-
-            }
-
-                    
-            return lstClasificacionCriterioDto;
-        }
+        }        
     }
 }

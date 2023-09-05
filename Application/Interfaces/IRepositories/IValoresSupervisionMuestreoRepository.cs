@@ -11,10 +11,5 @@ namespace Application.Interfaces.IRepositories
     public interface IValoresSupervisionMuestreoRepository:IRepository<ValoresSupervisionMuestreo>
     {
         List<ValoresSupervisionMuestreo> ConvertiraValoresSupervisionMuestreo(List<ClasificacionCriterioDto> lstClasificacionesCriterio, long supervisionMuestreoId);
-
-        Task<IEnumerable<ClasificacionCriterioDto>> ValoresSupervisionMuestreoDtoPorId(List<ValoresSupervisionMuestreo> valores);
-
-
-
     }
 }

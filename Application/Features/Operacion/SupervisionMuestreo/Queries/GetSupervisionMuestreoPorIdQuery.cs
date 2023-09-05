@@ -16,12 +16,14 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
         private readonly IValoresSupervisionMuestreoRepository _valoresSupevisionRepositiry;
         private readonly ISitioRepository _sitioRepository;
         private readonly IEvidenciaSupervisionMuestreoRepository _evidenciaMuestreoRepository;
-        public GetSupervisionMuestreoPorIdHandler(ISupervisionMuestreoRepository supervisionRepository, IValoresSupervisionMuestreoRepository valoresSupevisionRepositiry, 
+
+
+        public GetSupervisionMuestreoPorIdHandler(ISupervisionMuestreoRepository supervisionRepository, IValoresSupervisionMuestreoRepository valoresSupevisionRepositiry,
             ISitioRepository sitioRepository, IEvidenciaSupervisionMuestreoRepository evidenciaMuestreoRepository)
         {
             _supervisionRepository = supervisionRepository;
             _valoresSupevisionRepositiry = valoresSupevisionRepositiry;
-            _sitioRepository=sitioRepository;
+            _sitioRepository = sitioRepository;
             _evidenciaMuestreoRepository = evidenciaMuestreoRepository;
 
         }
@@ -75,7 +77,21 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
 
             if (valoresDetalle.ToList().Count > 0)
             {
-                supervisionDto.Clasificaciones = _valoresSupevisionRepositiry.ValoresSupervisionMuestreoDtoPorId(valoresDetalle.ToList()).Result.ToList();
+                List<ClasificacionCriterioDto> lstcriterios = _supervisionRepository.ObtenerCriterios().Result.ToList();
+                foreach (var dat in lstcriterios)
+                {
+                    foreach (var item in dat.Criterios)
+                    {
+                        var valSupervision = valoresDetalle.Where(x => x.CriterioSupervisionId == item.Id).FirstOrDefault();
+                        if (valSupervision != null)
+                        {
+                            item.ValoresSupervisonMuestreoId = valSupervision.Id;
+                            item.Cumplimiento = valSupervision.Resultado;
+                        }
+                    }
+                }
+
+                supervisionDto.Clasificaciones = lstcriterios;             
             }
 
             return new Response<SupervisionMuestreoDto>(supervisionDto);
