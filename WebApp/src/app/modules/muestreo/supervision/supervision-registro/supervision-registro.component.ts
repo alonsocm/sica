@@ -13,7 +13,6 @@ import { Cuenca } from '../models/cuenca';
 import { Muestreador } from '../models/muestreador';
 import { Laboratorio } from '../models/laboratorio';
 import { Sitio } from '../models/sitio';
-import { Criterio } from '../models/criterio';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 
@@ -54,10 +53,12 @@ export class SupervisionRegistroComponent
       this.supervision.horaTermino = '10:14';
       this.supervision.horaTomaMuestra = '11:14';
       this.supervision.claveMuestreo = 'OCLSP3827-210822';
+      this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
     } else {
       this.supervisionService.getSupervision(this.supervisionId).subscribe({
         next: (response: any) => {
           this.supervision = response.data;
+          this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
           this.setSupervisionFormValues(this.supervision);
         },
         error: (error) => {},
@@ -296,17 +297,16 @@ export class SupervisionRegistroComponent
 
   onFileChangeEvidencias(event: any) {
     this.supervision.archivosEvidencias = event.target.files;
-
-    this.uploadArchivosSupervision();
   }
 
   uploadArchivosSupervision() {
     if (
       this.supervision.archivoPdfSupervision != null ||
-      this.supervision.archivosEvidencias != null
+      (this.supervision.archivosEvidencias != null && this.supervisionId != 0)
     ) {
       this.supervisionService
         .postArchivosSupervision(
+          this.supervisionId,
           this.supervision.archivoPdfSupervision,
           this.supervision.archivosEvidencias ?? []
         )
@@ -325,6 +325,19 @@ export class SupervisionRegistroComponent
               TipoMensaje.Error
             );
           },
+        });
+    }
+  }
+
+  onDeleteArchivoClick(nombreArchivo: string) {
+    if (this.supervisionId != 0 && this.supervisionId != null) {
+      this.supervisionService
+        .deleteArchivo(this.supervisionId, nombreArchivo)
+        .subscribe({
+          next: (response: any) => {
+            console.log('todo ok');
+          },
+          error: (error) => {},
         });
     }
   }

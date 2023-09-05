@@ -98,12 +98,23 @@ export class SupervisionService {
     );
   }
 
+  deleteArchivo(supervisionId: number, nombreArchivo: string) {
+    const params = new HttpParams()
+      .set('supervisionId', supervisionId)
+      .set('nombreArchivo', nombreArchivo);
+    return this.http.delete(
+      environment.apiUrl + '/supervisionmuestreo/archivo',
+      { params }
+    );
+  }
+
   postArchivosSupervision(
+    supervision: number,
     archivoSupervision: any,
     evidencias: Array<any>
   ): Observable<any> {
     const formData = new FormData();
-    formData.append('supervisionId', '1');
+    formData.append('supervisionId', String(supervision));
     formData.append('archivos', archivoSupervision);
     Array.from(evidencias).forEach((archivo) => {
       formData.append('archivos', archivo);

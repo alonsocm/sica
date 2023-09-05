@@ -1,3 +1,4 @@
+import { ArchivoSupervision } from './archivo-supervision';
 import { ClasificacionCriterio } from './clasificacion-criterio';
 
 export interface Supervision {
@@ -27,4 +28,5 @@ export interface Supervision {
   clasificaciones?: Array<ClasificacionCriterio>;
   archivoPdfSupervision?: any;
   archivosEvidencias?: Array<any>;
+  archivos?: Array<ArchivoSupervision>;
 }
