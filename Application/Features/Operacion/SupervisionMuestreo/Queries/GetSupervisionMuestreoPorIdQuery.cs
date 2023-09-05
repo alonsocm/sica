@@ -59,6 +59,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                 {
                     var evidenciaDto = new EvidenciaSupervisionDto()
                     {
+                        Id = evidencia.Id,
                         SupervisionMuestreoId = evidencia.SupervisionMuestreoId,
                         NombreArchivo = evidencia.NombreArchivo,
                         TipoEvidencia = evidencia.TipoEvidenciaId

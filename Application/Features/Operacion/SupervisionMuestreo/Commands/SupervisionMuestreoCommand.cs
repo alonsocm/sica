@@ -43,14 +43,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
                 if (lstValoresActualizar.Count > 0) { await _valoresrepository.ActualizarBulkAsync(lstValoresActualizar); }
 
             }
-            if (request.supervision.LstEvidencia.Count > 0)
-            {
-                List<EvidenciaSupervisionMuestreo> lstevidencias = _mapper.Map<List<EvidenciaSupervisionMuestreo>>(request.supervision.LstEvidencia);
-                List<EvidenciaSupervisionMuestreo> lstevidenciasActualizar = lstevidencias.Where(x => x.Id != 0).ToList();
-                List<EvidenciaSupervisionMuestreo> lstevidenciasNuevas = lstevidencias.Where(x => x.Id == 0).ToList();
-                if (lstevidenciasNuevas.Count > 0) { _evidenciasupervisionrepository.InsertarRango(lstevidencias); }
-                if (lstevidenciasActualizar.Count > 0) { await _evidenciasupervisionrepository.ActualizarBulkAsync(lstevidenciasActualizar); }
-            }
+           
 
             var respuesta = new RespuestaSupervisionDto()
             {
