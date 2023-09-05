@@ -28,18 +28,15 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromBody] SupervisionMuestreoDto supervision)
-
         {
             return Ok(await Mediator.Send(new SupervisionMuestreoCommand { supervision = supervision }));
-
         }
 
         [HttpPost("ArchivosMuestreo")]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromForm] ArchivosSupervisionDto archivosSupervision)
         {
-            return Ok(await Mediator.Send(new EvidenciaSupervisonCommand {lstEvidencias = archivosSupervision }));
-            
+            return Ok(await Mediator.Send(new EvidenciaSupervisonCommand { lstEvidencias = archivosSupervision }));
         }
 
         [HttpGet("ResponsablesMuestreadores")]
@@ -100,7 +97,12 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> ObtenerSupervisionMuestreoPorId(long supervisionMuestreoId)
         {
             return Ok(await Mediator.Send(new GetSupervisionMuestreoPorIdQuery { SupervisionMuestreoId = supervisionMuestreoId }));
+        }
 
+        [HttpDelete("Archivo")]
+        public async Task<IActionResult> Archivo(long supervisionId, string nombreArchivo)
+        {
+            return Ok();
         }
     }
 }
