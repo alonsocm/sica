@@ -38,7 +38,8 @@ namespace WebAPI.Controllers.v1.Operacion
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromForm] ArchivosSupervisionDto archivosSupervision)
         {
-            return Ok();
+            return Ok(await Mediator.Send(new EvidenciaSupervisonCommand {lstEvidencias = archivosSupervision }));
+            
         }
 
         [HttpGet("ResponsablesMuestreadores")]
