@@ -15,11 +15,15 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
         private readonly ISupervisionMuestreoRepository _supervisionRepository;
         private readonly IValoresSupervisionMuestreoRepository _valoresSupevisionRepositiry;
         private readonly ISitioRepository _sitioRepository;
-        public GetSupervisionMuestreoPorIdHandler(ISupervisionMuestreoRepository supervisionRepository, IValoresSupervisionMuestreoRepository valoresSupevisionRepositiry, ISitioRepository sitioRepository)
+        private readonly IEvidenciaSupervisionMuestreoRepository _evidenciaMuestreoRepository;
+        public GetSupervisionMuestreoPorIdHandler(ISupervisionMuestreoRepository supervisionRepository, IValoresSupervisionMuestreoRepository valoresSupevisionRepositiry, 
+            ISitioRepository sitioRepository, IEvidenciaSupervisionMuestreoRepository evidenciaMuestreoRepository)
         {
             _supervisionRepository = supervisionRepository;
             _valoresSupevisionRepositiry = valoresSupevisionRepositiry;
             _sitioRepository=sitioRepository;
+            _evidenciaMuestreoRepository = evidenciaMuestreoRepository;
+
         }
 
         public async Task<Response<SupervisionMuestreoDto>> Handle(GetSupervisionMuestreoPorIdQuery request, CancellationToken cancellationToken)
@@ -27,6 +31,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
             var supervision = await _supervisionRepository.ObtenerElementoPorIdAsync(request.SupervisionMuestreoId);
             var valoresDetalle = await _valoresSupevisionRepositiry.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == request.SupervisionMuestreoId);
             var sitio = _sitioRepository.ObtenerElementoConInclusiones(p => p.Id == supervision.SitioId, x => x.CuerpoTipoSubtipoAgua.TipoCuerpoAgua);
+            var evidencias = await _evidenciaMuestreoRepository.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == request.SupervisionMuestreoId);
 
             SupervisionMuestreoDto supervisionDto = new()
             {
@@ -53,9 +58,9 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                 ObservacionesMuestreo = supervision.ObservacionesMuestreo
             };
 
-            if (supervision.EvidenciaSupervisionMuestreo.Count > 0)
+            if (evidencias.ToList().Count > 0)
             {
-                supervision.EvidenciaSupervisionMuestreo.ToList().ForEach(evidencia =>
+                evidencias.ToList().ForEach(evidencia =>
                 {
                     var evidenciaDto = new EvidenciaSupervisionDto()
                     {

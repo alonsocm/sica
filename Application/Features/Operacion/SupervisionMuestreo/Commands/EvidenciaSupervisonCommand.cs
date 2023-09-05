@@ -51,7 +51,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
                     {
                         SupervisionMuestreoId = request.lstEvidencias.SupervisionId,
                         NombreArchivo = evidencia.FileName,                        
-                        TipoEvidenciaId = (evidencia.ContentType =="application/pdf") ? 10 : 11,
+                        TipoEvidenciaId = (evidencia.ContentType =="application/pdf") ? Convert.ToInt64(Enums.TipoEvidencia.ArchivoSupervisión) : Convert.ToInt64(Enums.TipoEvidencia.EvidenciaSupervisión),
                     };
                     lstevidenciasFinal.Add(evidenciaDto);
                 });
