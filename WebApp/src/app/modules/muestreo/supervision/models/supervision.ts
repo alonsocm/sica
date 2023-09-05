@@ -1,6 +1,7 @@
 import { ClasificacionCriterio } from './clasificacion-criterio';
 
 export interface Supervision {
+  id?: number;
   fechaMuestreo?: Date;
   horaInicio?: string;
   horaTermino?: string;
@@ -23,7 +24,7 @@ export interface Supervision {
   latitudSitio?: number;
   longitudSitio?: number;
   coordenadasMuestra?: string;
-  clasificaciones: Array<ClasificacionCriterio>;
+  clasificaciones?: Array<ClasificacionCriterio>;
   archivoPdfSupervision?: any;
   archivosEvidencias?: Array<any>;
 }

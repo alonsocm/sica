@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class SupervisionService {
-  private dataSource = new BehaviorSubject(0);
+  private dataSource = new BehaviorSubject(35);
   public data = this.dataSource.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -20,6 +20,17 @@ export class SupervisionService {
     return this.http.post(
       environment.apiUrl + '/supervisionmuestreo/',
       supervision
+    );
+  }
+
+  getSupervision(id: number) {
+    const params = new HttpParams({
+      fromObject: { supervisionMuestreoId: id },
+    });
+    return this.http.get(
+      environment.apiUrl +
+        '/supervisionmuestreo/ObtenerSupervisionMuestreoPorId',
+      { params }
     );
   }
 

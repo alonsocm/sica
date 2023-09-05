@@ -35,29 +35,7 @@ export class SupervisionRegistroComponent
   muestreadoresLaboratorio: Array<Muestreador> = [];
   submitted = false;
   public supervisionForm: FormGroup;
-  supervision: Supervision = {
-    fechaMuestreo: new Date('2023/08/28'),
-    horaInicio: '09:24',
-    horaTermino: '10:14',
-    horaTomaMuestra: '11:14',
-    puntajeObtenido: 0,
-    // ocdlRealiza: 'Golfo Centro/Hidalgo',
-    supervisorConagua: 'Luis Eduardo Alfaro Sánchez',
-    // ocdlReporta: 'Golfo Centro/Hidalgo',
-    // claveSitio: '0',
-    claveMuestreo: 'OCLSP3827-210822',
-    // nombreSitio: 'PRESA SAN ONOFRE CENTRO',
-    // tipoCuerpoAgua: '0',
-    // laboratorio: '0',
-    // latitudSitio: 0,
-    // longitudSitio: 0,
-    latitudToma: 232614,
-    longitudToma: 232614,
-    // nombreResponsableMuestra: 'VICTOR RAMÍREZ ÁNGULO',
-    // nombreResponsableMediciones: 'FELIX ALVARADO CRUZ',
-    // observacionesMuestreo: '',
-    clasificaciones: [],
-  };
+  supervision: Supervision = {};
 
   get f(): { [key: string]: AbstractControl } {
     return this.supervisionForm.controls;
@@ -65,6 +43,27 @@ export class SupervisionRegistroComponent
 
   constructor(private supervisionService: SupervisionService) {
     super();
+
+    this.supervisionService.data.subscribe((data) => {
+      this.supervisionId = data;
+    });
+
+    if (this.supervisionId == 0) {
+      this.supervision.fechaMuestreo = new Date('2023/08/28');
+      this.supervision.horaInicio = '09:24';
+      this.supervision.horaTermino = '10:14';
+      this.supervision.horaTomaMuestra = '11:14';
+      this.supervision.claveMuestreo = 'OCLSP3827-210822';
+    } else {
+      this.supervisionService.getSupervision(this.supervisionId).subscribe({
+        next: (response: any) => {
+          this.supervision = response.data;
+          this.setSupervisionFormValues(this.supervision);
+        },
+        error: (error) => {},
+      });
+    }
+
     this.supervisionForm = new FormGroup({
       fechaMuestreo: new FormControl(
         this.supervision.fechaMuestreo?.toISOString().split('T')[0] ?? '',
@@ -146,52 +145,24 @@ export class SupervisionRegistroComponent
         this.supervision.observacionesMuestreo ?? ''
       ),
     });
-
-    this.supervisionService.data.subscribe((data) => {
-      this.supervisionId = data;
-    });
   }
 
   ngOnInit(): void {
-    // this.supervision.clasificaciones = [
-    //   {
-    //     id: 1,
-    //     descripcion: 'PREVIO A LA TOMA DE MUESTRAS',
-    //     criterios: [
-    //       {
-    //         obligatorio: false,
-    //         id: 1,
-    //         descripcion:
-    //           'El sitio de muestreo es el correcto (verifican coordenadas y cumple con la base actualizada).*',
-    //         puntaje: 2.5,
-    //         cumplimiento: '',
-    //         observacion: 'observación uno',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     id: 2,
-    //     descripcion:
-    //       'VERIFICACIÓN DE EQUIPO Y MATERIAL PARA MEDICIONES DE CAMPO Y MUESTREO',
-    //     criterios: [
-    //       {
-    //         obligatorio: true,
-    //         id: 1,
-    //         descripcion:
-    //           'Cuenta con termómetro o termopar para la medición de temperatura del agua con resolución de  0.1°C . *',
-    //         puntaje: 2.5,
-    //         cumplimiento: '',
-    //         observacion: '',
-    //       },
-    //     ],
-    //   },
-    // ];
     if (this.supervisionId === 0) {
       this.getClasificacionesCriterios();
     }
     this.getOrganismosDirecciones();
     this.getCuencas();
     this.getLaboratorios();
+  }
+
+  getSupervision(id: number) {
+    this.supervisionService.getSupervision(id).subscribe({
+      next: (response: any) => {
+        this.supervision = response.data;
+      },
+      error: (error) => {},
+    });
   }
 
   getOrganismosDirecciones() {
@@ -285,7 +256,7 @@ export class SupervisionRegistroComponent
   }
 
   onCumplimientoChange() {
-    this.supervision.puntajeObtenido = this.supervision.clasificaciones.reduce(
+    this.supervision.puntajeObtenido = this.supervision.clasificaciones?.reduce(
       (accumulator, currentValue) => {
         return (
           accumulator +
@@ -299,7 +270,7 @@ export class SupervisionRegistroComponent
   }
 
   validateCriteriosObligatorios() {
-    const sum = this.supervision.clasificaciones.reduce(
+    const sum = this.supervision.clasificaciones?.reduce(
       (accumulator, currentValue) => {
         return (
           accumulator +
@@ -316,7 +287,7 @@ export class SupervisionRegistroComponent
       0
     );
 
-    return sum > 0;
+    return sum ?? 0 > 0;
   }
 
   onFileChange(event: any) {
@@ -360,6 +331,7 @@ export class SupervisionRegistroComponent
 
   onSubmit() {
     this.submitted = true;
+
     if (this.supervisionForm.invalid) {
       this.hacerScroll();
       return;
@@ -377,6 +349,7 @@ export class SupervisionRegistroComponent
     this.supervisionService.postSupervision(this.supervision).subscribe({
       next: (response: any) => {
         if (response.succeded) {
+          this.supervision.id = response.data.supervisionMuestreoId;
           this.hacerScroll();
           this.mostrarMensaje(
             'Supervisión de muestreo guardada correctamente.',
@@ -392,6 +365,34 @@ export class SupervisionRegistroComponent
           TipoMensaje.Error
         );
       },
+    });
+  }
+
+  setSupervisionFormValues(supervision: Supervision) {
+    this.getClavesSitios(Number(supervision.organismosDireccionesRealizaId));
+    this.getMuestreadoresLaboratorio(Number(supervision.laboratorioRealizaId));
+
+    this.supervisionForm.patchValue({
+      fechaMuestreo: supervision.fechaMuestreo,
+      horaInicio: supervision.horaInicio,
+      horaFin: supervision.horaTermino,
+      horaTomaMuestra: supervision.horaTomaMuestra,
+      puntajeObtenido: supervision.puntajeObtenido,
+      ocdlRealiza: supervision.organismosDireccionesRealizaId,
+      nombreSupervisor: supervision.supervisorConagua,
+      ocdlReporta: supervision.organismoCuencaReportaId,
+      claveSitio: supervision.claveSitio,
+      claveMuestreo: supervision.claveMuestreo,
+      nombreSitio: supervision.nombreSitio,
+      tipoCuerpoAgua: supervision.tipoCuerpoAgua,
+      latitudSitio: supervision.latitudSitio,
+      longitudSitio: supervision.longitudSitio,
+      latitudToma: supervision.latitudToma,
+      longitudToma: supervision.longitudToma,
+      laboratorio: supervision.laboratorioRealizaId,
+      nombreResponsableMuestra: supervision.responsableTomaId,
+      nombreResponsableMediciones: supervision.responsableMedicionesId,
+      observacionesMuestreo: supervision.observacionesMuestreo,
     });
   }
 
