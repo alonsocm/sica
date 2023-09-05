@@ -297,10 +297,10 @@
                                         title="Seleccione si el criterio no aplica" (change)="onCumplimientoChange()" />
                                 </td>
                                 <td><textarea [(ngModel)]="this.criterio.observacion"
+                                        [ngClass]="{'is-invalid': this.criterio.obligatorio && this.criterio.cumplimiento === 'NOAPLICA' && this.criterio.observacion === null || this.criterio.observacion === '' }"
                                         title="Escriba las observaciones para el criterio"></textarea>
-                                    <div
-                                        *ngIf="this.criterio.obligatorio && this.criterio.cumplimiento === 'NOAPLICA' && this.criterio.observacion == ''">
-                                        Observaciones requeridas.
+                                    <div class="invalid-feedback">
+                                        <div>Observaciones requeridas.</div>
                                     </div>
                                 </td>
                             </tr>

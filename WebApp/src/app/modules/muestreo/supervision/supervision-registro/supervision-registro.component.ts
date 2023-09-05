@@ -298,12 +298,25 @@ export class SupervisionRegistroComponent
     );
   }
 
-  getPuntaje() {
-    const sum = this.supervision.clasificaciones.filter((item) =>
-      item.criterios
-        .filter((c) => c.cumplimiento === 'CUMPLE')
-        .reduce((sum, current) => sum + current.puntaje, 0)
+  validateCriteriosObligatorios() {
+    const sum = this.supervision.clasificaciones.reduce(
+      (accumulator, currentValue) => {
+        return (
+          accumulator +
+          currentValue.criterios
+            .filter(
+              (x) =>
+                x.obligatorio &&
+                x.cumplimiento === 'NOAPLICA' &&
+                (x.observacion === null || x.observacion === '')
+            )
+            .reduce((acc, val) => acc + 1, 0)
+        );
+      },
+      0
     );
+
+    return sum > 0;
   }
 
   onFileChange(event: any) {
@@ -317,35 +330,45 @@ export class SupervisionRegistroComponent
   }
 
   uploadArchivosSupervision() {
-    this.supervisionService
-      .postArchivosSupervision(
-        this.supervision.archivoPdfSupervision,
-        this.supervision.archivosEvidencias ?? []
-      )
-      .subscribe({
-        next: (response: any) => {
-          this.mostrarMensaje(
-            'Supervisión de muestreo registrada correctamente',
-            TipoMensaje.Correcto
-          );
-        },
-        error: (error) => {
-          console.log(error);
-          this.mostrarMensaje(
-            'Error al guardar supervisión de muestreo',
-            TipoMensaje.Error
-          );
-        },
-      });
+    if (
+      this.supervision.archivoPdfSupervision != null ||
+      this.supervision.archivosEvidencias != null
+    ) {
+      this.supervisionService
+        .postArchivosSupervision(
+          this.supervision.archivoPdfSupervision,
+          this.supervision.archivosEvidencias ?? []
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.mostrarMensaje(
+              'Supervisión de muestreo registrada correctamente',
+              TipoMensaje.Correcto
+            );
+          },
+          error: (error) => {
+            console.log(error);
+            this.hacerScroll();
+            this.mostrarMensaje(
+              'Error al guardar los archivos de supervisión de muestreo',
+              TipoMensaje.Error
+            );
+          },
+        });
+    }
   }
 
   onSubmit() {
     this.submitted = true;
     if (this.supervisionForm.invalid) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
+      this.hacerScroll();
+      return;
+    } else if (this.validateCriteriosObligatorios()) {
+      this.mostrarMensaje(
+        'Se encontraron críterios obligatorios marcados como "NO APLICA", pendientes de observaciones.',
+        TipoMensaje.Alerta
+      );
+      this.hacerScroll();
       return;
     }
 
@@ -353,11 +376,22 @@ export class SupervisionRegistroComponent
 
     this.supervisionService.postSupervision(this.supervision).subscribe({
       next: (response: any) => {
-        if (response.data.success) {
+        if (response.succeded) {
+          this.hacerScroll();
+          this.mostrarMensaje(
+            'Supervisión de muestreo guardada correctamente.',
+            TipoMensaje.Correcto
+          );
           this.uploadArchivosSupervision();
         }
       },
-      error: (error) => {},
+      error: (error) => {
+        this.hacerScroll();
+        this.mostrarMensaje(
+          'Error al guardar supervisión de muestreo',
+          TipoMensaje.Error
+        );
+      },
     });
   }
 
