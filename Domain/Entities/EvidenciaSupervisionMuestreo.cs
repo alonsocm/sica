@@ -1,4 +1,7 @@
-﻿namespace Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Domain.Entities;
 
 public partial class EvidenciaSupervisionMuestreo
 {
@@ -9,6 +12,7 @@ public partial class EvidenciaSupervisionMuestreo
     public long TipoEvidenciaId { get; set; }
 
     public string NombreArchivo { get; set; } = null!;
+
     public virtual SupervisionMuestreo SupervisionMuestreo { get; set; } = null!;
 
     public virtual TipoEvidenciaMuestreo TipoEvidencia { get; set; } = null!;

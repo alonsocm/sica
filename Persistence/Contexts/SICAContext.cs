@@ -142,6 +142,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; }
 
+    public virtual DbSet<VwDatosGeneralesSupervision> VwDatosGeneralesSupervision { get; set; }
+
     public virtual DbSet<VwLimiteLaboratorio> VwLimiteLaboratorio { get; set; }
 
     public virtual DbSet<VwLimiteMaximoComun> VwLimiteMaximoComun { get; set; }
@@ -1217,6 +1219,35 @@ public partial class SicaContext : DbContext
                 .ToView("Vw_ClaveMuestreo");
 
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<VwDatosGeneralesSupervision>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VwDatosGeneralesSupervision");
+
+            entity.Property(e => e.ClaveDelMuestreo)
+                .HasMaxLength(50)
+                .HasColumnName("Clave del muestreo");
+            entity.Property(e => e.FechaDeMuestreo)
+                .HasColumnType("datetime")
+                .HasColumnName("Fecha de muestreo");
+            entity.Property(e => e.LaboratorioQueRealizaMuestreo)
+                .HasMaxLength(150)
+                .IsUnicode(false)
+                .HasColumnName("Laboratorio que realiza muestreo");
+            entity.Property(e => e.OcDlRealizaLaSupervision)
+                .HasMaxLength(201)
+                .IsUnicode(false)
+                .HasColumnName("OC/DL realiza la supervision");
+            entity.Property(e => e.PuntajeObtenido)
+                .HasColumnType("decimal(4, 1)")
+                .HasColumnName("Puntaje obtenido");
+            entity.Property(e => e.Sitio).HasMaxLength(250);
+            entity.Property(e => e.TipoCuerpoDeAgua)
+                .HasMaxLength(50)
+                .HasColumnName("Tipo cuerpo de agua");
         });
 
         modelBuilder.Entity<VwLimiteLaboratorio>(entity =>
