@@ -95,7 +95,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                         NombreArchivo = evidencia.NombreArchivo,
                         TipoEvidencia = evidencia.TipoEvidenciaId
                     };
-                    supervisionDto.LstEvidencia.Add(evidenciaDto);
+                    supervisionDto.Archivos.Add(evidenciaDto);
                 });
             }
 

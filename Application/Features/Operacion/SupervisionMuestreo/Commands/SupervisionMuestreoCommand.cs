@@ -57,7 +57,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
             var respuesta = new RespuestaSupervisionDto()
             {
                 SupervisionMuestreoId = supervison.Id,
-                Completo = (request.supervision.Id != 0 && request.supervision.LstEvidencia.Count > 0 && request.supervision.Clasificaciones.Count > 0) ? true : false
+                Completo = (request.supervision.Id != 0 && request.supervision.Archivos.Count > 0 && request.supervision.Clasificaciones.Count > 0) ? true : false
             };
 
             return new Response<RespuestaSupervisionDto>(respuesta);

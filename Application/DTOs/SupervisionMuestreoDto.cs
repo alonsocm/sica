@@ -30,7 +30,7 @@
         public string ResponsableMediciones { get; set; }
         public string? ObservacionesMuestreo { get; set; }
         public List<ClasificacionCriterioDto> Clasificaciones { get; set; }
-        public List<EvidenciaSupervisionDto> LstEvidencia { get; set; }
+        public List<EvidenciaSupervisionDto> Archivos { get; set; }
 
         public SupervisionMuestreoDto()
         {
@@ -48,7 +48,7 @@
             this.LaboratorioRealizaId = 0;
             this.ResponsableTomaId = 0;
             this.ResponsableMedicionesId = 0;
-            this.LstEvidencia = new List<EvidenciaSupervisionDto>();
+            this.Archivos = new List<EvidenciaSupervisionDto>();
             this.Clasificaciones = new List<ClasificacionCriterioDto>();
             this.OrganismosDireccionesRealiza = string.Empty;
             this.OrganismoCuencaReporta = string.Empty;
