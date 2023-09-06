@@ -47,6 +47,22 @@ namespace Shared.Utilities.Services
             return true;
         }
 
+
+        public bool GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo)
+        {
+            var ruta = ObtenerRutaBaseSupervision();
+            var directorioMuestreo = Directory.CreateDirectory(Path.Combine(ruta, evidenciasMuestreo.SupervisionId.ToString()));
+
+            foreach (var archivo in evidenciasMuestreo.Archivos)
+            {
+                using var stream = File.Create(Path.Combine(directorioMuestreo.FullName, archivo.FileName));
+                archivo.CopyTo(stream);
+            }
+
+            return true;
+        }
+
+
         public List<EvidenciasMuestreo> OrdenarEvidenciasPorMuestreo(List<IFormFile> archivos)
         {
             var evidencias = new List<EvidenciasMuestreo>();
@@ -70,6 +86,11 @@ namespace Shared.Utilities.Services
         public string ObtenerRutaBase()
         {
             return _configuration.GetValue<string>("Archivos:EvidenciasMuestreo");
+        }
+
+        public string ObtenerRutaBaseSupervision()
+        {
+            return _configuration.GetValue<string>("Archivos:EvidenciasSupervisionMuestreo");
         }
 
         public ArchivoDto ObtenerEvidencia(string nombreArchivo)

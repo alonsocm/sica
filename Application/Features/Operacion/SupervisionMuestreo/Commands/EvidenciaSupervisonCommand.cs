@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
+using Application.Interfaces;
 using Application.Interfaces.IRepositories;
+using Application.Models;
 using Application.Wrappers;
 using AutoMapper;
 using Domain.Entities;
@@ -22,29 +24,26 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
     public class EvidenciaSupervisonCommandHandler : IRequestHandler<EvidenciaSupervisonCommand, Response<RespuestaSupervisionDto>>
     {   
         private readonly ISupervisionMuestreoRepository _repository;
-       
+        private readonly IArchivoService _archivos;
         private readonly IMapper _mapper;
         private readonly IEvidenciaSupervisionMuestreoRepository _evidenciasupervisionrepository;
-        public EvidenciaSupervisonCommandHandler(ISupervisionMuestreoRepository repository,IMapper mapper, IEvidenciaSupervisionMuestreoRepository evidenciasupervisionrepository)
+        public EvidenciaSupervisonCommandHandler(ISupervisionMuestreoRepository repository,IMapper mapper, 
+            IEvidenciaSupervisionMuestreoRepository evidenciasupervisionrepository, IArchivoService archivos)
         {
             _repository = repository;           
             _mapper = mapper;
             _evidenciasupervisionrepository = evidenciasupervisionrepository;
+            _archivos = archivos;
         }
 
         public async Task<Response<RespuestaSupervisionDto>> Handle(EvidenciaSupervisonCommand request, CancellationToken cancellationToken)
         {
             var datosSupervision = await _repository.ObtenerElementoPorIdAsync(request.lstEvidencias.SupervisionId);
-            
-
             if (request.lstEvidencias.Archivos.Count > 0)
             {
-
-                //List<EvidenciaSupervisionMuestreo> lstevidenciasFinal = _mapper.Map<List<EvidenciaSupervisionMuestreo>>(request.lstEvidencias);
-                List<EvidenciaSupervisionMuestreo> lstevidenciasFinal = new List<EvidenciaSupervisionMuestreo>();
                 
-
-
+                _archivos.GuardarEvidenciasSupervision(request.lstEvidencias);
+                List<EvidenciaSupervisionMuestreo> lstevidenciasFinal = new List<EvidenciaSupervisionMuestreo>();
                 request.lstEvidencias.Archivos.ToList().ForEach(evidencia =>
                 {
                     var evidenciaDto = new EvidenciaSupervisionMuestreo()
@@ -55,9 +54,6 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
                     };
                     lstevidenciasFinal.Add(evidenciaDto);
                 });
-
-
-
 
                 List<EvidenciaSupervisionMuestreo> lstevidenciasActualizar = lstevidenciasFinal.Where(x => x.Id != 0).ToList();
                 List<EvidenciaSupervisionMuestreo> lstevidenciasNuevas = lstevidenciasFinal.Where(x => x.Id == 0).ToList();

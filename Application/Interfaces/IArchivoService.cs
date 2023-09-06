@@ -17,5 +17,6 @@ namespace Application.Interfaces
         List<ArchivoDto> ObtenerEvidenciasPorMuestreo(string muestreo);
         bool GuardarEvidencias(EvidenciasMuestreo evidenciasMuestreo);
         bool EliminarEvidencias(string muestreo);
+        bool GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo);
     }
 }
