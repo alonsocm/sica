@@ -30,20 +30,24 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
         public async Task<Response<RespuestaSupervisionDto>> Handle(SupervisionMuestreoCommand request, CancellationToken cancellationToken)
         {
             Domain.Entities.SupervisionMuestreo supervison = _repository.ConvertirSupervisionMuestreo(request.supervision);
-            if (request.supervision.Id != 0) { _repository.Actualizar(supervison); }
+
+            if (request.supervision.Id != 0)
+                _repository.Actualizar(supervison);
             else
-            { var dato = _repository.Insertar(supervison); }
+                _= _repository.Insertar(supervison);
 
             if (request.supervision.Clasificaciones.Count > 0)
             {
                 List<ValoresSupervisionMuestreo> lstValores = _valoresrepository.ConvertiraValoresSupervisionMuestreo(request.supervision.Clasificaciones, supervison.Id);
                 List<ValoresSupervisionMuestreo> lstValoresActualizar = lstValores.Where(x => x.Id != 0).ToList();
                 List<ValoresSupervisionMuestreo> lstValoresNuevos = lstValores.Where(x => x.Id == 0 && x.Resultado != null).ToList();
-                if (lstValoresNuevos.Count > 0) { _valoresrepository.InsertarRango(lstValoresNuevos); }
-                if (lstValoresActualizar.Count > 0) { await _valoresrepository.ActualizarBulkAsync(lstValoresActualizar); }
 
+                if (lstValoresNuevos.Count > 0)
+                    _valoresrepository.InsertarRango(lstValoresNuevos);
+
+                if (lstValoresActualizar.Count > 0)
+                    await _valoresrepository.ActualizarBulkAsync(lstValoresActualizar);
             }
-           
 
             var respuesta = new RespuestaSupervisionDto()
             {

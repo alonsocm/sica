@@ -16,24 +16,26 @@ namespace Persistence.Repository
         }
         public SupervisionMuestreo ConvertirSupervisionMuestreo(SupervisionMuestreoDto supervisionMuestreo)
         {
-            SupervisionMuestreo supervision = new SupervisionMuestreo();
-            supervision.FehaMuestreo = Convert.ToDateTime(supervisionMuestreo.FechaMuestreo);
-            supervision.HoraInicio = TimeSpan.Parse(supervisionMuestreo.HoraInicio);
-            supervision.HoraTermino = TimeSpan.Parse(supervisionMuestreo.HoraTermino);
-            supervision.HoraTomaMuestra = TimeSpan.Parse(supervisionMuestreo.HoraTomaMuestra);
-            supervision.PuntajeObtenido = supervisionMuestreo.PuntajeObtenido;
-            supervision.OrganismosDireccionesRealizaId = supervisionMuestreo.OrganismosDireccionesRealizaId;
-            supervision.OrganismoCuencaReportaId = supervisionMuestreo.OrganismoCuencaReportaId;
-            supervision.SupervisorConagua = supervisionMuestreo.SupervisorConagua;
-            supervision.SitioId = supervisionMuestreo.SitioId;
-            supervision.ClaveMuestreo = supervisionMuestreo.ClaveMuestreo;
-            supervision.LatitudToma = supervisionMuestreo.LatitudToma;
-            supervision.LongitudToma = supervisionMuestreo.LongitudToma;
-            supervision.LaboratorioRealizaId = supervisionMuestreo.LaboratorioRealizaId;
-            supervision.ResponsableTomaId = supervisionMuestreo.ResponsableTomaId;
-            supervision.ResponsableMedicionesId = supervisionMuestreo.ResponsableMedicionesId;
-            supervision.ObservacionesMuestreo = supervisionMuestreo.ObservacionesMuestreo;
-
+            SupervisionMuestreo supervision = new()
+            {
+                Id = supervisionMuestreo.Id,
+                FehaMuestreo = Convert.ToDateTime(supervisionMuestreo.FechaMuestreo),
+                HoraInicio = TimeSpan.Parse(supervisionMuestreo.HoraInicio),
+                HoraTermino = TimeSpan.Parse(supervisionMuestreo.HoraTermino),
+                HoraTomaMuestra = TimeSpan.Parse(supervisionMuestreo.HoraTomaMuestra),
+                PuntajeObtenido = supervisionMuestreo.PuntajeObtenido,
+                OrganismosDireccionesRealizaId = supervisionMuestreo.OrganismosDireccionesRealizaId,
+                OrganismoCuencaReportaId = supervisionMuestreo.OrganismoCuencaReportaId,
+                SupervisorConagua = supervisionMuestreo.SupervisorConagua,
+                SitioId = supervisionMuestreo.SitioId,
+                ClaveMuestreo = supervisionMuestreo.ClaveMuestreo,
+                LatitudToma = supervisionMuestreo.LatitudToma,
+                LongitudToma = supervisionMuestreo.LongitudToma,
+                LaboratorioRealizaId = supervisionMuestreo.LaboratorioRealizaId,
+                ResponsableTomaId = supervisionMuestreo.ResponsableTomaId,
+                ResponsableMedicionesId = supervisionMuestreo.ResponsableMedicionesId,
+                ObservacionesMuestreo = supervisionMuestreo.ObservacionesMuestreo
+            };
 
             return supervision;
         }
