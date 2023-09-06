@@ -316,10 +316,12 @@
         <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
                 <label class="control-label" for="archivo-supervision">Archivo de supervisión de muestreo:</label>
-                <input type="file" id="archivo-supervision" accept=".pdf" (change)="onFileChange($event)">
-                <!-- <div>
-                    {{this.supervision.archivoPdfSupervision?.name}}
-                </div> -->
+                <input
+                    [ngClass]="{'is-invalid': this.supervision.archivoPdfSupervision === undefined && this.supervision.archivos === undefined}"
+                    type="file" id="archivo-supervision" accept=".pdf" (change)="onFileChange($event)">
+                <div class="invalid-feedback">
+                    <div>Archivo de supervisión requerido.</div>
+                </div>
             </div>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12">
