@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -106,6 +106,16 @@ export class SupervisionService {
       environment.apiUrl + '/supervisionmuestreo/archivo',
       { params }
     );
+  }
+
+  getArchivo(supervisionId: number, nombreArchivo: string) {
+    const params = new HttpParams()
+      .set('supervisionId', supervisionId)
+      .set('nombreArchivo', nombreArchivo);
+    return this.http.get(environment.apiUrl + '/supervisionmuestreo/archivo', {
+      responseType: 'blob',
+      params,
+    });
   }
 
   postArchivosSupervision(

@@ -1,3 +1,7 @@
 .btn{
     width: auto;
 }
+
+.btn-hidden{
+    display: none;
+}

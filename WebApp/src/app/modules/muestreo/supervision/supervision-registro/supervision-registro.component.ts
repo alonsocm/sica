@@ -35,6 +35,8 @@ export class SupervisionRegistroComponent
   submitted = false;
   public supervisionForm: FormGroup;
   supervision: Supervision = {};
+  imgSrc: string = '';
+  nombreArchivo: string = '';
 
   get f(): { [key: string]: AbstractControl } {
     return this.supervisionForm.controls;
@@ -330,14 +332,47 @@ export class SupervisionRegistroComponent
   }
 
   onDeleteArchivoClick(nombreArchivo: string) {
+    this.nombreArchivo = nombreArchivo;
+    document.getElementById('btn-confirm-modal')?.click();
+  }
+
+  onConfirmDeleteFileClick() {
     if (this.supervisionId != 0 && this.supervisionId != null) {
       this.supervisionService
-        .deleteArchivo(this.supervisionId, nombreArchivo)
+        .deleteArchivo(this.supervisionId, this.nombreArchivo)
         .subscribe({
           next: (response: any) => {
-            console.log('todo ok');
+            if (response.succeded) {
+              let index =
+                this.supervision.archivos?.findIndex(
+                  (x) => x.nombreArchivo === this.nombreArchivo
+                ) ?? -1;
+              if (index > -1) {
+                this.supervision.archivos?.splice(index, 1);
+              }
+            }
           },
           error: (error) => {},
+        });
+    }
+  }
+
+  onPreviewArchivoClick(nombreArchivo: string, esPdf: boolean = true) {
+    if (this.supervisionId != 0 && this.supervisionId != null) {
+      this.supervisionService
+        .getArchivo(this.supervisionId, nombreArchivo)
+        .subscribe((data: Blob) => {
+          if (!esPdf) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              this.imgSrc = reader.result as string;
+            };
+            reader.readAsDataURL(data);
+            document.getElementById('btn-img-modal')?.click();
+          } else {
+            const url = URL.createObjectURL(data);
+            window.open(url);
+          }
         });
     }
   }
