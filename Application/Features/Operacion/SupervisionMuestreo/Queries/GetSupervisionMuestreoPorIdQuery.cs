@@ -1,5 +1,4 @@
 ﻿using Application.DTOs;
-using Application.Features.OrganismosCuencas.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using Domain.Entities;
@@ -19,14 +18,14 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
         private readonly ISitioRepository _sitioRepository;
         private readonly IEvidenciaSupervisionMuestreoRepository _evidenciaMuestreoRepository;
         private readonly IVwOrganismosDireccionesRepository _orgadisreccionesRepository;
-        private IRepositoryAsync<OrganismoCuenca> _repositorycuenca;
-        private ILaboratorioRepository _labratorios;
+        private readonly IRepositoryAsync<OrganismoCuenca> _repositorycuenca;
+        private readonly ILaboratorioRepository _labratorios;
         private readonly IMuestreadoresRepository _muestradores;
 
 
         public GetSupervisionMuestreoPorIdHandler(ISupervisionMuestreoRepository supervisionRepository, IValoresSupervisionMuestreoRepository valoresSupevisionRepositiry,
-            ISitioRepository sitioRepository, IEvidenciaSupervisionMuestreoRepository evidenciaMuestreoRepository, 
-            IVwOrganismosDireccionesRepository orgadisreccionesRepository, IRepositoryAsync<OrganismoCuenca> repositorycuenca, 
+            ISitioRepository sitioRepository, IEvidenciaSupervisionMuestreoRepository evidenciaMuestreoRepository,
+            IVwOrganismosDireccionesRepository orgadisreccionesRepository, IRepositoryAsync<OrganismoCuenca> repositorycuenca,
             ILaboratorioRepository labratorios, IMuestreadoresRepository muestreadores)
         {
             _supervisionRepository = supervisionRepository;
@@ -37,7 +36,6 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
             _repositorycuenca = repositorycuenca;
             _labratorios = labratorios;
             _muestradores = muestreadores;
-
         }
 
         public async Task<Response<SupervisionMuestreoDto>> Handle(GetSupervisionMuestreoPorIdQuery request, CancellationToken cancellationToken)
@@ -52,17 +50,12 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
             //await _repositorycuenca.ListAsync().Result.ToList().Select(x => x.Id== supervision.OrganismoCuencaReportaId)
             var laboratorioRealiza = await _labratorios.ObtenerElementoPorIdAsync(supervision.LaboratorioRealizaId);
             var respToma = await _muestradores.ObtenerElementosPorCriterioAsync(x => x.Id == supervision.ResponsableTomaId);
-                
-           
+
             var respMediciones = await _muestradores.ObtenerElementosPorCriterioAsync(x => x.Id == supervision.ResponsableMedicionesId);
-
-
-
-
-
 
             SupervisionMuestreoDto supervisionDto = new()
             {
+                Id = supervision.Id,
                 FechaMuestreo = supervision.FehaMuestreo.ToString("yyyy-MM-dd"),
                 HoraInicio = supervision.HoraInicio.ToString(),
                 HoraTermino = supervision.HoraTermino.ToString(),
@@ -84,15 +77,11 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                 LongitudSitio = sitio.FirstOrDefault().Longitud.ToString(),
                 ClaveSitio = sitio.FirstOrDefault().ClaveSitio,
                 ObservacionesMuestreo = supervision.ObservacionesMuestreo,
-
-
-
                 OrganismosDireccionesRealiza = organismosdireccionesRealiza.FirstOrDefault().OrganismoCuencaDireccionLocal,
                 OrganismoCuencaReporta = OrganismosCuenca.FirstOrDefault().Descripcion,
                 LaboratorioRealiza = laboratorioRealiza.Descripcion,
                 ResponsableToma = respToma.FirstOrDefault().Nombre + ' ' + respToma.FirstOrDefault().ApellidoPaterno + ' ' + respToma.FirstOrDefault().ApellidoMaterno,
                 ResponsableMediciones = respMediciones.FirstOrDefault().Nombre + ' ' + respMediciones.FirstOrDefault().ApellidoPaterno + ' ' + respMediciones.FirstOrDefault().ApellidoMaterno,
-
             };
 
             if (evidencias.ToList().Count > 0)
@@ -113,20 +102,23 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
             if (valoresDetalle.ToList().Count > 0)
             {
                 List<ClasificacionCriterioDto> lstcriterios = _supervisionRepository.ObtenerCriterios().Result.ToList();
+
                 foreach (var dat in lstcriterios)
                 {
                     foreach (var item in dat.Criterios)
                     {
                         var valSupervision = valoresDetalle.Where(x => x.CriterioSupervisionId == item.Id).FirstOrDefault();
+
                         if (valSupervision != null)
                         {
                             item.ValoresSupervisonMuestreoId = valSupervision.Id;
                             item.Cumplimiento = valSupervision.Resultado;
+                            item.Observacion = valSupervision.ObservacionesCriterio;
                         }
                     }
                 }
 
-                supervisionDto.Clasificaciones = lstcriterios;             
+                supervisionDto.Clasificaciones = lstcriterios;
             }
 
             return new Response<SupervisionMuestreoDto>(supervisionDto);
