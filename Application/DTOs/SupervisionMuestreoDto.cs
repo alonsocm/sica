@@ -15,10 +15,10 @@
         public string SupervisorConagua { get; set; }
         public long SitioId { get; set; }
         public string ClaveSitio { get; set; }
-        public string NombreSitio { get; set; }
-        public string LatitudSitio { get; set; }
-        public string LongitudSitio { get; set; }
-        public string TipoCuerpoAgua { get; set; }
+        public string? NombreSitio { get; set; }
+        public string? LatitudSitio { get; set; }
+        public string? LongitudSitio { get; set; }
+        public string? TipoCuerpoAgua { get; set; }
         public string ClaveMuestreo { get; set; }
         public float LatitudToma { get; set; }
         public float LongitudToma { get; set; }
