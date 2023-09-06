@@ -308,11 +308,11 @@ export class SupervisionRegistroComponent
   uploadArchivosSupervision() {
     if (
       this.supervision.archivoPdfSupervision != null ||
-      (this.supervision.archivosEvidencias != null && this.supervisionId != 0)
+      (this.supervision.archivosEvidencias != null && this.supervision.id != 0)
     ) {
       this.supervisionService
         .postArchivosSupervision(
-          this.supervisionId,
+          this.supervision.id ?? 0,
           this.supervision.archivoPdfSupervision,
           this.supervision.archivosEvidencias ?? []
         )
