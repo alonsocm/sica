@@ -1227,27 +1227,17 @@ public partial class SicaContext : DbContext
                 .HasNoKey()
                 .ToView("VwDatosGeneralesSupervision");
 
-            entity.Property(e => e.ClaveDelMuestreo)
-                .HasMaxLength(50)
-                .HasColumnName("Clave del muestreo");
-            entity.Property(e => e.FechaDeMuestreo)
-                .HasColumnType("datetime")
-                .HasColumnName("Fecha de muestreo");
-            entity.Property(e => e.LaboratorioQueRealizaMuestreo)
+            entity.Property(e => e.ClaveMuestreo).HasMaxLength(50);
+            entity.Property(e => e.FechaMuestreo).HasColumnType("datetime");
+            entity.Property(e => e.Laboratorio)
                 .HasMaxLength(150)
-                .IsUnicode(false)
-                .HasColumnName("Laboratorio que realiza muestreo");
-            entity.Property(e => e.OcDlRealizaLaSupervision)
+                .IsUnicode(false);
+            entity.Property(e => e.NombreSitio).HasMaxLength(250);
+            entity.Property(e => e.OcdlRealiza)
                 .HasMaxLength(201)
-                .IsUnicode(false)
-                .HasColumnName("OC/DL realiza la supervision");
-            entity.Property(e => e.PuntajeObtenido)
-                .HasColumnType("decimal(4, 1)")
-                .HasColumnName("Puntaje obtenido");
-            entity.Property(e => e.Sitio).HasMaxLength(250);
-            entity.Property(e => e.TipoCuerpoDeAgua)
-                .HasMaxLength(50)
-                .HasColumnName("Tipo cuerpo de agua");
+                .IsUnicode(false);
+            entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
         });
 
         modelBuilder.Entity<VwLimiteLaboratorio>(entity =>

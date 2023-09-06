@@ -7,17 +7,17 @@ public partial class VwDatosGeneralesSupervision
 {
     public long Id { get; set; }
 
-    public string OcDlRealizaLaSupervision { get; set; } = null!;
+    public string OcdlRealiza { get; set; } = null!;
 
-    public string? LaboratorioQueRealizaMuestreo { get; set; }
+    public string? Laboratorio { get; set; }
 
-    public string Sitio { get; set; } = null!;
+    public string NombreSitio { get; set; } = null!;
 
-    public string ClaveDelMuestreo { get; set; } = null!;
+    public string ClaveMuestreo { get; set; } = null!;
 
-    public DateTime FechaDeMuestreo { get; set; }
+    public DateTime FechaMuestreo { get; set; }
 
-    public string TipoCuerpoDeAgua { get; set; } = null!;
+    public string TipoCuerpoAgua { get; set; } = null!;
 
     public decimal PuntajeObtenido { get; set; }
 }
