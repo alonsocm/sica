@@ -54,17 +54,17 @@ export class SupervisionRegistroComponent
     });
 
     if (this.supervisionId == 0) {
-      this.supervision.fechaMuestreo = new Date('2023/08/28');
-      this.supervision.horaInicio = '09:24';
-      this.supervision.horaTermino = '10:14';
-      this.supervision.horaTomaMuestra = '11:14';
-      this.supervision.claveMuestreo = 'OCLSP3827-210822';
-      this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
+      // this.supervision.fechaMuestreo = new Date('2023/08/28');
+      // this.supervision.horaInicio = '09:24';
+      // this.supervision.horaTermino = '10:14';
+      // this.supervision.horaTomaMuestra = '11:14';
+      // this.supervision.claveMuestreo = 'OCLSP3827-210822';
+      // this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
     } else {
       this.supervisionService.getSupervision(this.supervisionId).subscribe({
         next: (response: any) => {
           this.supervision = response.data;
-          this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
+          // this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
           this.setSupervisionFormValues(this.supervision);
         },
         error: (error) => {},
@@ -361,12 +361,12 @@ export class SupervisionRegistroComponent
     }
   }
 
-  onPreviewArchivoClick(nombreArchivo: string, esPdf: boolean = true) {
+  onPreviewArchivoClick(nombreArchivo: string, tipoArchivo: number) {
     if (this.supervisionId != 0 && this.supervisionId != null) {
       this.supervisionService
         .getArchivo(this.supervisionId, nombreArchivo)
         .subscribe((data: Blob) => {
-          if (!esPdf) {
+          if (!(tipoArchivo === 10)) {
             const reader = new FileReader();
             reader.onloadend = () => {
               this.imgSrc = reader.result as string;
@@ -389,7 +389,7 @@ export class SupervisionRegistroComponent
       return;
     } else if (this.validateCriteriosObligatorios()) {
       this.mostrarMensaje(
-        'Se encontraron críterios obligatorios marcados como "NO APLICA", pendientes de observaciones.',
+        'Se encontraron criterios obligatorios marcados como "NO APLICA". Es necesario capturar las observaciones.',
         TipoMensaje.Alerta
       );
       this.hacerScroll();

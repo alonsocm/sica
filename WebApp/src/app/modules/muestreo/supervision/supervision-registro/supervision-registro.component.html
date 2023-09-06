@@ -1,3 +1,4 @@
+<app-menu></app-menu>
 <div class="container-fluid">
     <h3>Registro de supervisión de muestreo</h3>
     <hr class="red">
@@ -190,7 +191,7 @@
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="latitud-toma">Latitud dónde se realizó la muestra:*</label>
+                    <label for="latitud-toma">Latitud dónde se recolecta la muestra:*</label>
                     <input class="form-control" id="latitud-toma" type="number" formControlName="latitudToma"
                         [ngClass]="{'is-invalid': submitted && f['latitudToma'].errors}" />
                     <div *ngIf="f['latitudToma'].errors" class="invalid-feedback">
@@ -200,7 +201,7 @@
             </div>
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="longitud-toma">Longitud dónde se realizó la muestra:*</label>
+                    <label for="longitud-toma">Longitud dónde se recolecta la muestra:*</label>
                     <input class="form-control" id="longitud-toma" type="number" formControlName="longitudToma"
                         [ngClass]="{'is-invalid': submitted && f['longitudToma'].errors}" />
                     <div *ngIf="f['longitudToma'].errors" class="invalid-feedback">
@@ -241,9 +242,9 @@
                     </div>
                 </div>
             </div>
-            <div class="">
+            <div class="col-lg-6">
                 <div class="form-group">
-                    <label for="observaciones">Observaciones del muestreo:*</label>
+                    <label for="observaciones">Observaciones del muestreo:</label>
                     <textarea class="form-control" id="observaciones"
                         formControlName="observacionesMuestreo"></textarea>
                     <div *ngIf="f['observacionesMuestreo'].errors" class="invalid-feedback">
@@ -262,7 +263,7 @@
     <div *ngFor="let clasificacion of this.supervision.clasificaciones" class="row">
         <div class="col">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead class="thead-light">
                         <tr>
                             <th>{{clasificacion.id}}</th>
@@ -347,7 +348,8 @@
                             <td>{{archivo.nombreArchivo}}</td>
                             <td>
                                 <div class="btn btn-group">
-                                    <button class="btn btn-secondary" (click)="onPreviewArchivoClick('hola')"
+                                    <button class="btn btn-secondary"
+                                        (click)="onPreviewArchivoClick(archivo.nombreArchivo??'', archivo.tipoEvidencia??0)"
                                         title="Ver"><i class="bi bi-eye"></i></button>
                                     <button class="btn btn-danger" title="Eliminar"
                                         (click)="onDeleteArchivoClick(archivo.nombreArchivo??'')"><i
