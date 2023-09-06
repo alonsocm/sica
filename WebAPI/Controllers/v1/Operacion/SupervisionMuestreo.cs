@@ -19,7 +19,7 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IWebHostEnvironment _env;
         private readonly IVwDatosGeneralesSupervisionRepository _datosGeneralesSupervisionRepository;
 
-        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, 
+        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository,
             IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env, IVwDatosGeneralesSupervisionRepository datosGeneralesSupervisionRepository)
         {
             _muestrador = muestreador; _sitioRepository = sitioRepository;
@@ -40,7 +40,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromForm] ArchivosSupervisionDto archivosSupervision)
         {
-            return Ok(await Mediator.Send(new EvidenciaSupervisonCommand { lstEvidencias = archivosSupervision }));
+            return Ok(await Mediator.Send(new EvidenciaSupervisionCommand { LstEvidencias = archivosSupervision }));
         }
 
         [HttpGet("ResponsablesMuestreadores")]
