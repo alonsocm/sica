@@ -51,6 +51,7 @@ export class SupervisionComponent extends BaseService implements OnInit {
       laboratorio: 'ABC MATRIZ',
       claveMuestreo: 'OCLSP3827-210822',
       tipoCuerpoAgua: 'Costero (humedal)',
+      id: 35,
     });
   }
 
@@ -145,6 +146,11 @@ export class SupervisionComponent extends BaseService implements OnInit {
   }
 
   registrarSupervision() {
+    this.router.navigate(['/supervision-registro']);
+  }
+
+  onEditClick(supervision: number) {
+    this.supervisionService.updateData(supervision);
     this.router.navigate(['/supervision-registro']);
   }
 }

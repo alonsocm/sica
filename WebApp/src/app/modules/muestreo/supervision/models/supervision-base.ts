@@ -1,4 +1,5 @@
 export interface SupervisionBase {
+  id: number;
   ocdlRealiza: string;
   nombreSitio: string;
   fechaMuestreo: string;

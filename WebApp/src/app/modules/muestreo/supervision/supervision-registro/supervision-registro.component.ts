@@ -15,6 +15,7 @@ import { Laboratorio } from '../models/laboratorio';
 import { Sitio } from '../models/sitio';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -42,7 +43,10 @@ export class SupervisionRegistroComponent
     return this.supervisionForm.controls;
   }
 
-  constructor(private supervisionService: SupervisionService) {
+  constructor(
+    private router: Router,
+    private supervisionService: SupervisionService
+  ) {
     super();
 
     this.supervisionService.data.subscribe((data) => {
@@ -469,5 +473,10 @@ export class SupervisionRegistroComponent
       this.supervisionForm.value.nombreResponsableMediciones;
     this.supervision.observacionesMuestreo =
       this.supervisionForm.value.observacionesMuestreo;
+  }
+
+  onCancelarClick() {
+    this.supervisionService.updateData(0);
+    this.router.navigate(['/muestreo-supervision']);
   }
 }
