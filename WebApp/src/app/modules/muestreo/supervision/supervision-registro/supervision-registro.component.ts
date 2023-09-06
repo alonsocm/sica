@@ -268,7 +268,11 @@ export class SupervisionRegistroComponent
         return (
           accumulator +
           currentValue.criterios
-            .filter((x) => x.cumplimiento === 'CUMPLE')
+            .filter(
+              (x) =>
+                x.cumplimiento === 'CUMPLE' ||
+                (x.cumplimiento === 'NOAPLICA' && !x.obligatorio)
+            )
             .reduce((acc, val) => acc + val.puntaje, 0)
         );
       },
