@@ -2,6 +2,7 @@
 using Application.Features.Operacion.SupervisionMuestreo.Commands;
 using Application.Features.Operacion.SupervisionMuestreo.Queries;
 using Application.Interfaces.IRepositories;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
 
@@ -100,9 +101,16 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpDelete("Archivo")]
-        public async Task<IActionResult> Archivo(long supervisionId, string nombreArchivo)
+        public async Task<IActionResult> Delete(long supervisionId, string nombreArchivo)
         {
-            return Ok();
+            return Ok(new Response<bool>(true));
+        }
+
+        [HttpGet("Archivo")]
+        public async Task<IActionResult> Get(long supervisionId, string nombreArchivo)
+        {
+            var image = System.IO.File.ReadAllBytes("D:\\SupervisionMuestreo (1).pdf");
+            return File(image, "application/pdf");
         }
     }
 }
