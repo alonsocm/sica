@@ -17,13 +17,16 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IVwOrganismosDireccionesRepository _organismoDirecRepository;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly IVwDatosGeneralesSupervisionRepository _datosGeneralesSupervisionRepository;
 
-        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env)
+        public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository, 
+            IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env, IVwDatosGeneralesSupervisionRepository datosGeneralesSupervisionRepository)
         {
             _muestrador = muestreador; _sitioRepository = sitioRepository;
             _organismoDirecRepository = organismoDirecRepository;
             _configuration = configuration;
             _env = env;
+            _datosGeneralesSupervisionRepository = datosGeneralesSupervisionRepository;
         }
 
         [HttpPost]
@@ -111,6 +114,14 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             var image = System.IO.File.ReadAllBytes("D:\\SupervisionMuestreo (1).pdf");
             return File(image, "application/pdf");
+        }
+
+
+        [HttpGet("DatosGeneralesSupervision")]
+        public async Task<IActionResult> DatosGeneralesSupervision()
+        {
+            var datos = await _datosGeneralesSupervisionRepository.ObtenerTodosElementosAsync();
+            return Ok(datos.ToList());
         }
     }
 }

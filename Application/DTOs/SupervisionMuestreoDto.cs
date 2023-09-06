@@ -9,7 +9,9 @@
         public string HoraTomaMuestra { get; set; }
         public decimal PuntajeObtenido { get; set; }
         public long OrganismosDireccionesRealizaId { get; set; }
+        public string OrganismosDireccionesRealiza { get; set; }
         public long OrganismoCuencaReportaId { get; set; }
+        public string OrganismoCuencaReporta { get; set; }
         public string SupervisorConagua { get; set; }
         public long SitioId { get; set; }
         public string ClaveSitio { get; set; }
@@ -21,8 +23,11 @@
         public float LatitudToma { get; set; }
         public float LongitudToma { get; set; }
         public long LaboratorioRealizaId { get; set; }
+        public string LaboratorioRealiza { get; set; }
         public int ResponsableTomaId { get; set; }
+        public string ResponsableToma { get; set; }
         public int ResponsableMedicionesId { get; set; }
+        public string ResponsableMediciones { get; set; }
         public string? ObservacionesMuestreo { get; set; }
         public List<ClasificacionCriterioDto> Clasificaciones { get; set; }
         public List<EvidenciaSupervisionDto> LstEvidencia { get; set; }
@@ -45,6 +50,11 @@
             this.ResponsableMedicionesId = 0;
             this.LstEvidencia = new List<EvidenciaSupervisionDto>();
             this.Clasificaciones = new List<ClasificacionCriterioDto>();
+            this.OrganismosDireccionesRealiza = string.Empty;
+            this.OrganismoCuencaReporta = string.Empty;
+            this.LaboratorioRealiza = string.Empty;
+            this.ResponsableToma = string.Empty;
+            this.ResponsableMediciones = string.Empty;
         }
     }
 }
