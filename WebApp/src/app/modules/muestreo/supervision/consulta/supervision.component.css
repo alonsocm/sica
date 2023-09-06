@@ -2,6 +2,10 @@
     width: auto;
 }
 
+.panel-busqueda{
+    margin: 2% 0 2% 0;
+}
+
 .icon-action{
     cursor: pointer;
 }

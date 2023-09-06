@@ -423,6 +423,7 @@ export class SupervisionRegistroComponent
   setSupervisionFormValues(supervision: Supervision) {
     this.getClavesSitios(Number(supervision.organismosDireccionesRealizaId));
     this.getMuestreadoresLaboratorio(Number(supervision.laboratorioRealizaId));
+    this.getSitio(supervision.claveSitio ?? '');
 
     this.supervisionForm.patchValue({
       fechaMuestreo: supervision.fechaMuestreo,
@@ -449,6 +450,7 @@ export class SupervisionRegistroComponent
   }
 
   setSupervisionMuestreoValues() {
+    this.supervision.id = this.supervisionId;
     this.supervision.fechaMuestreo = this.supervisionForm.value.fechaMuestreo;
     this.supervision.horaInicio = this.supervisionForm.value.horaInicio;
     this.supervision.horaTermino = this.supervisionForm.value.horaFin;
