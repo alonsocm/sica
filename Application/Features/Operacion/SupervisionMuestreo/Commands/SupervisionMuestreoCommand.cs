@@ -46,7 +46,12 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
                     _valoresrepository.InsertarRango(lstValoresNuevos);
 
                 if (lstValoresActualizar.Count > 0)
-                    await _valoresrepository.ActualizarBulkAsync(lstValoresActualizar);
+                {
+                    foreach (var criterio in lstValoresActualizar)
+                    {
+                        _valoresrepository.Actualizar(criterio);
+                    }
+                }
             }
 
             var respuesta = new RespuestaSupervisionDto()
