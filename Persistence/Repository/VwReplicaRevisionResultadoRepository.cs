@@ -3,12 +3,6 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Enums;
 
 
 namespace Persistence.Repository
@@ -22,7 +16,7 @@ namespace Persistence.Repository
         public bool ExisteClaveUnica(int noEntrega, string claveUnica)
         {
             var existe = _dbContext.VwReplicaRevisionResultado.Any(r => r.ClaveUnica == claveUnica
-                                                                        && r.NumeroEntrega == noEntrega.ToString() + "-"
+                                                                        && r.NumeroEntrega == noEntrega
                                                                         && (r.EstatusMuestreoId == 2 || r.EstatusMuestreoId == 3)
                                                                         && r.EstatusSecaia == null);
             return existe;
@@ -40,17 +34,17 @@ namespace Persistence.Repository
 
                     select new ReplicaResumenDto
                     {
-                        NoEntrega = result.NumeroEntrega,
+                        NoEntrega = result.NumeroEntrega.ToString() ?? string.Empty,
                         ClaveUnica = result.ClaveUnica,
                         ClaveSitio = result.ClaveSitio,
-                        ClaveMonitoreo = result.ClaveMonitoreo,
+                        ClaveMonitoreo = result.ClaveMonitoreo.ToString() ?? string.Empty,
                         NombreSitio = result.NombreSitio,
                         ClaveParametro = result.ClaveParametro,
                         Laboratorio = result.Laboratorio,
                         TipoCuerpoAgua = result.TipoCuerpoAgua,
                         TipoCuerpoAguaOriginal = result.TipoCuerpoAguaOriginal,
                         Resultado = result.Resultado,
-                        estatusResultado = result.Estatus
+                        estatusResultado = result.Estatus.ToString() ?? string.Empty
                     }
                     ).ToListAsync();
 
@@ -75,10 +69,10 @@ namespace Persistence.Repository
                             UsuarioRevisionId = result.UsuarioRevisionId,
                             ResultadoMuestreoId = result.ResultadoMuestreoId,
                             EstatusResultadoId = result.EstatusId,
-                            NoEntrega = result.NumeroEntrega,
+                            NoEntrega = result.NumeroEntrega.ToString() ?? string.Empty,
                             ClaveUnica = result.ClaveUnica,
                             ClaveSitio = result.ClaveSitio,
-                            ClaveMonitoreo = result.ClaveMonitoreo,
+                            ClaveMonitoreo = result.ClaveMonitoreo.ToString() ?? string.Empty,
                             NombreSitio = result.NombreSitio,
                             ClaveParametro = result.ClaveParametro,
                             Laboratorio = result.Laboratorio,
@@ -89,14 +83,14 @@ namespace Persistence.Repository
                             ObservacionOCDL = Convert.ToString(result.ObservacionesOcdl),
                             EsCorrectoSECAIA = result.EsCorrectoSecaia == null ? "" : (result.EsCorrectoSecaia == true ? "SI" : "NO"),
                             ObservacionSECAIA = result.ObservacionesSecaia,
-                            ClasificacionObservacion = result.ClasificacionObservacion,
+                            ClasificacionObservacion = result.ClasificacionObservacion.ToString() ?? string.Empty,
                             ObservacionSRENAMECA = result.ObservacionSrenameca == null ? "" : result.ObservacionSrenameca,
                             ComentariosAprobacionResultados = result.ComentariosReplicaDiferente == null ? "" : result.ComentariosReplicaDiferente,
                             FechaObservacionSRENAMECA = result.FechaObservacionSrenameca == null ? "" : result.FechaObservacionSrenameca.Value.Date.ToString("dd/MM/yyyy"),
                             SeApruebaResultadodespuesdelaReplica = result.SeApruebaResultadoReplica == null ? "" : (result.SeApruebaResultadoReplica == true ? "SI" : "NO"),
                             FechaEstatusFinal = result.FechaEstatusFinal == null ? "" : result.FechaEstatusFinal.Value.Date.ToString("dd/MM/yyyy"),
-                            UsuarioRevision = result.NombreUsuario,
-                            estatusResultado = result.Estatus,
+                            UsuarioRevision = result.NombreUsuario.ToString() ?? string.Empty,
+                            estatusResultado = result.Estatus.ToString() ?? string.Empty,
                         }
                         ).ToList();
 
