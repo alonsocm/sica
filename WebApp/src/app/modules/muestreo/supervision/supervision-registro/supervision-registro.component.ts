@@ -54,11 +54,11 @@ export class SupervisionRegistroComponent
     });
 
     if (this.supervisionId == 0) {
-      // this.supervision.fechaMuestreo = new Date('2023/08/28');
-      // this.supervision.horaInicio = '09:24';
-      // this.supervision.horaTermino = '10:14';
-      // this.supervision.horaTomaMuestra = '11:14';
-      // this.supervision.claveMuestreo = 'OCLSP3827-210822';
+      this.supervision.fechaMuestreo = new Date('2023/08/28');
+      this.supervision.horaInicio = '09:24';
+      this.supervision.horaTermino = '10:14';
+      this.supervision.horaTomaMuestra = '11:14';
+      this.supervision.claveMuestreo = 'OCLSP3827-210822';
       // this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
     } else {
       this.supervisionService.getSupervision(this.supervisionId).subscribe({
@@ -398,6 +398,8 @@ export class SupervisionRegistroComponent
       );
       this.hacerScroll();
       return;
+    } else if (this.validateArchivoSupervision()) {
+      return;
     }
 
     this.setSupervisionMuestreoValues();
@@ -422,6 +424,13 @@ export class SupervisionRegistroComponent
         );
       },
     });
+  }
+
+  validateArchivoSupervision() {
+    return (
+      this.supervision.archivoPdfSupervision === undefined &&
+      this.supervision.archivos === undefined
+    );
   }
 
   setSupervisionFormValues(supervision: Supervision) {
