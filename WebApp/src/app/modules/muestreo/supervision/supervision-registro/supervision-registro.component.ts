@@ -16,6 +16,7 @@ import { Sitio } from '../models/sitio';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { Router } from '@angular/router';
+import { FileService } from 'src/app/shared/services/file.service';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -375,12 +376,18 @@ export class SupervisionRegistroComponent
     }
   }
 
-  onPreviewArchivoClick(nombreArchivo: string, tipoArchivo: number) {
+  onPreviewDownloadArchivoClick(
+    nombreArchivo: string,
+    tipoArchivo: number,
+    descargar: boolean = false
+  ) {
     if (this.supervisionId != 0 && this.supervisionId != null) {
       this.supervisionService
         .getArchivo(this.supervisionId, nombreArchivo)
         .subscribe((data: Blob) => {
-          if (!(tipoArchivo === 10)) {
+          if (descargar) {
+            FileService.download(data, nombreArchivo);
+          } else if (!(tipoArchivo === 10)) {
             const reader = new FileReader();
             reader.onloadend = () => {
               this.imgSrc = reader.result as string;

@@ -370,8 +370,11 @@
                             <td>
                                 <div class="btn btn-group">
                                     <button class="btn btn-secondary"
-                                        (click)="onPreviewArchivoClick(archivo.nombreArchivo??'', archivo.tipoEvidencia??0)"
+                                        (click)="onPreviewDownloadArchivoClick(archivo.nombreArchivo??'', archivo.tipoEvidencia??0)"
                                         title="Ver"><i class="bi bi-eye"></i></button>
+                                    <button class="btn btn-secondary"
+                                        (click)="onPreviewDownloadArchivoClick(archivo.nombreArchivo??'', archivo.tipoEvidencia??0, true)"
+                                        title="Descargar"><i class="bi bi-download"></i></button>
                                     <button class="btn btn-danger" title="Eliminar"
                                         (click)="onDeleteArchivoClick(archivo.nombreArchivo??'')"><i
                                             class="bi bi-trash"></i></button>
