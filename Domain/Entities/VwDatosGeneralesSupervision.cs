@@ -20,4 +20,12 @@ public partial class VwDatosGeneralesSupervision
     public string TipoCuerpoAgua { get; set; } = null!;
 
     public decimal PuntajeObtenido { get; set; }
+
+    public long OrganismosDireccionesRealizaId { get; set; }
+
+    public long SitioId { get; set; }
+
+    public long LaboratorioRealizaId { get; set; }
+
+    public long TipoCuerpoAguaId { get; set; }
 }
