@@ -38,6 +38,7 @@ export class SupervisionRegistroComponent
   supervision: Supervision = {};
   imgSrc: string = '';
   nombreArchivo: string = '';
+  esConsulta: boolean = false;
 
   get f(): { [key: string]: AbstractControl } {
     return this.supervisionForm.controls;
@@ -49,8 +50,12 @@ export class SupervisionRegistroComponent
   ) {
     super();
 
-    this.supervisionService.data.subscribe((data) => {
+    this.supervisionService.supervisionId.subscribe((data) => {
       this.supervisionId = data;
+    });
+
+    this.supervisionService.esConsulta.subscribe((data) => {
+      this.esConsulta = data;
     });
 
     if (this.supervisionId == 0) {
@@ -161,6 +166,11 @@ export class SupervisionRegistroComponent
     this.getOrganismosDirecciones();
     this.getCuencas();
     this.getLaboratorios();
+  }
+
+  ngOnDestroy() {
+    this.supervisionService.updateSupervisionId(0);
+    this.supervisionService.updateEsConsulta(false);
   }
 
   getSupervision(id: number) {
@@ -491,7 +501,7 @@ export class SupervisionRegistroComponent
   }
 
   onCancelarClick() {
-    this.supervisionService.updateData(0);
+    this.supervisionService.updateSupervisionId(0);
     this.router.navigate(['/muestreo-supervision']);
   }
 }

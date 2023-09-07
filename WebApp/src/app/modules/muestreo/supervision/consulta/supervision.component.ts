@@ -159,7 +159,13 @@ export class SupervisionComponent extends BaseService implements OnInit {
   }
 
   onEditClick(supervision: number) {
-    this.supervisionService.updateData(supervision);
+    this.supervisionService.updateSupervisionId(supervision);
+    this.router.navigate(['/supervision-registro']);
+  }
+
+  onViewClick(supervision: number) {
+    this.supervisionService.updateSupervisionId(supervision);
+    this.supervisionService.updateEsConsulta(true);
     this.router.navigate(['/supervision-registro']);
   }
 }

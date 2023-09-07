@@ -1,6 +1,6 @@
 <app-menu></app-menu>
 <div class="container-fluid">
-    <h3>Supervisión de muestreo.</h3>
+    <h1>Supervisión de muestreo.</h1>
     <hr class="red">
     <div class="message-container">
         <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
@@ -115,11 +115,10 @@
                         <td>{{supervision.puntajeObtenido}}</td>
                         <td>
                             <i class="bi bi-pencil-square icon-action" (click)="onEditClick(supervision.id)"></i>
-                            <!-- <div class="btn btn-group">
-                                <button class="btn btn-secondary" (click)="onEditClick('hola')" title="Ver"><i
-                                        class="bi bi-eye"></i></button>
+                            <!-- <div class="btn btn-group"> -->
+                            <i class="bi bi-eye icon-action" (click)="onViewClick(supervision.id)"></i>
 
-                            </div> -->
+                            <!-- </div> -->
                         </td>
                     </tr>
                 </tbody>
