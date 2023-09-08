@@ -13,6 +13,7 @@ namespace Application.Interfaces
         public ArchivoDto ObtenerArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
         bool GuardarEvidencias(EvidenciasMuestreo evidenciasMuestreo);
         bool EliminarEvidencias(string muestreo);
+        bool EliminarArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
         bool GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo);
     }
 }

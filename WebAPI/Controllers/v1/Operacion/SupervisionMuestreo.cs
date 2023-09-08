@@ -2,7 +2,6 @@
 using Application.Features.Operacion.SupervisionMuestreo.Commands;
 using Application.Features.Operacion.SupervisionMuestreo.Queries;
 using Application.Interfaces.IRepositories;
-using Application.Wrappers;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
 
@@ -106,7 +105,12 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpDelete("Archivo")]
         public async Task<IActionResult> Delete(long supervisionId, string nombreArchivo)
         {
-            return Ok(new Response<bool>(true));
+            if (nombreArchivo is null || string.IsNullOrEmpty(nombreArchivo))
+            {
+                return BadRequest("Debe especificar un nombre de archivo eliminar");
+            }
+
+            return Ok(Mediator.Send(new DeleteArchivoSupervisionMuestreo { NombreArchivo = nombreArchivo, SupervisionId = supervisionId }));
         }
 
         [HttpGet("Archivo")]

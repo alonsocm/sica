@@ -153,5 +153,22 @@ namespace Shared.Utilities.Services
                 ContentType = contentType
             };
         }
+
+        public bool EliminarArchivoSupervisionMuestreo(string nombreArchivo, string supervision)
+        {
+            var rutaBase = ObtenerRutaBaseSupervision();
+            var rutaCompleta = Path.Combine(rutaBase, supervision, nombreArchivo);
+
+            if (File.Exists(rutaCompleta))
+            {
+                File.Delete(rutaCompleta);
+            }
+            else
+            {
+                throw new Exception($"No se encontró el archivo: {nombreArchivo}");
+            }
+
+            return true;
+        }
     }
 }
