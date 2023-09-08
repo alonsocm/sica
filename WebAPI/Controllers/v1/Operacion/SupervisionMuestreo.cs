@@ -5,6 +5,7 @@ using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -67,7 +68,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("OrganismosDirecciones")]
         public async Task<IActionResult> OrganismosDirecciones()
         {
-            var datos = await _organismoDirecRepository.ObtenerTodosElementosAsync();
+            var datos = _organismoDirecRepository.ObtenerTodosElementosAsync().Result.OrderBy(x => x.OrganismoCuencaDireccionLocal);
             return Ok(datos.ToList());
         }
 
