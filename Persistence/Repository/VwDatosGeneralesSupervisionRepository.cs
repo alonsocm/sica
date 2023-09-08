@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
-    public class VwDatosGeneralesSupervisionRepository: Repository<VwDatosGeneralesSupervision>, IVwDatosGeneralesSupervisionRepository
+    public class VwDatosGeneralesSupervisionRepository : Repository<VwDatosGeneralesSupervision>, IVwDatosGeneralesSupervisionRepository
     {
         public VwDatosGeneralesSupervisionRepository(SicaContext context) : base(context)
         {
@@ -20,45 +20,37 @@ namespace Persistence.Repository
         public List<VwDatosGeneralesSupervision> ObtenerBusqueda(CriteriosBusquedaSupervisionDto? busqueda)
         {
 
-            List<VwDatosGeneralesSupervision> lstDatos = null;
+            List<VwDatosGeneralesSupervision> lstDatos = ObtenerTodosElementosAsync().Result.ToList();
 
-            if (busqueda == null)
+            if (busqueda.OrganismosDireccionesRealizaId != null)
+            { lstDatos.Where(x => x.OrganismosDireccionesRealizaId == busqueda.OrganismosDireccionesRealizaId).ToList(); }
+            if (busqueda.SitioId != null)
             {
-                lstDatos = ObtenerTodosElementosAsync().Result.ToList();
+                lstDatos.Where(x => x.SitioId == busqueda.SitioId).ToList();
+            }
+            if (!string.IsNullOrEmpty(busqueda.FechaMuestreo))
+            {
+                lstDatos.Where(x => x.FechaMuestreo == Convert.ToDateTime(busqueda.FechaMuestreo)).ToList();
+            }
+            if (busqueda.PuntajeObtenido != null)
+            {
+                lstDatos.Where(x => x.PuntajeObtenido == busqueda.PuntajeObtenido).ToList();
+            }
+            if (busqueda.LaboratorioRealizaId != null)
+            {
+                lstDatos.Where(x => x.LaboratorioRealizaId == busqueda.LaboratorioRealizaId).ToList();
+            }
+            if (!string.IsNullOrEmpty(busqueda.ClaveMuestreo))
+            {
+                lstDatos.Where(x => x.ClaveMuestreo == busqueda.ClaveMuestreo).ToList();
+            }
+            if (busqueda.TipoCuerpoAguaId != null)
+            {
+                lstDatos.Where(x => x.TipoCuerpoAguaId == busqueda.TipoCuerpoAguaId).ToList();
             }
 
-            else
-            {
 
-                if (busqueda.OrganismosDireccionesRealizaId != null)
-                { lstDatos = (lstDatos == null) ? ObtenerTodosElementosAsync().Result.Where(x => x.OrganismosDireccionesRealizaId == busqueda.OrganismosDireccionesRealizaId).ToList() : lstDatos.Where(x => x.OrganismosDireccionesRealizaId == busqueda.OrganismosDireccionesRealizaId).ToList(); }
-                if (busqueda.SitioId != null)
-                {
-                    lstDatos = (lstDatos == null) ? ObtenerTodosElementosAsync().Result.Where(x => x.SitioId == busqueda.SitioId).ToList() : lstDatos.Where(x => x.SitioId == busqueda.SitioId).ToList();
-                }
-                if (!string.IsNullOrEmpty(busqueda.FechaMuestreo))
-                {
-                    lstDatos = (lstDatos == null) ? ObtenerTodosElementosAsync().Result.Where(x => x.FechaMuestreo == Convert.ToDateTime(busqueda.FechaMuestreo)).ToList() : lstDatos.Where(x => x.FechaMuestreo == Convert.ToDateTime(busqueda.FechaMuestreo)).ToList();
-                }
-                if (busqueda.PuntajeObtenido != null)
-                {
-                    lstDatos = (lstDatos == null) ? ObtenerTodosElementosAsync().Result.Where(x => x.PuntajeObtenido == busqueda.PuntajeObtenido).ToList() : lstDatos.Where(x => x.PuntajeObtenido == busqueda.PuntajeObtenido).ToList();
-                }
-                if (busqueda.LaboratorioRealizaId != null)
-                {
-                    lstDatos = (lstDatos == null) ? ObtenerTodosElementosAsync().Result.Where(x => x.LaboratorioRealizaId == busqueda.LaboratorioRealizaId).ToList() : lstDatos.Where(x => x.LaboratorioRealizaId == busqueda.LaboratorioRealizaId).ToList();
-                }
-                if (!string.IsNullOrEmpty(busqueda.ClaveMuestreo))
-                {
-                    lstDatos = (lstDatos == null) ? ObtenerTodosElementosAsync().Result.Where(x => x.ClaveMuestreo == busqueda.ClaveMuestreo).ToList() : lstDatos.Where(x => x.ClaveMuestreo == busqueda.ClaveMuestreo).ToList();
-                }
-                if (busqueda.TipoCuerpoAguaId != null)
-                {
-                    lstDatos = (lstDatos == null) ? ObtenerTodosElementosAsync().Result.Where(x => x.TipoCuerpoAguaId == busqueda.TipoCuerpoAguaId).ToList() : lstDatos.Where(x => x.TipoCuerpoAguaId == busqueda.TipoCuerpoAguaId).ToList();
-                }
-            }
-            
-            
+
             return lstDatos;
         }
     }
