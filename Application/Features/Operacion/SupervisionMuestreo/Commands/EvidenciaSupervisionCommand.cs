@@ -32,13 +32,16 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
         public async Task<Response<RespuestaSupervisionDto>> Handle(EvidenciaSupervisionCommand request, CancellationToken cancellationToken)
         {
             var datosSupervision = await _repository.ObtenerElementoPorIdAsync(request.LstEvidencias.SupervisionId);
+            var datosEvidencias = await _evidenciasupervisionrepository.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == request.LstEvidencias.SupervisionId && x.TipoEvidenciaId == Convert.ToInt64(Enums.TipoEvidencia.EvidenciaSupervisión));
 
             if (request.LstEvidencias.Archivos.Count > 0)
             {
                 _archivos.GuardarEvidenciasSupervision(request.LstEvidencias);
                 List<EvidenciaSupervisionMuestreo> lstevidenciasFinal = new();
 
-                var index = 1;
+
+
+                var index = (datosEvidencias.ToList().Count > 0) ? datosEvidencias.ToList().Count + 1 :  1;
                 request.LstEvidencias.Archivos.ToList().ForEach(evidencia =>
                 {
                    
