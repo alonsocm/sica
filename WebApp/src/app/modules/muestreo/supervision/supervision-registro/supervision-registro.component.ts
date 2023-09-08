@@ -271,13 +271,19 @@ export class SupervisionRegistroComponent
   }
 
   onOrganismosDireccionesChange() {
-    this.supervisionForm.patchValue({ claveSitio: '0' });
     let organismoDireccionId = this.supervisionForm.value.ocdlRealiza;
-    let oc = this.getOrganismoCuencaId(organismoDireccionId);
-    this.supervisionForm.patchValue({
-      ocdlReporta: oc.nombreOrganismoCuenca,
-    });
+    let nombreOrganismoDireccion = '';
+    this.supervisionForm.patchValue({ claveSitio: '0' });
     this.getClavesSitios(organismoDireccionId);
+
+    if (organismoDireccionId !== '0') {
+      nombreOrganismoDireccion =
+        this.getOrganismoCuencaId(organismoDireccionId).nombreOrganismoCuenca;
+    }
+
+    this.supervisionForm.patchValue({
+      ocdlReporta: nombreOrganismoDireccion,
+    });
   }
 
   getOrganismoCuencaId(organismoCuencaDireccionLocal: number) {
