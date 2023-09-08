@@ -9,7 +9,8 @@ export interface Supervision {
   horaTomaMuestra?: string;
   puntajeObtenido?: number;
   organismosDireccionesRealizaId?: string;
-  organismoCuencaReportaId?: string;
+  organismoCuencaReportaId?: number;
+  organismoCuencaReporta?: string;
   supervisorConagua?: string;
   sitioId?: number;
   claveMuestreo?: string;

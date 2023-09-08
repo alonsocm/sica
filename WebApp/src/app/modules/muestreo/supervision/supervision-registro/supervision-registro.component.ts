@@ -107,7 +107,10 @@ export class SupervisionRegistroComponent
         Validators.required
       ),
       ocdlReporta: new FormControl(
-        this.supervision.organismoCuencaReportaId ?? 0,
+        {
+          value: this.supervision.organismoCuencaReporta ?? '',
+          disabled: true,
+        },
         [Validators.required, Validators.min(1)]
       ),
       claveSitio: new FormControl(this.supervision.claveSitio ?? 0, [
@@ -270,7 +273,19 @@ export class SupervisionRegistroComponent
   onOrganismosDireccionesChange() {
     this.supervisionForm.patchValue({ claveSitio: '0' });
     let organismoDireccionId = this.supervisionForm.value.ocdlRealiza;
+    let oc = this.getOrganismoCuencaId(organismoDireccionId);
+    this.supervisionForm.patchValue({
+      ocdlReporta: oc.nombreOrganismoCuenca,
+    });
     this.getClavesSitios(organismoDireccionId);
+  }
+
+  getOrganismoCuencaId(organismoCuencaDireccionLocal: number) {
+    let oc = this.organismosDirecciones.filter(
+      (x) => x.id == organismoCuencaDireccionLocal
+    );
+
+    return oc[0];
   }
 
   onCumplimientoChange() {

@@ -97,15 +97,8 @@
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="form-group">
                     <label for="oc-dl-informe">OC que reportará en el informe mensual:*</label>
-                    <select class="form-control" id="oc-dl-informe" formControlName="ocdlReporta"
-                        [ngClass]="{'is-invalid': submitted && f['ocdlReporta'].errors}"
-                        [attr.disabled]="this.esConsulta ? '' : null">
-                        <option value="0">Seleccione</option>
-                        <option *ngFor="let cuenca of this.cuencas" [value]="cuenca.id">{{cuenca.descripcion}}</option>
-                    </select>
-                    <div *ngIf="f['ocdlReporta'].errors" class="invalid-feedback">
-                        <div *ngIf="f['ocdlReporta'].errors['min']">Campo requerido</div>
-                    </div>
+                    <input class="form-control" id="oc-dl-informe" formControlName="ocdlReporta">
+
                 </div>
             </div>
             <div class="col-lg-2 col-md-6 col-sm-12">
