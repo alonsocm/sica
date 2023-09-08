@@ -1,11 +1,5 @@
 ﻿using Application.DTOs;
-using Application.DTOs.Users;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Interfaces.IRepositories
 {
@@ -13,7 +7,6 @@ namespace Application.Interfaces.IRepositories
     {
         SupervisionMuestreo ConvertirSupervisionMuestreo(SupervisionMuestreoDto supervisionMuestreo);
         Task<IEnumerable<ClasificacionCriterioDto>> ObtenerCriterios();
-
-
+        Task<bool> EliminarSupervision(long supervisionId);
     }
 }

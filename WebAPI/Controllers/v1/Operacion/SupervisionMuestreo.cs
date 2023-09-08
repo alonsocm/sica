@@ -42,6 +42,12 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new EvidenciaSupervisionCommand { LstEvidencias = archivosSupervision }));
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> Delete(long supervision)
+        {
+            return Ok(await Mediator.Send(new DeleteSupervisionMuestreo { SupervisionId = supervision }));
+        }
+
         [HttpGet("ResponsablesMuestreadores")]
         public async Task<IActionResult> ResponsablesMuestreadores(long laboratorioId)
         {
