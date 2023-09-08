@@ -323,13 +323,16 @@ export class SupervisionRegistroComponent
   uploadArchivosSupervision() {
     if (
       this.supervision.archivoPdfSupervision != null ||
-      (this.supervision.archivosEvidencias != null && this.supervision.id != 0)
+      (this.supervision.archivosEvidencias != null &&
+        this.supervision.id != 0 &&
+        this.supervision.claveMuestreo !== null)
     ) {
       this.supervisionService
         .postArchivosSupervision(
           this.supervision.id ?? 0,
           this.supervision.archivoPdfSupervision,
-          this.supervision.archivosEvidencias ?? []
+          this.supervision.archivosEvidencias ?? [],
+          this.supervision.claveMuestreo ?? ''
         )
         .subscribe({
           next: (response: any) => {

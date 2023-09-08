@@ -140,10 +140,12 @@ export class SupervisionService {
   postArchivosSupervision(
     supervision: number,
     archivoSupervision: any,
-    evidencias: Array<any>
+    evidencias: Array<any>,
+    claveMuestreo: string
   ): Observable<any> {
     const formData = new FormData();
     formData.append('supervisionId', String(supervision));
+    formData.append('claveMuestreo', claveMuestreo);
     formData.append('archivos', archivoSupervision);
     Array.from(evidencias).forEach((archivo) => {
       formData.append('archivos', archivo);

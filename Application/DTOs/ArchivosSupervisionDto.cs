@@ -6,5 +6,6 @@ namespace Application.DTOs
     {
         public int SupervisionId { get; set; }
         public IFormFileCollection Archivos { get; set; }
+        public string ClaveMuestreo { get; set; }
     }
 }
