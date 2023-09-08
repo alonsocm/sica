@@ -2,10 +2,7 @@
 using Application.Features.Operacion.SupervisionMuestreo.Commands;
 using Application.Features.Operacion.SupervisionMuestreo.Queries;
 using Application.Interfaces.IRepositories;
-using Application.Wrappers;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -139,12 +136,9 @@ namespace WebAPI.Controllers.v1.Operacion
 
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] CriteriosBusquedaSupervisionDto? busqueda)
+        public async Task<IActionResult> Get([FromQuery] CriteriosBusquedaSupervisionDto busqueda)
         {
             return Ok(await Mediator.Send(new GetBusquedaSupervisionQuery { Busqueda = busqueda }));
-       
         }
-
-        
     }
 }

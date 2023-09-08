@@ -1,13 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
@@ -17,41 +11,43 @@ namespace Persistence.Repository
         {
         }
 
-        public List<VwDatosGeneralesSupervision> ObtenerBusqueda(CriteriosBusquedaSupervisionDto? busqueda)
+        public List<VwDatosGeneralesSupervision> ObtenerBusqueda(CriteriosBusquedaSupervisionDto busqueda)
         {
+            var registros = _dbContext.VwDatosGeneralesSupervision.AsQueryable();
 
-            List<VwDatosGeneralesSupervision> lstDatos = ObtenerTodosElementosAsync().Result.ToList();
+            if (registros.Any())
+            {
+                if (busqueda.OrganismosDireccionesRealizaId != null)
+                {
+                    registros = registros.Where(x => x.OrganismosDireccionesRealizaId == busqueda.OrganismosDireccionesRealizaId);
+                }
+                if (busqueda.SitioId != null)
+                {
+                    registros = registros.Where(x => x.SitioId == busqueda.SitioId);
+                }
+                if (!string.IsNullOrEmpty(busqueda.FechaMuestreo))
+                {
+                    registros = registros.Where(x => x.FechaMuestreo == Convert.ToDateTime(busqueda.FechaMuestreo));
+                }
+                if (busqueda.PuntajeObtenido != null)
+                {
+                    registros = registros.Where(x => x.PuntajeObtenido == busqueda.PuntajeObtenido);
+                }
+                if (busqueda.LaboratorioRealizaId != null)
+                {
+                    registros = registros.Where(x => x.LaboratorioRealizaId == busqueda.LaboratorioRealizaId);
+                }
+                if (!string.IsNullOrEmpty(busqueda.ClaveMuestreo))
+                {
+                    registros = registros.Where(x => x.ClaveMuestreo == busqueda.ClaveMuestreo);
+                }
+                if (busqueda.TipoCuerpoAguaId != null)
+                {
+                    registros = registros.Where(x => x.TipoCuerpoAguaId == busqueda.TipoCuerpoAguaId);
+                }
+            }
 
-            if (busqueda.OrganismosDireccionesRealizaId != null)
-            { lstDatos.Where(x => x.OrganismosDireccionesRealizaId == busqueda.OrganismosDireccionesRealizaId).ToList(); }
-            if (busqueda.SitioId != null)
-            {
-                lstDatos.Where(x => x.SitioId == busqueda.SitioId).ToList();
-            }
-            if (!string.IsNullOrEmpty(busqueda.FechaMuestreo))
-            {
-                lstDatos.Where(x => x.FechaMuestreo == Convert.ToDateTime(busqueda.FechaMuestreo)).ToList();
-            }
-            if (busqueda.PuntajeObtenido != null)
-            {
-                lstDatos.Where(x => x.PuntajeObtenido == busqueda.PuntajeObtenido).ToList();
-            }
-            if (busqueda.LaboratorioRealizaId != null)
-            {
-                lstDatos.Where(x => x.LaboratorioRealizaId == busqueda.LaboratorioRealizaId).ToList();
-            }
-            if (!string.IsNullOrEmpty(busqueda.ClaveMuestreo))
-            {
-                lstDatos.Where(x => x.ClaveMuestreo == busqueda.ClaveMuestreo).ToList();
-            }
-            if (busqueda.TipoCuerpoAguaId != null)
-            {
-                lstDatos.Where(x => x.TipoCuerpoAguaId == busqueda.TipoCuerpoAguaId).ToList();
-            }
-
-
-
-            return lstDatos;
+            return registros.ToList();
         }
     }
 }
