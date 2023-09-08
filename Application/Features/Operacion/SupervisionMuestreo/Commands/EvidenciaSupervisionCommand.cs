@@ -38,15 +38,20 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
                 _archivos.GuardarEvidenciasSupervision(request.LstEvidencias);
                 List<EvidenciaSupervisionMuestreo> lstevidenciasFinal = new();
 
+                var index = 1;
                 request.LstEvidencias.Archivos.ToList().ForEach(evidencia =>
                 {
+                   
                     var evidenciaDto = new EvidenciaSupervisionMuestreo()
                     {
                         SupervisionMuestreoId = request.LstEvidencias.SupervisionId,
-                        NombreArchivo = evidencia.FileName,
-                        TipoEvidenciaId = (evidencia.ContentType =="application/pdf") ? Convert.ToInt64(Enums.TipoEvidencia.ArchivoSupervisión) : Convert.ToInt64(Enums.TipoEvidencia.EvidenciaSupervisión),
+                        NombreArchivo = (evidencia.ContentType == "application/pdf") ? request.LstEvidencias.ClaveMuestreo + ".pdf" : 
+                        request.LstEvidencias.ClaveMuestreo + "_" + index + evidencia.FileName.Substring(evidencia.FileName.IndexOf('.'),evidencia.FileName.Length - evidencia.FileName.IndexOf('.')),
+                        TipoEvidenciaId = (evidencia.ContentType == "application/pdf") ? Convert.ToInt64(Enums.TipoEvidencia.ArchivoSupervisión) : Convert.ToInt64(Enums.TipoEvidencia.EvidenciaSupervisión),
+                     
                     };
                     lstevidenciasFinal.Add(evidenciaDto);
+                    if (evidencia.ContentType != "application/pdf") { index++; }
                 });
 
                 List<EvidenciaSupervisionMuestreo> lstevidenciasActualizar = lstevidenciasFinal.Where(x => x.Id != 0).ToList();
