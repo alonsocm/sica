@@ -1282,6 +1282,9 @@ public partial class SicaContext : DbContext
                 .HasNoKey()
                 .ToView("VwOrganismosDirecciones");
 
+            entity.Property(e => e.NombreOrganismoCuenca)
+                .HasMaxLength(100)
+                .IsUnicode(false);
             entity.Property(e => e.OrganismoCuencaDireccionLocal)
                 .HasMaxLength(201)
                 .IsUnicode(false);
