@@ -112,8 +112,16 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("Archivo")]
         public async Task<IActionResult> Get(long supervisionId, string nombreArchivo)
         {
-            var image = System.IO.File.ReadAllBytes("D:\\SupervisionMuestreo (1).pdf");
-            return File(image, "application/pdf");
+            if (nombreArchivo is null || string.IsNullOrEmpty(nombreArchivo))
+            {
+                return BadRequest("Debe especificar un nombre de archivo para descargar");
+            }
+
+            var archivo = await Mediator.Send(new GetArchivoSupervisionMuestreo { NombreArchivo = nombreArchivo, SupervisionId = supervisionId });
+
+            return archivo is null
+                ? throw new ApplicationException("No se encontró el archivo de la evidencia solicitada")
+                : (IActionResult)File(archivo.Data.Archivo, archivo.Data.ContentType, archivo.Data.NombreArchivo);
         }
 
 

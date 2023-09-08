@@ -2,12 +2,8 @@
 using Application.Interfaces;
 using Application.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shared.Utilities.Services
 {
@@ -131,6 +127,31 @@ namespace Shared.Utilities.Services
             }
 
             return archivos;
+        }
+
+        public ArchivoDto ObtenerArchivoSupervisionMuestreo(string nombreArchivo, string supervision)
+        {
+            var rutaBase = ObtenerRutaBaseSupervision();
+            var rutaCompleta = Path.Combine(rutaBase, supervision, nombreArchivo);
+
+            if (!File.Exists(rutaCompleta))
+            {
+                throw new Exception($"No se encontró el archivo: {nombreArchivo}");
+            }
+
+            var provider = new FileExtensionContentTypeProvider();
+
+            if (!provider.TryGetContentType(rutaCompleta, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return new ArchivoDto
+            {
+                Archivo = File.ReadAllBytes(rutaCompleta),
+                NombreArchivo = nombreArchivo,
+                ContentType = contentType
+            };
         }
     }
 }
