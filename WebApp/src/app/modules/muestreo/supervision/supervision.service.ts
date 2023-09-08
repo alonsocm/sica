@@ -35,6 +35,13 @@ export class SupervisionService {
     );
   }
 
+  deleteSupervision(supervisionId: number) {
+    const params = new HttpParams().set('supervision', supervisionId);
+    return this.http.delete(environment.apiUrl + '/supervisionmuestreo/', {
+      params,
+    });
+  }
+
   getSupervision(id: number) {
     const params = new HttpParams({
       fromObject: { supervisionMuestreoId: id },

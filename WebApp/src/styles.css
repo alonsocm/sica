@@ -23,7 +23,12 @@ hr.red {
     margin: 10px 0 25px
 }
 
+.btn-hidden{
+    display: none;
+}
+
 .btn{
+    width: auto;
     font-size: 17px;
     padding: 10px 15px;
 }
