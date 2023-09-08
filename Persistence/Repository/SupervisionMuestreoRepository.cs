@@ -40,6 +40,24 @@ namespace Persistence.Repository
             return supervision;
         }
 
+        public async Task<bool> EliminarSupervision(long supervisionId)
+        {
+            SupervisionMuestreo supervisionMuestreo = await _dbContext.SupervisionMuestreo.Where(f => f.Id == supervisionId).Include("EvidenciaSupervisionMuestreo").Include("ValoresSupervisionMuestreo")?.FirstOrDefaultAsync();
+
+            if (supervisionMuestreo == null)
+            {
+                throw new KeyNotFoundException("Registro de supervision no encontrado");
+            }
+
+            _dbContext.RemoveRange(supervisionMuestreo.EvidenciaSupervisionMuestreo);
+            _dbContext.RemoveRange(supervisionMuestreo.ValoresSupervisionMuestreo);
+            _dbContext.Remove(supervisionMuestreo);
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<IEnumerable<ClasificacionCriterioDto>> ObtenerCriterios()
         {
             var datos = await (from l in _dbContext.ClasificacionCriterio

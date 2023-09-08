@@ -16,6 +16,7 @@ import { Sitio } from '../models/sitio';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { Router } from '@angular/router';
+import { FileService } from 'src/app/shared/services/file.service';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -38,6 +39,7 @@ export class SupervisionRegistroComponent
   supervision: Supervision = {};
   imgSrc: string = '';
   nombreArchivo: string = '';
+  esConsulta: boolean = false;
 
   get f(): { [key: string]: AbstractControl } {
     return this.supervisionForm.controls;
@@ -49,8 +51,12 @@ export class SupervisionRegistroComponent
   ) {
     super();
 
-    this.supervisionService.data.subscribe((data) => {
+    this.supervisionService.supervisionId.subscribe((data) => {
       this.supervisionId = data;
+    });
+
+    this.supervisionService.esConsulta.subscribe((data) => {
+      this.esConsulta = data;
     });
 
     if (this.supervisionId == 0) {
@@ -161,6 +167,11 @@ export class SupervisionRegistroComponent
     this.getOrganismosDirecciones();
     this.getCuencas();
     this.getLaboratorios();
+  }
+
+  ngOnDestroy() {
+    this.supervisionService.updateSupervisionId(0);
+    this.supervisionService.updateEsConsulta(false);
   }
 
   getSupervision(id: number) {
@@ -365,12 +376,18 @@ export class SupervisionRegistroComponent
     }
   }
 
-  onPreviewArchivoClick(nombreArchivo: string, tipoArchivo: number) {
+  onPreviewDownloadArchivoClick(
+    nombreArchivo: string,
+    tipoArchivo: number,
+    descargar: boolean = false
+  ) {
     if (this.supervisionId != 0 && this.supervisionId != null) {
       this.supervisionService
         .getArchivo(this.supervisionId, nombreArchivo)
         .subscribe((data: Blob) => {
-          if (!(tipoArchivo === 10)) {
+          if (descargar) {
+            FileService.download(data, nombreArchivo);
+          } else if (!(tipoArchivo === 10)) {
             const reader = new FileReader();
             reader.onloadend = () => {
               this.imgSrc = reader.result as string;
@@ -491,7 +508,7 @@ export class SupervisionRegistroComponent
   }
 
   onCancelarClick() {
-    this.supervisionService.updateData(0);
+    this.supervisionService.updateSupervisionId(0);
     this.router.navigate(['/muestreo-supervision']);
   }
 }

@@ -7,13 +7,19 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class SupervisionService {
-  private dataSource = new BehaviorSubject(0);
-  public data = this.dataSource.asObservable();
+  private supervisionIdDataSource = new BehaviorSubject(0);
+  private esConsultaDataSource = new BehaviorSubject(false);
+  public supervisionId = this.supervisionIdDataSource.asObservable();
+  public esConsulta = this.esConsultaDataSource.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  updateData(value: number) {
-    this.dataSource.next(value);
+  updateSupervisionId(value: number) {
+    this.supervisionIdDataSource.next(value);
+  }
+
+  updateEsConsulta(value: boolean) {
+    this.esConsultaDataSource.next(value);
   }
 
   getSupervisiones() {
@@ -27,6 +33,13 @@ export class SupervisionService {
       environment.apiUrl + '/supervisionmuestreo/',
       supervision
     );
+  }
+
+  deleteSupervision(supervisionId: number) {
+    const params = new HttpParams().set('supervision', supervisionId);
+    return this.http.delete(environment.apiUrl + '/supervisionmuestreo/', {
+      params,
+    });
   }
 
   getSupervision(id: number) {

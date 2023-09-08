@@ -1,6 +1,8 @@
 <app-menu></app-menu>
 <div class="container-fluid">
-    <h3>Registro de supervisión de muestreo</h3>
+    <h1 *ngIf="!this.esConsulta">{{this.supervisionId === 0 ? 'Registro de supervision de muestreo' : 'Edición de
+        supervisión de muestreo'}}</h1>
+    <h1 *ngIf="this.esConsulta">Supervisión de muestreo</h1>
     <hr class="red">
     <div class="message-container">
         <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
@@ -12,7 +14,8 @@
                 <div class="form-group ">
                     <label for="fecha-muestreo">Fecha de muestreo:*</label>
                     <input class="form-control" id="fecha-muestreo" type="date" formControlName="fechaMuestreo"
-                        [ngClass]="{'is-invalid': submitted && f['fechaMuestreo'].errors }">
+                        [ngClass]="{'is-invalid': submitted && f['fechaMuestreo'].errors }"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['fechaMuestreo'].errors" class="invalid-feedback">
                         <div *ngIf="f['fechaMuestreo'].errors['required']">Campo requerido</div>
                     </div>
@@ -22,7 +25,8 @@
                 <div class="form-group">
                     <label for="hora-inicio">Hora de inicio:*</label>
                     <input class="form-control" id="hora-inicio" type="time" formControlName="horaInicio"
-                        [ngClass]="{'is-invalid': submitted && f['horaInicio'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['horaInicio'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['horaInicio'].errors" class="invalid-feedback">
                         <div *ngIf="f['horaInicio'].errors['required']">Campo requerido</div>
                     </div>
@@ -32,7 +36,8 @@
                 <div class="form-group">
                     <label for="hora-termino">Hora de termino:*</label>
                     <input class="form-control" id="hora-termino" type="time" formControlName="horaFin"
-                        [ngClass]="{'is-invalid': submitted && f['horaFin'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['horaFin'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['horaFin'].errors" class="invalid-feedback">
                         <div *ngIf="f['horaFin'].errors['required']">Campo requerido</div>
                     </div>
@@ -42,7 +47,8 @@
                 <div class="form-group">
                     <label for="hora-toma-muestra">Hora de toma de muestra:*</label>
                     <input class="form-control" id="hora-toma-muestra" type="time" formControlName="horaTomaMuestra"
-                        [ngClass]="{'is-invalid': submitted && f['horaTomaMuestra'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['horaTomaMuestra'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['horaTomaMuestra'].errors" class="invalid-feedback">
                         <div *ngIf="f['horaTomaMuestra'].errors['required']">Campo requerido</div>
                     </div>
@@ -53,7 +59,8 @@
                     <label for="puntaje-obtenido">Puntaje obtenido:*</label>
                     <input class="form-control" id="puntaje-obtenido" type="text" formControlName="puntajeObtenido"
                         [value]="this.supervision.puntajeObtenido"
-                        [ngClass]="{'is-invalid': submitted && f['puntajeObtenido'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['puntajeObtenido'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['puntajeObtenido'].errors" class="invalid-feedback">
                         <div *ngIf="f['puntajeObtenido'].errors['required']">Campo requerido</div>
                     </div>
@@ -66,7 +73,7 @@
                     <label for="oc-dl">OC/DL Realiza supervisión:*</label>
                     <select class="form-control" id="oc-dl" formControlName="ocdlRealiza"
                         [ngClass]="{'is-invalid': submitted && f['ocdlRealiza'].errors }"
-                        (change)="onOrganismosDireccionesChange()">
+                        (change)="onOrganismosDireccionesChange()" [attr.disabled]="this.esConsulta ? '' : null">
                         <option value="0">Seleccione</option>
                         <option *ngFor="let ocdl of this.organismosDirecciones" [value]="ocdl.id">
                             {{ocdl.organismoCuencaDireccionLocal}}</option>
@@ -80,7 +87,8 @@
                 <div class="form-group">
                     <label for="nombre-supervisor">Nombre del supervisor:*</label>
                     <input class="form-control" id="nombre-supervisor" type="text" formControlName="nombreSupervisor"
-                        [ngClass]="{'is-invalid': submitted && f['nombreSupervisor'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['nombreSupervisor'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['nombreSupervisor'].errors" class="invalid-feedback">
                         <div *ngIf="f['nombreSupervisor'].errors['required']">Campo requerido</div>
                     </div>
@@ -90,7 +98,8 @@
                 <div class="form-group">
                     <label for="oc-dl-informe">OC que reportará en el informe mensual:*</label>
                     <select class="form-control" id="oc-dl-informe" formControlName="ocdlReporta"
-                        [ngClass]="{'is-invalid': submitted && f['ocdlReporta'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['ocdlReporta'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                         <option value="0">Seleccione</option>
                         <option *ngFor="let cuenca of this.cuencas" [value]="cuenca.id">{{cuenca.descripcion}}</option>
                     </select>
@@ -103,7 +112,8 @@
                 <div class="form-group">
                     <label for="clave-sitio">Clave de sitio:*</label>
                     <select class="form-control" id="clave-sitio" formControlName="claveSitio"
-                        [ngClass]="{'is-invalid': submitted && f['claveSitio'].errors}" (change)="onClaveSitioChange()">
+                        [ngClass]="{'is-invalid': submitted && f['claveSitio'].errors}" (change)="onClaveSitioChange()"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                         <option value="0">seleccione</option>
                         <option *ngFor="let claveSitio of this.clavesSitios" [value]="claveSitio">
                             {{claveSitio}}
@@ -120,7 +130,8 @@
                 <div class="form-group">
                     <label for="clave-muestreo">Clave del muestreo:*</label>
                     <input class="form-control" id="clave-muestreo" type="text" formControlName="claveMuestreo"
-                        [ngClass]="{'is-invalid': submitted && f['claveMuestreo'].errors}" />
+                        [ngClass]="{'is-invalid': submitted && f['claveMuestreo'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null" />
                     <div *ngIf="f['claveMuestreo'].errors" class="invalid-feedback">
                         <div *ngIf="f['claveMuestreo'].errors['required']">Campo requerido</div>
                     </div>
@@ -152,7 +163,7 @@
                     <label for="laboratorio">Laboratorio:*</label>
                     <select class="form-control" id="laboratorio" formControlName="laboratorio"
                         [ngClass]=" {'is-invalid': submitted && f['laboratorio'].errors}"
-                        (change)="onLaboratorioChange()">
+                        (change)="onLaboratorioChange()" [attr.disabled]="this.esConsulta ? '' : null">
                         <option value="0">Seleccione</option>
                         <option *ngFor="let laboratorio of this.laboratorios" [value]="laboratorio.id">
                             {{laboratorio.nomenclatura}}
@@ -193,7 +204,8 @@
                 <div class="form-group">
                     <label for="latitud-toma">Latitud dónde se recolecta la muestra:*</label>
                     <input class="form-control" id="latitud-toma" type="number" formControlName="latitudToma"
-                        [ngClass]="{'is-invalid': submitted && f['latitudToma'].errors}" />
+                        [ngClass]="{'is-invalid': submitted && f['latitudToma'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null" />
                     <div *ngIf="f['latitudToma'].errors" class="invalid-feedback">
                         <div *ngIf="f['latitudToma'].errors['required']">Campo requerido</div>
                     </div>
@@ -203,7 +215,8 @@
                 <div class="form-group">
                     <label for="longitud-toma">Longitud dónde se recolecta la muestra:*</label>
                     <input class="form-control" id="longitud-toma" type="number" formControlName="longitudToma"
-                        [ngClass]="{'is-invalid': submitted && f['longitudToma'].errors}" />
+                        [ngClass]="{'is-invalid': submitted && f['longitudToma'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null" />
                     <div *ngIf="f['longitudToma'].errors" class="invalid-feedback">
                         <div *ngIf="f['longitudToma'].errors['required']">Campo requerido</div>
                     </div>
@@ -215,7 +228,8 @@
                 <div class="form-group">
                     <label for="responsable-muestra">Responsable de la toma de muestra:*</label>
                     <select class="form-control" id="responsable-muestra" formControlName="nombreResponsableMuestra"
-                        [ngClass]="{'is-invalid': submitted && f['nombreResponsableMuestra'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['nombreResponsableMuestra'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                         <option value="0">Seleccione</option>
                         <option *ngFor="let muestreador of this.muestreadoresLaboratorio" [value]="muestreador.id">
                             {{muestreador.nombre + ' ' + muestreador.apellidoPaterno + ' ' +
@@ -231,7 +245,8 @@
                     <label for="responsable-mediciones">Responsable de las mediciones directas:*</label>
                     <select class="form-control" id="responsable-mediciones"
                         formControlName="nombreResponsableMediciones"
-                        [ngClass]="{'is-invalid': submitted && f['nombreResponsableMediciones'].errors}">
+                        [ngClass]="{'is-invalid': submitted && f['nombreResponsableMediciones'].errors}"
+                        [attr.disabled]="this.esConsulta ? '' : null">
                         <option value="0">Seleccione</option>
                         <option *ngFor="let muestreador of this.muestreadoresLaboratorio" [value]="muestreador.id">
                             {{muestreador.nombre + ' ' + muestreador.apellidoPaterno + ' ' +
@@ -245,8 +260,8 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label for="observaciones">Observaciones del muestreo:</label>
-                    <textarea class="form-control" id="observaciones"
-                        formControlName="observacionesMuestreo"></textarea>
+                    <textarea class="form-control" id="observaciones" formControlName="observacionesMuestreo"
+                        [attr.disabled]="this.esConsulta ? '' : null"></textarea>
                     <div *ngIf="f['observacionesMuestreo'].errors" class="invalid-feedback">
                         <div *ngIf="f['observacionesMuestreo'].errors['required']">Campo requerido</div>
                     </div>
@@ -285,21 +300,25 @@
                                 <td>
                                     <input type="radio" [name]="criterio.descripcion" value="CUMPLE"
                                         [(ngModel)]="this.criterio.cumplimiento"
-                                        title="Seleccione si el criterio cumple" (change)="onCumplimientoChange()" />
+                                        title="Seleccione si el criterio cumple" (change)="onCumplimientoChange()"
+                                        [attr.disabled]="this.esConsulta ? '' : null" />
                                 </td>
                                 <td>
                                     <input type="radio" [name]="criterio.descripcion" value="NOCUMPLE"
                                         [(ngModel)]="this.criterio.cumplimiento"
-                                        title="Seleccione si el criterio no cumple" (change)="onCumplimientoChange()" />
+                                        title="Seleccione si el criterio no cumple" (change)="onCumplimientoChange()"
+                                        [attr.disabled]="this.esConsulta ? '' : null" />
                                 </td>
                                 <td>
                                     <input type="radio" [name]="criterio.descripcion" value="NOAPLICA"
                                         [(ngModel)]="this.criterio.cumplimiento"
-                                        title="Seleccione si el criterio no aplica" (change)="onCumplimientoChange()" />
+                                        title="Seleccione si el criterio no aplica" (change)="onCumplimientoChange()"
+                                        [attr.disabled]="this.esConsulta ? '' : null" />
                                 </td>
                                 <td><textarea [(ngModel)]="this.criterio.observacion"
                                         [ngClass]="{'is-invalid': this.criterio.obligatorio && this.criterio.cumplimiento === 'NOAPLICA' && this.criterio.observacion === null || this.criterio.observacion === '' }"
-                                        title="Escriba las observaciones para el criterio"></textarea>
+                                        title="Escriba las observaciones para el criterio"
+                                        [attr.disabled]="this.esConsulta ? '' : null"></textarea>
                                     <div class="invalid-feedback">
                                         <div>Observaciones requeridas.</div>
                                     </div>
@@ -312,7 +331,7 @@
         </div>
     </div>
     <hr>
-    <div class="row">
+    <div *ngIf="!this.esConsulta" class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="form-group">
                 <label class="control-label" for="archivo-supervision">Archivo de supervisión de muestreo:</label>
@@ -351,8 +370,11 @@
                             <td>
                                 <div class="btn btn-group">
                                     <button class="btn btn-secondary"
-                                        (click)="onPreviewArchivoClick(archivo.nombreArchivo??'', archivo.tipoEvidencia??0)"
+                                        (click)="onPreviewDownloadArchivoClick(archivo.nombreArchivo??'', archivo.tipoEvidencia??0)"
                                         title="Ver"><i class="bi bi-eye"></i></button>
+                                    <button class="btn btn-secondary"
+                                        (click)="onPreviewDownloadArchivoClick(archivo.nombreArchivo??'', archivo.tipoEvidencia??0, true)"
+                                        title="Descargar"><i class="bi bi-download"></i></button>
                                     <button class="btn btn-danger" title="Eliminar"
                                         (click)="onDeleteArchivoClick(archivo.nombreArchivo??'')"><i
                                             class="bi bi-trash"></i></button>
@@ -365,8 +387,10 @@
         </div>
     </div>
     <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-secondary" (click)="onCancelarClick()">Cancelar</button>
-        <button type="button" class="btn btn-primary ml-4" (click)="onSubmit()">Guardar</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancelarClick()">{{this.esConsulta ? 'Regresar' :
+            'Cancelar'}}</button>
+        <button *ngIf="!this.esConsulta" type="button" class="btn btn-primary ml-4"
+            (click)="onSubmit()">Guardar</button>
     </div>
 </div>
 <!-- Button trigger modal -->

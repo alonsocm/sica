@@ -10,6 +10,7 @@ import { Laboratorio } from '../models/laboratorio';
 import { TipoCuerpoAgua } from '../models/tipo-cuerpo-agua';
 import { SupervisionBase } from '../models/supervision-base';
 import { FileService } from 'src/app/shared/services/file.service';
+import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 
 @Component({
   selector: 'app-supervision',
@@ -21,7 +22,7 @@ export class SupervisionComponent extends BaseService implements OnInit {
   laboratorios: Array<Laboratorio> = [];
   tiposCuerpoAgua: Array<TipoCuerpoAgua> = [];
   supervisiones: Array<SupervisionBase> = [];
-
+  supervision: number = 0;
   constructor(
     private router: Router,
     private supervisionService: SupervisionService
@@ -159,7 +160,45 @@ export class SupervisionComponent extends BaseService implements OnInit {
   }
 
   onEditClick(supervision: number) {
-    this.supervisionService.updateData(supervision);
+    this.supervisionService.updateSupervisionId(supervision);
     this.router.navigate(['/supervision-registro']);
+  }
+
+  onViewClick(supervision: number) {
+    this.supervisionService.updateSupervisionId(supervision);
+    this.supervisionService.updateEsConsulta(true);
+    this.router.navigate(['/supervision-registro']);
+  }
+
+  onDeleteClick(supervision: number) {
+    this.supervision = supervision;
+    document.getElementById('btn-confirm-modal')?.click();
+  }
+
+  onConfirmDeleteFileClick() {
+    if (this.supervision != 0 && this.supervision != null) {
+      this.supervisionService.deleteSupervision(this.supervision).subscribe({
+        next: (response: any) => {
+          if (response.succeded) {
+            let index =
+              this.supervisiones?.findIndex((x) => x.id === this.supervision) ??
+              -1;
+            if (index > -1) {
+              this.supervisiones?.splice(index, 1);
+            }
+            this.mostrarMensaje(
+              'Registro eliminado correctamente',
+              TipoMensaje.Correcto
+            );
+          }
+        },
+        error: (error) => {
+          this.mostrarMensaje(
+            'Error al eliminar el registro.',
+            TipoMensaje.Error
+          );
+        },
+      });
+    }
   }
 }
