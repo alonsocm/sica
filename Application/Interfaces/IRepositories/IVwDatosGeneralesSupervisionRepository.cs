@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace Application.Interfaces.IRepositories
 {
     public interface IVwDatosGeneralesSupervisionRepository: IRepository<VwDatosGeneralesSupervision>
     {
+        List<VwDatosGeneralesSupervision> ObtenerBusqueda(CriteriosBusquedaSupervisionDto? busqueda);
     }
 }

@@ -3,6 +3,7 @@ using Application.Features.Operacion.SupervisionMuestreo.Commands;
 using Application.Features.Operacion.SupervisionMuestreo.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
 
@@ -117,11 +118,13 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
 
-        [HttpGet("DatosGeneralesSupervision")]
-        public async Task<IActionResult> DatosGeneralesSupervision()
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] CriteriosBusquedaSupervisionDto? busqueda)
         {
-            var datos = await _datosGeneralesSupervisionRepository.ObtenerTodosElementosAsync();
-            return Ok(datos.ToList());
+            return Ok(await Mediator.Send(new GetBusquedaSupervisionQuery { Busqueda = busqueda }));
+       
         }
+
+        
     }
 }
