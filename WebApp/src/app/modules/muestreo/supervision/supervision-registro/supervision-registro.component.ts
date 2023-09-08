@@ -277,8 +277,9 @@ export class SupervisionRegistroComponent
     this.getClavesSitios(organismoDireccionId);
 
     if (organismoDireccionId !== '0') {
-      nombreOrganismoDireccion =
-        this.getOrganismoCuencaId(organismoDireccionId).nombreOrganismoCuenca;
+      let oc = this.getOrganismoCuencaId(organismoDireccionId);
+      nombreOrganismoDireccion = oc.nombreOrganismoCuenca;
+      this.supervision.organismoCuencaReportaId = oc.organismoCuencaId;
     }
 
     this.supervisionForm.patchValue({
@@ -514,8 +515,8 @@ export class SupervisionRegistroComponent
       this.supervisionForm.value.ocdlRealiza;
     this.supervision.supervisorConagua =
       this.supervisionForm.value.nombreSupervisor;
-    this.supervision.organismoCuencaReportaId =
-      this.supervisionForm.value.ocdlReporta;
+    // this.supervision.organismoCuencaReportaId =
+    //   this.supervisionForm.value.ocdlReporta;
     this.supervision.claveSitio = this.supervisionForm.value.claveSitio;
     this.supervision.sitioId = this.sitio.sitioId;
     this.supervision.claveMuestreo = this.supervisionForm.value.claveMuestreo;

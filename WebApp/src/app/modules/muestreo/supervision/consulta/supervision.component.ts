@@ -45,22 +45,12 @@ export class SupervisionComponent extends BaseService implements OnInit {
     this.getOrganismosDirecciones();
     this.getTiposCuerpoAgua();
     this.getSupervisiones();
-    // this.supervisiones.push({
-    //   ocdlRealiza: 'Golfo Centro/Hidalgo',
-    //   nombreSitio: '0',
-    //   fechaMuestreo: new Date('08/28/2023').toLocaleDateString('es-MX'),
-    //   puntajeObtenido: 0,
-    //   laboratorio: 'ABC MATRIZ',
-    //   claveMuestreo: 'OCLSP3827-210822',
-    //   tipoCuerpoAgua: 'Costero (humedal)',
-    //   id: 35,
-    // });
   }
 
   getSupervisiones() {
     this.supervisionService.getSupervisiones().subscribe({
       next: (response: any) => {
-        this.supervisiones = response;
+        this.supervisiones = response.data;
       },
       error: (error) => {},
     });

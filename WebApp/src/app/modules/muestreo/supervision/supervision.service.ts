@@ -23,9 +23,7 @@ export class SupervisionService {
   }
 
   getSupervisiones() {
-    return this.http.get(
-      environment.apiUrl + '/supervisionmuestreo/DatosGeneralesSupervision'
-    );
+    return this.http.get(environment.apiUrl + '/supervisionmuestreo/');
   }
 
   postSupervision(supervision: any): Observable<any> {
