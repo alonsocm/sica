@@ -174,7 +174,6 @@ export class SupervisionComponent extends BaseService implements OnInit {
     this.supervisionService.getLaboratorios().subscribe({
       next: (response: any) => {
         this.laboratorios = response.data;
-        console.log(this.laboratorios);
       },
       error: (error) => {},
     });

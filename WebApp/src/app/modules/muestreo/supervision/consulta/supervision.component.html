@@ -101,14 +101,14 @@
             <table class="table table-bordered">
                 <thead class="thead-light">
                     <tr>
-                        <th>OC/DL realiza la supervisión</th>
-                        <th>Laboratorio que realizó muestreo</th>
-                        <th>Sitio</th>
-                        <th>Clave del muestreo</th>
-                        <th>Fecha de muestreo</th>
-                        <th>Tipo de cuerpo de agua</th>
-                        <th>Puntaje obtenido</th>
-                        <th>Acciones</th>
+                        <th class="col-lg-2">OC/DL realiza la supervisión</th>
+                        <th class="col-lg-2">Laboratorio que realizó muestreo</th>
+                        <th class="col-lg-2">Sitio</th>
+                        <th class="col-lg-2">Clave del muestreo</th>
+                        <th class="col-lg-1">Fecha de muestreo</th>
+                        <th class="col-lg-1">Tipo de cuerpo de agua</th>
+                        <th class="col-lg-1">Puntaje obtenido</th>
+                        <th class="col-lg-2">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,10 +122,16 @@
                         <td>{{supervision.tipoCuerpoAgua}}</td>
                         <td>{{supervision.puntajeObtenido}}</td>
                         <td>
-                            <i class="bi bi-pencil-square icon-action" (click)="onEditClick(supervision.id)"></i>
+                            <button type="button" class="btn-action btn-primary-action" title="Editar">
+                                <i class="bi bi-pencil-square icon-action" (click)="onEditClick(supervision.id)"></i>
+                            </button>
                             <!-- <div class="btn btn-group"> -->
-                            <i class="bi bi-eye icon-action" (click)="onViewClick(supervision.id)"></i>
-                            <i class="bi bi-trash icon-action" (click)="onDeleteClick(supervision.id)"></i>
+                            <button type="button" class="btn-action btn-info-action" title="Ver">
+                                <i class="bi bi-eye" (click)="onViewClick(supervision.id)"></i>
+                            </button>
+                            <button type="button" class="btn-action btn-danger-action" title="Eliminar">
+                                <i class="bi bi-trash" (click)="onDeleteClick(supervision.id)"></i>
+                            </button>
 
                             <!-- </div> -->
                         </td>
