@@ -3,12 +3,6 @@ using Application.DTOs.Users;
 using Application.Features.Sitios.Commands.CreateSitioCommand;
 using AutoMapper;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace Application.Mappings
 {
@@ -48,6 +42,8 @@ namespace Application.Mappings
             CreateMap<SupervisionMuestreo, SupervisionMuestreoDto>();
             CreateMap<Laboratorios, LaboratoriosDto>();
             CreateMap<EvidenciaSupervisionMuestreo, EvidenciaSupervisionDto>();
+            CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>();
+
             #endregion
         }
     }

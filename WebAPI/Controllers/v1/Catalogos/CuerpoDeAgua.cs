@@ -1,5 +1,4 @@
-﻿using Application.Features.Catalogos.CuerpoDeAgua;
-using Application.Features.Catalogos.CuerpoDeAgua.Queries;
+﻿using Application.Features.Catalogos.CuerpoDeAgua.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.v1.Catalogos
@@ -8,6 +7,12 @@ namespace WebAPI.Controllers.v1.Catalogos
     [ApiController]
     public class CuerpoDeAgua : BaseApiController
     {
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await Mediator.Send(new GetTipoCuerpoAguaQuery()));
+        }
+
         [HttpGet("TipoHomologado")]
         public async Task<IActionResult> GetTipoHomologado()
         {
