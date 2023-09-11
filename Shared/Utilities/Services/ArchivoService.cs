@@ -1,19 +1,25 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using Application.Models;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
+using System.Security.Policy;
+using System;
+using Application.Interfaces.IRepositories;
 
 namespace Shared.Utilities.Services
 {
     internal class ArchivoService : IArchivoService
     {
         private readonly IConfiguration _configuration;
+        private readonly IEvidenciaSupervisionMuestreoRepository _evidenciasupervisionrepository;
 
-        public ArchivoService(IConfiguration configuration)
+        public ArchivoService(IConfiguration configuration, IEvidenciaSupervisionMuestreoRepository evidenciasupervisionrepository)
         {
             _configuration=configuration;
+            _evidenciasupervisionrepository = evidenciasupervisionrepository;
         }
 
         public bool EliminarEvidencias(string muestreo)
@@ -44,38 +50,40 @@ namespace Shared.Utilities.Services
         }
 
 
-        public bool GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo)
+        public List<string> GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo)
         {
             var ruta = ObtenerRutaBaseSupervision();
+            List<string> lstNombreArchivos = new List<string>();
             var directorioMuestreo = Directory.CreateDirectory(Path.Combine(ruta, evidenciasMuestreo.SupervisionId.ToString()));
+            
+            var datosEvidencias = _evidenciasupervisionrepository.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == evidenciasMuestreo.SupervisionId && x.TipoEvidenciaId == Convert.ToInt64(Application.Enums.TipoEvidencia.EvidenciaSupervisión));
+            var index = (datosEvidencias.Result.ToList().Count > 0) ? datosEvidencias.Result.ToList().Count + 1 : 1;
 
             foreach (var archivo in evidenciasMuestreo.Archivos)
             {
-                using var stream = File.Create(Path.Combine(directorioMuestreo.FullName, archivo.FileName));
+              
+                string NombreArchivo = (archivo.ContentType == "application/pdf") ? evidenciasMuestreo.ClaveMuestreo + ".pdf" :
+                evidenciasMuestreo.ClaveMuestreo + "_" + index + archivo.FileName.Substring(archivo.FileName.IndexOf('.'), archivo.FileName.Length - archivo.FileName.IndexOf('.'));
+                lstNombreArchivos.Add(NombreArchivo);
+                using var stream = File.Create(Path.Combine(directorioMuestreo.FullName, NombreArchivo));
                 archivo.CopyTo(stream);
+                if (archivo.ContentType != "application/pdf") { index++; }
             }
-
-            return true;
+            return lstNombreArchivos;
         }
-
-
         public List<EvidenciasMuestreo> OrdenarEvidenciasPorMuestreo(List<IFormFile> archivos)
         {
             var evidencias = new List<EvidenciasMuestreo>();
-
             foreach (var archivo in archivos)
             {
                 var muestreo = archivo.FileName[..archivo.FileName.LastIndexOf("-")];
-
                 if (!evidencias.Any(a => a.Muestreo == muestreo))
                 {
                     evidencias.Add(new EvidenciasMuestreo { Muestreo = muestreo });
                 }
-
                 var evidencia = evidencias.Find(a => a.Muestreo == muestreo);
                 evidencia?.Archivos.Add(archivo);
             }
-
             return evidencias;
         }
 
