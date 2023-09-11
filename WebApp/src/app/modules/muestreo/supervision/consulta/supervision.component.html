@@ -29,12 +29,13 @@
         </div> -->
     </div>
     <div class="panel-busqueda">
-        <form [formGroup]="supervisionBusquedaForm" (ngSubmit)="search()">
+        <form [formGroup]="supervisionBusquedaForm" (ngSubmit)="onBuscarClick()">
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-12">
                     <div class="form-group">
                         <label for="oc-dl">OC/DL que realiza la supervisión:</label>
-                        <select class="form-control" id="oc-dl" formControlName="ocdlRealiza">
+                        <select class="form-control" id="oc-dl" formControlName="ocdlRealiza"
+                            (change)="onOrganismosDireccionesChange()">
                             <option value="0">Seleccione</option>
                             <option *ngFor="let ocdl of this.organismosDirecciones" [value]="ocdl.id">
                                 {{ocdl.organismoCuencaDireccionLocal}}</option>
@@ -43,17 +44,24 @@
                     <div class=" form-group">
                         <label for="laboratorio">Laboratorio que realizó el muestreo:</label>
                         <select class="form-control" id="laboratorio" formControlName="laboratorio">
-                            <option value="0">Seleccione</option>
+                            <option [value]="0">Seleccione</option>
                             <option *ngFor="let laboratorio of this.laboratorios" [value]="laboratorio.id">
-                                {{laboratorio.descripcion}}</option>
+                                {{laboratorio.nomenclatura}}</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="form-group">
+                    <label for="clave-sitio">Sitio:</label>
+                    <select class="form-control" id="clave-sitio" formControlName="sitio">
+                        <option value="0">seleccione</option>
+                        <option *ngFor="let sitio of this.sitios" [value]="sitio.sitioId">
+                            {{sitio.nombre}}
+                        </option>
+                    </select>
+                    <!-- <div class="form-group">
                         <label for="sitio">Sitio:</label>
                         <input type="text" class="form-control" id="sitio" formControlName="sitio">
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="claveMuestreo">Clave del muestreo:</label>
                         <input type="text" class="form-control" id="claveMuestreo" formControlName="claveMuestreo">
@@ -81,7 +89,7 @@
                     <div>
                         <button type="submit" class="btn btn-primary mr-3">
                             <i class="bi bi-search"></i>&nbsp; Buscar</button>
-                        <button type="submit" class="btn btn-secondary" (click)="this.supervisionBusquedaForm.reset()">
+                        <button type="submit" class="btn btn-secondary" (click)="onLimpiarClick()">
                             <i class="bi bi-x-circle"></i>&nbsp; Limpiar</button>
                     </div>
                 </div>

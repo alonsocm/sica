@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { SupervisionBusqueda } from './models/supervision-busqueda';
 
 @Injectable({
   providedIn: 'root',
@@ -22,8 +23,37 @@ export class SupervisionService {
     this.esConsultaDataSource.next(value);
   }
 
-  getSupervisiones() {
-    return this.http.get(environment.apiUrl + '/supervisionmuestreo/');
+  getSupervisiones(supervision: SupervisionBusqueda) {
+    let params = new HttpParams()
+      .set(
+        'organismosDireccionesRealizaId',
+        supervision.organismosDireccionesRealizaId == 0
+          ? ''
+          : supervision.organismosDireccionesRealizaId ?? 0
+      )
+      .set('sitioId', supervision.sitioId == 0 ? '' : supervision.sitioId ?? 0)
+      .set('fechaMuestreo', supervision.fechaMuestreo ?? '')
+      .set(
+        'puntajeObtenido',
+        supervision.puntajeObtenido == 0 ? '' : supervision.puntajeObtenido ?? 0
+      )
+      .set(
+        'laboratorioRealizaId',
+        supervision.laboratorioRealizaId == 0
+          ? ''
+          : supervision.laboratorioRealizaId ?? 0
+      )
+      .set('claveMuestreo', supervision.claveMuestreo ?? '')
+      .set(
+        'tipoCuerpoAguaId',
+        supervision.tipoCuerpoAguaId == 0
+          ? ''
+          : supervision.tipoCuerpoAguaId ?? 0
+      );
+
+    return this.http.get(environment.apiUrl + '/supervisionmuestreo/', {
+      params,
+    });
   }
 
   postSupervision(supervision: any): Observable<any> {
@@ -64,6 +94,16 @@ export class SupervisionService {
     return this.http.get(
       environment.apiUrl +
         '/supervisionmuestreo/ClaveSitiosPorCuencaDireccionId',
+      { params }
+    );
+  }
+
+  getSitios(organismoDireccion: number) {
+    const params = new HttpParams({
+      fromObject: { cuencaDireccionId: organismoDireccion },
+    });
+    return this.http.get(
+      environment.apiUrl + '/supervisionmuestreo/SitiosPorCuencaDireccionId',
       { params }
     );
   }

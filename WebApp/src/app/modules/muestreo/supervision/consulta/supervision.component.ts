@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Form, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
@@ -11,6 +11,8 @@ import { TipoCuerpoAgua } from '../models/tipo-cuerpo-agua';
 import { SupervisionBase } from '../models/supervision-base';
 import { FileService } from 'src/app/shared/services/file.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
+import { Sitio } from '../models/sitio';
+import { SupervisionBusqueda } from '../models/supervision-busqueda';
 
 @Component({
   selector: 'app-supervision',
@@ -22,7 +24,9 @@ export class SupervisionComponent extends BaseService implements OnInit {
   laboratorios: Array<Laboratorio> = [];
   tiposCuerpoAgua: Array<TipoCuerpoAgua> = [];
   supervisiones: Array<SupervisionBase> = [];
+  sitios: Array<Sitio> = [];
   supervision: number = 0;
+  supervisionBusqueda: SupervisionBusqueda = {};
   constructor(
     private router: Router,
     private supervisionService: SupervisionService
@@ -32,28 +36,52 @@ export class SupervisionComponent extends BaseService implements OnInit {
 
   supervisionBusquedaForm = new FormGroup({
     ocdlRealiza: new FormControl(0),
-    sitio: new FormControl(''),
+    sitio: new FormControl(0),
     fechaMuestreo: new FormControl(''),
-    puntaje: new FormControl(''),
+    puntaje: new FormControl(),
     laboratorio: new FormControl(0),
     claveMuestreo: new FormControl(''),
     tipoCuerpoAgua: new FormControl(0),
   });
+
+  valoresInicialesForm = this.supervisionBusquedaForm.value;
 
   ngOnInit(): void {
     this.definirColumnas();
     this.getOrganismosDirecciones();
     this.getTiposCuerpoAgua();
     this.getSupervisiones();
+    this.getLaboratorios();
+  }
+
+  getFormValues() {
+    this.supervisionBusqueda = {
+      organismosDireccionesRealizaId:
+        this.supervisionBusquedaForm.value.ocdlRealiza ?? 0,
+      sitioId: this.supervisionBusquedaForm.value.sitio ?? 0,
+      fechaMuestreo: this.supervisionBusquedaForm.value.fechaMuestreo ?? '',
+      puntajeObtenido: this.supervisionBusquedaForm.value.puntaje ?? 0,
+      laboratorioRealizaId: this.supervisionBusquedaForm.value.laboratorio ?? 0,
+      claveMuestreo: this.supervisionBusquedaForm.value.claveMuestreo ?? '',
+      tipoCuerpoAguaId: this.supervisionBusquedaForm.value.tipoCuerpoAgua ?? 0,
+    };
   }
 
   getSupervisiones() {
-    this.supervisionService.getSupervisiones().subscribe({
-      next: (response: any) => {
-        this.supervisiones = response.data;
-      },
-      error: (error) => {},
-    });
+    this.getFormValues();
+    this.supervisionService
+      .getSupervisiones(this.supervisionBusqueda)
+      .subscribe({
+        next: (response: any) => {
+          this.supervisiones = response.data;
+        },
+        error: (error) => {},
+      });
+  }
+
+  onLimpiarClick() {
+    this.sitios = [];
+    this.supervisionBusquedaForm.reset(this.valoresInicialesForm);
   }
 
   definirColumnas() {
@@ -112,6 +140,36 @@ export class SupervisionComponent extends BaseService implements OnInit {
     });
   }
 
+  onOrganismosDireccionesChange() {
+    let organismoDireccionId = this.supervisionBusquedaForm.value.ocdlRealiza;
+    this.sitios = [];
+    this.supervisionBusquedaForm.patchValue({ sitio: 0 });
+    if (
+      organismoDireccionId !== 0 ||
+      organismoDireccionId !== null ||
+      organismoDireccionId !== undefined
+    ) {
+      this.getSitios(organismoDireccionId ?? 0);
+    }
+  }
+
+  getSitios(cuencaDireccion: number) {
+    this.supervisionService.getSitios(cuencaDireccion).subscribe({
+      next: (response: any) => {
+        if (response.length > 0) {
+          this.sitios = response.map(
+            (val: any) =>
+              <Sitio>{
+                nombre: val.nombreSitio,
+                sitioId: val.id,
+              }
+          );
+        }
+      },
+      error: (error) => {},
+    });
+  }
+
   getLaboratorios() {
     this.supervisionService.getLaboratorios().subscribe({
       next: (response: any) => {
@@ -126,14 +184,13 @@ export class SupervisionComponent extends BaseService implements OnInit {
     this.supervisionService.getTiposCuerpoAgua().subscribe({
       next: (response: any) => {
         this.tiposCuerpoAgua = response.data;
-        console.log(this.laboratorios);
       },
       error: (error) => {},
     });
   }
 
-  search() {
-    console.log(this.supervisionBusquedaForm.value);
+  onBuscarClick() {
+    this.getSupervisiones();
   }
 
   downloadFormatoSupervision() {
