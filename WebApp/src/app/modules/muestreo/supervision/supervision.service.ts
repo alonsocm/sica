@@ -137,7 +137,7 @@ export class SupervisionService {
   }
 
   getTiposCuerpoAgua() {
-    return this.http.get(environment.apiUrl + '/CuerpoDeAgua/TipoHomologado');
+    return this.http.get(environment.apiUrl + '/CuerpoDeAgua');
   }
 
   getClasificacionesCriterios() {
