@@ -14,6 +14,6 @@ namespace Application.Interfaces
         bool GuardarEvidencias(EvidenciasMuestreo evidenciasMuestreo);
         bool EliminarEvidencias(string muestreo);
         bool EliminarArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
-        bool GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo);
+        List<string> GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo);
     }
 }

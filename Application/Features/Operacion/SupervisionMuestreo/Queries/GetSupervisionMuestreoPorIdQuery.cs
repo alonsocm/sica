@@ -99,10 +99,9 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                 });
             }
 
+            List<ClasificacionCriterioDto> lstcriterios = _supervisionRepository.ObtenerCriterios().Result.ToList();
             if (valoresDetalle.ToList().Count > 0)
             {
-                List<ClasificacionCriterioDto> lstcriterios = _supervisionRepository.ObtenerCriterios().Result.ToList();
-
                 foreach (var dat in lstcriterios)
                 {
                     foreach (var item in dat.Criterios)
@@ -116,10 +115,10 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
                             item.Observacion = valSupervision.ObservacionesCriterio;
                         }
                     }
-                }
+                }              
 
-                supervisionDto.Clasificaciones = lstcriterios;
             }
+            supervisionDto.Clasificaciones = lstcriterios;
 
             return new Response<SupervisionMuestreoDto>(supervisionDto);
         }

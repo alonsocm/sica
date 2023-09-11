@@ -34,27 +34,27 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
             var datosSupervision = await _repository.ObtenerElementoPorIdAsync(request.LstEvidencias.SupervisionId);
             var datosEvidencias = await _evidenciasupervisionrepository.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == request.LstEvidencias.SupervisionId && x.TipoEvidenciaId == Convert.ToInt64(Enums.TipoEvidencia.EvidenciaSupervisión));
 
+
+
             if (request.LstEvidencias.Archivos.Count > 0)
             {
-                _archivos.GuardarEvidenciasSupervision(request.LstEvidencias);
+                List<string> ArchivosGuardados = _archivos.GuardarEvidenciasSupervision(request.LstEvidencias);
                 List<EvidenciaSupervisionMuestreo> lstevidenciasFinal = new();
 
-
-
-                var index = (datosEvidencias.ToList().Count > 0) ? datosEvidencias.ToList().Count + 1 :  1;
-                request.LstEvidencias.Archivos.ToList().ForEach(evidencia =>
+                var index = (datosEvidencias.ToList().Count > 0) ? datosEvidencias.ToList().Count + 1 : 1;
+                ArchivosGuardados.ForEach(evidencia =>
                 {
-                   
                     var evidenciaDto = new EvidenciaSupervisionMuestreo()
                     {
                         SupervisionMuestreoId = request.LstEvidencias.SupervisionId,
-                        NombreArchivo = (evidencia.ContentType == "application/pdf") ? request.LstEvidencias.ClaveMuestreo + ".pdf" : 
-                        request.LstEvidencias.ClaveMuestreo + "_" + index + evidencia.FileName.Substring(evidencia.FileName.IndexOf('.'),evidencia.FileName.Length - evidencia.FileName.IndexOf('.')),
-                        TipoEvidenciaId = (evidencia.ContentType == "application/pdf") ? Convert.ToInt64(Enums.TipoEvidencia.ArchivoSupervisión) : Convert.ToInt64(Enums.TipoEvidencia.EvidenciaSupervisión),
-                     
+                        NombreArchivo = evidencia,
+                    TipoEvidenciaId = (evidencia.Contains(".pdf")) ? Convert.ToInt64(Enums.TipoEvidencia.ArchivoSupervisión) : Convert.ToInt64(Enums.TipoEvidencia.EvidenciaSupervisión)
+
                     };
+
+
                     lstevidenciasFinal.Add(evidenciaDto);
-                    if (evidencia.ContentType != "application/pdf") { index++; }
+                    if (!evidencia.Contains(".pdf")) { index++; }
                 });
 
                 List<EvidenciaSupervisionMuestreo> lstevidenciasActualizar = lstevidenciasFinal.Where(x => x.Id != 0).ToList();
@@ -70,7 +70,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
             var respuesta = new RespuestaSupervisionDto()
             {
                 SupervisionMuestreoId = request.LstEvidencias.SupervisionId,
-                Completo = (datosSupervision.Id != 0 && datosSupervision.EvidenciaSupervisionMuestreo.Count > 0 && (datosSupervision.ValoresSupervisionMuestreo.Count > 0 && datosSupervision.ValoresSupervisionMuestreo.Count==70)) ? true : false
+                Completo = (datosSupervision.Id != 0 && datosSupervision.EvidenciaSupervisionMuestreo.Count > 0 && (datosSupervision.ValoresSupervisionMuestreo.Count > 0 && datosSupervision.ValoresSupervisionMuestreo.Count == 70)) ? true : false
             };
 
             return new Response<RespuestaSupervisionDto>(respuesta);
