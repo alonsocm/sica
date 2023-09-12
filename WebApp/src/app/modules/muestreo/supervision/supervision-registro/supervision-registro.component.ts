@@ -60,11 +60,11 @@ export class SupervisionRegistroComponent
     });
 
     if (this.supervisionId == 0) {
-      this.supervision.fechaMuestreo = new Date('2023/08/28');
-      this.supervision.horaInicio = '09:24';
-      this.supervision.horaTermino = '10:14';
-      this.supervision.horaTomaMuestra = '11:14';
-      this.supervision.claveMuestreo = 'OCLSP3827-210822';
+      // this.supervision.fechaMuestreo = new Date('2023/08/28');
+      // this.supervision.horaInicio = '09:24';
+      // this.supervision.horaTermino = '10:14';
+      // this.supervision.horaTomaMuestra = '11:14';
+      // this.supervision.claveMuestreo = 'OCLSP3827-210822';
       // this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
     } else {
       this.supervisionService.getSupervision(this.supervisionId).subscribe({
@@ -386,14 +386,12 @@ export class SupervisionRegistroComponent
         .deleteArchivo(this.supervisionId, this.nombreArchivo)
         .subscribe({
           next: (response: any) => {
-            if (response.succeded) {
-              let index =
-                this.supervision.archivos?.findIndex(
-                  (x) => x.nombreArchivo === this.nombreArchivo
-                ) ?? -1;
-              if (index > -1) {
-                this.supervision.archivos?.splice(index, 1);
-              }
+            let index =
+              this.supervision.archivos?.findIndex(
+                (x) => x.nombreArchivo === this.nombreArchivo
+              ) ?? -1;
+            if (index > -1) {
+              this.supervision.archivos?.splice(index, 1);
             }
           },
           error: (error) => {},
