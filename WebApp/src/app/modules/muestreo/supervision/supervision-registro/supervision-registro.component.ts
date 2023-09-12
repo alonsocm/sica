@@ -534,6 +534,6 @@ export class SupervisionRegistroComponent
 
   onCancelarClick() {
     this.supervisionService.updateSupervisionId(0);
-    this.router.navigate(['/muestreo-supervision']);
+    this.router.navigate(['/supervision-muestreo']);
   }
 }

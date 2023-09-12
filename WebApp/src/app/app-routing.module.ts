@@ -209,12 +209,12 @@ const routes: Routes = [
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   {
-    path: 'muestreo-supervision',
+    path: 'supervision-muestreo',
     component: SupervisionComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   {
-    path: 'supervision-registro',
+    path: 'supervision-muestreo-registro',
     component: SupervisionRegistroComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },

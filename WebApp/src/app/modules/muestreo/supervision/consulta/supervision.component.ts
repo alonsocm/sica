@@ -202,18 +202,18 @@ export class SupervisionComponent extends BaseService implements OnInit {
   }
 
   registrarSupervision() {
-    this.router.navigate(['/supervision-registro']);
+    this.router.navigate(['/supervision-muestreo-registro']);
   }
 
   onEditClick(supervision: number) {
     this.supervisionService.updateSupervisionId(supervision);
-    this.router.navigate(['/supervision-registro']);
+    this.router.navigate(['/supervision-muestreo-registro']);
   }
 
   onViewClick(supervision: number) {
     this.supervisionService.updateSupervisionId(supervision);
     this.supervisionService.updateEsConsulta(true);
-    this.router.navigate(['/supervision-registro']);
+    this.router.navigate(['/supervision-muestreo-registro']);
   }
 
   onDeleteClick(supervision: number) {
