@@ -286,9 +286,11 @@
                     <tbody>
                         <ng-container *ngFor="let criterio of clasificacion.criterios">
                             <tr
-                                [ngClass]="{'table-warning': this.criterio.cumplimiento == 'NOAPLICA' && this.criterio.obligatorio}">
+                                [ngClass]="{'table-warning': this.criterio.cumplimiento == 'NOCUMPLE' && this.criterio.obligatorio}">
                                 <td>{{criterio.id}}</td>
-                                <td>{{criterio.descripcion}}</td>
+                                <td>{{criterio.obligatorio ? criterio.descripcion + '*' :
+                                    criterio.descripcion}}
+                                </td>
                                 <td>{{criterio.puntaje}}</td>
                                 <td>
                                     <input type="radio" [name]="criterio.descripcion" value="CUMPLE"
@@ -306,10 +308,10 @@
                                     <input type="radio" [name]="criterio.descripcion" value="NOAPLICA"
                                         [(ngModel)]="this.criterio.cumplimiento"
                                         title="Seleccione si el criterio no aplica" (change)="onCumplimientoChange()"
-                                        [attr.disabled]="this.esConsulta ? '' : null" />
+                                        [attr.disabled]="this.esConsulta || criterio.obligatorio && !this.excepcionesCriterios.includes(criterio.id) ? '' : null" />
                                 </td>
                                 <td><textarea [(ngModel)]="this.criterio.observacion"
-                                        [ngClass]="{'is-invalid': this.criterio.obligatorio && this.criterio.cumplimiento === 'NOAPLICA' && this.criterio.observacion === null || this.criterio.observacion === '' }"
+                                        [ngClass]="{'is-invalid': this.criterio.obligatorio && this.criterio.cumplimiento === 'NOCUMPLE' && this.criterio.observacion === null || this.criterio.observacion === '' }"
                                         title="Escriba las observaciones para el criterio"
                                         [attr.disabled]="this.esConsulta ? '' : null"></textarea>
                                     <div class="invalid-feedback">
