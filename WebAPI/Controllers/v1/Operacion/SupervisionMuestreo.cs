@@ -16,16 +16,14 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IVwOrganismosDireccionesRepository _organismoDirecRepository;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        private readonly IVwDatosGeneralesSupervisionRepository _datosGeneralesSupervisionRepository;
 
         public SupervisionMuestreo(IMuestreadoresRepository muestreador, ISitioRepository sitioRepository,
-            IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env, IVwDatosGeneralesSupervisionRepository datosGeneralesSupervisionRepository)
+            IVwOrganismosDireccionesRepository organismoDirecRepository, IConfiguration configuration, IWebHostEnvironment env)
         {
             _muestrador = muestreador; _sitioRepository = sitioRepository;
             _organismoDirecRepository = organismoDirecRepository;
             _configuration = configuration;
             _env = env;
-            _datosGeneralesSupervisionRepository = datosGeneralesSupervisionRepository;
         }
 
         [HttpPost]
