@@ -52,6 +52,7 @@ import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/lab
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
 import { SupervisionComponent } from './modules/muestreo/supervision/consulta/supervision.component';
 import { SupervisionRegistroComponent } from './modules/muestreo/supervision/supervision-registro/supervision-registro.component';
+import { SupervisionReporteComponent } from './modules/muestreo/supervision/supervision-reporte/supervision-reporte.component';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,7 @@ import { SupervisionRegistroComponent } from './modules/muestreo/supervision/sup
     EmergenciaComponent,
     SupervisionComponent,
     SupervisionRegistroComponent,
+    SupervisionReporteComponent,
   ],
   imports: [
     BrowserModule,

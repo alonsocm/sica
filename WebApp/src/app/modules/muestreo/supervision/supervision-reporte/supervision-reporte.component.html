@@ -1,0 +1,125 @@
+<app-menu></app-menu>
+<div class="container-fluid">
+    <h1>Registro de informe mensual de supervisión de campo.</h1>
+    <hr class="red">
+    <!-- <div class="row d-flex justify-content-end">
+        <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i>
+            Nuevo informe mensual de supervisión</button>
+    </div> -->
+    <div class="panel-busqueda">
+        <form [formGroup]="registroForm" (submit)="onSubmit()">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="memorando">Memorando:*</label>
+                    <input class="form-control" id="memorando" type="text" formControlName="memorando"
+                        [ngClass]="{'is-invalid': registroForm.get('memorando')?.hasError('required')}">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="lugar">Lugar:*</label>
+                    <input class="form-control" id="lugar" type="text" formControlName="lugar"
+                        [ngClass]="{'is-invalid': registroForm.get('lugar')?.hasError('required')}">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="fecha">Fecha:*</label>
+                    <input class="form-control" id="fecha" type="date" formControlName="fecha"
+                        [ngClass]="{'is-invalid': registroForm.get('fecha')?.hasError('required')}">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="destinatario">Destinatario/Atenciones*</label>
+                    <input class="form-control" id="destinatario" type="destinatario" formControlName="destinatario"
+                        [ngClass]="{'is-invalid': registroForm.get('destinatario')?.hasError('required')}">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="responsable">Director Técnico ó Responsable:*</label>
+                    <input class="form-control" id="responsable" type="text" formControlName="responsable"
+                        [ngClass]="{'is-invalid': registroForm.get('responsable')?.hasError('required')}"
+                        title="Nombre del Director Técnico o el responsable de calidad del agua en el Organismo de Cuenca">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="puesto">Puesto:*</label>
+                    <input class="form-control" id="puesto" type="text" formControlName="puesto"
+                        [ngClass]="{'is-invalid': registroForm.get('puesto')?.hasError('required')}">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="copia">Con copia a:*</label>
+                    <div class="form-inline">
+                        <input class="form-control mr-5" id="copia" type="text" formControlName="copia"
+                            [ngClass]="{'is-invalid': registroForm.get('copia')?.hasError('required')}">
+                        <button class="btn-action btn-info-action" type="button" (click)="onAgregarCopiaClick()"><i
+                                class="bi bi-plus-lg"></i>
+                            Agregar</button>
+                        <div class="invalid-feedback">
+                            <div>Campo requerido</div>
+                        </div>
+                    </div>
+                    <ul class="list-group col-md-8">
+                        <li class="list-group-item d-flex justify-content-between" *ngFor="let nombre of this.copias">
+                            {{nombre}} <button type="button" title="Eliminar" class="btn-action btn-secondary-action"
+                                (click)="onDeleteCopiaClick(nombre)"><i class="bi bi-trash"></i></button></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="inicialesPersonas">Iniciales de personas involucradas:*</label>
+                    <input class="form-control" id="inicialesPersonas" type="text" formControlName="inicialesPersonas"
+                        [ngClass]="{'is-invalid': registroForm.get('inicialesPersonas')?.hasError('required')}"
+                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="mes">Mes a reportar:*</label>
+                    <select class="form-control" id="mes" formControlName="mes"
+                        [ngClass]="{'is-invalid': registroForm.get('mes')?.hasError('required')}">
+                        <option value="0">Seleccione</option>
+                        <option value="1">Enero</option>
+                        <option value="2">Febrero</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Abril</option>
+                        <option value="5">Mayo</option>
+                        <option value="6">Junio</option>
+                        <option value="7">Julio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+            <div class=" row d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+    <p>{{this.registroForm.value.memorando + ' ' + this.registroForm.status + ' ' +
+        registroForm.get('memorando')?.invalid}}
+    </p>
+</div>
