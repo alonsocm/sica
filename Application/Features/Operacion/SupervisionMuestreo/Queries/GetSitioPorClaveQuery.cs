@@ -2,20 +2,14 @@
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using AutoMapper;
-using Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.SupervisionMuestreo.Queries
 {
-    public class GetSitioPorClaveQuery: IRequest<Response<SitioSupervisionDto>>
+    public class GetSitioPorClaveQuery : IRequest<Response<SitioSupervisionDto>>
     {
-        public string claveSitio  { get; set; }
-        
+        public string claveSitio { get; set; }
+
     }
 
     public class GetSitioPorClaveQueryHandler : IRequestHandler<GetSitioPorClaveQuery, Response<SitioSupervisionDto>>
@@ -30,17 +24,18 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
 
         public async Task<Response<SitioSupervisionDto>> Handle(GetSitioPorClaveQuery request, CancellationToken cancellationToken)
         {
-            var sitios = (await _sitiosRepository.ObtenerElementosPorCriterioAsync(x => x.ClaveSitio == request.claveSitio)).FirstOrDefault();
+            var sitios = (await _sitiosRepository.ObtenerElementosPorCriterioAsync(x => x.ClaveSitio == request.claveSitio)).ToList();
 
             SitioSupervisionDto sitioDto = new SitioSupervisionDto();
-            sitioDto.ClaveMuestreo = sitios.ClaveMuestreo.ToString();
-            sitioDto.ClaveSitio = sitios.ClaveSitio;
-            sitioDto.SitioId = sitios.SitioId;
-            sitioDto.Nombre = sitios.NombreSitio;
-            sitioDto.CuencaDireccionLocalId = sitios.CuencaDireccionesLocalesId;
-            sitioDto.Latitud = sitios.Latitud.ToString();
-            sitioDto.Longitud = sitios.Longitud.ToString();
-            sitioDto.TipoCuerpoAgua = sitios.TipoCuerpoAgua;
+            sitioDto.ClaveSitio = sitios.FirstOrDefault().ClaveSitio;
+            sitioDto.SitioId = sitios.FirstOrDefault().SitioId;
+            sitioDto.Nombre = sitios.FirstOrDefault().NombreSitio;
+            sitioDto.CuencaDireccionLocalId = sitios.FirstOrDefault().CuencaDireccionesLocalesId;
+            sitioDto.Latitud = sitios.FirstOrDefault().Latitud.ToString();
+            sitioDto.Longitud = sitios.FirstOrDefault().Longitud.ToString();
+            sitioDto.TipoCuerpoAgua = sitios.FirstOrDefault().TipoCuerpoAgua;
+
+            sitios.ForEach(sitio => { sitioDto.ClaveMuestreo.Add(sitio.ClaveMuestreo); });
 
             return new Response<SitioSupervisionDto>(sitioDto);
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -57,6 +55,8 @@ public partial class SicaContext : DbContext
     public virtual DbSet<HistorialSustitucionEmergencia> HistorialSustitucionEmergencia { get; set; }
 
     public virtual DbSet<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; }
+
+    public virtual DbSet<IntervalosClasificacion> IntervalosClasificacion { get; set; }
 
     public virtual DbSet<Laboratorios> Laboratorios { get; set; }
 
@@ -411,7 +411,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<HistorialSustitucionLimites>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07AA0BB2AD");
+            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07E25AC404");
 
             entity.Property(e => e.Fecha).HasColumnType("datetime");
 
@@ -429,6 +429,12 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HistorialSustitucion_Usuario");
+        });
+
+        modelBuilder.Entity<IntervalosClasificacion>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Descripcion).HasMaxLength(7);
         });
 
         modelBuilder.Entity<Laboratorios>(entity =>
@@ -512,6 +518,8 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<Muestreadores>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_Muestradores");
+
             entity.Property(e => e.ApellidoMaterno).HasMaxLength(50);
             entity.Property(e => e.ApellidoPaterno).HasMaxLength(50);
             entity.Property(e => e.Iniciales).HasMaxLength(5);
@@ -582,7 +590,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<MuestreoEmergencia>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC07EB386B26");
+            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC078DE004E5");
 
             entity.Property(e => e.ClaveUnica).HasMaxLength(150);
             entity.Property(e => e.FechaProgramada).HasColumnType("date");
@@ -1153,7 +1161,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<TipoSustitucion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0783A7C692");
+            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0762844A01");
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(20)
