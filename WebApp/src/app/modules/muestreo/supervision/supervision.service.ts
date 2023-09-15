@@ -33,6 +33,7 @@ export class SupervisionService {
       )
       .set('sitioId', supervision.sitioId == 0 ? '' : supervision.sitioId ?? 0)
       .set('fechaMuestreo', supervision.fechaMuestreo ?? '')
+      .set('fechaMuestreoFin', supervision.fechaMuestreoFin ?? '')
       .set(
         'puntajeObtenido',
         supervision.puntajeObtenido == 0 ? '' : supervision.puntajeObtenido ?? 0

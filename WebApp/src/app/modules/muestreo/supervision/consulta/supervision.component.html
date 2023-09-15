@@ -1,56 +1,35 @@
 <app-menu></app-menu>
 <div class="container-fluid">
-    <h1>Supervisión de muestreo.</h1>
+    <div class="row">
+        <div class="col-lg-7 col-md-12 col-sm-12">
+            <h1>Consulta de Supervisión de Muestreo.</h1>
+        </div>
+        <div class="col-lg-5 col-md-12 col-sm-12">
+            <button type="button" class="btn btn-primary mr-2" (click)="registrarSupervision()"><i
+                    class="bi bi-pencil-square"></i>
+                Registrar Supervisión de Muestreo</button>
+            <button type="button" class="btn btn-secondary" (click)="downloadFormatoSupervision()"><i
+                    class="bi bi-cloud-download"></i> Formato de Supervisión de Muestreo</button>
+        </div>
+    </div>
     <hr class="red">
     <div class="message-container">
         <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
             [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
     </div>
-    <div class="row">
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary" (click)="registrarSupervision()"><i
-                    class="bi bi-pencil-square"></i>
-                Registrar supervisión de muestreo</button>
-            <button type="button" class="btn btn-secondary ml-2" (click)="downloadFormatoSupervision()"><i
-                    class="bi bi-cloud-download"></i>Formato de Supervisión de Muestreo</button>
-        </div>
-        <!-- <div class="col text-right">
-            <button type="button" class="btn btn-primary" (click)="registrarSupervision()">
-                <i class="bi bi-pencil-square"></i>
-                Registrar supervisión de muestreo
-            </button>
-        </div>
-        <div class=" col text-right">
-            <button class="btn btn-secondary" type="button" title="Clic para descargar el formato de supervisión"
-                (click)="downloadFormatoSupervision()">
-                <i class="bi bi-cloud-download"></i>
-                Formato de Supervisión de Muestreo
-            </button>
-        </div> -->
-    </div>
     <div class="panel-busqueda">
         <form [formGroup]="supervisionBusquedaForm" (ngSubmit)="onBuscarClick()">
             <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="form-group">
-                        <label for="oc-dl">OC/DL que realiza la supervisión:</label>
-                        <select class="form-control" id="oc-dl" formControlName="ocdlRealiza"
-                            (change)="onOrganismosDireccionesChange()">
-                            <option value="0">Seleccione</option>
-                            <option *ngFor="let ocdl of this.organismosDirecciones" [value]="ocdl.id">
-                                {{ocdl.organismoCuencaDireccionLocal}}</option>
-                        </select>
-                    </div>
-                    <div class=" form-group">
-                        <label for="laboratorio">Laboratorio que realizó el muestreo:</label>
-                        <select class="form-control" id="laboratorio" formControlName="laboratorio">
-                            <option [value]="0">Seleccione</option>
-                            <option *ngFor="let laboratorio of this.laboratorios" [value]="laboratorio.id">
-                                {{laboratorio.nomenclatura}}</option>
-                        </select>
-                    </div>
+                <div class="form-group col-lg-3 col-md-6 col-sm-12">
+                    <label for="oc-dl">OC/DL que realiza la supervisión:</label>
+                    <select class="form-control" id="oc-dl" formControlName="ocdlRealiza"
+                        (change)="onOrganismosDireccionesChange()">
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let ocdl of this.organismosDirecciones" [value]="ocdl.id">
+                            {{ocdl.organismoCuencaDireccionLocal}}</option>
+                    </select>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="form-group col-lg-3 col-md-6 col-sm-12">
                     <label for="clave-sitio">Sitio:</label>
                     <select class="form-control" id="clave-sitio" formControlName="sitio">
                         <option value="0">seleccione</option>
@@ -58,40 +37,47 @@
                             {{sitio.nombre}}
                         </option>
                     </select>
-                    <!-- <div class="form-group">
-                        <label for="sitio">Sitio:</label>
-                        <input type="text" class="form-control" id="sitio" formControlName="sitio">
-                    </div> -->
-                    <div class="form-group">
-                        <label for="claveMuestreo">Clave del muestreo:</label>
-                        <input type="text" class="form-control" id="claveMuestreo" formControlName="claveMuestreo">
-                    </div>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="form-group">
-                        <label for="fechaMuestreo">Fecha del muestreo:</label>
-                        <input type="date" class="form-control" id="fechaMuestreo" formControlName="fechaMuestreo">
-                    </div>
-                    <div class="form-group">
-                        <label for="tipo-cuerpo-agua">Tipo de cuerpo de agua:</label>
-                        <select class="form-control" id="tipo-cuerpo-agua" formControlName="tipoCuerpoAgua">
-                            <option value="0">Seleccione</option>
-                            <option *ngFor="let tipoCuerpoAgua of this.tiposCuerpoAgua" [value]="tipoCuerpoAgua.id">
-                                {{tipoCuerpoAgua.descripcion}}</option>
-                        </select>
-                    </div>
+                <div class="form-group col-lg-2 col-md-6 col-sm-12">
+                    <label for="fechaMuestreo">Fechas de muestreo:</label>
+                    <input type="date" class="form-control" id="fechaMuestreo" formControlName="fechaMuestreo">
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-12">
-                    <div class="form-group">
-                        <label for="puntaje">Puntaje obtenido:</label>
-                        <input type="number" class="form-control" id="puntaje" formControlName="puntaje">
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-primary mr-3">
-                            <i class="bi bi-search"></i>&nbsp; Buscar</button>
-                        <button type="submit" class="btn btn-secondary" (click)="onLimpiarClick()">
-                            <i class="bi bi-x-circle"></i>&nbsp; Limpiar</button>
-                    </div>
+                <div class="form-group col-lg-2 col-md-6 col-sm-12 align-self-end">
+                    <!-- <label for="fechaMuestreoFin">Fecha del muestreo:</label> -->
+                    <input type="date" class="form-control" id="fechaMuestreoFin" formControlName="fechaMuestreoFin"
+                        title="Seleccione fecha fin">
+                </div>
+                <div class="form-group col-lg-2 col-md-6 col-sm-12">
+                    <label for="puntaje">Puntaje obtenido:</label>
+                    <input type="number" class="form-control" id="puntaje" formControlName="puntaje">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-3 col-md-6 col-sm-12">
+                    <label for="laboratorio">Laboratorio que realizó el muestreo:</label>
+                    <select class="form-control" id="laboratorio" formControlName="laboratorio">
+                        <option [value]="0">Seleccione</option>
+                        <option *ngFor="let laboratorio of this.laboratorios" [value]="laboratorio.id">
+                            {{laboratorio.nomenclatura}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-lg-3 col-md-6 col-sm-12">
+                    <label for="claveMuestreo">Clave del muestreo:</label>
+                    <input type="text" class="form-control" id="claveMuestreo" formControlName="claveMuestreo">
+                </div>
+                <div class="form-group col-lg-3 col-md-6 col-sm-12">
+                    <label for="tipo-cuerpo-agua">Tipo de cuerpo de agua:</label>
+                    <select class="form-control" id="tipo-cuerpo-agua" formControlName="tipoCuerpoAgua">
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let tipoCuerpoAgua of this.tiposCuerpoAgua" [value]="tipoCuerpoAgua.id">
+                            {{tipoCuerpoAgua.descripcion}}</option>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12 align-self-end mb-4">
+                    <button type="submit" class="btn btn-primary mr-3">
+                        <i class="bi bi-search"></i>&nbsp; Buscar</button>
+                    <button type="submit" class="btn btn-secondary" (click)="onLimpiarClick()">
+                        <i class="bi bi-x-circle"></i>&nbsp; Limpiar</button>
                 </div>
             </div>
         </form>

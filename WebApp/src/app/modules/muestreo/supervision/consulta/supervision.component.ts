@@ -38,6 +38,7 @@ export class SupervisionComponent extends BaseService implements OnInit {
     ocdlRealiza: new FormControl(0),
     sitio: new FormControl(0),
     fechaMuestreo: new FormControl(''),
+    fechaMuestreoFin: new FormControl(''),
     puntaje: new FormControl(),
     laboratorio: new FormControl(0),
     claveMuestreo: new FormControl(''),
@@ -60,6 +61,8 @@ export class SupervisionComponent extends BaseService implements OnInit {
         this.supervisionBusquedaForm.value.ocdlRealiza ?? 0,
       sitioId: this.supervisionBusquedaForm.value.sitio ?? 0,
       fechaMuestreo: this.supervisionBusquedaForm.value.fechaMuestreo ?? '',
+      fechaMuestreoFin:
+        this.supervisionBusquedaForm.value.fechaMuestreoFin ?? '',
       puntajeObtenido: this.supervisionBusquedaForm.value.puntaje ?? 0,
       laboratorioRealizaId: this.supervisionBusquedaForm.value.laboratorio ?? 0,
       claveMuestreo: this.supervisionBusquedaForm.value.claveMuestreo ?? '',
