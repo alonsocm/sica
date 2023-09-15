@@ -60,108 +60,123 @@ export class SupervisionRegistroComponent
       this.esConsulta = data;
     });
 
-    if (this.supervisionId == 0) {
-      // this.supervision.fechaMuestreo = new Date('2023/08/28');
-      // this.supervision.horaInicio = '09:24';
-      // this.supervision.horaTermino = '10:14';
-      // this.supervision.horaTomaMuestra = '11:14';
-      // this.supervision.claveMuestreo = 'OCLSP3827-210822';
-      // this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
-    } else {
+    if (this.supervisionId !== 0) {
       this.supervisionService.getSupervision(this.supervisionId).subscribe({
         next: (response: any) => {
           this.supervision = response.data;
-          // this.supervision.archivos = [{ nombreArchivo: 'Prueba1.pdf' }];
           this.setSupervisionFormValues(this.supervision);
         },
         error: (error) => {},
       });
     }
 
-    this.supervisionForm = new FormGroup({
-      fechaMuestreo: new FormControl(
-        this.supervision.fechaMuestreo?.toISOString().split('T')[0] ?? '',
-        Validators.required
-      ),
-      horaInicio: new FormControl(
-        this.supervision.horaInicio ?? '',
-        Validators.required
-      ),
-      horaFin: new FormControl(
-        this.supervision.horaTermino ?? '',
-        Validators.required
-      ),
-      horaTomaMuestra: new FormControl(
-        this.supervision.horaTomaMuestra ?? '',
-        Validators.required
-      ),
-      puntajeObtenido: new FormControl(
-        { value: this.supervision.puntajeObtenido ?? '', disabled: true },
-        Validators.required
-      ),
-      ocdlRealiza: new FormControl(
-        this.supervision.organismosDireccionesRealizaId ?? 0,
-        [Validators.required, Validators.min(1)]
-      ),
-      nombreSupervisor: new FormControl(
-        this.supervision.supervisorConagua ?? '',
-        Validators.required
-      ),
-      ocdlReporta: new FormControl(
-        {
-          value: this.supervision.organismoCuencaReporta ?? '',
-          disabled: true,
-        },
-        [Validators.required, Validators.min(1)]
-      ),
-      claveSitio: new FormControl(this.supervision.claveSitio ?? 0, [
-        Validators.required,
-        Validators.min(1),
-      ]),
-      claveMuestreo: new FormControl(
-        this.supervision.claveMuestreo ?? '',
-        Validators.required
-      ),
-      nombreSitio: new FormControl(
-        { value: this.supervision.nombreSitio ?? '', disabled: true },
-        Validators.required
-      ),
-      tipoCuerpoAgua: new FormControl(
-        { value: this.supervision.tipoCuerpoAgua ?? '', disabled: true },
-        Validators.required
-      ),
-      latitudSitio: new FormControl(
-        { value: this.supervision.latitudSitio ?? '', disabled: true },
-        Validators.required
-      ),
-      longitudSitio: new FormControl(
-        { value: this.supervision.longitudSitio ?? '', disabled: true },
-        Validators.required
-      ),
-      latitudToma: new FormControl(
-        this.supervision.latitudToma ?? '',
-        Validators.required
-      ),
-      longitudToma: new FormControl(
-        this.supervision.longitudToma ?? '',
-        Validators.required
-      ),
-      laboratorio: new FormControl(this.supervision.laboratorioRealizaId ?? 0, [
-        Validators.required,
-        Validators.min(1),
-      ]),
-      nombreResponsableMuestra: new FormControl(
-        this.supervision.responsableTomaId ?? 0,
-        [Validators.required, Validators.min(1)]
-      ),
-      nombreResponsableMediciones: new FormControl(
-        this.supervision.responsableMedicionesId ?? 0,
-        [Validators.required, Validators.min(1)]
-      ),
-      observacionesMuestreo: new FormControl(
-        this.supervision.observacionesMuestreo ?? ''
-      ),
-    });
+    this.supervisionForm = new FormGroup(
+      {
+        fechaMuestreo: new FormControl(
+          this.supervision.fechaMuestreo?.toISOString().split('T')[0] ?? '',
+          Validators.required
+        ),
+        horaInicio: new FormControl(
+          this.supervision.horaInicio ?? '',
+          Validators.required
+        ),
+        horaFin: new FormControl(
+          this.supervision.horaTermino ?? '',
+          Validators.required
+        ),
+        horaTomaMuestra: new FormControl(
+          this.supervision.horaTomaMuestra ?? '',
+          Validators.required
+        ),
+        puntajeObtenido: new FormControl(
+          { value: this.supervision.puntajeObtenido ?? '', disabled: true },
+          Validators.required
+        ),
+        ocdlRealiza: new FormControl(
+          this.supervision.organismosDireccionesRealizaId ?? 0,
+          [Validators.required, Validators.min(1)]
+        ),
+        nombreSupervisor: new FormControl(
+          this.supervision.supervisorConagua ?? '',
+          Validators.required
+        ),
+        ocdlReporta: new FormControl(
+          {
+            value: this.supervision.organismoCuencaReporta ?? '',
+            disabled: true,
+          },
+          [Validators.required, Validators.min(1)]
+        ),
+        claveSitio: new FormControl(this.supervision.claveSitio ?? 0, [
+          Validators.required,
+          Validators.min(1),
+        ]),
+        claveMuestreo: new FormControl(
+          this.supervision.claveMuestreo ?? '',
+          Validators.required
+        ),
+        nombreSitio: new FormControl(
+          { value: this.supervision.nombreSitio ?? '', disabled: true },
+          Validators.required
+        ),
+        tipoCuerpoAgua: new FormControl(
+          { value: this.supervision.tipoCuerpoAgua ?? '', disabled: true },
+          Validators.required
+        ),
+        latitudSitio: new FormControl(
+          { value: this.supervision.latitudSitio ?? '', disabled: true },
+          Validators.required
+        ),
+        longitudSitio: new FormControl(
+          { value: this.supervision.longitudSitio ?? '', disabled: true },
+          Validators.required
+        ),
+        latitudToma: new FormControl(
+          this.supervision.latitudToma ?? '',
+          Validators.required
+        ),
+        longitudToma: new FormControl(
+          this.supervision.longitudToma ?? '',
+          Validators.required
+        ),
+        laboratorio: new FormControl(
+          this.supervision.laboratorioRealizaId ?? 0,
+          [Validators.required, Validators.min(1)]
+        ),
+        nombreResponsableMuestra: new FormControl(
+          this.supervision.responsableTomaId ?? 0,
+          [Validators.required, Validators.min(1)]
+        ),
+        nombreResponsableMediciones: new FormControl(
+          this.supervision.responsableMedicionesId ?? 0,
+          [Validators.required, Validators.min(1)]
+        ),
+        observacionesMuestreo: new FormControl(
+          this.supervision.observacionesMuestreo ?? ''
+        ),
+      },
+      { validators: [this.validarHoraTomaMuestra, this.validarHoraFin] }
+    );
+  }
+
+  validarHoraTomaMuestra(control: AbstractControl) {
+    const { horaInicio, horaFin, horaTomaMuestra } = control.value; // Extraemos valores de ambos campos necesarios
+
+    if (horaTomaMuestra >= horaInicio && horaTomaMuestra <= horaFin) {
+      return null; // Validación correcta, devolvemos null
+    }
+
+    return { horaTomaMuestra: true };
+  }
+
+  validarHoraFin(control: AbstractControl) {
+    const { horaInicio, horaFin } = control.value; // Extraemos valores de ambos campos necesarios
+
+    if (horaInicio < horaFin) {
+      return null; // Validación correcta, devolvemos null
+    }
+
+    return { horaFin: true };
   }
 
   ngOnInit(): void {

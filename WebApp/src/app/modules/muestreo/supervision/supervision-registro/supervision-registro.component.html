@@ -10,7 +10,7 @@
     </div>
     <form [formGroup]="supervisionForm" (submit)="onSubmit()">
         <div class="row">
-            <div class="col-lg-2 col-md-6 col-sm-12">
+            <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="form-group ">
                     <label for="fecha-muestreo">Fecha de muestreo:*</label>
                     <input class="form-control" id="fecha-muestreo" type="date" formControlName="fechaMuestreo"
@@ -34,12 +34,15 @@
             </div>
             <div class="col-lg-2 col-md-6 col-sm-12">
                 <div class="form-group">
-                    <label for="hora-termino">Hora de termino:*</label>
+                    <label for="hora-termino">Hora de término:*</label>
                     <input class="form-control" id="hora-termino" type="time" formControlName="horaFin"
-                        [ngClass]="{'is-invalid': submitted && f['horaFin'].errors}"
+                        [ngClass]="{'is-invalid': submitted && (f['horaFin'].errors || this.supervisionForm.hasError('horaFin'))}"
                         [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['horaFin'].errors" class="invalid-feedback">
                         <div *ngIf="f['horaFin'].errors['required']">Campo requerido</div>
+                    </div>
+                    <div *ngIf="this.supervisionForm.hasError('horaFin')" class="invalid-feedback">
+                        <div>La hora de término no puede ser menor a la hora de inicio.</div>
                     </div>
                 </div>
             </div>
@@ -47,10 +50,13 @@
                 <div class="form-group">
                     <label for="hora-toma-muestra">Hora de toma de muestra:*</label>
                     <input class="form-control" id="hora-toma-muestra" type="time" formControlName="horaTomaMuestra"
-                        [ngClass]="{'is-invalid': submitted && f['horaTomaMuestra'].errors}"
+                        [ngClass]="{'is-invalid': submitted && (f['horaTomaMuestra'].errors || this.supervisionForm.hasError('horaTomaMuestra'))}"
                         [attr.disabled]="this.esConsulta ? '' : null">
                     <div *ngIf="f['horaTomaMuestra'].errors" class="invalid-feedback">
                         <div *ngIf="f['horaTomaMuestra'].errors['required']">Campo requerido</div>
+                    </div>
+                    <div *ngIf="this.supervisionForm.hasError('horaTomaMuestra')" class="invalid-feedback">
+                        <div>La hora de toma de muestra debe estar entre la hora de inicio y la hora de término.</div>
                     </div>
                 </div>
             </div>
@@ -88,7 +94,7 @@
                     <label for="nombre-supervisor">Nombre del supervisor:*</label>
                     <input class="form-control" id="nombre-supervisor" type="text" formControlName="nombreSupervisor"
                         [ngClass]="{'is-invalid': submitted && f['nombreSupervisor'].errors}"
-                        [attr.disabled]="this.esConsulta ? '' : null">
+                        [attr.disabled]="this.esConsulta ? '' : null" oninput="this.value = this.value.toUpperCase()">
                     <div *ngIf="f['nombreSupervisor'].errors" class="invalid-feedback">
                         <div *ngIf="f['nombreSupervisor'].errors['required']">Campo requerido</div>
                     </div>
@@ -124,7 +130,7 @@
                     <label for="clave-muestreo">Clave del muestreo:*</label>
                     <input class="form-control" id="clave-muestreo" type="text" formControlName="claveMuestreo"
                         [ngClass]="{'is-invalid': submitted && f['claveMuestreo'].errors}"
-                        [attr.disabled]="this.esConsulta ? '' : null" />
+                        [value]="this.sitio.claveMuestreo" [attr.disabled]="this.esConsulta ? '' : null" />
                     <div *ngIf="f['claveMuestreo'].errors" class="invalid-feedback">
                         <div *ngIf="f['claveMuestreo'].errors['required']">Campo requerido</div>
                     </div>
