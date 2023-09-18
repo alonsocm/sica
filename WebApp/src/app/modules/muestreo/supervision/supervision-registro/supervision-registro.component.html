@@ -104,7 +104,6 @@
                 <div class="form-group">
                     <label for="oc-dl-informe">OC que reportará en el informe mensual:*</label>
                     <input class="form-control" id="oc-dl-informe" formControlName="ocdlReporta">
-
                 </div>
             </div>
             <div class="col-lg-2 col-md-6 col-sm-12">
@@ -129,10 +128,13 @@
                 <div class="form-group">
                     <label for="clave-muestreo">Clave del muestreo:*</label>
                     <input class="form-control" id="clave-muestreo" type="text" formControlName="claveMuestreo"
-                        [ngClass]="{'is-invalid': submitted && f['claveMuestreo'].errors}"
-                        [value]="this.sitio.claveMuestreo" [attr.disabled]="this.esConsulta ? '' : null" />
+                        [ngClass]="{'is-invalid': submitted && (f['claveMuestreo'].errors || !this.existeClaveMuestreo(f['claveMuestreo'].value))}"
+                        [attr.disabled]="this.esConsulta ? '' : null" />
                     <div *ngIf="f['claveMuestreo'].errors" class="invalid-feedback">
                         <div *ngIf="f['claveMuestreo'].errors['required']">Campo requerido</div>
+                    </div>
+                    <div *ngIf="!existeClaveMuestreo(f['claveMuestreo'].value)" class="invalid-feedback">
+                        Clave incorrecta
                     </div>
                 </div>
             </div>

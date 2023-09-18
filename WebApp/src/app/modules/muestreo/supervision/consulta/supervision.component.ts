@@ -27,6 +27,8 @@ export class SupervisionComponent extends BaseService implements OnInit {
   sitios: Array<Sitio> = [];
   supervision: number = 0;
   supervisionBusqueda: SupervisionBusqueda = {};
+  puntajes: Array<{ id: number; descripcion: string }> = [];
+
   constructor(
     private router: Router,
     private supervisionService: SupervisionService
@@ -39,7 +41,7 @@ export class SupervisionComponent extends BaseService implements OnInit {
     sitio: new FormControl(0),
     fechaMuestreo: new FormControl(''),
     fechaMuestreoFin: new FormControl(''),
-    puntaje: new FormControl(),
+    puntaje: new FormControl(0),
     laboratorio: new FormControl(0),
     claveMuestreo: new FormControl(''),
     tipoCuerpoAgua: new FormControl(0),
@@ -53,6 +55,7 @@ export class SupervisionComponent extends BaseService implements OnInit {
     this.getTiposCuerpoAgua();
     this.getSupervisiones();
     this.getLaboratorios();
+    this.getPuntajes();
   }
 
   getFormValues() {
@@ -80,6 +83,15 @@ export class SupervisionComponent extends BaseService implements OnInit {
         },
         error: (error) => {},
       });
+  }
+
+  getPuntajes() {
+    this.supervisionService.getIntervalosPuntaje().subscribe({
+      next: (response: any) => {
+        this.puntajes = response.data;
+      },
+      error: (error) => {},
+    });
   }
 
   onLimpiarClick() {

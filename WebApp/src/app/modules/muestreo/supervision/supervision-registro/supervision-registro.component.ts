@@ -155,7 +155,9 @@ export class SupervisionRegistroComponent
           this.supervision.observacionesMuestreo ?? ''
         ),
       },
-      { validators: [this.validarHoraTomaMuestra, this.validarHoraFin] }
+      {
+        validators: [this.validarHoraTomaMuestra, this.validarHoraFin],
+      }
     );
   }
 
@@ -232,19 +234,26 @@ export class SupervisionRegistroComponent
   onClaveSitioChange() {
     let claveSitio = this.supervisionForm.value.claveSitio;
     if (claveSitio != '0') {
-      this.getSitio(claveSitio);
+      this.getSitio(claveSitio, true);
     } else {
       this.sitio.nombre = '';
       this.sitio.tipoCuerpoAgua = '';
       this.sitio.latitud = '';
       this.sitio.longitud = '';
+      this.supervisionForm.patchValue({ claveMuestreo: '' });
     }
   }
 
-  getSitio(claveSitio: string) {
+  getSitio(claveSitio: string, reemplazarClaveMuestreo: boolean = false) {
     this.supervisionService.getSitio(claveSitio).subscribe({
       next: (response: any) => {
         this.sitio = response.data;
+
+        if (reemplazarClaveMuestreo) {
+          this.supervisionForm.patchValue({
+            claveMuestreo: this.sitio.claveSitio,
+          });
+        }
       },
       error: (error) => {},
     });
@@ -289,7 +298,7 @@ export class SupervisionRegistroComponent
   onOrganismosDireccionesChange() {
     let organismoDireccionId = this.supervisionForm.value.ocdlRealiza;
     let nombreOrganismoDireccion = '';
-    this.supervisionForm.patchValue({ claveSitio: '0' });
+    this.supervisionForm.patchValue({ claveSitio: '0', claveMuestreo: '' });
     this.getClavesSitios(organismoDireccionId);
 
     if (organismoDireccionId !== '0') {
@@ -340,7 +349,7 @@ export class SupervisionRegistroComponent
             .filter(
               (x) =>
                 x.obligatorio &&
-                x.cumplimiento === 'NOAPLICA' &&
+                x.cumplimiento === 'NOCUMPLE' &&
                 (x.observacion === null || x.observacion === '')
             )
             .reduce((acc, val) => acc + 1, 0)
@@ -446,12 +455,15 @@ export class SupervisionRegistroComponent
   onSubmit() {
     this.submitted = true;
 
-    if (this.supervisionForm.invalid) {
+    if (
+      this.supervisionForm.invalid ||
+      !this.existeClaveMuestreo(this.supervisionForm.value.claveMuestreo)
+    ) {
       this.hacerScroll();
       return;
     } else if (this.validateCriteriosObligatorios()) {
       this.mostrarMensaje(
-        'Se encontraron criterios obligatorios marcados como "NO APLICA". Es necesario capturar las observaciones.',
+        'Se encontraron criterios obligatorios marcados como "NO CUMPLE". Es necesario capturar las observaciones.',
         TipoMensaje.Alerta
       );
       this.hacerScroll();
@@ -535,7 +547,9 @@ export class SupervisionRegistroComponent
     //   this.supervisionForm.value.ocdlReporta;
     this.supervision.claveSitio = this.supervisionForm.value.claveSitio;
     this.supervision.sitioId = this.sitio.sitioId;
-    this.supervision.claveMuestreo = this.supervisionForm.value.claveMuestreo;
+    this.supervision.claveMuestreo = String(
+      this.supervisionForm.value.claveMuestreo
+    );
     this.supervision.laboratorioRealizaId =
       this.supervisionForm.value.laboratorio;
     this.supervision.latitudToma = this.supervisionForm.value.latitudToma;
@@ -551,5 +565,9 @@ export class SupervisionRegistroComponent
   onCancelarClick() {
     this.supervisionService.updateSupervisionId(0);
     this.router.navigate(['/supervision-muestreo']);
+  }
+
+  existeClaveMuestreo(claveMuestreo: string) {
+    return this.sitio.clavesMuestreo?.includes(String(claveMuestreo));
   }
 }

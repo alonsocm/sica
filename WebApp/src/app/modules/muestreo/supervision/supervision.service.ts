@@ -195,4 +195,8 @@ export class SupervisionService {
       formData
     );
   }
+
+  getIntervalosPuntaje() {
+    return this.http.get(environment.apiUrl + '/IntervalosPuntajeSupervision');
+  }
 }

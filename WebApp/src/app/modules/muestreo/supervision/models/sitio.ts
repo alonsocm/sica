@@ -1,5 +1,5 @@
 export interface Sitio {
-  claveMuestreo?: string;
+  clavesMuestreo?: Array<string>;
   claveSitio?: string;
   sitioId?: number;
   nombre?: string;
