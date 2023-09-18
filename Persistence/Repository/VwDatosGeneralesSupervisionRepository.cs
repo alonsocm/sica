@@ -36,7 +36,17 @@ namespace Persistence.Repository
 
                 if (busqueda.PuntajeObtenido != null)
                 {
-                    registros = registros.Where(x => x.PuntajeObtenido == busqueda.PuntajeObtenido);
+                    if (busqueda.PuntajeObtenido.ToString().Contains("<")) { registros = registros.Where(x => x.PuntajeObtenido < Convert.ToDecimal(busqueda.PuntajeObtenido.Replace("<", ""))); }
+                    else
+                    {
+                        string inicio = busqueda.PuntajeObtenido.Split("-").ToList()[0].Trim();
+                        string fin = busqueda.PuntajeObtenido.Split("-").ToList()[1].Trim();
+                        registros = registros.Where(x => x.PuntajeObtenido >= Convert.ToDecimal(inicio) && x.PuntajeObtenido <= Convert.ToDecimal(fin));
+                    }
+
+
+
+
                 }
                 if (busqueda.LaboratorioRealizaId != null)
                 {
