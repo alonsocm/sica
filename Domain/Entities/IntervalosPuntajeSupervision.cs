@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
-public partial class IntervalosClasificacion
+public partial class IntervalosPuntajeSupervision
 {
     public int Id { get; set; }
 
