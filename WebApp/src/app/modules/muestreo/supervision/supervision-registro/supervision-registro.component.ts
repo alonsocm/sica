@@ -40,7 +40,7 @@ export class SupervisionRegistroComponent
   imgSrc: string = '';
   nombreArchivo: string = '';
   esConsulta: boolean = false;
-  excepcionesCriterios: Array<number> = [11, 43];
+  excepcionesCriterios: Array<number> = [11, 17, 60, 43];
 
   get f(): { [key: string]: AbstractControl } {
     return this.supervisionForm.controls;
