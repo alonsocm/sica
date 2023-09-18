@@ -35,7 +35,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Queries
             sitioDto.Longitud = sitios.FirstOrDefault().Longitud.ToString();
             sitioDto.TipoCuerpoAgua = sitios.FirstOrDefault().TipoCuerpoAgua;
 
-            sitios.ForEach(sitio => { sitioDto.ClaveMuestreo.Add(sitio.ClaveMuestreo); });
+            sitios.ForEach(sitio => { sitioDto.ClavesMuestreo.Add(sitio.ClaveMuestreo); });
 
             return new Response<SitioSupervisionDto>(sitioDto);
 

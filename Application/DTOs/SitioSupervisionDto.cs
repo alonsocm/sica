@@ -2,7 +2,7 @@
 {
     public class SitioSupervisionDto
     {
-        public List<string> ClaveMuestreo { get; set; }
+        public List<string> ClavesMuestreo { get; set; }
         public string ClaveSitio { get; set; }
         public long SitioId { get; set; }
         public string Nombre { get; set; }
@@ -12,7 +12,7 @@
         public string TipoCuerpoAgua { get; set; }
         public SitioSupervisionDto()
         {
-            this.ClaveMuestreo = new List<string>();
+            this.ClavesMuestreo = new List<string>();
             this.ClaveSitio = string.Empty;
             this.SitioId = 0;
             this.Nombre = string.Empty;
