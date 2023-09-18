@@ -25,10 +25,15 @@ namespace Persistence.Repository
                 {
                     registros = registros.Where(x => x.SitioId == busqueda.SitioId);
                 }
-                if (!string.IsNullOrEmpty(busqueda.FechaMuestreo))
+                if (!string.IsNullOrEmpty(busqueda.FechaMuestreo) && string.IsNullOrEmpty(busqueda.FechaMuestreoFin))
                 {
                     registros = registros.Where(x => x.FechaMuestreo == Convert.ToDateTime(busqueda.FechaMuestreo));
                 }
+                if (!string.IsNullOrEmpty(busqueda.FechaMuestreoFin))
+                {
+                    registros = registros.Where(x => x.FechaMuestreo >= Convert.ToDateTime(busqueda.FechaMuestreo) && x.FechaMuestreo <= Convert.ToDateTime(busqueda.FechaMuestreoFin));
+                }
+
                 if (busqueda.PuntajeObtenido != null)
                 {
                     registros = registros.Where(x => x.PuntajeObtenido == busqueda.PuntajeObtenido);
