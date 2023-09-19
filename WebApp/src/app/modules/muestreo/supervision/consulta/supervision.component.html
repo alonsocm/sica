@@ -129,6 +129,11 @@
                             <!-- </div> -->
                         </td>
                     </tr>
+                    <tr *ngIf="this.supervisiones.length === 0">
+                        <td class="td-center" colspan="12">No se
+                            encontraron registros
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
