@@ -124,7 +124,9 @@ export class SupervisionService {
   }
 
   getLaboratorios() {
-    return this.http.get(environment.apiUrl + '/Laboratorios/laboratorios');
+    return this.http.get(
+      environment.apiUrl + '/Laboratorios/LaboratoriosMuestradores'
+    );
   }
 
   getMuestreadoresLaboratorio(laboratorio: number) {
