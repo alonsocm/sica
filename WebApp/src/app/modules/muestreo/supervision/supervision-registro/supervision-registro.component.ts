@@ -40,7 +40,6 @@ export class SupervisionRegistroComponent
   imgSrc: string = '';
   nombreArchivo: string = '';
   esConsulta: boolean = false;
-  excepcionesCriterios: Array<number> = [11, 17, 60, 43];
 
   get f(): { [key: string]: AbstractControl } {
     return this.supervisionForm.controls;
@@ -330,8 +329,7 @@ export class SupervisionRegistroComponent
               (x) =>
                 x.cumplimiento === 'CUMPLE' ||
                 (x.cumplimiento === 'NOAPLICA' && !x.obligatorio) ||
-                (x.cumplimiento === 'NOAPLICA' &&
-                  this.excepcionesCriterios.includes(x.id))
+                (x.cumplimiento === 'NOAPLICA' && x.esExcepcionNoAplica)
             )
             .reduce((acc, val) => acc + val.puntaje, 0)
         );

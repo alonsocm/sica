@@ -72,7 +72,8 @@ namespace Persistence.Repository
                                                     Id = r.Id,
                                                     Descripcion = r.Descripcion,
                                                     Obligatorio = r.Obligatorio,
-                                                    Puntaje = r.Valor
+                                                    Puntaje = r.Valor,
+                                                    EsExcepcionNoAplica = r.EsExcepcionNoAplica
                                                 }).ToList()
                                }).ToListAsync();
             return datos;

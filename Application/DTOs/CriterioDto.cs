@@ -9,5 +9,6 @@
         public decimal Puntaje { get; set; }
         public string? Cumplimiento { get; set; }
         public string? Observacion { get; set; }
+        public bool EsExcepcionNoAplica { get; set; }
     }
 }

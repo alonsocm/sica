@@ -5,4 +5,5 @@ export interface Criterio {
   puntaje: number;
   cumplimiento: string;
   observacion: string;
+  esExcepcionNoAplica: boolean;
 }

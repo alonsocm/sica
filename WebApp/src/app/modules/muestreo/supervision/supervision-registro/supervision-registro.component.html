@@ -317,7 +317,7 @@
                                     <input type="radio" [name]="criterio.descripcion" value="NOAPLICA"
                                         [(ngModel)]="this.criterio.cumplimiento"
                                         title="Seleccione si el criterio no aplica" (change)="onCumplimientoChange()"
-                                        [attr.disabled]="this.esConsulta || criterio.obligatorio && !this.excepcionesCriterios.includes(criterio.id) ? '' : null" />
+                                        [attr.disabled]="this.esConsulta || criterio.obligatorio && !criterio.esExcepcionNoAplica ? '' : null" />
                                 </td>
                                 <td><textarea [(ngModel)]="this.criterio.observacion"
                                         [ngClass]="{'is-invalid': this.criterio.obligatorio && this.criterio.cumplimiento === 'NOCUMPLE' && this.criterio.observacion === null || this.criterio.observacion === '' }"
