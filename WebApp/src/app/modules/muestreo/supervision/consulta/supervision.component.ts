@@ -25,9 +25,11 @@ export class SupervisionComponent extends BaseService implements OnInit {
   tiposCuerpoAgua: Array<TipoCuerpoAgua> = [];
   supervisiones: Array<SupervisionBase> = [];
   sitios: Array<Sitio> = [];
+  sitioId: number = 0;
   supervision: number = 0;
   supervisionBusqueda: SupervisionBusqueda = {};
   puntajes: Array<{ id: number; descripcion: string }> = [];
+  clavesMuestreo: Array<string> = [];
 
   constructor(
     private router: Router,
@@ -62,7 +64,7 @@ export class SupervisionComponent extends BaseService implements OnInit {
     this.supervisionBusqueda = {
       organismosDireccionesRealizaId:
         this.supervisionBusquedaForm.value.ocdlRealiza ?? 0,
-      sitioId: this.supervisionBusquedaForm.value.sitio ?? 0,
+      sitioId: this.sitioId ?? 0,
       fechaMuestreo: this.supervisionBusquedaForm.value.fechaMuestreo ?? '',
       fechaMuestreoFin:
         this.supervisionBusquedaForm.value.fechaMuestreoFin ?? '',
@@ -96,6 +98,8 @@ export class SupervisionComponent extends BaseService implements OnInit {
 
   onLimpiarClick() {
     this.sitios = [];
+    this.clavesMuestreo = [];
+    this.sitioId = 0;
     this.supervisionBusquedaForm.reset(this.valoresInicialesForm);
   }
 
@@ -159,6 +163,10 @@ export class SupervisionComponent extends BaseService implements OnInit {
     let organismoDireccionId = this.supervisionBusquedaForm.value.ocdlRealiza;
     this.sitios = [];
     this.supervisionBusquedaForm.patchValue({ sitio: 0 });
+    this.sitioId = 0;
+    this.clavesMuestreo = [];
+    this.supervisionBusquedaForm.patchValue({ claveMuestreo: '' });
+
     if (
       organismoDireccionId !== 0 ||
       organismoDireccionId !== null ||
@@ -168,18 +176,40 @@ export class SupervisionComponent extends BaseService implements OnInit {
     }
   }
 
+  onClaveSitioChange() {
+    let claveSitio = this.supervisionBusquedaForm.value.sitio;
+    this.sitioId = 0;
+    this.clavesMuestreo = [];
+    this.supervisionBusquedaForm.patchValue({ claveMuestreo: '' });
+
+    if (claveSitio != 0) {
+      this.getSitio(String(claveSitio));
+    }
+  }
+
   getSitios(cuencaDireccion: number) {
-    this.supervisionService.getSitios(cuencaDireccion).subscribe({
+    this.supervisionService.getClavesSitios(cuencaDireccion).subscribe({
       next: (response: any) => {
-        if (response.length > 0) {
-          this.sitios = response.map(
+        if (response.data.length > 0) {
+          this.sitios = response.data.map(
             (val: any) =>
               <Sitio>{
-                nombre: val.nombreSitio,
-                sitioId: val.id,
+                claveSitio: val,
+                // nombre: val.nombreSitio,
+                // sitioId: val.id,
               }
           );
         }
+      },
+      error: (error) => {},
+    });
+  }
+
+  getSitio(claveSitio: string) {
+    this.supervisionService.getSitio(claveSitio).subscribe({
+      next: (response: any) => {
+        this.clavesMuestreo = response.data.clavesMuestreo;
+        this.sitioId = response.data.sitioId;
       },
       error: (error) => {},
     });

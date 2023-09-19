@@ -129,7 +129,8 @@
                     <label for="clave-muestreo">Clave del muestreo:*</label>
                     <input class="form-control" id="clave-muestreo" type="text" formControlName="claveMuestreo"
                         [ngClass]="{'is-invalid': submitted && (f['claveMuestreo'].errors || !this.existeClaveMuestreo(f['claveMuestreo'].value))}"
-                        [attr.disabled]="this.esConsulta ? '' : null" />
+                        [attr.disabled]="this.esConsulta ? '' : null"
+                        title="Escriba la clave del muestreo. Ejemplo: OCBAL2837-18092023" />
                     <div *ngIf="f['claveMuestreo'].errors" class="invalid-feedback">
                         <div *ngIf="f['claveMuestreo'].errors['required']">Campo requerido</div>
                     </div>

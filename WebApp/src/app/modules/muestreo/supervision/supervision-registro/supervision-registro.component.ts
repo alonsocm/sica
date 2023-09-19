@@ -251,7 +251,7 @@ export class SupervisionRegistroComponent
 
         if (reemplazarClaveMuestreo) {
           this.supervisionForm.patchValue({
-            claveMuestreo: this.sitio.claveSitio,
+            claveMuestreo: this.sitio.claveSitio + '-',
           });
         }
       },
@@ -385,6 +385,8 @@ export class SupervisionRegistroComponent
         )
         .subscribe({
           next: (response: any) => {
+            this.supervisionService.updateSupervisionId(0);
+            this.router.navigate(['/supervision-muestreo']);
             this.mostrarMensaje(
               'Supervisión de muestreo registrada correctamente',
               TipoMensaje.Correcto
@@ -483,7 +485,17 @@ export class SupervisionRegistroComponent
             'Supervisión de muestreo guardada correctamente.',
             TipoMensaje.Correcto
           );
-          this.uploadArchivosSupervision();
+          if (
+            this.supervision.archivoPdfSupervision != null ||
+            (this.supervision.archivosEvidencias != null &&
+              this.supervision.id != 0 &&
+              this.supervision.claveMuestreo !== null)
+          ) {
+            this.uploadArchivosSupervision();
+          } else {
+            this.supervisionService.updateSupervisionId(0);
+            this.router.navigate(['/supervision-muestreo']);
+          }
         }
       },
       error: (error) => {
