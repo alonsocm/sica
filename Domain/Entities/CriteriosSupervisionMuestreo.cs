@@ -15,5 +15,7 @@ public partial class CriteriosSupervisionMuestreo
 
     public int ClasificacionCriterioId { get; set; }
 
+    public bool EsExcepcionNoAplica { get; set; }
+
     public virtual ClasificacionCriterio ClasificacionCriterio { get; set; } = null!;
 }
