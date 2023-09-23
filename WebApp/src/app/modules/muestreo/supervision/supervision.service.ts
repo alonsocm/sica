@@ -201,4 +201,13 @@ export class SupervisionService {
   getIntervalosPuntaje() {
     return this.http.get(environment.apiUrl + '/IntervalosPuntajeSupervision');
   }
+
+  postArchivoReporte(blob: any) {
+    var formData = new FormData();
+    formData.append('archivoReporte', blob, 'filename.pdf');
+    return this.http.post(
+      environment.apiUrl + '/supervisionmuestreo/ReportePdf',
+      formData
+    );
+  }
 }

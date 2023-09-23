@@ -1,8 +1,9 @@
-export interface ReporteMensualSupervision {
+export interface InformeMensualSupervision {
   oficio: string;
   lugar: string;
   fecha: string;
   direccionTecnica: string;
+  gerenteCalidadAgua: string;
   mesReporte: string;
   atencion: Array<string>;
   contrato: string;
@@ -10,6 +11,8 @@ export interface ReporteMensualSupervision {
   numeroSitios: string;
   indicaciones: string;
   resultados: Array<Resultado>;
+  nombreFirma: string;
+  puestoFirma: string;
 }
 
 export interface Resultado {
