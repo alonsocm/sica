@@ -162,6 +162,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwDatosGeneralesSupervision> VwDatosGeneralesSupervision { get; set; }
 
+    public virtual DbSet<VwDirectoresResponsables> VwDirectoresResponsables { get; set; }
+
     public virtual DbSet<VwLimiteLaboratorio> VwLimiteLaboratorio { get; set; }
 
     public virtual DbSet<VwLimiteMaximoComun> VwLimiteMaximoComun { get; set; }
@@ -1383,6 +1385,20 @@ public partial class SicaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<VwDirectoresResponsables>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_DirectoresResponsables");
+
+            entity.Property(e => e.Nombre).HasMaxLength(100);
+            entity.Property(e => e.OcDl)
+                .HasMaxLength(120)
+                .IsUnicode(false)
+                .HasColumnName("oc/dl");
+            entity.Property(e => e.Puesto).HasMaxLength(224);
         });
 
         modelBuilder.Entity<VwLimiteLaboratorio>(entity =>
