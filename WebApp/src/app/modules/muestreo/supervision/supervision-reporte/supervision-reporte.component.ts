@@ -26,6 +26,9 @@ import { SupervisionService } from '../supervision.service';
 export class SupervisionReporteComponent implements OnInit {
   registroForm: FormGroup;
   copias: Array<string> = [];
+  oficio = {};
+  reporteInformeMensualSupervisionDefinition =
+    new ReporteMensualSupervisionDefinition();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -297,22 +300,247 @@ export class SupervisionReporteComponent implements OnInit {
 
     pdfDocGenerator.getDataUrl((dataUrl) => {
       const targetElement = document.querySelector('#iframeContainer');
+      let preview = document.getElementById('iframe-preview');
+      if (preview) {
+        targetElement?.removeChild(preview);
+      }
       const iframe = document.createElement('iframe');
+      iframe.id = 'iframe-preview';
       iframe.src = dataUrl;
       iframe.style.height = '400px';
-      iframe.style.width = '800px';
+      iframe.style.width = '100%';
       targetElement?.appendChild(iframe);
     });
 
-    pdfDocGenerator.getBuffer((buffer) => {
-      var blob = new Blob([buffer], { type: 'application/pdf' });
+    document.getElementById('btn-preview-report')?.click();
 
-      this.supervisionService.postArchivoReporte(blob).subscribe({
-        next: (response: any) => {
-          alert(response);
+    // pdfDocGenerator.getBuffer((buffer) => {
+    //   var blob = new Blob([buffer], { type: 'application/pdf' });
+
+    //   this.supervisionService.postArchivoReporte(blob).subscribe({
+    //     next: (response: any) => {
+    //       alert(response);
+    //     },
+    //     error: (error) => {},
+    //   });
+    // });
+  }
+
+  onImprimirClick() {
+    let oficio: InformeMensualSupervision = {
+      oficio: this.registroForm.value.memorando,
+      lugar: this.registroForm.value.lugar,
+      fecha: this.getLongFormatDate(this.registroForm.value.fecha),
+      direccionTecnica: 'Organismo de Cuenca Lerma Santiago Pacifico',
+      gerenteCalidadAgua: '',
+      mesReporte:
+        new Date(this.registroForm.value.mes + '-01-' + '2023').toLocaleString(
+          'es',
+          { month: 'long' }
+        ) +
+        ' ' +
+        '2023',
+      atencion: [
+        'M. en B. Claudia Nava Ramirez',
+        'Ing. Martha Bustamente Herrera',
+      ],
+      contrato: 'CNA-CRM-029-2021',
+      denominacionContrato:
+        'Servicio para caracterizar la calidad del agua en zonas con problemática ambiental a nivel nacional',
+      numeroSitios: '1329 a 3081',
+      indicaciones:
+        'La supervisión en campo deberá realizarse, de acuerdo con los recursos disponibles y al programa de trabajo en cada Organismo de Cuenca, se realizará conforme al formato elaborado para tal fin, en el que se contemplan los puntos a evaluar y se señalan los puntos críticos del muestreo en los que, en caso de incumplimiento, los trabajos de campo serán cancelados.',
+      resultados: [
+        {
+          ocdl: 'Dirección local de colima',
+          totalSitios: '3',
+          intervalos: [
+            {
+              calificacion: '<50',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '51-60',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '61-70',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '71-80',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '81-90',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '91-100',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+          ],
         },
-        error: (error) => {},
-      });
-    });
+        {
+          ocdl: 'Dirección local de Estado de México',
+          totalSitios: '3',
+          intervalos: [
+            {
+              calificacion: '<50',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '51-60',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '61-70',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '71-80',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '81-90',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '91-100',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+          ],
+        },
+        {
+          ocdl: 'Dirección local de Estado de México',
+          totalSitios: '3',
+          intervalos: [
+            {
+              calificacion: '<50',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '51-60',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '61-70',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '71-80',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '81-90',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '91-100',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+          ],
+        },
+        {
+          ocdl: 'Dirección local de Estado de México',
+          totalSitios: '3',
+          intervalos: [
+            {
+              calificacion: '<50',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '51-60',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '61-70',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '71-80',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '81-90',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '91-100',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+          ],
+        },
+        {
+          ocdl: 'Dirección local de Estado de México',
+          totalSitios: '3',
+          intervalos: [
+            {
+              calificacion: '<50',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '51-60',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '61-70',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '71-80',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+            {
+              calificacion: '81-90',
+              numeroSitios: '1',
+              porcentaje: '100%',
+            },
+            {
+              calificacion: '91-100',
+              numeroSitios: '1',
+              porcentaje: '0%',
+            },
+          ],
+        },
+      ],
+      nombreFirma: '',
+      puestoFirma: '',
+    };
+    pdfMake
+      .createPdf(
+        this.reporteInformeMensualSupervisionDefinition.getDocumentDefinition(
+          oficio
+        )
+      )
+      .print({}, window.frames[0]);
   }
 }

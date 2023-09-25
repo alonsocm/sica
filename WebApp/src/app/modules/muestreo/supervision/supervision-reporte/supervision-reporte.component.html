@@ -113,14 +113,41 @@
                 </div>
             </div>
             <div class=" row d-flex justify-content-end">
-                <button class="btn btn-primary" type="button" (click)="onCreatePdfClick()">Vista previa del
-                    Informe</button>
+                <button class="btn btn-primary" type="button" (click)="onCreatePdfClick()">Guardar</button>
                 <!-- <button type="submit" class="btn btn-primary">Guardar</button> -->
             </div>
         </form>
-        <div id="iframeContainer" style="width: 800; height: 400px;"></div>
     </div>
     <p>{{this.registroForm.value.memorando + ' ' + this.registroForm.status + ' ' +
         registroForm.get('memorando')?.invalid}}
     </p>
+</div>
+<!-- Button trigger modal -->
+<button id="btn-preview-report" type="button" class="btn-hidden" data-toggle="modal" data-target="#previewModal">
+    vista previa</button>
+
+<!-- Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-100 w-50" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModal">Vista previa del informe</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="iframeContainer"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="bi bi-check-lg"></i>
+                    Validar</button>
+                <button type="button" class="btn btn-secondary btn-sm" (click)="onImprimirClick()"><i
+                        class="bi bi-printer"></i> Imprimir</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><i
+                        class="bi bi-file-earmark-arrow-up"></i> Cargar</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>
