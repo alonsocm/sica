@@ -9,6 +9,8 @@ public partial class ProgramaAnio
 
     public string Anio { get; set; } = null!;
 
+    public virtual ICollection<Directorio> Directorio { get; set; } = new List<Directorio>();
+
     public virtual ICollection<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; } = new List<LimiteParametroLaboratorio>();
 
     public virtual ICollection<ParametrosCostos> ParametrosCostos { get; set; } = new List<ParametrosCostos>();

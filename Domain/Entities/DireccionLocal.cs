@@ -13,6 +13,8 @@ public partial class DireccionLocal
 
     public virtual ICollection<CuencaDireccionesLocales> CuencaDireccionesLocales { get; set; } = new List<CuencaDireccionesLocales>();
 
+    public virtual ICollection<Directorio> Directorio { get; set; } = new List<Directorio>();
+
     public virtual ICollection<Sitio> Sitio { get; set; } = new List<Sitio>();
 
     public virtual ICollection<Usuario> Usuario { get; set; } = new List<Usuario>();
