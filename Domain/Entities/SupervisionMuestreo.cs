@@ -39,6 +39,10 @@ public partial class SupervisionMuestreo
 
     public string? ObservacionesMuestreo { get; set; }
 
+    public DateTime FechaRegistro { get; set; }
+
+    public long UsuarioRegistroId { get; set; }
+
     public virtual ICollection<EvidenciaSupervisionMuestreo> EvidenciaSupervisionMuestreo { get; set; } = new List<EvidenciaSupervisionMuestreo>();
 
     public virtual Laboratorios LaboratorioRealiza { get; set; } = null!;
@@ -52,6 +56,8 @@ public partial class SupervisionMuestreo
     public virtual Muestreadores ResponsableToma { get; set; } = null!;
 
     public virtual Sitio Sitio { get; set; } = null!;
+
+    public virtual Usuario UsuarioRegistro { get; set; } = null!;
 
     public virtual ICollection<ValoresSupervisionMuestreo> ValoresSupervisionMuestreo { get; set; } = new List<ValoresSupervisionMuestreo>();
 }

@@ -1212,6 +1212,7 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<SupervisionMuestreo>(entity =>
         {
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(50);
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
             entity.Property(e => e.FehaMuestreo).HasColumnType("datetime");
             entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
             entity.Property(e => e.SupervisorConagua).HasMaxLength(100);
@@ -1245,6 +1246,11 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.SitioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SupervisionMuestreo_Sitio");
+
+            entity.HasOne(d => d.UsuarioRegistro).WithMany(p => p.SupervisionMuestreo)
+                .HasForeignKey(d => d.UsuarioRegistroId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SupervisionMuestreo_Usuario");
         });
 
         modelBuilder.Entity<TipoAprobacion>(entity =>
