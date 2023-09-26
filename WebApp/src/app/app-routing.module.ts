@@ -36,6 +36,7 @@ import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emer
 import { SupervisionComponent } from './modules/muestreo/supervision/consulta/supervision.component';
 import { SupervisionRegistroComponent } from './modules/muestreo/supervision/supervision-registro/supervision-registro.component';
 import { SupervisionReporteComponent } from './modules/muestreo/supervision/supervision-reporte/supervision-reporte.component';
+import { SupervisionReporteConsultaComponent } from './modules/muestreo/supervision-reporte-consulta/supervision-reporte-consulta.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -222,6 +223,11 @@ const routes: Routes = [
   {
     path: 'supervision-muestreo-reporte',
     component: SupervisionReporteComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'supervision-reporte-consulta',
+    component: SupervisionReporteConsultaComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   { path: '**', component: NotFoundComponent },

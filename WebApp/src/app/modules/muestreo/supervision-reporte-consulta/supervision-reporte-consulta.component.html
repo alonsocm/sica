@@ -1,0 +1,131 @@
+<app-menu></app-menu>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-7 col-md-12 col-sm-12">
+            <h1>Consulta de informe mensual de supervisión de campo.</h1>
+        </div>
+        <div class="col-lg-5 d-flex justify-content-end">
+            <button type="button" class="btn btn-primary mr-2" (click)="onRegistrarInformeSupervisionClick()"><i
+                    class="bi bi-pencil-square"></i>
+                Registrar Informe Mensual de Supervisión de campo</button>
+        </div>
+    </div>
+    <hr class="red">
+    <div class="panel-busqueda">
+        <form [formGroup]="formBusqueda" (submit)="onSubmit()">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="memorando">Memorando:</label>
+                    <input class="form-control" id="memorando" type="text" formControlName="memorando">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="lugar">Lugar:</label>
+                    <input class="form-control" id="lugar" type="text" formControlName="lugar">
+                </div>
+                <div class="form-group col-lg-2 col-md-6 col-sm-12">
+                    <label for="fechaMuestreo">Fechas de registro:</label>
+                    <input type="date" class="form-control" id="fechaMuestreo" formControlName="fechaMuestreo">
+                </div>
+                <div class="form-group col-lg-2 col-md-6 col-sm-12 align-self-end">
+                    <!-- <label for="fechaMuestreoFin">Fecha del muestreo:</label> -->
+                    <input type="date" class="form-control" id="fechaMuestreoFin" formControlName="fechaMuestreoFin"
+                        title="Seleccione fecha fin">
+                </div>
+                <!-- <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input class="form-control" id="fecha" type="date" formControlName="fecha">
+                </div> -->
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="destinatario">Destinatario/Atenciones</label>
+                    <input class="form-control" id="destinatario" type="destinatario" formControlName="destinatario">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="responsable">Director Técnico ó Responsable:</label>
+                    <input class="form-control" id="responsable" type="text" formControlName="responsable"
+                        title="Nombre del Director Técnico o el responsable de calidad del agua en el Organismo de Cuenca">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="puesto">Puesto:</label>
+                    <input class="form-control" id="puesto" type="text" formControlName="puesto">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="inicialesPersonas">Iniciales de personas involucradas:</label>
+                    <input class="form-control" id="inicialesPersonas" type="text" formControlName="inicialesPersonas"
+                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="mes">Mes reportado:</label>
+                    <select class="form-control" id="mes" formControlName="mes">
+                        <option value="0">Todos</option>
+                        <option value="1">enero</option>
+                        <option value="2">febrero</option>
+                        <option value="3">marzo</option>
+                        <option value="4">abril</option>
+                        <option value="5">mayo</option>
+                        <option value="6">junio</option>
+                        <option value="7">julio</option>
+                        <option value="8">agosto</option>
+                        <option value="9">septiembre</option>
+                        <option value="10">octubre</option>
+                        <option value="11">noviembre</option>
+                        <option value="12">diciembre</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-end mb-4">
+                <button type="submit" class="btn btn-primary mr-3">
+                    <i class="bi bi-search"></i>&nbsp; Buscar</button>
+                <button type="submit" class="btn btn-secondary" (click)="onLimpiarClick()">
+                    <i class="bi bi-x-circle"></i>&nbsp; Limpiar</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col table-responsive">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="col-lg-2">Organismo de cuenca</th>
+                        <th class="col-lg-2">Memorando</th>
+                        <th class="col-lg-1">Lugar</th>
+                        <th class="col-lg-1">Mes reportado</th>
+                        <th class="col-lg-2">Fecha de creación</th>
+                        <th class="col-lg-2">Director Técnico/Responsable</th>
+                        <th class="col-lg-1">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let registro of this.registrosInformeMensual | paginate: { itemsPerPage:30, currentPage: page }">
+                        <td>{{registro.oficio}}</td>
+                        <td>{{registro.lugar}}</td>
+                        <td>{{registro.fecha}}</td>
+                        <td>{{registro.direccionTecnica}}</td>
+                        <td>
+                            <button type="button" class="btn-action btn-primary-action" title="Editar">
+                                <i class="bi bi-pencil-square icon-action" (click)="onEditClick(registro.id)"></i>
+                            </button>
+                            <!-- <div class="btn btn-group"> -->
+                            <button type="button" class="btn-action btn-info-action" title="Ver">
+                                <i class="bi bi-eye" (click)="onViewClick(registro.id)"></i>
+                            </button>
+                            <button type="button" class="btn-action btn-danger-action" title="Eliminar">
+                                <i class="bi bi-trash" (click)="onDeleteClick(registro.id)"></i>
+                            </button>
+                            <!-- </div> -->
+                        </td>
+                    </tr>
+                    <tr *ngIf="this.registrosInformeMensual.length === 0">
+                        <td class="td-center" colspan="12">No se
+                            encontraron registros
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
