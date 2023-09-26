@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.IRepositories;
+﻿using Application.Features.Operacion.ReporteSupervisionMuestreo.Queries;
+using Application.Interfaces.IRepositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -15,10 +16,10 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("DirectoresResponsables")]
-        public async Task<IActionResult> DirectoresResponsables()
+        public async Task<IActionResult> DirectoresResponsables(string anio)
         {
-            var datos = _directoresponsablesrepository.ObtenerTodosElementosAsync().Result.OrderBy(x => x.Nombre);
-            return Ok(datos.ToList());
+            return Ok(await Mediator.Send(new GetDirectoresResponsablesPorAnioQuery { anio = anio }));
         }
+
     }
 }
