@@ -29,6 +29,8 @@ public partial class Usuario
 
     public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = new List<AprobacionResultadoMuestreo>();
 
+    public virtual ICollection<ArchivoInformeMensualSupervision> ArchivoInformeMensualSupervision { get; set; } = new List<ArchivoInformeMensualSupervision>();
+
     public virtual OrganismoCuenca? Cuenca { get; set; }
 
     public virtual DireccionLocal? DireccionLocal { get; set; }
@@ -36,6 +38,8 @@ public partial class Usuario
     public virtual ICollection<HistorialSustitucionEmergencia> HistorialSustitucionEmergencia { get; set; } = new List<HistorialSustitucionEmergencia>();
 
     public virtual ICollection<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; } = new List<HistorialSustitucionLimites>();
+
+    public virtual ICollection<InformeMensualSupervision> InformeMensualSupervision { get; set; } = new List<InformeMensualSupervision>();
 
     public virtual ICollection<Muestreo> MuestreoUsuarioRevisionOcdl { get; set; } = new List<Muestreo>();
 

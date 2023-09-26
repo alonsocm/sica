@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -22,11 +20,15 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; }
 
+    public virtual DbSet<ArchivoInformeMensualSupervision> ArchivoInformeMensualSupervision { get; set; }
+
     public virtual DbSet<BrigadaMuestreo> BrigadaMuestreo { get; set; }
 
     public virtual DbSet<ClasificacionCriterio> ClasificacionCriterio { get; set; }
 
     public virtual DbSet<ClasificacionRegla> ClasificacionRegla { get; set; }
+
+    public virtual DbSet<CopiaInformeMensualSupervision> CopiaInformeMensualSupervision { get; set; }
 
     public virtual DbSet<CriteriosSupervisionMuestreo> CriteriosSupervisionMuestreo { get; set; }
 
@@ -36,7 +38,11 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; }
 
+    public virtual DbSet<DestinatariosAtencion> DestinatariosAtencion { get; set; }
+
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
+
+    public virtual DbSet<Directorio> Directorio { get; set; }
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -58,6 +64,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<HistorialSustitucionLimites> HistorialSustitucionLimites { get; set; }
 
+    public virtual DbSet<InformeMensualSupervision> InformeMensualSupervision { get; set; }
+
     public virtual DbSet<IntervalosPuntajeSupervision> IntervalosPuntajeSupervision { get; set; }
 
     public virtual DbSet<Laboratorios> Laboratorios { get; set; }
@@ -65,6 +73,8 @@ public partial class SicaContext : DbContext
     public virtual DbSet<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; }
 
     public virtual DbSet<Localidad> Localidad { get; set; }
+
+    public virtual DbSet<Mes> Mes { get; set; }
 
     public virtual DbSet<Muestreadores> Muestreadores { get; set; }
 
@@ -94,11 +104,15 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<PerfilPaginaAccion> PerfilPaginaAccion { get; set; }
 
+    public virtual DbSet<PlantillaInformeMensualSupervision> PlantillaInformeMensualSupervision { get; set; }
+
     public virtual DbSet<ProgramaAnio> ProgramaAnio { get; set; }
 
     public virtual DbSet<ProgramaMuestreo> ProgramaMuestreo { get; set; }
 
     public virtual DbSet<ProgramaSitio> ProgramaSitio { get; set; }
+
+    public virtual DbSet<Puestos> Puestos { get; set; }
 
     public virtual DbSet<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; }
 
@@ -147,6 +161,8 @@ public partial class SicaContext : DbContext
     public virtual DbSet<VwClaveMuestreo> VwClaveMuestreo { get; set; }
 
     public virtual DbSet<VwDatosGeneralesSupervision> VwDatosGeneralesSupervision { get; set; }
+
+    public virtual DbSet<VwDirectoresResponsables> VwDirectoresResponsables { get; set; }
 
     public virtual DbSet<VwLimiteLaboratorio> VwLimiteLaboratorio { get; set; }
 
@@ -199,6 +215,24 @@ public partial class SicaContext : DbContext
                 .HasConstraintName("FK_AprobacionResultadoMuestreo_Usuario");
         });
 
+        modelBuilder.Entity<ArchivoInformeMensualSupervision>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_PlantillasReporteInformeMensual");
+
+            entity.Property(e => e.FechaCarga).HasColumnType("datetime");
+            entity.Property(e => e.NombreArchivo).IsUnicode(false);
+
+            entity.HasOne(d => d.InformeMensualSupervision).WithMany(p => p.ArchivoInformeMensualSupervision)
+                .HasForeignKey(d => d.InformeMensualSupervisionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PlantillasReporteInformeMensual_PlantillasReporteInformeMensual");
+
+            entity.HasOne(d => d.UsuarioCarga).WithMany(p => p.ArchivoInformeMensualSupervision)
+                .HasForeignKey(d => d.UsuarioCargaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PlantillasReporteInformeMensual_Usuario");
+        });
+
         modelBuilder.Entity<BrigadaMuestreo>(entity =>
         {
             entity.Property(e => e.Descripcion).HasMaxLength(50);
@@ -216,6 +250,19 @@ public partial class SicaContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_CloasificacionRegla");
 
             entity.Property(e => e.Descripcion).HasMaxLength(30);
+        });
+
+        modelBuilder.Entity<CopiaInformeMensualSupervision>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_CopiaReporteInformeMensual");
+
+            entity.Property(e => e.Nombre).HasMaxLength(200);
+            entity.Property(e => e.Puesto).HasMaxLength(100);
+
+            entity.HasOne(d => d.InformeMensualSupervision).WithMany(p => p.CopiaInformeMensualSupervision)
+                .HasForeignKey(d => d.InformeMensualSupervisionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_CopiaReporteInformeMensual_ReporteInformeMensual");
         });
 
         modelBuilder.Entity<CriteriosSupervisionMuestreo>(entity =>
@@ -279,12 +326,45 @@ public partial class SicaContext : DbContext
                 .HasConstraintName("FK_CuerpoTipoSubtipoAgua_TipoCuerpoAgua");
         });
 
+        modelBuilder.Entity<DestinatariosAtencion>(entity =>
+        {
+            entity.ToTable("DestinatariosAtencion", "cat");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<DireccionLocal>(entity =>
         {
             entity.Property(e => e.Clave).HasMaxLength(10);
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Directorio>(entity =>
+        {
+            entity.ToTable("Directorio", "cat");
+
+            entity.Property(e => e.Nombre).HasMaxLength(100);
+            entity.Property(e => e.Sexo).HasMaxLength(2);
+
+            entity.HasOne(d => d.DireccionLocal).WithMany(p => p.Directorio)
+                .HasForeignKey(d => d.DireccionLocalId)
+                .HasConstraintName("FK_Directorio_DireccionLocal");
+
+            entity.HasOne(d => d.OrganismoCuenca).WithMany(p => p.Directorio)
+                .HasForeignKey(d => d.OrganismoCuencaId)
+                .HasConstraintName("FK_Directorio_OrganismoCuenca");
+
+            entity.HasOne(d => d.ProgramaAnio).WithMany(p => p.Directorio)
+                .HasForeignKey(d => d.ProgramaAnioId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Directorio_ProgramaAnio");
+
+            entity.HasOne(d => d.Puesto).WithMany(p => p.Directorio)
+                .HasForeignKey(d => d.PuestoId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Directorio_Puestos");
         });
 
         modelBuilder.Entity<Emergencia>(entity =>
@@ -413,7 +493,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<HistorialSustitucionLimites>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07AA0BB2AD");
+            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07E25AC404");
 
             entity.Property(e => e.Fecha).HasColumnType("datetime");
 
@@ -431,6 +511,32 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HistorialSustitucion_Usuario");
+        });
+
+        modelBuilder.Entity<InformeMensualSupervision>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_ReporteInformeMensual");
+
+            entity.Property(e => e.Fecha).HasColumnType("datetime");
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+            entity.Property(e => e.Iniciales).HasMaxLength(200);
+            entity.Property(e => e.Lugar).HasMaxLength(200);
+            entity.Property(e => e.Memorando).HasMaxLength(50);
+
+            entity.HasOne(d => d.DirectorioFirma).WithMany(p => p.InformeMensualSupervision)
+                .HasForeignKey(d => d.DirectorioFirmaId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ReporteInformeMensual_Directorio");
+
+            entity.HasOne(d => d.Mes).WithMany(p => p.InformeMensualSupervision)
+                .HasForeignKey(d => d.MesId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ReporteInformeMensual_Mes");
+
+            entity.HasOne(d => d.UsuarioRegistro).WithMany(p => p.InformeMensualSupervision)
+                .HasForeignKey(d => d.UsuarioRegistroId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ReporteInformeMensual_Usuario");
         });
 
         modelBuilder.Entity<IntervalosPuntajeSupervision>(entity =>
@@ -519,8 +625,17 @@ public partial class SicaContext : DbContext
                 .HasConstraintName("FK__Localidad__Munic__5812160E");
         });
 
+        modelBuilder.Entity<Mes>(entity =>
+        {
+            entity.ToTable("Mes", "cat");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(10);
+        });
+
         modelBuilder.Entity<Muestreadores>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_Muestradores");
+
             entity.Property(e => e.ApellidoMaterno).HasMaxLength(50);
             entity.Property(e => e.ApellidoPaterno).HasMaxLength(50);
             entity.Property(e => e.Iniciales).HasMaxLength(5);
@@ -591,7 +706,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<MuestreoEmergencia>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC07EB386B26");
+            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC078DE004E5");
 
             entity.Property(e => e.ClaveUnica).HasMaxLength(150);
             entity.Property(e => e.FechaProgramada).HasColumnType("date");
@@ -766,6 +881,20 @@ public partial class SicaContext : DbContext
                 .HasConstraintName("FK__PerfilPag__IdPer__3A81B327");
         });
 
+        modelBuilder.Entity<PlantillaInformeMensualSupervision>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_Plantilla");
+
+            entity.ToTable("PlantillaInformeMensualSupervision", "cat");
+
+            entity.Property(e => e.Anio).HasMaxLength(4);
+            entity.Property(e => e.Contrato).HasMaxLength(200);
+            entity.Property(e => e.DenominacionContrato).HasMaxLength(300);
+            entity.Property(e => e.ImagenEncabezado).IsUnicode(false);
+            entity.Property(e => e.ImagenPiePagina).IsUnicode(false);
+            entity.Property(e => e.SitiosMiniMax).HasMaxLength(30);
+        });
+
         modelBuilder.Entity<ProgramaAnio>(entity =>
         {
             entity.Property(e => e.Anio).HasMaxLength(4);
@@ -818,6 +947,13 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.TipoSitioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProgramaSitio_TipoSitio");
+        });
+
+        modelBuilder.Entity<Puestos>(entity =>
+        {
+            entity.ToTable("Puestos", "cat");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(120);
         });
 
         modelBuilder.Entity<ReglaReporteResultadoTca>(entity =>
@@ -1162,7 +1298,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<TipoSustitucion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0783A7C692");
+            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0762844A01");
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(20)
@@ -1249,6 +1385,20 @@ public partial class SicaContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<VwDirectoresResponsables>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_DirectoresResponsables");
+
+            entity.Property(e => e.Nombre).HasMaxLength(100);
+            entity.Property(e => e.OcDl)
+                .HasMaxLength(120)
+                .IsUnicode(false)
+                .HasColumnName("oc/dl");
+            entity.Property(e => e.Puesto).HasMaxLength(224);
         });
 
         modelBuilder.Entity<VwLimiteLaboratorio>(entity =>
