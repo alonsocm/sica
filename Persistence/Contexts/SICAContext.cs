@@ -1393,6 +1393,7 @@ public partial class SicaContext : DbContext
                 .HasNoKey()
                 .ToView("Vw_DirectoresResponsables");
 
+            entity.Property(e => e.Anio).HasMaxLength(4);
             entity.Property(e => e.Nombre).HasMaxLength(100);
             entity.Property(e => e.OcDl)
                 .HasMaxLength(120)
