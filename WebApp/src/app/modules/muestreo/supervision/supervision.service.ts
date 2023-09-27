@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SupervisionBusqueda } from './models/supervision-busqueda';
+import { InformeMensualSupervisionGeneral } from './models/informe-mensual-supervision-general';
 
 @Injectable({
   providedIn: 'root',
@@ -202,9 +203,21 @@ export class SupervisionService {
     return this.http.get(environment.apiUrl + '/IntervalosPuntajeSupervision');
   }
 
-  postArchivoReporte(blob: any) {
+  postArchivoReporte(informe: InformeMensualSupervisionGeneral) {
     var formData = new FormData();
-    formData.append('archivoReporte', blob, 'filename.pdf');
+    formData.append('archivo', informe.archivo, 'filename.pdf');
+    formData.append('oficio', informe.oficio);
+    formData.append('lugar', informe.lugar);
+    formData.append('fecha', informe.fecha);
+    formData.append('responsableId', String(informe.responsableId));
+    formData.append('mes', String(informe.mes));
+    formData.append('personasInvolucradas', informe.personasInvolucradas);
+    formData.append('usuario', String(informe.usuario));
+
+    informe.copias.forEach((obj, index) => {
+      formData.append('copias[' + index + '][nombre]', obj.nombre);
+      formData.append('copias[' + index + '][puesto]', obj.puesto);
+    });
     return this.http.post(
       environment.apiUrl + '/supervisionmuestreo/ReportePdf',
       formData

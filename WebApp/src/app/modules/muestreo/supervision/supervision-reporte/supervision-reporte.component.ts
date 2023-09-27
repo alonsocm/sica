@@ -15,6 +15,8 @@ import { Margins } from 'pdfmake/interfaces';
 import { ReporteMensualSupervisionDefinition } from './reporte-mensual-supervision-definition';
 import { of } from 'rxjs';
 import { SupervisionService } from '../supervision.service';
+import { InformeMensualSupervisionGeneral } from '../models/informe-mensual-supervision-general';
+import { AuthService } from 'src/app/modules/login/services/auth.service';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -38,7 +40,8 @@ export class SupervisionReporteComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private supervisionService: SupervisionService
+    private supervisionService: SupervisionService,
+    private authService: AuthService
   ) {
     this.registroForm = this.formBuilder.group({
       memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
@@ -176,6 +179,39 @@ export class SupervisionReporteComponent implements OnInit {
     //     error: (error) => {},
     //   });
     // });
+  }
+
+  onValidarClick() {
+    let informe = this.getDatosInforme();
+
+    let reporteInformeMensualSupervisionDefinition =
+      new ReporteMensualSupervisionDefinition();
+
+    const pdfDocGenerator = pdfMake.createPdf(
+      reporteInformeMensualSupervisionDefinition.getDocumentDefinition(informe)
+    );
+
+    pdfDocGenerator.getBuffer((buffer) => {
+      var archivo = new Blob([buffer], { type: 'application/pdf' });
+      let datosOficio: InformeMensualSupervisionGeneral = {
+        oficio: informe.oficio,
+        lugar: informe.lugar,
+        fecha: informe.fecha,
+        responsableId: this.registroForm.value.responsable,
+        mes: this.registroForm.value.mes,
+        copias: this.copias,
+        personasInvolucradas: informe.personasInvolucradas,
+        archivo: archivo,
+        usuario: this.authService.getUser().usuarioId,
+      };
+
+      this.supervisionService.postArchivoReporte(datosOficio).subscribe({
+        next: (response: any) => {
+          alert(response);
+        },
+        error: (error) => {},
+      });
+    });
   }
 
   onImprimirClick() {

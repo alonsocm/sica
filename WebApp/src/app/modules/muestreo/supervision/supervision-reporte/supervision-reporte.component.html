@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12 form-group mt-5da">
+                <div class="col-lg-2 col-md-2 col-sm-12 form-group mt-5">
                     <!-- <label for="puesto-copia">Puesto:*</label> -->
                     <input class="form-control" id="puesto-copia" type="text" formControlName="puestoCopia"
                         [ngClass]="{'is-invalid': this.submitted && registroForm.get('puestoCopia')?.hasError('required') && this.copias.length === 0}"
@@ -110,8 +110,8 @@
                         <div>Campo requerido</div>
                     </div>
                 </div>
-                <div class="col-lg-1 col-md-1 col-sm-12 form-group align-self-center">
-                    <button class="btn-action btn-info-action form-control" type="button"
+                <div class="col-lg-1 col-md-1 col-sm-12 form-group mt-5">
+                    <button class="btn-action btn-primary-action form-control" type="button"
                         (click)="onAgregarCopiaClick()"><i class="bi bi-plus-lg"></i>
                         Agregar</button>
                 </div>
@@ -160,7 +160,8 @@
                 <div id="iframeContainer"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"><i class="bi bi-check-lg"></i>
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" (click)="onValidarClick()"><i
+                        class="bi bi-check-lg"></i>
                     Validar</button>
                 <button type="button" class="btn btn-secondary btn-sm" (click)="onImprimirClick()"><i
                         class="bi bi-printer"></i> Imprimir</button>
