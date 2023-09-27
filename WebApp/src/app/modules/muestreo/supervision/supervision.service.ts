@@ -219,7 +219,7 @@ export class SupervisionService {
       formData.append('copias[' + index + '][puesto]', obj.puesto);
     });
     return this.http.post(
-      environment.apiUrl + '/supervisionmuestreo/ReportePdf',
+      environment.apiUrl + '/ReporteSupervisionMuestreo',
       formData
     );
   }
