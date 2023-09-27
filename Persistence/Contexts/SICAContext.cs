@@ -164,6 +164,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwDirectoresResponsables> VwDirectoresResponsables { get; set; }
 
+    public virtual DbSet<VwIntervalosTotalesOcDl> VwIntervalosTotalesOcDl { get; set; }
+
     public virtual DbSet<VwLimiteLaboratorio> VwLimiteLaboratorio { get; set; }
 
     public virtual DbSet<VwLimiteMaximoComun> VwLimiteMaximoComun { get; set; }
@@ -175,6 +177,26 @@ public partial class SicaContext : DbContext
     public virtual DbSet<VwResultadosInicialReglas> VwResultadosInicialReglas { get; set; }
 
     public virtual DbSet<VwSitios> VwSitios { get; set; }
+
+    public virtual DbSet<_2012> _2012 { get; set; }
+
+    public virtual DbSet<_2013> _2013 { get; set; }
+
+    public virtual DbSet<_2014> _2014 { get; set; }
+
+    public virtual DbSet<_2015> _2015 { get; set; }
+
+    public virtual DbSet<_2016> _2016 { get; set; }
+
+    public virtual DbSet<_2017> _2017 { get; set; }
+
+    public virtual DbSet<_2018> _2018 { get; set; }
+
+    public virtual DbSet<_2019> _2019 { get; set; }
+
+    public virtual DbSet<_2020> _2020 { get; set; }
+
+    public virtual DbSet<_2021> _2021 { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
@@ -1406,6 +1428,28 @@ public partial class SicaContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("oc/dl");
             entity.Property(e => e.Puesto).HasMaxLength(224);
+        });
+
+        modelBuilder.Entity<VwIntervalosTotalesOcDl>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VwIntervalosTotalesOC_DL");
+
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+            entity.Property(e => e.Ocdlid).HasColumnName("OCDLId");
+            entity.Property(e => e.OrganismoCuencaDireccionLocal)
+                .HasMaxLength(201)
+                .IsUnicode(false);
+            entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e._50).HasColumnName("<50");
+            entity.Property(e => e._5160).HasColumnName("51-60");
+            entity.Property(e => e._6170).HasColumnName("61-70");
+            entity.Property(e => e._7180).HasColumnName("71-80");
+            entity.Property(e => e._8185).HasColumnName("81-85");
+            entity.Property(e => e._8690).HasColumnName("86-90");
+            entity.Property(e => e._9195).HasColumnName("91-95");
+            entity.Property(e => e._96100).HasColumnName("96-100");
         });
 
         modelBuilder.Entity<VwLimiteLaboratorio>(entity =>
