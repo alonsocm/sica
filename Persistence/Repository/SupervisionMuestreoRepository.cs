@@ -14,7 +14,7 @@ namespace Persistence.Repository
         {
 
         }
-        public SupervisionMuestreo ConvertirSupervisionMuestreo(SupervisionMuestreoDto supervisionMuestreo)
+        public SupervisionMuestreo ConvertirSupervisionMuestreo(SupervisionMuestreoDto supervisionMuestreo, long usuarioRegistroId)
         {
             SupervisionMuestreo supervision = new()
             {
@@ -34,7 +34,10 @@ namespace Persistence.Repository
                 LaboratorioRealizaId = supervisionMuestreo.LaboratorioRealizaId,
                 ResponsableTomaId = supervisionMuestreo.ResponsableTomaId,
                 ResponsableMedicionesId = supervisionMuestreo.ResponsableMedicionesId,
-                ObservacionesMuestreo = supervisionMuestreo.ObservacionesMuestreo
+                ObservacionesMuestreo = supervisionMuestreo.ObservacionesMuestreo,
+                FechaRegistro = DateTime.Now,
+                UsuarioRegistroId = usuarioRegistroId
+
             };
 
             return supervision;

@@ -28,9 +28,9 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpPost]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> Post([FromBody] SupervisionMuestreoDto supervision)
+        public async Task<IActionResult> Post([FromBody] SupervisionMuestreoDto supervision, long usuarioRegistroId)
         {
-            return Ok(await Mediator.Send(new SupervisionMuestreoCommand { supervision = supervision }));
+            return Ok(await Mediator.Send(new SupervisionMuestreoCommand { supervision = supervision, usuarioRegistroId = usuarioRegistroId }));
         }
 
         [HttpPost("ArchivosMuestreo")]

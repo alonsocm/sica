@@ -10,6 +10,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
     public class SupervisionMuestreoCommand : IRequest<Response<RespuestaSupervisionDto>>
     {
         public SupervisionMuestreoDto supervision { get; set; }
+        public long usuarioRegistroId { get; set; }
     }
 
     public class SupervisionMuestreoCommandHandler : IRequestHandler<SupervisionMuestreoCommand, Response<RespuestaSupervisionDto>>
@@ -37,9 +38,9 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
 
             try
             {
-                if (existeClaveMuestreo==null)
+                if (existeClaveMuestreo == null)
                 {
-                    supervison = _repository.ConvertirSupervisionMuestreo(request.supervision);
+                    supervison = _repository.ConvertirSupervisionMuestreo(request.supervision, request.usuarioRegistroId);
 
                     if (request.supervision.Id != 0)
                         _repository.Actualizar(supervison);
@@ -64,16 +65,16 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
                         }
                     }
 
-                  
+
                     respuesta.SupervisionMuestreoId = supervison.Id;
                     respuesta.Completo = (request.supervision.Id != 0 && request.supervision.Archivos.Count > 0 && request.supervision.Clasificaciones.Count > 0) ? true : false;
-                    
+
 
                 }
                 else
                 { throw new ApplicationException("Ya se encuentra la clave de muestreo registrada"); }
 
-               
+
             }
             catch (Exception ex)
             {
