@@ -103,12 +103,27 @@ export class ReporteMensualSupervisionDefinition {
         margin: [0, 0, 0, 50],
       },
       {
-        text: 'Ing. Angel Pablo Camacho Gonzalo',
+        text: datosReporte.nombreFirma,
         fontSize: 11,
         bold: true,
       },
       {
-        text: 'Jefe de Dpto.',
+        text: datosReporte.puestoFirma,
+        margin: [0, 0, 0, 50],
+      },
+      {
+        columns: [
+          {
+            text: 'c.c.e.p.-',
+            width: 40,
+          },
+          [
+            datosReporte.copias.map((f) => {
+              return { text: f.nombre + '. - ' + f.puesto };
+            }),
+            { text: datosReporte.personasInvolucradas },
+          ],
+        ],
       },
     ]);
 

@@ -24,8 +24,14 @@ import { SupervisionService } from '../supervision.service';
   styleUrls: ['./supervision-reporte.component.css'],
 })
 export class SupervisionReporteComponent implements OnInit {
+  submitted = false;
   registroForm: FormGroup;
-  copias: Array<string> = [];
+  directoresResponsables: Array<{
+    id: number;
+    nombre: string;
+    puesto: string;
+  }> = [];
+  copias: Array<{ nombre: string; puesto: string }> = [];
   oficio = {};
   reporteInformeMensualSupervisionDefinition =
     new ReporteMensualSupervisionDefinition();
@@ -37,29 +43,79 @@ export class SupervisionReporteComponent implements OnInit {
     this.registroForm = this.formBuilder.group({
       memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
       lugar: ['Guadalajara Jalisco', Validators.required],
-      fecha: ['', Validators.required],
+      fecha: ['2023-09-26', Validators.required],
       destinatario: ['', Validators.required],
-      responsable: ['', Validators.required],
+      responsable: [0, [Validators.required, Validators.min(1)]],
       puesto: ['', Validators.required],
-      copia: ['', Validators.required],
+      nombreCopia: ['', Validators.required],
+      puestoCopia: ['', Validators.required],
       inicialesPersonas: ['', Validators.required],
-      mes: [0, [Validators.required, Validators.min(1)]],
+      mes: [1, [Validators.required, Validators.min(1)]],
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getDirectoresResponsables();
+  }
 
   onSubmit() {
     console.log(this.registroForm.value);
   }
 
-  onAgregarCopiaClick() {
-    this.copias.push(this.registroForm.value.copia);
-    this.registroForm.patchValue({ copia: '' });
+  getDirectoresResponsables() {
+    this.supervisionService.getDirectoresResponsables().subscribe({
+      next: (response: any) => {
+        this.directoresResponsables = response.data;
+      },
+      error: (error) => {},
+    });
   }
 
-  onDeleteCopiaClick(nombre: string) {
-    let index = this.copias.findIndex((x) => nombre);
+  getNombreResponsable() {
+    let nombre = '';
+    let directorResponsableId = this.registroForm.value.responsable;
+
+    if (directorResponsableId !== '0') {
+      let selectedValueIndex = this.directoresResponsables.findIndex(
+        (x) => x.id == directorResponsableId
+      );
+
+      nombre = this.directoresResponsables[selectedValueIndex].nombre;
+    }
+
+    return nombre;
+  }
+
+  onDirectorResponsableChange() {
+    let directorResponsableId = this.registroForm.value.responsable;
+    let puesto = '';
+
+    if (directorResponsableId !== '0') {
+      let selectedValueIndex = this.directoresResponsables.findIndex(
+        (x) => x.id == directorResponsableId
+      );
+      puesto = this.directoresResponsables[selectedValueIndex].puesto;
+    }
+
+    this.registroForm.patchValue({ puesto: puesto });
+  }
+
+  onAgregarCopiaClick() {
+    let copia = {
+      nombre: this.registroForm.value.nombreCopia,
+      puesto: this.registroForm.value.puestoCopia,
+    };
+
+    if (copia.nombre != '' && copia.puesto != '') {
+      this.copias.push(copia);
+      this.registroForm.patchValue({ nombreCopia: '', puestoCopia: '' });
+    }
+  }
+
+  onDeleteCopiaClick(nombre: string, puesto: string) {
+    let index = this.copias.findIndex(
+      (x) => x.nombre === nombre && x.puesto === puesto
+    );
     this.copias.splice(index, 1);
   }
 
@@ -81,215 +137,11 @@ export class SupervisionReporteComponent implements OnInit {
     })}`;
   }
 
+  onCancelarClick() {}
+
   onCreatePdfClick() {
-    let oficio: InformeMensualSupervision = {
-      oficio: this.registroForm.value.memorando,
-      lugar: this.registroForm.value.lugar,
-      fecha: this.getLongFormatDate(this.registroForm.value.fecha),
-      direccionTecnica: 'Organismo de Cuenca Lerma Santiago Pacifico',
-      gerenteCalidadAgua: '',
-      mesReporte:
-        new Date(this.registroForm.value.mes + '-01-' + '2023').toLocaleString(
-          'es',
-          { month: 'long' }
-        ) +
-        ' ' +
-        '2023',
-      atencion: [
-        'M. en B. Claudia Nava Ramirez',
-        'Ing. Martha Bustamente Herrera',
-      ],
-      contrato: 'CNA-CRM-029-2021',
-      denominacionContrato:
-        'Servicio para caracterizar la calidad del agua en zonas con problemática ambiental a nivel nacional',
-      numeroSitios: '1329 a 3081',
-      indicaciones:
-        'La supervisión en campo deberá realizarse, de acuerdo con los recursos disponibles y al programa de trabajo en cada Organismo de Cuenca, se realizará conforme al formato elaborado para tal fin, en el que se contemplan los puntos a evaluar y se señalan los puntos críticos del muestreo en los que, en caso de incumplimiento, los trabajos de campo serán cancelados.',
-      resultados: [
-        {
-          ocdl: 'Dirección local de colima',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-      ],
-      nombreFirma: '',
-      puestoFirma: '',
-    };
+    this.submitted = true;
+    let oficio = this.getDatosInforme();
 
     let reporteInformeMensualSupervisionDefinition =
       new ReporteMensualSupervisionDefinition();
@@ -327,7 +179,19 @@ export class SupervisionReporteComponent implements OnInit {
   }
 
   onImprimirClick() {
-    let oficio: InformeMensualSupervision = {
+    let oficio: InformeMensualSupervision = this.getDatosInforme();
+
+    pdfMake
+      .createPdf(
+        this.reporteInformeMensualSupervisionDefinition.getDocumentDefinition(
+          oficio
+        )
+      )
+      .print({}, window.frames[0]);
+  }
+
+  private getDatosInforme(): InformeMensualSupervision {
+    return {
       oficio: this.registroForm.value.memorando,
       lugar: this.registroForm.value.lugar,
       fecha: this.getLongFormatDate(this.registroForm.value.fecha),
@@ -532,15 +396,10 @@ export class SupervisionReporteComponent implements OnInit {
           ],
         },
       ],
-      nombreFirma: '',
-      puestoFirma: '',
+      nombreFirma: this.getNombreResponsable(),
+      puestoFirma: this.registroForm.value.puesto,
+      copias: this.copias,
+      personasInvolucradas: this.registroForm.value.inicialesPersonas,
     };
-    pdfMake
-      .createPdf(
-        this.reporteInformeMensualSupervisionDefinition.getDocumentDefinition(
-          oficio
-        )
-      )
-      .print({}, window.frames[0]);
   }
 }

@@ -210,4 +210,12 @@ export class SupervisionService {
       formData
     );
   }
+
+  getDirectoresResponsables() {
+    return this.http.get(
+      environment.apiUrl +
+        '/ReporteSupervisionMuestreo/DirectoresResponsables/?anio=' +
+        2022
+    );
+  }
 }

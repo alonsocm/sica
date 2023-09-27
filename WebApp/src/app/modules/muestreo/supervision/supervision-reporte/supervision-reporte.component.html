@@ -12,7 +12,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="memorando">Memorando:*</label>
                     <input class="form-control" id="memorando" type="text" formControlName="memorando"
-                        [ngClass]="{'is-invalid': registroForm.get('memorando')?.hasError('required')}">
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('memorando')?.hasError('required')}">
                     <div class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
@@ -20,7 +20,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="lugar">Lugar:*</label>
                     <input class="form-control" id="lugar" type="text" formControlName="lugar"
-                        [ngClass]="{'is-invalid': registroForm.get('lugar')?.hasError('required')}">
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('lugar')?.hasError('required')}">
                     <div class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
@@ -28,26 +28,32 @@
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="fecha">Fecha:*</label>
                     <input class="form-control" id="fecha" type="date" formControlName="fecha"
-                        [ngClass]="{'is-invalid': registroForm.get('fecha')?.hasError('required')}">
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('fecha')?.hasError('required')}">
                     <div class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                <!-- <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="destinatario">Destinatario/Atenciones*</label>
                     <input class="form-control" id="destinatario" type="destinatario" formControlName="destinatario"
-                        [ngClass]="{'is-invalid': registroForm.get('destinatario')?.hasError('required')}">
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('destinatario')?.hasError('required')}">
                     <div class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
-                </div>
+                </div> -->
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="responsable">Director Técnico ó Responsable:*</label>
-                    <input class="form-control" id="responsable" type="text" formControlName="responsable"
-                        [ngClass]="{'is-invalid': registroForm.get('responsable')?.hasError('required')}"
-                        title="Nombre del Director Técnico o el responsable de calidad del agua en el Organismo de Cuenca">
+                    <select class="form-control" id="responsable" type="text" formControlName="responsable"
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('responsable')?.hasError('min')}"
+                        title="Nombre del Director Técnico o el responsable de calidad del agua en el Organismo de Cuenca"
+                        (change)="onDirectorResponsableChange()">
+                        <option value="0">Seleccione</option>
+                        <option *ngFor="let director of this.directoresResponsables" [value]="director.id">
+                            {{director.nombre}}
+                        </option>
+                    </select>
                     <div class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
@@ -55,36 +61,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="puesto">Puesto:*</label>
                     <input class="form-control" id="puesto" type="text" formControlName="puesto"
-                        [ngClass]="{'is-invalid': registroForm.get('puesto')?.hasError('required')}">
-                    <div class="invalid-feedback">
-                        <div>Campo requerido</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
-                    <label for="copia">Con copia a:*</label>
-                    <div class="form-inline">
-                        <input class="form-control mr-5" id="copia" type="text" formControlName="copia"
-                            [ngClass]="{'is-invalid': registroForm.get('copia')?.hasError('required')}">
-                        <button class="btn-action btn-info-action" type="button" (click)="onAgregarCopiaClick()"><i
-                                class="bi bi-plus-lg"></i>
-                            Agregar</button>
-                        <div class="invalid-feedback">
-                            <div>Campo requerido</div>
-                        </div>
-                    </div>
-                    <ul class="list-group col-md-8">
-                        <li class="list-group-item d-flex justify-content-between" *ngFor="let nombre of this.copias">
-                            {{nombre}} <button type="button" title="Eliminar" class="btn-action btn-secondary-action"
-                                (click)="onDeleteCopiaClick(nombre)"><i class="bi bi-trash"></i></button></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
-                    <label for="inicialesPersonas">Iniciales de personas involucradas:*</label>
-                    <input class="form-control" id="inicialesPersonas" type="text" formControlName="inicialesPersonas"
-                        [ngClass]="{'is-invalid': registroForm.get('inicialesPersonas')?.hasError('required')}"
-                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('puesto')?.hasError('required')}">
                     <div class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
@@ -92,7 +69,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="mes">Mes a reportar:*</label>
                     <select class="form-control" id="mes" formControlName="mes"
-                        [ngClass]="{'is-invalid': registroForm.get('mes')?.hasError('min')}">
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('mes')?.hasError('min')}">
                         <option value="0">Seleccione</option>
                         <option value="1">enero</option>
                         <option value="2">febrero</option>
@@ -112,7 +89,53 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-12 form-group">
+                    <div>
+                        <label for="copia">Con copia a:*</label>
+                        <input class="form-control" id="copia" type="text" formControlName="nombreCopia"
+                            [ngClass]="{'is-invalid': this.submitted && registroForm.get('nombreCopia')?.hasError('required') && this.copias.length === 0}"
+                            title="Nombre" placeholder="Nombre">
+                        <div class="invalid-feedback">
+                            <div>Campo requerido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12 form-group mt-5da">
+                    <!-- <label for="puesto-copia">Puesto:*</label> -->
+                    <input class="form-control" id="puesto-copia" type="text" formControlName="puestoCopia"
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('puestoCopia')?.hasError('required') && this.copias.length === 0}"
+                        title="Puesto" placeholder="Puesto">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+                <div class="col-lg-1 col-md-1 col-sm-12 form-group align-self-center">
+                    <button class="btn-action btn-info-action form-control" type="button"
+                        (click)="onAgregarCopiaClick()"><i class="bi bi-plus-lg"></i>
+                        Agregar</button>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12 form-group">
+                    <ul *ngIf="this.copias.length != 0" class="list-group">
+                        <li class="list-group-item d-flex justify-content-between" *ngFor="let copia of this.copias">
+                            {{copia.nombre + ' ' + copia.puesto}} <button type="button" title="Eliminar"
+                                class="btn-action btn-secondary-action"
+                                (click)="onDeleteCopiaClick(copia.nombre, copia.puesto)"><i
+                                    class="bi bi-trash"></i></button></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="inicialesPersonas">Iniciales de personas involucradas:*</label>
+                    <input class="form-control" id="inicialesPersonas" type="text" formControlName="inicialesPersonas"
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('inicialesPersonas')?.hasError('required')}"
+                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
+                </div>
+            </div>
             <div class=" row d-flex justify-content-end">
+                <button type="submit" class="btn btn-secondary mr-2" (click)="onCancelarClick()">Cancelar</button>
                 <button class="btn btn-primary" type="button" (click)="onCreatePdfClick()">Guardar</button>
                 <!-- <button type="submit" class="btn btn-primary">Guardar</button> -->
             </div>
