@@ -1,4 +1,6 @@
 ﻿using Application.DTOs;
+using Application.DTOs.InformeMensualSupervisionCampo;
+using Application.Features.Operacion.ReporteSupervisionMuestreo.Commands;
 using Application.Features.Operacion.SupervisionMuestreo.Commands;
 using Application.Features.Operacion.SupervisionMuestreo.Queries;
 using Application.Interfaces.IRepositories;
@@ -137,6 +139,12 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> Get([FromQuery] CriteriosBusquedaSupervisionDto busqueda)
         {
             return Ok(await Mediator.Send(new GetBusquedaSupervisionQuery { Busqueda = busqueda }));
+        }
+
+        [HttpPost("ReportePdf")]
+        public async Task<IActionResult> ReportePdf([FromForm] InformeMensualDto informe)
+        {
+            return Ok(await Mediator.Send(new InformeMensualSupervisionCommand { Informe = informe }));
         }
     }
 }

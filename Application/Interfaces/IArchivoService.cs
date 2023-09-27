@@ -11,6 +11,7 @@ namespace Application.Interfaces
         ArchivoDto ObtenerEvidencia(string nombreArchivo);
         List<ArchivoDto> ObtenerEvidenciasPorMuestreo(string muestreo);
         public ArchivoDto ObtenerArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
+        public bool GuardarInformeSupervision(string informe, IFormFile archivo);
         bool GuardarEvidencias(EvidenciasMuestreo evidenciasMuestreo);
         bool EliminarEvidencias(string muestreo);
         bool EliminarArchivoSupervisionMuestreo(string nombreArchivo, string supervision);

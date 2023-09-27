@@ -1,13 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
+using Application.Interfaces.IRepositories;
 using Application.Models;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
-using System.Security.Policy;
-using System;
-using Application.Interfaces.IRepositories;
 
 namespace Shared.Utilities.Services
 {
@@ -55,13 +52,13 @@ namespace Shared.Utilities.Services
             var ruta = ObtenerRutaBaseSupervision();
             List<string> lstNombreArchivos = new List<string>();
             var directorioMuestreo = Directory.CreateDirectory(Path.Combine(ruta, evidenciasMuestreo.SupervisionId.ToString()));
-            
+
             var datosEvidencias = _evidenciasupervisionrepository.ObtenerElementosPorCriterioAsync(x => x.SupervisionMuestreoId == evidenciasMuestreo.SupervisionId && x.TipoEvidenciaId == Convert.ToInt64(Application.Enums.TipoEvidencia.EvidenciaSupervisión));
             var index = (datosEvidencias.Result.ToList().Count > 0) ? datosEvidencias.Result.ToList().Count + 1 : 1;
 
             foreach (var archivo in evidenciasMuestreo.Archivos)
             {
-              
+
                 string NombreArchivo = (archivo.ContentType == "application/pdf") ? evidenciasMuestreo.ClaveMuestreo + ".pdf" :
                 evidenciasMuestreo.ClaveMuestreo + "_" + index + archivo.FileName.Substring(archivo.FileName.IndexOf('.'), archivo.FileName.Length - archivo.FileName.IndexOf('.'));
                 lstNombreArchivos.Add(NombreArchivo);
@@ -95,6 +92,11 @@ namespace Shared.Utilities.Services
         public string ObtenerRutaBaseSupervision()
         {
             return _configuration.GetValue<string>("Archivos:EvidenciasSupervisionMuestreo");
+        }
+
+        public string ObtenerRutaBaseInformeSupervision()
+        {
+            return _configuration.GetValue<string>("Archivos:InformeSupervisionMuestreo");
         }
 
         public ArchivoDto ObtenerEvidencia(string nombreArchivo)
@@ -175,6 +177,17 @@ namespace Shared.Utilities.Services
             {
                 throw new Exception($"No se encontró el archivo: {nombreArchivo}");
             }
+
+            return true;
+        }
+
+        public bool GuardarInformeSupervision(string informe, IFormFile archivo)
+        {
+            var ruta = ObtenerRutaBaseInformeSupervision();
+            var directorioInforme = Directory.CreateDirectory(Path.Combine(ruta, informe));
+
+            using var stream = File.Create(Path.Combine(directorioInforme.FullName, archivo.FileName));
+            archivo.CopyTo(stream);
 
             return true;
         }
