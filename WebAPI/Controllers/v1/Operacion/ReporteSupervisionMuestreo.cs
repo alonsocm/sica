@@ -9,7 +9,7 @@ namespace WebAPI.Controllers.v1.Operacion
     [ApiController]
     public class ReporteSupervisionMuestreo : BaseApiController
     {
-        [HttpPost("Post")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromForm] InformeMensualDto informe)
         {
             return Ok(await Mediator.Send(new InformeMensualSupervisionCommand { Informe = informe }));
