@@ -46,4 +46,6 @@ public partial class Usuario
     public virtual ICollection<Muestreo> MuestreoUsuarioRevisionSecaia { get; set; } = new List<Muestreo>();
 
     public virtual Perfil Perfil { get; set; } = null!;
+
+    public virtual ICollection<SupervisionMuestreo> SupervisionMuestreo { get; set; } = new List<SupervisionMuestreo>();
 }
