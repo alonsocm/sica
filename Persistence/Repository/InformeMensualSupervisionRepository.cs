@@ -17,7 +17,7 @@ namespace Persistence.Repository
         {
             InformeMensualSupervisionDto informe = new InformeMensualSupervisionDto();
             informe.Atencion = _dbContext.DestinatariosAtencion.Where(x => x.Activo == true).ToListAsync().Result.Select(x => x.Descripcion).ToList();
-            informe.GerenteCalidadAgua = _dbContext.Directorio.Where(x => x.PuestoId == (int)Application.Enums.Puestos.GerenteCalidadAgua).Select(x => x.Nombre).ToString() ?? string.Empty;
+            informe.GerenteCalidadAgua = _dbContext.Directorio.Where(x => x.PuestoId == (int)Application.Enums.Puestos.GerenteCalidadAgua).FirstOrDefault().Nombre ?? string.Empty;
             var plantilla = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == anioReporte).FirstOrDefault();
             informe.Contrato = plantilla.Contrato;
             informe.DenominacionContrato = plantilla.DenominacionContrato;
