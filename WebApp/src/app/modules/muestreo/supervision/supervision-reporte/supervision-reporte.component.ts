@@ -40,8 +40,7 @@ export class SupervisionReporteComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private supervisionService: SupervisionService,
-    private authService: AuthService
+    private supervisionService: SupervisionService
   ) {
     this.registroForm = this.formBuilder.group({
       memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
@@ -59,6 +58,7 @@ export class SupervisionReporteComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDirectoresResponsables();
+    this.getDatosGeneralesInforme();
   }
 
   onSubmit() {
@@ -142,6 +142,15 @@ export class SupervisionReporteComponent implements OnInit {
 
   onCancelarClick() {}
 
+  getDatosGeneralesInforme() {
+    this.supervisionService.getDatosGeneralesInforme().subscribe({
+      next: (response: any) => {
+        console.table(response.data);
+      },
+      error: (error) => {},
+    });
+  }
+
   onCreatePdfClick() {
     this.submitted = true;
     let oficio = this.getDatosInforme();
@@ -202,7 +211,6 @@ export class SupervisionReporteComponent implements OnInit {
         copias: this.copias,
         personasInvolucradas: informe.personasInvolucradas,
         archivo: archivo,
-        usuario: this.authService.getUser().usuarioId,
       };
 
       this.supervisionService.postArchivoReporte(datosOficio).subscribe({

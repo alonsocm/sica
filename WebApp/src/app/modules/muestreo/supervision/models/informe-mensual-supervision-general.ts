@@ -7,5 +7,4 @@ export interface InformeMensualSupervisionGeneral {
   copias: Array<{ nombre: string; puesto: string }>;
   personasInvolucradas: string;
   archivo: any;
-  usuario: number;
 }

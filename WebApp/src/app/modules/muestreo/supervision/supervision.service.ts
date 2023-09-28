@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SupervisionBusqueda } from './models/supervision-busqueda';
 import { InformeMensualSupervisionGeneral } from './models/informe-mensual-supervision-general';
+import { AuthService } from '../../login/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class SupervisionService {
   public supervisionId = this.supervisionIdDataSource.asObservable();
   public esConsulta = this.esConsultaDataSource.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   updateSupervisionId(value: number) {
     this.supervisionIdDataSource.next(value);
@@ -59,8 +60,12 @@ export class SupervisionService {
   }
 
   postSupervision(supervision: any): Observable<any> {
+    let usuarioRegistroId = this.authService.getUser().usuarioId;
     return this.http.post(
-      environment.apiUrl + '/supervisionmuestreo/',
+      environment.apiUrl +
+        '/supervisionmuestreo' +
+        '?usuarioRegistroId=' +
+        usuarioRegistroId,
       supervision
     );
   }
@@ -204,6 +209,7 @@ export class SupervisionService {
   }
 
   postArchivoReporte(informe: InformeMensualSupervisionGeneral) {
+    let usuario = this.authService.getUser().usuarioId;
     var formData = new FormData();
     formData.append('archivo', informe.archivo, 'filename.pdf');
     formData.append('oficio', informe.oficio);
@@ -212,7 +218,7 @@ export class SupervisionService {
     formData.append('responsableId', String(informe.responsableId));
     formData.append('mes', String(informe.mes));
     formData.append('personasInvolucradas', informe.personasInvolucradas);
-    formData.append('usuario', String(informe.usuario));
+    formData.append('usuario', String(usuario));
 
     informe.copias.forEach((obj, index) => {
       formData.append('copias[' + index + '][nombre]', obj.nombre);
@@ -221,6 +227,16 @@ export class SupervisionService {
     return this.http.post(
       environment.apiUrl + '/ReporteSupervisionMuestreo',
       formData
+    );
+  }
+
+  getDatosGeneralesInforme() {
+    let params = new HttpParams().set('anioReporte', '2022').set('mes', '9');
+
+    return this.http.get(
+      environment.apiUrl +
+        '/ReporteSupervisionMuestreo/InformeMensualResultados',
+      { params }
     );
   }
 

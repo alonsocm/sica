@@ -46,7 +46,9 @@ export class ReporteMensualSupervisionDefinition {
         datosReporte.contrato +
         ', con el cual la Comisión Nacional del Agua encomendó a “EL PROVEEDOR” y éste se obliga a realizar hasta su total terminación el "' +
         datosReporte.denominacionContrato +
-        '" consistente en los servicios profesionales de una empresa competente y calificada que apoye en las actividades de la Subdirección General Técnica (SGT) a través de la recolecta, preservación y transporte de muestras de agua a los laboratorios, realización de análisis, generación y entrega de resultados de calidad del agua de 2300 a 5000 sitios ubicados en lugares estratégicos con objeto de obtener resultados representativos y confiables.',
+        '" consistente en los servicios profesionales de una empresa competente y calificada que apoye en las actividades de la Subdirección General Técnica (SGT) a través de la recolecta, preservación y transporte de muestras de agua a los laboratorios, realización de análisis, generación y entrega de resultados de calidad del agua de ' +
+        datosReporte.numeroSitios +
+        ' sitios ubicados en lugares estratégicos con objeto de obtener resultados representativos y confiables.',
       margin: [0, 15, 0, 10],
       alignment: 'justify',
     });
