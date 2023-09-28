@@ -26,6 +26,7 @@ import { AuthService } from 'src/app/modules/login/services/auth.service';
   styleUrls: ['./supervision-reporte.component.css'],
 })
 export class SupervisionReporteComponent implements OnInit {
+  informeId = 0;
   datosPlantilla: any = {};
   submitted = false;
   registroForm: FormGroup;
@@ -61,6 +62,10 @@ export class SupervisionReporteComponent implements OnInit {
   ngOnInit(): void {
     this.getDirectoresResponsables();
     this.getDatosGeneralesInforme();
+
+    if (this.informeId !== 0) {
+      this.getInformeSupervision(String(this.informeId));
+    }
   }
 
   onSubmit() {
@@ -71,6 +76,25 @@ export class SupervisionReporteComponent implements OnInit {
     this.supervisionService.getDirectoresResponsables().subscribe({
       next: (response: any) => {
         this.directoresResponsables = response.data;
+      },
+      error: (error) => {},
+    });
+  }
+
+  getInformeSupervision(informe: string) {
+    this.supervisionService.getInformeSupervision(informe).subscribe({
+      next: (response: any) => {
+        let informe = response.data;
+        this.registroForm.patchValue({
+          memorando: informe.oficio,
+          lugar: informe.lugar,
+          fecha: informe.fecha,
+          responsable: informe.responsableId,
+          mes: informe.mes,
+          inicialesPersonas: informe.personasInvolucradas,
+        });
+        this.onDirectorResponsableChange();
+        this.copias = informe.copias;
       },
       error: (error) => {},
     });
@@ -219,12 +243,23 @@ export class SupervisionReporteComponent implements OnInit {
         archivo: archivo,
       };
 
-      this.supervisionService.postArchivoReporte(datosOficio).subscribe({
-        next: (response: any) => {
-          alert(response);
-        },
-        error: (error) => {},
-      });
+      if (this.informeId === 0) {
+        this.supervisionService.postInforme(datosOficio).subscribe({
+          next: (response: any) => {
+            alert(response);
+          },
+          error: (error) => {},
+        });
+      } else {
+        this.supervisionService
+          .putInforme(datosOficio, String(this.informeId))
+          .subscribe({
+            next: (response: any) => {
+              alert(response);
+            },
+            error: (error) => {},
+          });
+      }
     });
   }
 
