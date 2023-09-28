@@ -7,12 +7,12 @@ using MediatR;
 
 namespace Application.Features.Operacion.InformeMensualSupervision.Commands
 {
-    public class InformeMensualSupervisionCommand : IRequest<Response<bool>>
+    public class CreateInformeMensualSupervision : IRequest<Response<bool>>
     {
         public InformeMensualDto Informe { get; set; }
     }
 
-    public class InformeMensualSupervisionCommandHandler : IRequestHandler<InformeMensualSupervisionCommand, Response<bool>>
+    public class InformeMensualSupervisionCommandHandler : IRequestHandler<CreateInformeMensualSupervision, Response<bool>>
     {
         private readonly IInformeMensualSupervisionRepository _informeMensualSupervisionRepository;
         private readonly IArchivoService _archivoService;
@@ -22,7 +22,7 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Commands
             _archivoService = archivoService;
         }
 
-        public async Task<Response<bool>> Handle(InformeMensualSupervisionCommand request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(CreateInformeMensualSupervision request, CancellationToken cancellationToken)
         {
             var informe = new Domain.Entities.InformeMensualSupervision
             {

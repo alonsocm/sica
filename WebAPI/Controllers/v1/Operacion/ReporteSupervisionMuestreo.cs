@@ -12,7 +12,19 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost]
         public async Task<IActionResult> Post([FromForm] InformeMensualDto informe)
         {
-            return Ok(await Mediator.Send(new InformeMensualSupervisionCommand { Informe = informe }));
+            return Ok(await Mediator.Send(new CreateInformeMensualSupervision { Informe = informe }));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromForm] InformeMensualDto informe, long informeId)
+        {
+            return Ok(await Mediator.Send(new UpdateInformeMensualSupervision { Informe = informe, InformeId = informeId }));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get(long informe)
+        {
+            return Ok(await Mediator.Send(new GetInformeMensualSupervisionById { Informe = informe }));
         }
 
         [HttpGet("DirectoresResponsables")]

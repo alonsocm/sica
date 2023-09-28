@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.InformeMensualSupervisionCampo;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +109,39 @@ namespace Persistence.Repository
             }
 
             return informe;
+        }
+
+        public bool UpdateInformeMensual(InformeMensualDto informe, long informeId)
+        {
+            var informeDb = _dbContext.InformeMensualSupervision.First(x => x.Id == informeId);
+
+            informeDb.Memorando = informe.Oficio;
+            informeDb.Lugar = informe.Lugar;
+            informeDb.Fecha = Convert.ToDateTime(informe.Fecha);
+            informeDb.DirectorioFirmaId = informe.ResponsableId;
+            informeDb.Iniciales = informe.PersonasInvolucradas;
+            informeDb.MesId = informe.Mes;
+            informeDb.FechaRegistro = DateTime.Now;
+            informeDb.UsuarioRegistroId = informe.Usuario;
+            informeDb.CopiaInformeMensualSupervision = informe.Copias.Select(x => new CopiaInformeMensualSupervision
+            {
+                InformeMensualSupervisionId = informeDb.Id,
+                Nombre = x.Nombre,
+                Puesto = x.Puesto,
+            }).ToList();
+
+            var copiasInforme = _dbContext.CopiaInformeMensualSupervision.Where(x => x.InformeMensualSupervisionId == informeDb.Id);
+
+            copiasInforme.ToList().ForEach(x =>
+            {
+                _dbContext.Remove(x);
+            });
+
+
+            _dbContext.InformeMensualSupervision.Update(informeDb);
+            _dbContext.SaveChanges();
+
+            return true;
         }
     }
 }
