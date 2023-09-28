@@ -54,15 +54,20 @@ namespace Persistence.Repository
                                                  cant86 = (gpo.Key._8690 != null) ? gpo.Count() : 0,
                                                  cant91 = (gpo.Key._9195 != null) ? gpo.Count() : 0,
                                                  cant96 = (gpo.Key._96100 != null) ? gpo.Count() : 0,
-                                                 OCdl = gpo.Key.OrganismoCuencaDireccionLocal
+                                                 OCdl = gpo.Key.OrganismoCuencaDireccionLocal,
+                                                 OcdlId = gpo.Key.Ocdlid
+
 
                                              }).ToList();
 
 
                     if (resultadosInforme.Count > 0)
                     {
+                        List<long> ocdlExistentes = new List<long>();
+
                         foreach (var dato in resultadosInforme)
                         {
+                            ocdlExistentes.Add(dato.OcdlId);
                             ResultadoInformeDto result = new ResultadoInformeDto();
                             result.OcDl = dato.OCdl;
                             result.TotalSitios = (dato.cant50 + dato.cant51 + dato.cant61 + dato.cant71 + dato.cant81 + dato.cant86 + dato.cant91 + dato.cant96).ToString();
@@ -75,7 +80,29 @@ namespace Persistence.Repository
                             result.Intervalos.Add(new IntervaloDto { Calificacion = "91-95", NumeroSitios = dato.cant91.ToString(), Porcentaje = (dato.cant91 == 0) ? "0.00%" : "95%" });
                             result.Intervalos.Add(new IntervaloDto { Calificacion = "96-100", NumeroSitios = dato.cant96.ToString(), Porcentaje = (dato.cant96 == 0) ? "0.00%" : "100%" });
                             informe.Resultados.Add(result);
+
                         }
+
+
+                        var faltantes = _dbContext.VwOrganismosDirecciones.Where(x => !ocdlExistentes.Contains(x.Id)).ToList();
+                        List<IntervaloDto> IntervaloVacio = new List<IntervaloDto>();
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "<50", NumeroSitios = "0", Porcentaje = "0.00%" });
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "51-60", NumeroSitios = "0", Porcentaje = "0.00%" });
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "61-70", NumeroSitios = "0", Porcentaje = "0.00%" });
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "71-80", NumeroSitios = "0", Porcentaje = "0.00%" });
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "81-85", NumeroSitios = "0", Porcentaje = "0.00%" });
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "86-90", NumeroSitios = "0", Porcentaje = "0.00%" });
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "91-95", NumeroSitios = "0", Porcentaje = "0.00%" });
+                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "96-100", NumeroSitios = "0", Porcentaje = "0.00%" });
+
+
+                        faltantes.ForEach(ocdl =>
+                        {
+                            informe.Resultados.Add(
+                                new ResultadoInformeDto { OcDl = ocdl.OrganismoCuencaDireccionLocal, TotalSitios = "0", Intervalos = IntervaloVacio });
+
+                        });
+
                     }
                 }
             }
