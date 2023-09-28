@@ -3,7 +3,7 @@ using Application.Wrappers;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Operacion.ReporteSupervisionMuestreo.Queries
+namespace Application.Features.Operacion.InformeMensualSupervision.Queries
 {
     public class GetDirectoresResponsablesPorAnioQuery : IRequest<Response<List<VwDirectoresResponsables>>>
     {

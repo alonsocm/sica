@@ -3,7 +3,7 @@ using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 
-namespace Application.Features.Operacion.ReporteSupervisionMuestreo.Queries
+namespace Application.Features.Operacion.InformeMensualSupervision.Queries
 {
     public class GetInformeMensualPorMesAnioQuery : IRequest<Response<InformeMensualSupervisionDto>>
     {

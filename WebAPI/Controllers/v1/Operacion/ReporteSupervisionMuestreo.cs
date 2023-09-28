@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.InformeMensualSupervisionCampo;
-using Application.Features.Operacion.ReporteSupervisionMuestreo.Commands;
-using Application.Features.Operacion.ReporteSupervisionMuestreo.Queries;
+using Application.Features.Operacion.InformeMensualSupervision.Commands;
+using Application.Features.Operacion.InformeMensualSupervision.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.v1.Operacion

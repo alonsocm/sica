@@ -5,7 +5,7 @@ using Application.Wrappers;
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Operacion.ReporteSupervisionMuestreo.Commands
+namespace Application.Features.Operacion.InformeMensualSupervision.Commands
 {
     public class InformeMensualSupervisionCommand : IRequest<Response<bool>>
     {
@@ -24,7 +24,7 @@ namespace Application.Features.Operacion.ReporteSupervisionMuestreo.Commands
 
         public async Task<Response<bool>> Handle(InformeMensualSupervisionCommand request, CancellationToken cancellationToken)
         {
-            var informe = new InformeMensualSupervision
+            var informe = new Domain.Entities.InformeMensualSupervision
             {
                 Memorando = request.Informe.Oficio,
                 Lugar = request.Informe.Lugar,
