@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { InformeMensualSupervisionRegistro } from '../supervision/models/informe-mensual-supervision-registro';
+import { InformeMensualSupervisionRegistro } from '../models/informe-mensual-supervision-registro';
 
 @Component({
-  selector: 'app-supervision-reporte-consulta',
-  templateUrl: './supervision-reporte-consulta.component.html',
-  styleUrls: ['./supervision-reporte-consulta.component.css'],
+  selector: 'app-informe-supervision-consulta',
+  templateUrl: './informe-supervision-consulta.component.html',
+  styleUrls: ['./informe-supervision-consulta.component.css'],
 })
-export class SupervisionReporteConsultaComponent
+export class InformeSupervisionConsultaComponent
   extends BaseService
   implements OnInit
 {

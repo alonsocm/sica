@@ -14,18 +14,18 @@ import {
 import { Margins } from 'pdfmake/interfaces';
 import { ReporteMensualSupervisionDefinition } from './reporte-mensual-supervision-definition';
 import { of } from 'rxjs';
-import { SupervisionService } from '../supervision.service';
+import { InformeSupervisionService } from '../informe-supervision.service';
 import { InformeMensualSupervisionGeneral } from '../models/informe-mensual-supervision-general';
 import { AuthService } from 'src/app/modules/login/services/auth.service';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
-  selector: 'app-supervision-reporte',
-  templateUrl: './supervision-reporte.component.html',
-  styleUrls: ['./supervision-reporte.component.css'],
+  selector: 'app-informe-supervision',
+  templateUrl: './informe-supervision.component.html',
+  styleUrls: ['./informe-supervision.component.css'],
 })
-export class SupervisionReporteComponent implements OnInit {
+export class InformeSupervisionComponent implements OnInit {
   informeId = 0;
   datosPlantilla: any = {};
   submitted = false;
@@ -43,7 +43,7 @@ export class SupervisionReporteComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private supervisionService: SupervisionService
+    private informeSupervisionService: InformeSupervisionService
   ) {
     this.registroForm = this.formBuilder.group({
       memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
@@ -73,7 +73,7 @@ export class SupervisionReporteComponent implements OnInit {
   }
 
   getDirectoresResponsables() {
-    this.supervisionService.getDirectoresResponsables().subscribe({
+    this.informeSupervisionService.getDirectoresResponsables().subscribe({
       next: (response: any) => {
         this.directoresResponsables = response.data;
       },
@@ -82,7 +82,7 @@ export class SupervisionReporteComponent implements OnInit {
   }
 
   getInformeSupervision(informe: string) {
-    this.supervisionService.getInformeSupervision(informe).subscribe({
+    this.informeSupervisionService.getInformeSupervision(informe).subscribe({
       next: (response: any) => {
         let informe = response.data;
         this.registroForm.patchValue({
@@ -173,7 +173,7 @@ export class SupervisionReporteComponent implements OnInit {
   onCancelarClick() {}
 
   getDatosGeneralesInforme() {
-    this.supervisionService.getDatosGeneralesInforme().subscribe({
+    this.informeSupervisionService.getDatosGeneralesInforme().subscribe({
       next: (response: any) => {
         this.datosPlantilla = response.data;
       },
@@ -244,14 +244,14 @@ export class SupervisionReporteComponent implements OnInit {
       };
 
       if (this.informeId === 0) {
-        this.supervisionService.postInforme(datosOficio).subscribe({
+        this.informeSupervisionService.postInforme(datosOficio).subscribe({
           next: (response: any) => {
             alert(response);
           },
           error: (error) => {},
         });
       } else {
-        this.supervisionService
+        this.informeSupervisionService
           .putInforme(datosOficio, String(this.informeId))
           .subscribe({
             next: (response: any) => {
