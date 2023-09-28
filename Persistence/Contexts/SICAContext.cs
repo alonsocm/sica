@@ -162,7 +162,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwDatosGeneralesSupervision> VwDatosGeneralesSupervision { get; set; }
 
-    public virtual DbSet<VwDirectoresResponsables> VwDirectoresResponsables { get; set; }
+    public virtual DbSet<VwDirectoresResponsablesOc> VwDirectoresResponsablesOc { get; set; }
 
     public virtual DbSet<VwIntervalosTotalesOcDl> VwIntervalosTotalesOcDl { get; set; }
 
@@ -1395,18 +1395,19 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<VwDirectoresResponsables>(entity =>
+        modelBuilder.Entity<VwDirectoresResponsablesOc>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToView("Vw_DirectoresResponsables");
+                .ToView("Vw_DirectoresResponsablesOC");
 
             entity.Property(e => e.Anio).HasMaxLength(4);
             entity.Property(e => e.Nombre).HasMaxLength(100);
-            entity.Property(e => e.OcDl)
+            entity.Property(e => e.Oc)
                 .HasMaxLength(120)
                 .IsUnicode(false)
-                .HasColumnName("oc/dl");
+                .HasColumnName("OC");
+            entity.Property(e => e.Ocid).HasColumnName("OCId");
             entity.Property(e => e.Puesto).HasMaxLength(224);
         });
 

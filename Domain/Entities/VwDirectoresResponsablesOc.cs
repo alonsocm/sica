@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
-public partial class VwDirectoresResponsables
+public partial class VwDirectoresResponsablesOc
 {
     public int Id { get; set; }
 
@@ -11,7 +11,9 @@ public partial class VwDirectoresResponsables
 
     public string Puesto { get; set; } = null!;
 
-    public string OcDl { get; set; } = null!;
+    public long Ocid { get; set; }
+
+    public string Oc { get; set; } = null!;
 
     public string Anio { get; set; } = null!;
 }
