@@ -137,7 +137,6 @@ namespace Persistence.Repository
                 _dbContext.Remove(x);
             });
 
-
             _dbContext.InformeMensualSupervision.Update(informeDb);
             _dbContext.SaveChanges();
 
