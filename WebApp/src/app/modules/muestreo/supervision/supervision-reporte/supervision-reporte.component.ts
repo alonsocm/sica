@@ -26,12 +26,14 @@ import { AuthService } from 'src/app/modules/login/services/auth.service';
   styleUrls: ['./supervision-reporte.component.css'],
 })
 export class SupervisionReporteComponent implements OnInit {
+  datosPlantilla: any = {};
   submitted = false;
   registroForm: FormGroup;
   directoresResponsables: Array<{
     id: number;
     nombre: string;
     puesto: string;
+    ocDl: string;
   }> = [];
   copias: Array<{ nombre: string; puesto: string }> = [];
   oficio = {};
@@ -74,8 +76,12 @@ export class SupervisionReporteComponent implements OnInit {
     });
   }
 
-  getNombreResponsable() {
-    let nombre = '';
+  getDatosResponsable() {
+    let responsable: { nombre: string; puesto: string; ocDl: string } = {
+      nombre: '',
+      puesto: '',
+      ocDl: '',
+    };
     let directorResponsableId = this.registroForm.value.responsable;
 
     if (directorResponsableId !== '0') {
@@ -83,10 +89,10 @@ export class SupervisionReporteComponent implements OnInit {
         (x) => x.id == directorResponsableId
       );
 
-      nombre = this.directoresResponsables[selectedValueIndex].nombre;
+      responsable = this.directoresResponsables[selectedValueIndex];
     }
 
-    return nombre;
+    return responsable;
   }
 
   onDirectorResponsableChange() {
@@ -145,7 +151,7 @@ export class SupervisionReporteComponent implements OnInit {
   getDatosGeneralesInforme() {
     this.supervisionService.getDatosGeneralesInforme().subscribe({
       next: (response: any) => {
-        console.table(response.data);
+        this.datosPlantilla = response.data;
       },
       error: (error) => {},
     });
@@ -239,8 +245,8 @@ export class SupervisionReporteComponent implements OnInit {
       oficio: this.registroForm.value.memorando,
       lugar: this.registroForm.value.lugar,
       fecha: this.getLongFormatDate(this.registroForm.value.fecha),
-      direccionTecnica: 'Organismo de Cuenca Lerma Santiago Pacifico',
-      gerenteCalidadAgua: '',
+      direccionTecnica: this.getDatosResponsable().ocDl,
+      gerenteCalidadAgua: this.datosPlantilla.gerenteCalidadAgua,
       mesReporte:
         new Date(this.registroForm.value.mes + '-01-' + '2023').toLocaleString(
           'es',
@@ -248,16 +254,11 @@ export class SupervisionReporteComponent implements OnInit {
         ) +
         ' ' +
         '2023',
-      atencion: [
-        'M. en B. Claudia Nava Ramirez',
-        'Ing. Martha Bustamente Herrera',
-      ],
-      contrato: 'CNA-CRM-029-2021',
-      denominacionContrato:
-        'Servicio para caracterizar la calidad del agua en zonas con problemática ambiental a nivel nacional',
-      numeroSitios: '1329 a 3081',
-      indicaciones:
-        'La supervisión en campo deberá realizarse, de acuerdo con los recursos disponibles y al programa de trabajo en cada Organismo de Cuenca, se realizará conforme al formato elaborado para tal fin, en el que se contemplan los puntos a evaluar y se señalan los puntos críticos del muestreo en los que, en caso de incumplimiento, los trabajos de campo serán cancelados.',
+      atencion: this.datosPlantilla.atencion,
+      contrato: this.datosPlantilla.contrato,
+      denominacionContrato: this.datosPlantilla.denominacionContrato,
+      numeroSitios: this.datosPlantilla.numeroSitios,
+      indicaciones: this.datosPlantilla.indicaciones,
       resultados: [
         {
           ocdl: 'Dirección local de colima',
@@ -440,7 +441,7 @@ export class SupervisionReporteComponent implements OnInit {
           ],
         },
       ],
-      nombreFirma: this.getNombreResponsable(),
+      nombreFirma: this.getDatosResponsable().nombre,
       puestoFirma: this.registroForm.value.puesto,
       copias: this.copias,
       personasInvolucradas: this.registroForm.value.inicialesPersonas,

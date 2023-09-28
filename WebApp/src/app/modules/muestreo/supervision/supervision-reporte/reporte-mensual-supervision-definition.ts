@@ -25,7 +25,7 @@ export class ReporteMensualSupervisionDefinition {
     content.push([
       {
         stack: [
-          'Q. María Margarita Dafne Lobato Calleros',
+          datosReporte.gerenteCalidadAgua,
           'Gerente de Calidad del Agua',
           'Presente',
         ],
