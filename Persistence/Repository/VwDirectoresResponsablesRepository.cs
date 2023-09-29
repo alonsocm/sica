@@ -4,7 +4,7 @@ using Persistence.Contexts;
 
 namespace Persistence.Repository
 {
-    public class VwDirectoresResponsablesRepository : Repository<VwDirectoresResponsables>, IVwDirectoresResponsablesRepository
+    public class VwDirectoresResponsablesRepository : Repository<VwDirectoresResponsablesOc>, IVwDirectoresResponsablesRepository
     {
         public VwDirectoresResponsablesRepository(SicaContext context) : base(context)
         {

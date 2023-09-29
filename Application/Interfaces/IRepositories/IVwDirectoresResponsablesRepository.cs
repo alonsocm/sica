@@ -2,7 +2,7 @@
 
 namespace Application.Interfaces.IRepositories
 {
-    public interface IVwDirectoresResponsablesRepository : IRepository<VwDirectoresResponsables>
+    public interface IVwDirectoresResponsablesRepository : IRepository<VwDirectoresResponsablesOc>
     {
     }
 }

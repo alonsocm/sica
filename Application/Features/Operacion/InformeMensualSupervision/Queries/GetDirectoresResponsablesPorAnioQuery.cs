@@ -5,12 +5,12 @@ using MediatR;
 
 namespace Application.Features.Operacion.InformeMensualSupervision.Queries
 {
-    public class GetDirectoresResponsablesPorAnioQuery : IRequest<Response<List<VwDirectoresResponsables>>>
+    public class GetDirectoresResponsablesPorAnioQuery : IRequest<Response<List<VwDirectoresResponsablesOc>>>
     {
         public string anio { get; set; }
     }
 
-    public class GetDirectoresResponsablesHandler : IRequestHandler<GetDirectoresResponsablesPorAnioQuery, Response<List<VwDirectoresResponsables>>>
+    public class GetDirectoresResponsablesHandler : IRequestHandler<GetDirectoresResponsablesPorAnioQuery, Response<List<VwDirectoresResponsablesOc>>>
     {
         private readonly IVwDirectoresResponsablesRepository _repository;
         public GetDirectoresResponsablesHandler(IVwDirectoresResponsablesRepository repository)
@@ -19,10 +19,10 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Queries
 
         }
 
-        public async Task<Response<List<VwDirectoresResponsables>>> Handle(GetDirectoresResponsablesPorAnioQuery request, CancellationToken cancellationToken)
+        public async Task<Response<List<VwDirectoresResponsablesOc>>> Handle(GetDirectoresResponsablesPorAnioQuery request, CancellationToken cancellationToken)
         {
 
-            return new Response<List<VwDirectoresResponsables>>(_repository.ObtenerElementosPorCriterioAsync(x => x.Anio.Equals(request.anio)).Result.ToList());
+            return new Response<List<VwDirectoresResponsablesOc>>(_repository.ObtenerElementosPorCriterioAsync(x => x.Anio.Equals(request.anio)).Result.ToList());
         }
     }
 }
