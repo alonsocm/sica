@@ -34,9 +34,9 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("InformeMensualResultados")]
-        public async Task<IActionResult> InformeMensualResultados(string anioReporte, string? anioRegistro, int? mes)
+        public async Task<IActionResult> InformeMensualResultados(string anioReporte, string? anioRegistro, int? mes, long? ocId)
         {
-            return Ok(await Mediator.Send(new GetInformeMensualPorMesAnioQuery { anioReporte = anioReporte, anioRegistro = anioRegistro, mes = mes }));
+            return Ok(await Mediator.Send(new GetInformeMensualPorMesAnioQuery { anioReporte = anioReporte, anioRegistro = anioRegistro, mes = mes, ocId = ocId }));
         }
 
         [HttpGet("BusquedaInformeMensual")]

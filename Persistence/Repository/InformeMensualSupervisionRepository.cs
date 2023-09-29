@@ -14,7 +14,7 @@ namespace Persistence.Repository
 
         }
 
-        public async Task<InformeMensualSupervisionDto> GetInformeMensualPorAnioMes(string anioReporte, string? anioRegistro, int? mes)
+        public async Task<InformeMensualSupervisionDto> GetInformeMensualPorAnioMes(string anioReporte, string? anioRegistro, int? mes, long? ocId)
         {
             InformeMensualSupervisionDto informe = new InformeMensualSupervisionDto();
             informe.Atencion = _dbContext.DestinatariosAtencion.Where(x => x.Activo == true).ToListAsync().Result.Select(x => x.Descripcion).ToList();
@@ -27,7 +27,7 @@ namespace Persistence.Repository
 
             if (mes != null)
             {
-                var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Value.Year == Convert.ToInt32(anioRegistro) && x.FechaRegistro.Value.Month == mes).ToList();
+                var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Year == Convert.ToInt32(anioRegistro) && x.FechaRegistro.Month == mes && x.Ocid == ocId).ToList();
                 if (resultados != null)
                 {
                     var resultadosInforme = (from r in resultados
@@ -56,7 +56,7 @@ namespace Persistence.Repository
                                                  cant91 = (gpo.Key._9195 != null) ? gpo.Count() : 0,
                                                  cant96 = (gpo.Key._96100 != null) ? gpo.Count() : 0,
                                                  OCdl = gpo.Key.OrganismoCuencaDireccionLocal,
-                                                 OcdlId = gpo.Key.Ocdlid
+                                                 ocdlId = gpo.Key.Ocdlid
 
 
                                              }).ToList();
@@ -68,7 +68,7 @@ namespace Persistence.Repository
 
                         foreach (var dato in resultadosInforme)
                         {
-                            ocdlExistentes.Add(dato.OcdlId);
+                            ocdlExistentes.Add(dato.ocdlId);
                             ResultadoInformeDto result = new ResultadoInformeDto();
                             result.OcDl = dato.OCdl;
                             result.TotalSitios = (dato.cant50 + dato.cant51 + dato.cant61 + dato.cant71 + dato.cant81 + dato.cant86 + dato.cant91 + dato.cant96).ToString();
@@ -84,8 +84,7 @@ namespace Persistence.Repository
 
                         }
 
-
-                        var faltantes = _dbContext.VwOrganismosDirecciones.Where(x => !ocdlExistentes.Contains(x.Id)).ToList();
+                        var faltantes = _dbContext.VwOrganismosDirecciones.Where(x => !ocdlExistentes.Contains(x.Id) && x.OrganismoCuencaId == ocId).ToList();
                         List<IntervaloDto> IntervaloVacio = new List<IntervaloDto>();
                         IntervaloVacio.Add(new IntervaloDto { Calificacion = "<50", NumeroSitios = "0", Porcentaje = "0.00%" });
                         IntervaloVacio.Add(new IntervaloDto { Calificacion = "51-60", NumeroSitios = "0", Porcentaje = "0.00%" });
@@ -96,13 +95,15 @@ namespace Persistence.Repository
                         IntervaloVacio.Add(new IntervaloDto { Calificacion = "91-95", NumeroSitios = "0", Porcentaje = "0.00%" });
                         IntervaloVacio.Add(new IntervaloDto { Calificacion = "96-100", NumeroSitios = "0", Porcentaje = "0.00%" });
 
-
-                        faltantes.ForEach(ocdl =>
+                        if (faltantes.Count > 0)
                         {
-                            informe.Resultados.Add(
-                                new ResultadoInformeDto { OcDl = ocdl.OrganismoCuencaDireccionLocal, TotalSitios = "0", Intervalos = IntervaloVacio });
+                            faltantes.ForEach(ocdl =>
+                            {
+                                informe.Resultados.Add(
+                                    new ResultadoInformeDto { OcDl = ocdl.OrganismoCuencaDireccionLocal, TotalSitios = "0", Intervalos = IntervaloVacio });
 
-                        });
+                            });
+                        }
 
                     }
                 }

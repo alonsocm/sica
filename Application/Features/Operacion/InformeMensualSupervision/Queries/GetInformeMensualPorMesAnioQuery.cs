@@ -10,6 +10,7 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Queries
         public string anioReporte { get; set; }
         public string? anioRegistro { get; set; } = null;
         public int? mes { get; set; } = null;
+        public long? ocId { get; set; } = null;
     }
 
     public class GetInformeMensualPorMesAnioHandler : IRequestHandler<GetInformeMensualPorMesAnioQuery, Response<InformeMensualSupervisionDto>>
@@ -24,7 +25,7 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Queries
         public async Task<Response<InformeMensualSupervisionDto>> Handle(GetInformeMensualPorMesAnioQuery request, CancellationToken cancellationToken)
         {
 
-            return new Response<InformeMensualSupervisionDto>(_repository.GetInformeMensualPorAnioMes(request.anioReporte, request.anioRegistro, request.mes).Result);
+            return new Response<InformeMensualSupervisionDto>(_repository.GetInformeMensualPorAnioMes(request.anioReporte, request.anioRegistro, request.mes, request.ocId).Result);
         }
     }
 
