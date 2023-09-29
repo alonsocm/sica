@@ -2,10 +2,6 @@
 <div class="container-fluid">
     <h1>Registro de informe mensual de supervisión de campo.</h1>
     <hr class="red">
-    <!-- <div class="row d-flex justify-content-end">
-        <button type="button" class="btn btn-primary"><i class="bi bi-pencil-square"></i>
-            Nuevo informe mensual de supervisión</button>
-    </div> -->
     <div class="panel-busqueda">
         <form [formGroup]="registroForm" (submit)="onSubmit()">
             <div class="row">
@@ -127,16 +123,22 @@
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="inicialesPersonas">Iniciales de personas involucradas:*</label>
                     <input class="form-control" id="inicialesPersonas" type="text" formControlName="inicialesPersonas"
-                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('inicialesPersonas')?.hasError('required')}"
-                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
-                    <div class="invalid-feedback">
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('inicialesPersonas')?.hasError('required') || registroForm.get('inicialesPersonas')?.hasError('pattern')}"
+                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG"
+                        placeholder="Ejemplo: CEVS/MAVO/BRG">
+                    <div *ngIf="registroForm.get('inicialesPersonas')?.hasError('pattern')" class="invalid-feedback">
+                        <div>Formato incorrecto</div>
+                    </div>
+                    <div *ngIf="this.submitted && registroForm.get('inicialesPersonas')?.hasError('required')"
+                        class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
                 </div>
             </div>
             <div class=" row d-flex justify-content-end">
                 <button type="submit" class="btn btn-secondary mr-2" (click)="onCancelarClick()">Cancelar</button>
-                <button class="btn btn-primary" type="button" (click)="onCreatePdfClick()">Guardar</button>
+                <button class="btn btn-primary" type="button" (click)="onCreatePdfClick()">Vista previa del
+                    informe</button>
                 <!-- <button type="submit" class="btn btn-primary">Guardar</button> -->
             </div>
         </form>
@@ -161,12 +163,12 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" (click)="onValidarClick()"><i
-                        class="bi bi-check-lg"></i>
-                    Validar</button>
+                        class="bi bi-folder-plus"></i>
+                    Guardar</button>
                 <button type="button" class="btn btn-secondary btn-sm" (click)="onImprimirClick()"><i
                         class="bi bi-printer"></i> Imprimir</button>
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><i
-                        class="bi bi-file-earmark-arrow-up"></i> Cargar</button>
+                <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><i
+                        class="bi bi-file-earmark-arrow-up"></i> Cargar</button> -->
                 <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
             </div>
         </div>

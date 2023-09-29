@@ -4,13 +4,17 @@
         <div class="col-lg-7 col-md-12 col-sm-12">
             <h1>Consulta de informe mensual de supervisión de campo.</h1>
         </div>
-        <div class="col-lg-5 d-flex justify-content-end">
+        <div class="col-lg-5 d-flex justify-content-end btn-registro">
             <button type="button" class="btn btn-primary mr-2" (click)="onRegistrarInformeSupervisionClick()"><i
                     class="bi bi-pencil-square"></i>
                 Registrar Informe Mensual de Supervisión de campo</button>
         </div>
     </div>
     <hr class="red">
+    <div class="message-container">
+        <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+            [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    </div>
     <div class="panel-busqueda">
         <form [formGroup]="formBusqueda" (submit)="onSubmit()">
             <div class="row">

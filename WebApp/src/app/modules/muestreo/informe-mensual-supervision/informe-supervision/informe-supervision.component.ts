@@ -17,6 +17,8 @@ import { of } from 'rxjs';
 import { InformeSupervisionService } from '../informe-supervision.service';
 import { InformeMensualSupervisionGeneral } from '../models/informe-mensual-supervision-general';
 import { AuthService } from 'src/app/modules/login/services/auth.service';
+import { Router } from '@angular/router';
+import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
@@ -40,10 +42,12 @@ export class InformeSupervisionComponent implements OnInit {
   oficio = {};
   reporteInformeMensualSupervisionDefinition =
     new ReporteMensualSupervisionDefinition();
+  mensaje = {};
 
   constructor(
     private formBuilder: FormBuilder,
-    private informeSupervisionService: InformeSupervisionService
+    private informeSupervisionService: InformeSupervisionService,
+    private router: Router
   ) {
     this.registroForm = this.formBuilder.group({
       memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
@@ -54,8 +58,17 @@ export class InformeSupervisionComponent implements OnInit {
       puesto: ['', Validators.required],
       nombreCopia: ['', Validators.required],
       puestoCopia: ['', Validators.required],
-      inicialesPersonas: ['', Validators.required],
+      inicialesPersonas: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z/]*$/)],
+      ],
       mes: [1, [Validators.required, Validators.min(1)]],
+    });
+
+    this.informeSupervisionService.updateMensaje({
+      tipoMensaje: '',
+      mensaje: '',
+      mostrar: false,
     });
   }
 
@@ -170,12 +183,15 @@ export class InformeSupervisionComponent implements OnInit {
     })}`;
   }
 
-  onCancelarClick() {}
+  onCancelarClick() {
+    this.router.navigate(['/informe-mensual-supervision-consulta']);
+  }
 
   getDatosGeneralesInforme() {
     this.informeSupervisionService.getDatosGeneralesInforme().subscribe({
       next: (response: any) => {
         this.datosPlantilla = response.data;
+        console.log(this.datosPlantilla);
       },
       error: (error) => {},
     });
@@ -246,7 +262,12 @@ export class InformeSupervisionComponent implements OnInit {
       if (this.informeId === 0) {
         this.informeSupervisionService.postInforme(datosOficio).subscribe({
           next: (response: any) => {
-            alert(response);
+            this.informeSupervisionService.updateMensaje({
+              tipoMensaje: TipoMensaje.Correcto,
+              mensaje: 'Informe creado correctamente',
+              mostrar: true,
+            });
+            this.router.navigate(['/informe-mensual-supervision-consulta']);
           },
           error: (error) => {},
         });
@@ -255,7 +276,7 @@ export class InformeSupervisionComponent implements OnInit {
           .putInforme(datosOficio, String(this.informeId))
           .subscribe({
             next: (response: any) => {
-              alert(response);
+              this.router.navigate(['/informe-mensual-supervision-consulta']);
             },
             error: (error) => {},
           });
@@ -294,188 +315,189 @@ export class InformeSupervisionComponent implements OnInit {
       denominacionContrato: this.datosPlantilla.denominacionContrato,
       numeroSitios: this.datosPlantilla.numeroSitios,
       indicaciones: this.datosPlantilla.indicaciones,
-      resultados: [
-        {
-          ocdl: 'Dirección local de colima',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-        {
-          ocdl: 'Dirección local de Estado de México',
-          totalSitios: '3',
-          intervalos: [
-            {
-              calificacion: '<50',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '51-60',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '61-70',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '71-80',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-            {
-              calificacion: '81-90',
-              numeroSitios: '1',
-              porcentaje: '100%',
-            },
-            {
-              calificacion: '91-100',
-              numeroSitios: '1',
-              porcentaje: '0%',
-            },
-          ],
-        },
-      ],
+      resultados: this.datosPlantilla.resultados,
+      // resultados: [
+      //   {
+      //     ocdl: 'Dirección local de colima',
+      //     totalSitios: '3',
+      //     intervalos: [
+      //       {
+      //         calificacion: '<50',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '51-60',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '61-70',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '71-80',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '81-90',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '91-100',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     ocdl: 'Dirección local de Estado de México',
+      //     totalSitios: '3',
+      //     intervalos: [
+      //       {
+      //         calificacion: '<50',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '51-60',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '61-70',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '71-80',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '81-90',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '91-100',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     ocdl: 'Dirección local de Estado de México',
+      //     totalSitios: '3',
+      //     intervalos: [
+      //       {
+      //         calificacion: '<50',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '51-60',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '61-70',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '71-80',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '81-90',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '91-100',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     ocdl: 'Dirección local de Estado de México',
+      //     totalSitios: '3',
+      //     intervalos: [
+      //       {
+      //         calificacion: '<50',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '51-60',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '61-70',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '71-80',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '81-90',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '91-100',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     ocdl: 'Dirección local de Estado de México',
+      //     totalSitios: '3',
+      //     intervalos: [
+      //       {
+      //         calificacion: '<50',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '51-60',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '61-70',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '71-80',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //       {
+      //         calificacion: '81-90',
+      //         numeroSitios: '1',
+      //         porcentaje: '100%',
+      //       },
+      //       {
+      //         calificacion: '91-100',
+      //         numeroSitios: '1',
+      //         porcentaje: '0%',
+      //       },
+      //     ],
+      //   },
+      // ],
       nombreFirma: this.getDatosResponsable().nombre,
       puestoFirma: this.registroForm.value.puesto,
       copias: this.copias,
