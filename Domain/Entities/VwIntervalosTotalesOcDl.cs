@@ -7,9 +7,11 @@ public partial class VwIntervalosTotalesOcDl
 {
     public long Ocid { get; set; }
 
+    public long Ocdlid { get; set; }
+
     public string OrganismoCuencaDireccionLocal { get; set; } = null!;
 
-    public decimal? PuntajeObtenido { get; set; }
+    public decimal PuntajeObtenido { get; set; }
 
     public int? _50 { get; set; }
 
@@ -27,5 +29,5 @@ public partial class VwIntervalosTotalesOcDl
 
     public int? _96100 { get; set; }
 
-    public DateTime? FechaRegistro { get; set; }
+    public DateTime FechaRegistro { get; set; }
 }

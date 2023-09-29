@@ -1418,6 +1418,7 @@ public partial class SicaContext : DbContext
                 .ToView("VwIntervalosTotalesOC_DL");
 
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+            entity.Property(e => e.Ocdlid).HasColumnName("OCDLId");
             entity.Property(e => e.Ocid).HasColumnName("OCId");
             entity.Property(e => e.OrganismoCuencaDireccionLocal)
                 .HasMaxLength(201)
