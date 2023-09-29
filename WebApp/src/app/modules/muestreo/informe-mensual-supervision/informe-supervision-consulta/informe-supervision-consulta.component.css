@@ -2,6 +2,10 @@
     width: auto;
 }
 
+.btn-registro{
+    height: 50%;
+  }
+
 .td-center{
     text-align: center
 }

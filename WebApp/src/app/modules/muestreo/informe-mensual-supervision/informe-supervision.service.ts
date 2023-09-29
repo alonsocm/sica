@@ -3,11 +3,27 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../../login/services/auth.service';
 import { InformeMensualSupervisionGeneral } from './models/informe-mensual-supervision-general';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InformeSupervisionService {
+  private mensajeDataSource = new BehaviorSubject({
+    tipoMensaje: '',
+    mensaje: '',
+    mostrar: false,
+  });
+  public mensaje = this.mensajeDataSource.asObservable();
+
+  updateMensaje(value: {
+    tipoMensaje: string;
+    mensaje: string;
+    mostrar: boolean;
+  }) {
+    this.mensajeDataSource.next(value);
+  }
+
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   postInforme(informe: InformeMensualSupervisionGeneral) {

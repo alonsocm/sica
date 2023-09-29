@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { InformeMensualSupervisionRegistro } from '../models/informe-mensual-supervision-registro';
+import { Router } from '@angular/router';
+import { InformeSupervisionService } from '../informe-supervision.service';
 
 @Component({
   selector: 'app-informe-supervision-consulta',
@@ -15,8 +17,18 @@ export class InformeSupervisionConsultaComponent
   formBusqueda: FormGroup;
   registrosInformeMensual: Array<InformeMensualSupervisionRegistro> = [];
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private informeSupervisionService: InformeSupervisionService
+  ) {
     super();
+    this.informeSupervisionService.mensaje.subscribe((data) => {
+      if (data.mostrar) {
+        this.mostrarMensaje(data.mensaje, data.tipoMensaje);
+      }
+    });
+
     this.formBusqueda = this.formBuilder.group({
       memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
       lugar: ['Guadalajara Jalisco', Validators.required],
@@ -34,7 +46,9 @@ export class InformeSupervisionConsultaComponent
 
   onSubmit() {}
 
-  onRegistrarInformeSupervisionClick() {}
+  onRegistrarInformeSupervisionClick() {
+    this.router.navigate(['/informe-mensual-supervision']);
+  }
 
   onLimpiarClick() {}
 
