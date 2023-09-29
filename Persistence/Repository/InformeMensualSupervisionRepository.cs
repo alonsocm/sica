@@ -150,6 +150,7 @@ namespace Persistence.Repository
                            join n in _dbContext.VwDirectoresResponsablesOc on m.DirectorioFirmaId equals n.Id
                            select new InformeMensualSupervisionBusquedaDto
                            {
+                               Id = m.Id,
                                DireccionTecnica = n.Oc,
                                Oficio = m.Memorando,
                                Lugar = m.Lugar,

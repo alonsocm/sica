@@ -2,6 +2,7 @@
 {
     public class InformeMensualSupervisionBusquedaDto
     {
+        public long Id { get; set; }
         public string? Oficio { get; set; }
         public string? Lugar { get; set; }
         public string? DireccionTecnica { get; set; }
@@ -12,6 +13,10 @@
         public string? FechaRegistro { get; set; }
         public string? FechaRegistroFin { get; set; }
         public string? Iniciales { get; set; }
+        public InformeMensualSupervisionBusquedaDto()
+        {
+            this.Id = 0;
+        }
 
     }
 }
