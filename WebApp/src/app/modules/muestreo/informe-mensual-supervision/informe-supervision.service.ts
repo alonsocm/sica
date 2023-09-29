@@ -4,16 +4,20 @@ import { AuthService } from '../../login/services/auth.service';
 import { InformeMensualSupervisionGeneral } from './models/informe-mensual-supervision-general';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
+import { InformeMensualSupervisionRegistro } from './models/informe-mensual-supervision-registro';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InformeSupervisionService {
+  private informeIdDataSource = new BehaviorSubject(0);
   private mensajeDataSource = new BehaviorSubject({
     tipoMensaje: '',
     mensaje: '',
     mostrar: false,
   });
+
+  public informeId = this.informeIdDataSource.asObservable();
   public mensaje = this.mensajeDataSource.asObservable();
 
   updateMensaje(value: {
@@ -22,6 +26,10 @@ export class InformeSupervisionService {
     mostrar: boolean;
   }) {
     this.mensajeDataSource.next(value);
+  }
+
+  updateInformeId(value: number) {
+    this.informeIdDataSource.next(value);
   }
 
   constructor(private http: HttpClient, private authService: AuthService) {}
@@ -93,5 +101,22 @@ export class InformeSupervisionService {
     return this.http.get(environment.apiUrl + '/ReporteSupervisionMuestreo', {
       params,
     });
+  }
+
+  getInformes(criteriosBusqueda: InformeMensualSupervisionRegistro) {
+    let params = new HttpParams()
+      .set('oficio', criteriosBusqueda.oficio)
+      .set('lugar', criteriosBusqueda.lugar)
+      .set('direccionTecnica', criteriosBusqueda.direccionTecnica)
+      .set('mesReporte', criteriosBusqueda.mesReporte)
+      .set('contrato', criteriosBusqueda.contrato)
+      .set('fechaRegistro', criteriosBusqueda.fechaRegistro)
+      .set('fechaFin', criteriosBusqueda.fechaRegistroFin)
+      .set('iniciales', '');
+
+    return this.http.get(
+      environment.apiUrl + '/ReporteSupervisionMuestreo/BusquedaInformeMensual',
+      { params }
+    );
   }
 }

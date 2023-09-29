@@ -1,25 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import {
-  InformeMensualSupervision,
-  Resultado,
-} from '../models/informe-mensual-supervision';
-import { Margins } from 'pdfmake/interfaces';
+import { InformeMensualSupervision } from '../models/informe-mensual-supervision';
 import { ReporteMensualSupervisionDefinition } from './reporte-mensual-supervision-definition';
-import { of } from 'rxjs';
 import { InformeSupervisionService } from '../informe-supervision.service';
 import { InformeMensualSupervisionGeneral } from '../models/informe-mensual-supervision-general';
-import { AuthService } from 'src/app/modules/login/services/auth.service';
 import { Router } from '@angular/router';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
-
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -53,11 +41,10 @@ export class InformeSupervisionComponent implements OnInit {
       memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
       lugar: ['Guadalajara Jalisco', Validators.required],
       fecha: ['2023-09-26', Validators.required],
-      destinatario: ['', Validators.required],
-      responsable: [0, [Validators.required, Validators.min(1)]],
+      responsable: [0, [Validators.required]],
       puesto: ['', Validators.required],
-      nombreCopia: ['', Validators.required],
-      puestoCopia: ['', Validators.required],
+      nombreCopia: [''],
+      puestoCopia: [''],
       inicialesPersonas: [
         '',
         [Validators.required, Validators.pattern(/^[a-zA-Z/]*$/)],
@@ -69,6 +56,10 @@ export class InformeSupervisionComponent implements OnInit {
       tipoMensaje: '',
       mensaje: '',
       mostrar: false,
+    });
+
+    this.informeSupervisionService.informeId.subscribe((data) => {
+      this.informeId = data;
     });
   }
 
@@ -199,30 +190,33 @@ export class InformeSupervisionComponent implements OnInit {
 
   onCreatePdfClick() {
     this.submitted = true;
-    let oficio = this.getDatosInforme();
 
-    let reporteInformeMensualSupervisionDefinition =
-      new ReporteMensualSupervisionDefinition();
+    if (this.registroForm.valid && this.copias.length !== 0) {
+      let oficio = this.getDatosInforme();
 
-    const pdfDocGenerator = pdfMake.createPdf(
-      reporteInformeMensualSupervisionDefinition.getDocumentDefinition(oficio)
-    );
+      let reporteInformeMensualSupervisionDefinition =
+        new ReporteMensualSupervisionDefinition();
 
-    pdfDocGenerator.getDataUrl((dataUrl) => {
-      const targetElement = document.querySelector('#iframeContainer');
-      let preview = document.getElementById('iframe-preview');
-      if (preview) {
-        targetElement?.removeChild(preview);
-      }
-      const iframe = document.createElement('iframe');
-      iframe.id = 'iframe-preview';
-      iframe.src = dataUrl;
-      iframe.style.height = '400px';
-      iframe.style.width = '100%';
-      targetElement?.appendChild(iframe);
-    });
+      const pdfDocGenerator = pdfMake.createPdf(
+        reporteInformeMensualSupervisionDefinition.getDocumentDefinition(oficio)
+      );
 
-    document.getElementById('btn-preview-report')?.click();
+      pdfDocGenerator.getDataUrl((dataUrl) => {
+        const targetElement = document.querySelector('#iframeContainer');
+        let preview = document.getElementById('iframe-preview');
+        if (preview) {
+          targetElement?.removeChild(preview);
+        }
+        const iframe = document.createElement('iframe');
+        iframe.id = 'iframe-preview';
+        iframe.src = dataUrl;
+        iframe.style.height = '400px';
+        iframe.style.width = '100%';
+        targetElement?.appendChild(iframe);
+      });
+
+      document.getElementById('btn-preview-report')?.click();
+    }
 
     // pdfDocGenerator.getBuffer((buffer) => {
     //   var blob = new Blob([buffer], { type: 'application/pdf' });

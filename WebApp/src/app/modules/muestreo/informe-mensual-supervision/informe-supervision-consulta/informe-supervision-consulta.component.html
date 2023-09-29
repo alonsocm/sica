@@ -27,12 +27,12 @@
                     <input class="form-control" id="lugar" type="text" formControlName="lugar">
                 </div>
                 <div class="form-group col-lg-2 col-md-6 col-sm-12">
-                    <label for="fechaMuestreo">Fechas de registro:</label>
-                    <input type="date" class="form-control" id="fechaMuestreo" formControlName="fechaMuestreo">
+                    <label for="fechaRegistro">Fechas de registro:</label>
+                    <input type="date" class="form-control" id="fechaRegistro" formControlName="fechaRegistro">
                 </div>
                 <div class="form-group col-lg-2 col-md-6 col-sm-12 align-self-end">
                     <!-- <label for="fechaMuestreoFin">Fecha del muestreo:</label> -->
-                    <input type="date" class="form-control" id="fechaMuestreoFin" formControlName="fechaMuestreoFin"
+                    <input type="date" class="form-control" id="fechaRegistroFin" formControlName="fechaRegistroFin"
                         title="Seleccione fecha fin">
                 </div>
                 <!-- <div class="col-lg-4 col-md-4 col-sm-12 form-group">
@@ -42,24 +42,17 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="contrato">Contrato</label>
+                    <input class="form-control" id="contrato" type="destinatario" formControlName="contrato">
+                </div>
+                <!-- <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="destinatario">Destinatario/Atenciones</label>
                     <input class="form-control" id="destinatario" type="destinatario" formControlName="destinatario">
-                </div>
+                </div> -->
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="responsable">Director Técnico ó Responsable:</label>
                     <input class="form-control" id="responsable" type="text" formControlName="responsable"
                         title="Nombre del Director Técnico o el responsable de calidad del agua en el Organismo de Cuenca">
-                </div>
-                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
-                    <label for="puesto">Puesto:</label>
-                    <input class="form-control" id="puesto" type="text" formControlName="puesto">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
-                    <label for="inicialesPersonas">Iniciales de personas involucradas:</label>
-                    <input class="form-control" id="inicialesPersonas" type="text" formControlName="inicialesPersonas"
-                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="mes">Mes reportado:</label>
@@ -79,6 +72,17 @@
                         <option value="12">diciembre</option>
                     </select>
                 </div>
+                <!-- <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="puesto">Puesto:</label>
+                    <input class="form-control" id="puesto" type="text" formControlName="puesto">
+                </div> -->
+            </div>
+            <div class="row">
+                <!-- <div class="col-lg-4 col-md-4 col-sm-12 form-group">
+                    <label for="inicialesPersonas">Iniciales de personas involucradas:</label>
+                    <input class="form-control" id="inicialesPersonas" type="text" formControlName="inicialesPersonas"
+                        title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
+                </div> -->
             </div>
             <div class="row d-flex justify-content-end mb-4">
                 <button type="submit" class="btn btn-primary mr-3">
@@ -90,14 +94,14 @@
     </div>
     <div class="row">
         <div class="col table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-bordered table-hover">
                 <thead class="thead-light">
                     <tr>
                         <th class="col-lg-2">Organismo de cuenca</th>
                         <th class="col-lg-2">Memorando</th>
-                        <th class="col-lg-1">Lugar</th>
+                        <th class="col-lg-2">Lugar</th>
                         <th class="col-lg-1">Mes reportado</th>
-                        <th class="col-lg-2">Fecha de creación</th>
+                        <th class="col-lg-1">Fecha de creación</th>
                         <th class="col-lg-2">Director Técnico/Responsable</th>
                         <th class="col-lg-1">Acciones</th>
                     </tr>
@@ -105,10 +109,12 @@
                 <tbody>
                     <tr
                         *ngFor="let registro of this.registrosInformeMensual | paginate: { itemsPerPage:30, currentPage: page }">
+                        <td>{{registro.direccionTecnica}}</td>
                         <td>{{registro.oficio}}</td>
                         <td>{{registro.lugar}}</td>
-                        <td>{{registro.fecha}}</td>
-                        <td>{{registro.direccionTecnica}}</td>
+                        <td>{{registro.mesReporte}}</td>
+                        <td>{{registro.fechaRegistro}}</td>
+                        <td>{{registro.nombreFirma}}</td>
                         <td>
                             <button type="button" class="btn-action btn-primary-action" title="Editar">
                                 <i class="bi bi-pencil-square icon-action" (click)="onEditClick(registro.id)"></i>
@@ -131,5 +137,9 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="row-group">
+        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
     </div>
 </div>
