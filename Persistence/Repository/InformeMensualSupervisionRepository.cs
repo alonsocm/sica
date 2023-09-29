@@ -142,5 +142,53 @@ namespace Persistence.Repository
 
             return true;
         }
+
+        public async Task<List<InformeMensualSupervisionBusquedaDto>> GetBusquedaInformeMensual(InformeMensualSupervisionBusquedaDto busqueda)
+        {
+            var informe = (from m in _dbContext.InformeMensualSupervision
+                           join n in _dbContext.VwDirectoresResponsablesOc on m.DirectorioFirmaId equals n.Id
+                           select new InformeMensualSupervisionBusquedaDto
+                           {
+                               DireccionTecnica = n.Oc,
+                               Oficio = m.Memorando,
+                               Lugar = m.Lugar,
+                               MesReporte = m.Mes.Descripcion,
+                               FechaRegistro = m.FechaRegistro.ToShortDateString(),
+                               NombreFirma = m.DirectorioFirma.Nombre,
+                               PuestoFirma = m.DirectorioFirma.Puesto.Descripcion,
+                               Iniciales = m.Iniciales,
+                               Contrato = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == m.Fecha.Year.ToString()).Select(x => x.Contrato).FirstOrDefault()
+
+                           }
+                           ).ToList();
+
+
+            if (informe.Any())
+            {
+                if (!string.IsNullOrEmpty(busqueda.Oficio))
+                { informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => x.Oficio == busqueda.Oficio); }
+                if (!string.IsNullOrEmpty(busqueda.Lugar))
+                { informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => x.Lugar == busqueda.Lugar); }
+                if (!string.IsNullOrEmpty(busqueda.FechaRegistro) && string.IsNullOrEmpty(busqueda.FechaRegistroFin))
+                {
+                    informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => x.FechaRegistro == busqueda.FechaRegistro);
+                }
+                if (!string.IsNullOrEmpty(busqueda.FechaRegistroFin))
+                {
+                    informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => Convert.ToDateTime(x.FechaRegistro) >= Convert.ToDateTime(busqueda.FechaRegistro) && Convert.ToDateTime(x.FechaRegistro) <= Convert.ToDateTime(busqueda.FechaRegistroFin));
+                }
+                if (!string.IsNullOrEmpty(busqueda.NombreFirma))
+                { informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => x.NombreFirma == busqueda.NombreFirma); }
+                if (!string.IsNullOrEmpty(busqueda.PuestoFirma))
+                { informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => x.PuestoFirma == busqueda.PuestoFirma); }
+                if (!string.IsNullOrEmpty(busqueda.Iniciales))
+                { informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => x.Iniciales == busqueda.Iniciales); }
+                if (!string.IsNullOrEmpty(busqueda.Contrato))
+                { informe = (List<InformeMensualSupervisionBusquedaDto>)informe.Where(x => x.Contrato == busqueda.Contrato); }
+
+            }
+            return informe;
+        }
+
     }
 }

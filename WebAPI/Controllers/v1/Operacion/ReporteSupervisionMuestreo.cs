@@ -38,5 +38,11 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new GetInformeMensualPorMesAnioQuery { anioReporte = anioReporte, anioRegistro = anioRegistro, mes = mes }));
         }
+
+        [HttpGet("BusquedaInformeMensual")]
+        public async Task<IActionResult> Get([FromQuery] InformeMensualSupervisionBusquedaDto busqueda)
+        {
+            return Ok(await Mediator.Send(new GetBusquedaInformeMensualSupervisionQuery { Busqueda = busqueda }));
+        }
     }
 }
