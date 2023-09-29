@@ -5,7 +5,7 @@ namespace Domain.Entities;
 
 public partial class VwIntervalosTotalesOcDl
 {
-    public long Ocdlid { get; set; }
+    public long Ocid { get; set; }
 
     public string OrganismoCuencaDireccionLocal { get; set; } = null!;
 
