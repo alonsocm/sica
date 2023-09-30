@@ -225,7 +225,6 @@ public partial class SicaContext : DbContext
 
             entity.Property(e => e.FechaCarga).HasColumnType("datetime");
             entity.Property(e => e.NombreArchivo).IsUnicode(false);
-            entity.Property(e => e.TipoArchivo).HasDefaultValueSql("((1))");
 
             entity.HasOne(d => d.InformeMensualSupervision).WithMany(p => p.ArchivoInformeMensualSupervision)
                 .HasForeignKey(d => d.InformeMensualSupervisionId)
@@ -1215,13 +1214,10 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<SupervisionMuestreo>(entity =>
         {
             entity.Property(e => e.ClaveMuestreo).HasMaxLength(50);
-            entity.Property(e => e.FechaRegistro)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+            entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
             entity.Property(e => e.FehaMuestreo).HasColumnType("datetime");
             entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
             entity.Property(e => e.SupervisorConagua).HasMaxLength(100);
-            entity.Property(e => e.UsuarioRegistroId).HasDefaultValueSql("((4))");
 
             entity.HasOne(d => d.LaboratorioRealiza).WithMany(p => p.SupervisionMuestreo)
                 .HasForeignKey(d => d.LaboratorioRealizaId)
