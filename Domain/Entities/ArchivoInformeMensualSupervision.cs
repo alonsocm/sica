@@ -15,6 +15,8 @@ public partial class ArchivoInformeMensualSupervision
 
     public long UsuarioCargaId { get; set; }
 
+    public int TipoArchivo { get; set; }
+
     public virtual InformeMensualSupervision InformeMensualSupervision { get; set; } = null!;
 
     public virtual Usuario UsuarioCarga { get; set; } = null!;
