@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -140,6 +142,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoAprobacion> TipoAprobacion { get; set; }
 
+    public virtual DbSet<TipoArchivoInformeMensualSupervision> TipoArchivoInformeMensualSupervision { get; set; }
+
     public virtual DbSet<TipoCuerpoAgua> TipoCuerpoAgua { get; set; }
 
     public virtual DbSet<TipoEvidenciaMuestreo> TipoEvidenciaMuestreo { get; set; }
@@ -219,20 +223,23 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<ArchivoInformeMensualSupervision>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_PlantillasReporteInformeMensual");
-
             entity.Property(e => e.FechaCarga).HasColumnType("datetime");
             entity.Property(e => e.NombreArchivo).IsUnicode(false);
 
             entity.HasOne(d => d.InformeMensualSupervision).WithMany(p => p.ArchivoInformeMensualSupervision)
                 .HasForeignKey(d => d.InformeMensualSupervisionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PlantillasReporteInformeMensual_PlantillasReporteInformeMensual");
+                .HasConstraintName("FK_ArchivoInformeMensualSupervision_InformeMensualSupervision");
+
+            entity.HasOne(d => d.TipoArchivoInformeMensualSupervision).WithMany(p => p.ArchivoInformeMensualSupervision)
+                .HasForeignKey(d => d.TipoArchivoInformeMensualSupervisionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ArchivoInformeMensualSupervision_TipoArchivoInformeMensualSupervision");
 
             entity.HasOne(d => d.UsuarioCarga).WithMany(p => p.ArchivoInformeMensualSupervision)
                 .HasForeignKey(d => d.UsuarioCargaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PlantillasReporteInformeMensual_Usuario");
+                .HasConstraintName("FK_ArchivoInformeMensualSupervision_Usuario");
         });
 
         modelBuilder.Entity<BrigadaMuestreo>(entity =>
@@ -495,7 +502,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<HistorialSustitucionLimites>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07E25AC404");
+            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07AA0BB2AD");
 
             entity.Property(e => e.Fecha).HasColumnType("datetime");
 
@@ -636,8 +643,6 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<Muestreadores>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_Muestradores");
-
             entity.Property(e => e.ApellidoMaterno).HasMaxLength(50);
             entity.Property(e => e.ApellidoPaterno).HasMaxLength(50);
             entity.Property(e => e.Iniciales).HasMaxLength(5);
@@ -708,7 +713,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<MuestreoEmergencia>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC078DE004E5");
+            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC07EB386B26");
 
             entity.Property(e => e.ClaveUnica).HasMaxLength(150);
             entity.Property(e => e.FechaProgramada).HasColumnType("date");
@@ -1260,6 +1265,15 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion).HasMaxLength(20);
         });
 
+        modelBuilder.Entity<TipoArchivoInformeMensualSupervision>(entity =>
+        {
+            entity.ToTable("TipoArchivoInformeMensualSupervision", "cat");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(25)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<TipoCuerpoAgua>(entity =>
         {
             entity.HasIndex(e => e.TipoHomologadoId, "IX_TipoCuerpoAgua_TipoHomologadoId");
@@ -1306,7 +1320,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<TipoSustitucion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0762844A01");
+            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0783A7C692");
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(20)

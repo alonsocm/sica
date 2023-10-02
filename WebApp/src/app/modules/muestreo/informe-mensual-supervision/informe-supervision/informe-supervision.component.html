@@ -31,14 +31,6 @@
                 </div>
             </div>
             <div class="row">
-                <!-- <div class="col-lg-4 col-md-4 col-sm-12 form-group">
-                    <label for="destinatario">Destinatario/Atenciones*</label>
-                    <input class="form-control" id="destinatario" type="destinatario" formControlName="destinatario"
-                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('destinatario')?.hasError('required')}">
-                    <div class="invalid-feedback">
-                        <div>Campo requerido</div>
-                    </div>
-                </div> -->
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="responsable">Director Técnico ó Responsable:*</label>
                     <select class="form-control" id="responsable" type="text" formControlName="responsable"
@@ -90,18 +82,17 @@
                     <div>
                         <label for="copia">Con copia a:*</label>
                         <input class="form-control" id="copia" type="text" formControlName="nombreCopia"
-                            [ngClass]="{'is-invalid': this.submitted && registroForm.get('nombreCopia')?.hasError('required') && this.copias.length === 0}"
-                            title="Nombre" placeholder="Nombre">
+                            [ngClass]="{'is-invalid': this.submitted && this.copias.length === 0}" title="Nombre"
+                            placeholder="Nombre">
                         <div class="invalid-feedback">
                             <div>Campo requerido</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12 form-group mt-5">
-                    <!-- <label for="puesto-copia">Puesto:*</label> -->
                     <input class="form-control" id="puesto-copia" type="text" formControlName="puestoCopia"
-                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('puestoCopia')?.hasError('required') && this.copias.length === 0}"
-                        title="Puesto" placeholder="Puesto">
+                        [ngClass]="{'is-invalid': this.submitted && this.copias.length === 0}" title="Puesto"
+                        placeholder="Puesto">
                     <div class="invalid-feedback">
                         <div>Campo requerido</div>
                     </div>
@@ -136,8 +127,9 @@
                 </div>
             </div>
             <div class=" row d-flex justify-content-end">
-                <button type="submit" class="btn btn-secondary mr-2" (click)="onCancelarClick()">Cancelar</button>
-                <button class="btn btn-primary" type="button" (click)="onCreatePdfClick()">Vista previa del
+                <button type="button" class="btn btn-secondary mr-2" (click)="onCancelarClick()">Cancelar</button>
+                <button class="btn btn-primary" type="submit" type="button" (click)="onCreatePdfClick()">Vista previa
+                    del
                     informe</button>
                 <!-- <button type="submit" class="btn btn-primary">Guardar</button> -->
             </div>

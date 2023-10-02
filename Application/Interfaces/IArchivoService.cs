@@ -16,5 +16,6 @@ namespace Application.Interfaces
         bool EliminarEvidencias(string muestreo);
         bool EliminarArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
         List<string> GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo);
+        public Task<byte[]> ConvertIFormFileToByteArray(IFormFile file);
     }
 }

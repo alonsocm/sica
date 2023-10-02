@@ -30,21 +30,37 @@ export class InformeSupervisionConsultaComponent
     });
 
     this.formBusqueda = this.formBuilder.group({
-      memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
-      lugar: ['Guadalajara Jalisco', Validators.required],
-      fecha: ['', Validators.required],
-      destinatario: ['', Validators.required],
-      responsable: ['', Validators.required],
-      puesto: ['', Validators.required],
-      copia: ['', Validators.required],
-      inicialesPersonas: ['', Validators.required],
-      mes: [0, [Validators.required, Validators.min(1)]],
+      memorando: [''],
+      lugar: [''],
+      fechaRegistro: [''],
+      fechaRegistroFin: [''],
+      contrato: [''],
+      responsable: [''],
+      puesto: [''],
+      copia: [''],
+      inicialesPersonas: [''],
+      mes: [0],
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getInformes();
+  }
 
-  onSubmit() {}
+  getInformes() {
+    let criteriosBusqueda = this.getFormValues();
+    this.informeSupervisionService.getInformes(criteriosBusqueda).subscribe({
+      next: (response: any) => {
+        console.table(response.data);
+        this.registrosInformeMensual = response.data;
+      },
+      error: (error) => {},
+    });
+  }
+
+  onSubmit() {
+    this.getInformes();
+  }
 
   onRegistrarInformeSupervisionClick() {
     this.router.navigate(['/informe-mensual-supervision']);
@@ -52,9 +68,35 @@ export class InformeSupervisionConsultaComponent
 
   onLimpiarClick() {}
 
-  onEditClick(registro: number) {}
+  onEditClick(registro: number) {
+    this.informeSupervisionService.updateInformeId(registro);
+    this.router.navigate(['/informe-mensual-supervision']);
+  }
 
   onViewClick(registro: number) {}
 
   onDeleteClick(registro: number) {}
+
+  getFormValues() {
+    let criteriosBusqueda: InformeMensualSupervisionRegistro = {
+      id: 1,
+      oficio: this.formBusqueda.value.memorando,
+      lugar: this.formBusqueda.value.lugar,
+      fechaRegistro: this.formBusqueda.value.fechaRegistro,
+      fechaRegistroFin: this.formBusqueda.value.fechaRegistroFin,
+      contrato: this.formBusqueda.value.contrato,
+      direccionTecnica: this.formBusqueda.value.responsable,
+      gerenteCalidadAgua: '',
+      mesReporte:
+        this.formBusqueda.value.mes == 0 ? '' : this.formBusqueda.value.mes,
+      // atencion: Array<string>;
+      denominacionContrato: '',
+      numeroSitios: '',
+      indicaciones: '',
+      nombreFirma: '',
+      puestoFirma: '',
+    };
+
+    return criteriosBusqueda;
+  }
 }
