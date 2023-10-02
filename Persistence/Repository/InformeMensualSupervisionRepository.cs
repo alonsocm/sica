@@ -27,6 +27,7 @@ namespace Persistence.Repository
 
             if (mes != null)
             {
+                List<long> ocdlExistentes = new List<long>();
                 var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Year == Convert.ToInt32(anioRegistro) && x.FechaRegistro.Month == mes && x.Ocid == ocId).ToList();
                 if (resultados != null)
                 {
@@ -64,7 +65,7 @@ namespace Persistence.Repository
 
                     if (resultadosInforme.Count > 0)
                     {
-                        List<long> ocdlExistentes = new List<long>();
+
 
                         foreach (var dato in resultadosInforme)
                         {
@@ -84,29 +85,31 @@ namespace Persistence.Repository
 
                         }
 
-                        var faltantes = _dbContext.VwOrganismosDirecciones.Where(x => !ocdlExistentes.Contains(x.Id) && x.OrganismoCuencaId == ocId).ToList();
-                        List<IntervaloDto> IntervaloVacio = new List<IntervaloDto>();
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "<50", NumeroSitios = "0", Porcentaje = "0.00%" });
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "51-60", NumeroSitios = "0", Porcentaje = "0.00%" });
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "61-70", NumeroSitios = "0", Porcentaje = "0.00%" });
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "71-80", NumeroSitios = "0", Porcentaje = "0.00%" });
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "81-85", NumeroSitios = "0", Porcentaje = "0.00%" });
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "86-90", NumeroSitios = "0", Porcentaje = "0.00%" });
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "91-95", NumeroSitios = "0", Porcentaje = "0.00%" });
-                        IntervaloVacio.Add(new IntervaloDto { Calificacion = "96-100", NumeroSitios = "0", Porcentaje = "0.00%" });
-
-                        if (faltantes.Count > 0)
-                        {
-                            faltantes.ForEach(ocdl =>
-                            {
-                                informe.Resultados.Add(
-                                    new ResultadoInformeDto { OcDl = ocdl.OrganismoCuencaDireccionLocal, TotalSitios = "0", Intervalos = IntervaloVacio });
-
-                            });
-                        }
-
                     }
                 }
+
+
+                var faltantes = _dbContext.VwOrganismosDirecciones.Where(x => !ocdlExistentes.Contains(x.Id) && x.OrganismoCuencaId == ocId).ToList();
+                List<IntervaloDto> IntervaloVacio = new List<IntervaloDto>();
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "<50", NumeroSitios = "0", Porcentaje = "0.00%" });
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "51-60", NumeroSitios = "0", Porcentaje = "0.00%" });
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "61-70", NumeroSitios = "0", Porcentaje = "0.00%" });
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "71-80", NumeroSitios = "0", Porcentaje = "0.00%" });
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "81-85", NumeroSitios = "0", Porcentaje = "0.00%" });
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "86-90", NumeroSitios = "0", Porcentaje = "0.00%" });
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "91-95", NumeroSitios = "0", Porcentaje = "0.00%" });
+                IntervaloVacio.Add(new IntervaloDto { Calificacion = "96-100", NumeroSitios = "0", Porcentaje = "0.00%" });
+
+                if (faltantes.Count > 0)
+                {
+                    faltantes.ForEach(ocdl =>
+                    {
+                        informe.Resultados.Add(
+                            new ResultadoInformeDto { OcDl = ocdl.OrganismoCuencaDireccionLocal, TotalSitios = "0", Intervalos = IntervaloVacio });
+
+                    });
+                }
+
             }
 
             return informe;
