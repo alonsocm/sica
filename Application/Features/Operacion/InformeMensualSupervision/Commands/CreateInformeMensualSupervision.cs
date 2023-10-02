@@ -36,7 +36,7 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Commands
                 UsuarioRegistroId = request.Informe.Usuario,
                 ArchivoInformeMensualSupervision = new List<ArchivoInformeMensualSupervision>
                 {
-                    new ArchivoInformeMensualSupervision { NombreArchivo = request.Informe.Archivo.FileName, UsuarioCargaId = request.Informe.Usuario, FechaCarga = DateTime.Now}
+                    new ArchivoInformeMensualSupervision { NombreArchivo = request.Informe.Archivo.FileName, UsuarioCargaId = request.Informe.Usuario, TipoArchivoInformeMensualSupervisionId = 1, FechaCarga = DateTime.Now}
                 },
 
                 CopiaInformeMensualSupervision = request.Informe.Copias.Select(x => new CopiaInformeMensualSupervision
