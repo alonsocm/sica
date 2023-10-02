@@ -8,6 +8,7 @@ namespace Application.Interfaces.IRepositories
     {
         Task<InformeMensualSupervisionDto> GetInformeMensualPorAnioMes(string anioReporte, string? anioRegistro, int? mes, long? ocId);
         bool UpdateInformeMensual(InformeMensualDto informe, long informeId);
+        public bool UpdateInformeMensualArchivoFirmado(long informeId, string nombreArchivo, byte[] archivo, long usuarioId);
         Task<List<InformeMensualSupervisionBusquedaDto>> GetBusquedaInformeMensual(InformeMensualSupervisionBusquedaDto busqueda);
     }
 }

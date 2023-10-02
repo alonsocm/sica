@@ -144,6 +144,35 @@ namespace Persistence.Repository
             return true;
         }
 
+        public bool UpdateInformeMensualArchivoFirmado(long informeId, string nombreArchivo, byte[] archivo, long usuarioId)
+        {
+            var archivoFirmado = _dbContext.ArchivoInformeMensualSupervision.Where(w => w.InformeMensualSupervisionId == informeId && w.TipoArchivoInformeMensualSupervisionId == 2).FirstOrDefault();
+
+            if (archivoFirmado != null)
+            {
+                archivoFirmado.NombreArchivo = nombreArchivo;
+                archivoFirmado.Archivo = archivo;
+                archivoFirmado.FechaCarga = DateTime.Now;
+                archivoFirmado.UsuarioCargaId = usuarioId;
+            }
+            else
+            {
+                _dbContext.ArchivoInformeMensualSupervision.Add(new ArchivoInformeMensualSupervision
+                {
+                    InformeMensualSupervisionId = informeId,
+                    TipoArchivoInformeMensualSupervisionId = 2,
+                    NombreArchivo = nombreArchivo,
+                    Archivo = archivo,
+                    FechaCarga = DateTime.Now,
+                    UsuarioCargaId = usuarioId,
+                });
+            }
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
         public async Task<List<InformeMensualSupervisionBusquedaDto>> GetBusquedaInformeMensual(InformeMensualSupervisionBusquedaDto busqueda)
         {
             var informe = (from m in _dbContext.InformeMensualSupervision

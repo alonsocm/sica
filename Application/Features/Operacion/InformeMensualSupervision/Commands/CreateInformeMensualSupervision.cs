@@ -36,7 +36,14 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Commands
                 UsuarioRegistroId = request.Informe.Usuario,
                 ArchivoInformeMensualSupervision = new List<ArchivoInformeMensualSupervision>
                 {
-                    new ArchivoInformeMensualSupervision { NombreArchivo = request.Informe.Archivo.FileName, UsuarioCargaId = request.Informe.Usuario, TipoArchivoInformeMensualSupervisionId = 1, FechaCarga = DateTime.Now}
+                    new ArchivoInformeMensualSupervision
+                    {
+                        NombreArchivo = request.Informe.Archivo.FileName,
+                        Archivo = await _archivoService.ConvertIFormFileToByteArray(request.Informe.Archivo),
+                        UsuarioCargaId = request.Informe.Usuario,
+                        TipoArchivoInformeMensualSupervisionId = 1,
+                        FechaCarga = DateTime.Now
+                    }
                 },
 
                 CopiaInformeMensualSupervision = request.Informe.Copias.Select(x => new CopiaInformeMensualSupervision
@@ -47,7 +54,7 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Commands
             };
 
             _informeMensualSupervisionRepository.Insertar(informe);
-            _archivoService.GuardarInformeSupervision(informe.Id.ToString(), request.Informe.Archivo);
+            //_archivoService.GuardarInformeSupervision(informe.Id.ToString(), request.Informe.Archivo);
 
             return new Response<bool>(true);
         }
