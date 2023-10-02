@@ -50,5 +50,17 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new CreateArchivoInformeSupervisionFirmado { Archivo = archivoInforme, InformeId = informe }));
         }
+
+        [HttpGet("LugaresInformeMensual")]
+        public async Task<IActionResult> LugaresInformeMensual()
+        {
+            return Ok(await Mediator.Send(new GetLugaresInformeMensualQuery()));
+        }
+
+        [HttpGet("MemorandoInformeMensual")]
+        public async Task<IActionResult> MemorandoInformeMensual()
+        {
+            return Ok(await Mediator.Send(new GetMemorandoInformeMensualQuery()));
+        }
     }
 }

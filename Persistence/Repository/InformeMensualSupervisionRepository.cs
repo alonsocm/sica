@@ -229,5 +229,16 @@ namespace Persistence.Repository
             return lstInforme;
         }
 
+        public async Task<List<string>> GetLugaresInformeMensual()
+        {
+            return (List<string>)_dbContext.InformeMensualSupervision.Select(x => x.Lugar).Distinct().ToList();
+        }
+
+        public async Task<List<string>> GetMemorandoInformeMensual()
+        {
+
+            return (List<string>)_dbContext.InformeMensualSupervision.Select(x => x.Memorando).Distinct().ToList();
+        }
+
     }
 }
