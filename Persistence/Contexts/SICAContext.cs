@@ -1269,7 +1269,9 @@ public partial class SicaContext : DbContext
         {
             entity.ToTable("TipoArchivoInformeMensualSupervision", "cat");
 
-            entity.Property(e => e.Descripcion).HasMaxLength(25);
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(25)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<TipoCuerpoAgua>(entity =>
