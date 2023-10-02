@@ -13,6 +13,8 @@ public partial class ArchivoInformeMensualSupervision
 
     public string NombreArchivo { get; set; } = null!;
 
+    public byte[] Archivo { get; set; } = null!;
+
     public long UsuarioCargaId { get; set; }
 
     public DateTime FechaCarga { get; set; }
