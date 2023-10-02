@@ -191,5 +191,12 @@ namespace Shared.Utilities.Services
 
             return true;
         }
+
+        public async Task<byte[]> ConvertIFormFileToByteArray(IFormFile file)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
     }
 }
