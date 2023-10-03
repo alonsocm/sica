@@ -107,7 +107,6 @@ export class InformeSupervisionConsultaComponent
       gerenteCalidadAgua: '',
       mesReporte:
         this.formBusqueda.value.mes == 0 ? '' : this.formBusqueda.value.mes,
-      // atencion: Array<string>;
       denominacionContrato: '',
       numeroSitios: '',
       indicaciones: '',
@@ -162,5 +161,30 @@ export class InformeSupervisionConsultaComponent
       },
       error: (error) => {},
     });
+  }
+
+  onVerInformeClick(informe: number) {
+    this.informeSupervisionService
+      .getArchivoInformeSupervision(informe, 1)
+      .subscribe({
+        next: (response: any) => {
+          const dataUrl = URL.createObjectURL(response);
+          const targetElement = document.querySelector('#iframeContainer');
+          let preview = document.getElementById('iframe-preview');
+
+          if (preview) {
+            targetElement?.removeChild(preview);
+          }
+
+          const iframe = document.createElement('iframe');
+          iframe.id = 'iframe-preview';
+          iframe.src = dataUrl;
+          iframe.style.height = '400px';
+          iframe.style.width = '100%';
+          targetElement?.appendChild(iframe);
+          document.getElementById('btn-preview-report')?.click();
+        },
+        error: (error) => {},
+      });
   }
 }

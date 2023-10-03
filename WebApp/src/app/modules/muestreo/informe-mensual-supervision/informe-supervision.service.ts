@@ -152,4 +152,15 @@ export class InformeSupervisionService {
       environment.apiUrl + '/ReporteSupervisionMuestreo/MemorandoInformeMensual'
     );
   }
+
+  getArchivoInformeSupervision(informe: number, tipo: number) {
+    return this.http.get(
+      environment.apiUrl +
+        '/ReporteSupervisionMuestreo/ArchivoInforme?informe=' +
+        informe +
+        '&tipo=' +
+        tipo,
+      { responseType: 'blob' }
+    );
+  }
 }
