@@ -20,11 +20,17 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="memorando">Memorando:</label>
-                    <input class="form-control" id="memorando" type="text" formControlName="memorando">
+                    <select class="form-control" id="memorando" type="text" formControlName="memorando">
+                        <option value="">Todos</option>
+                        <option *ngFor="let memorando of this.memorandos" [value]="memorando">{{memorando}}</option>
+                    </select>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="lugar">Lugar:</label>
-                    <input class="form-control" id="lugar" type="text" formControlName="lugar">
+                    <select class="form-control" id="lugar" type="text" formControlName="lugar">
+                        <option value="">Todos</option>
+                        <option *ngFor="let lugar of this.lugares" [value]="lugar">{{lugar}}</option>
+                    </select>
                 </div>
                 <div class="form-group col-lg-2 col-md-6 col-sm-12">
                     <label for="fechaRegistro">Fechas de registro:</label>
@@ -51,8 +57,12 @@
                 </div> -->
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="responsable">Director Técnico ó Responsable:</label>
-                    <input class="form-control" id="responsable" type="text" formControlName="responsable"
+                    <select class="form-control" id="responsable" type="text" formControlName="responsable"
                         title="Nombre del Director Técnico o el responsable de calidad del agua en el Organismo de Cuenca">
+                        <option value="">Todos</option>
+                        <option *ngFor="let directorResponsable of this.directoresResponsables"
+                            [value]="directorResponsable.nombre">{{directorResponsable.nombre}}</option>
+                    </select>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 form-group">
                     <label for="mes">Mes reportado:</label>
@@ -116,15 +126,18 @@
                         <td>{{registro.fechaRegistro}}</td>
                         <td>{{registro.nombreFirma}}</td>
                         <td>
-                            <button type="button" class="btn-action btn-primary-action" title="Editar">
-                                <i class="bi bi-pencil-square icon-action" (click)="onEditClick(registro.id)"></i>
+                            <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"
+                                (click)="onEditClick(registro.id)">
+                                <i class="bi bi-pencil-square icon-action"></i>
                             </button>
                             <!-- <div class="btn btn-group"> -->
-                            <button type="button" class="btn-action btn-info-action" title="Ver">
-                                <i class="bi bi-eye" (click)="onViewClick(registro.id)"></i>
+                            <button type="button" class="btn-action btn-info-action mr-1" title="Cargar informe firmado"
+                                (click)="onViewClick(registro.id)">
+                                <i class="bi bi-file-earmark-arrow-up"></i>
                             </button>
-                            <button type="button" class="btn-action btn-danger-action" title="Eliminar">
-                                <i class="bi bi-trash" (click)="onDeleteClick(registro.id)"></i>
+                            <button type="button" class="btn-action btn-danger-action" title="Eliminar"
+                                (click)="onDeleteClick(registro.id)">
+                                <i class="bi bi-trash"></i>
                             </button>
                             <!-- </div> -->
                         </td>
@@ -141,5 +154,35 @@
     <div class="row-group">
         <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
         </pagination-controls>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<button id="btnUploadInforme" type="button" class="btn-hidden" data-toggle="modal" data-target="#uploadInformeModal">
+    vista previa</button>
+
+<!-- Modal -->
+<div class="modal fade" id="uploadInformeModal" tabindex="-1" role="dialog" aria-labelledby="uploadInformeModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-100 w-50" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModal">Cargar informe digitalizado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="inputArchivoInforme">Seleccione el archivo del informe firmado.</label>
+                <input type="file" id="inputArchivoInforme" accept=".pdf" (change)="onArchivoInformeChange($event)">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal"
+                    (click)="onGuardarArchivoInformeClick()"><i class="bi bi-file-earmark-arrow-up"></i>
+                    Guardar</button>
+                <!-- <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><i
+                        class="bi bi-file-earmark-arrow-up"></i> Cargar</button> -->
+            </div>
+        </div>
     </div>
 </div>

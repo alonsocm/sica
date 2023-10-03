@@ -18,7 +18,7 @@ export interface InformeMensualSupervision {
 }
 
 export interface Resultado {
-  ocdl: string;
+  ocDl: string;
   totalSitios: string;
   intervalos: Array<Intervalo>;
 }

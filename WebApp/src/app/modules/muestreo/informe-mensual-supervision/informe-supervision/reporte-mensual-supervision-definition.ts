@@ -75,19 +75,17 @@ export class ReporteMensualSupervisionDefinition {
       content.push(
         {
           stack: [
-            res.ocdl,
+            res.ocDl,
             'Número de sitios supervisados: ' + res.totalSitios,
           ],
           fontSize: 8,
           bold: true,
         },
-        // { text: res.ocdl },
-        // { text: 'Número de sitios supervisados: ' + res.totalSitios },
         {
           margin: [0, 10, 0, 15],
           fontSize: 8,
           table: {
-            widths: [90, 50, 50, 50, 50, 50, 50, 50, 50],
+            widths: [90, 40, 40, 40, 40, 40, 40, 40, 40],
             body: this.getBody(res),
           },
         }
@@ -181,7 +179,7 @@ export class ReporteMensualSupervisionDefinition {
 
     footer = [
       {
-        text: 'Avenida José Loreto Fabela núhumero 850, Colonia San Juan de Aragón, Alcaldía Gustavo A. Madero, Código Postal 07950, Ciudad de México. Teléfono: 55 2158 1000   www.gob.mx/conagua',
+        text: '',
         fontSize: 7,
         margin: [50, 10, 0, 0],
       },
@@ -223,17 +221,17 @@ export class ReporteMensualSupervisionDefinition {
       firstRow.push({
         text: f.calificacion,
         alignment: 'center',
-        margin: [10, 5, 10, 5],
+        margin: [7, 5, 7, 5],
       });
       secondRow.push({
         text: f.numeroSitios,
         alignment: 'center',
-        margin: [10, 5, 10, 5],
+        margin: [7, 5, 7, 5],
       });
       thirdRow.push({
         text: f.porcentaje,
         alignment: 'center',
-        margin: [10, 5, 10, 5],
+        margin: [7, 5, 7, 5],
       });
     });
 

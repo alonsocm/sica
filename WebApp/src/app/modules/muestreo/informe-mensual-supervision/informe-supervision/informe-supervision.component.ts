@@ -8,6 +8,7 @@ import { InformeSupervisionService } from '../informe-supervision.service';
 import { InformeMensualSupervisionGeneral } from '../models/informe-mensual-supervision-general';
 import { Router } from '@angular/router';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
+import { DirectorResponsable } from '../../supervision/models/director-responsable';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -20,12 +21,7 @@ export class InformeSupervisionComponent implements OnInit {
   datosPlantilla: any = {};
   submitted = false;
   registroForm: FormGroup;
-  directoresResponsables: Array<{
-    id: number;
-    nombre: string;
-    puesto: string;
-    ocDl: string;
-  }> = [];
+  directoresResponsables: Array<DirectorResponsable> = [];
   copias: Array<{ nombre: string; puesto: string }> = [];
   oficio = {};
   reporteInformeMensualSupervisionDefinition =
@@ -65,16 +61,13 @@ export class InformeSupervisionComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDirectoresResponsables();
-    this.getDatosGeneralesInforme();
 
     if (this.informeId !== 0) {
       this.getInformeSupervision(String(this.informeId));
     }
   }
 
-  onSubmit() {
-    console.log(this.registroForm.value);
-  }
+  onSubmit() {}
 
   getDirectoresResponsables() {
     this.informeSupervisionService.getDirectoresResponsables().subscribe({
@@ -89,6 +82,7 @@ export class InformeSupervisionComponent implements OnInit {
     this.informeSupervisionService.getInformeSupervision(informe).subscribe({
       next: (response: any) => {
         let informe = response.data;
+        this.copias = informe.copias;
         this.registroForm.patchValue({
           memorando: informe.oficio,
           lugar: informe.lugar,
@@ -98,7 +92,6 @@ export class InformeSupervisionComponent implements OnInit {
           inicialesPersonas: informe.personasInvolucradas,
         });
         this.onDirectorResponsableChange();
-        this.copias = informe.copias;
       },
       error: (error) => {},
     });
@@ -135,6 +128,21 @@ export class InformeSupervisionComponent implements OnInit {
     }
 
     this.registroForm.patchValue({ puesto: puesto });
+  }
+
+  getOCId() {
+    let directorResponsableId = this.registroForm.value.responsable;
+    let ocId = 0;
+
+    if (directorResponsableId !== 0) {
+      let selectedValueIndex = this.directoresResponsables.findIndex(
+        (x) => x.id == directorResponsableId
+      );
+
+      ocId = this.directoresResponsables[selectedValueIndex].ocid;
+    }
+
+    return ocId;
   }
 
   onAgregarCopiaClick() {
@@ -179,43 +187,52 @@ export class InformeSupervisionComponent implements OnInit {
   }
 
   getDatosGeneralesInforme() {
-    this.informeSupervisionService.getDatosGeneralesInforme().subscribe({
-      next: (response: any) => {
-        this.datosPlantilla = response.data;
-        console.log(this.datosPlantilla);
-      },
-      error: (error) => {},
-    });
+    this.informeSupervisionService
+      .getDatosGeneralesInforme(
+        String(2022),
+        String(2023),
+        this.registroForm.value.mes,
+        String(this.getOCId())
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.datosPlantilla = response.data;
+          let oficio = this.getDatosInforme();
+
+          let reporteInformeMensualSupervisionDefinition =
+            new ReporteMensualSupervisionDefinition();
+
+          const pdfDocGenerator = pdfMake.createPdf(
+            reporteInformeMensualSupervisionDefinition.getDocumentDefinition(
+              oficio
+            )
+          );
+
+          pdfDocGenerator.getDataUrl((dataUrl) => {
+            const targetElement = document.querySelector('#iframeContainer');
+            let preview = document.getElementById('iframe-preview');
+            if (preview) {
+              targetElement?.removeChild(preview);
+            }
+            const iframe = document.createElement('iframe');
+            iframe.id = 'iframe-preview';
+            iframe.src = dataUrl;
+            iframe.style.height = '400px';
+            iframe.style.width = '100%';
+            targetElement?.appendChild(iframe);
+          });
+
+          document.getElementById('btn-preview-report')?.click();
+        },
+        error: (error) => {},
+      });
   }
 
-  onCreatePdfClick() {
+  onVistaPreviaClick() {
     this.submitted = true;
 
     if (this.registroForm.valid && this.copias.length !== 0) {
-      let oficio = this.getDatosInforme();
-
-      let reporteInformeMensualSupervisionDefinition =
-        new ReporteMensualSupervisionDefinition();
-
-      const pdfDocGenerator = pdfMake.createPdf(
-        reporteInformeMensualSupervisionDefinition.getDocumentDefinition(oficio)
-      );
-
-      pdfDocGenerator.getDataUrl((dataUrl) => {
-        const targetElement = document.querySelector('#iframeContainer');
-        let preview = document.getElementById('iframe-preview');
-        if (preview) {
-          targetElement?.removeChild(preview);
-        }
-        const iframe = document.createElement('iframe');
-        iframe.id = 'iframe-preview';
-        iframe.src = dataUrl;
-        iframe.style.height = '400px';
-        iframe.style.width = '100%';
-        targetElement?.appendChild(iframe);
-      });
-
-      document.getElementById('btn-preview-report')?.click();
+      this.getDatosGeneralesInforme();
     }
 
     // pdfDocGenerator.getBuffer((buffer) => {
@@ -270,6 +287,11 @@ export class InformeSupervisionComponent implements OnInit {
           .putInforme(datosOficio, String(this.informeId))
           .subscribe({
             next: (response: any) => {
+              this.informeSupervisionService.updateMensaje({
+                tipoMensaje: TipoMensaje.Correcto,
+                mensaje: 'Informe actualizado correctamente',
+                mostrar: true,
+              });
               this.router.navigate(['/informe-mensual-supervision-consulta']);
             },
             error: (error) => {},
@@ -310,188 +332,6 @@ export class InformeSupervisionComponent implements OnInit {
       numeroSitios: this.datosPlantilla.numeroSitios,
       indicaciones: this.datosPlantilla.indicaciones,
       resultados: this.datosPlantilla.resultados,
-      // resultados: [
-      //   {
-      //     ocdl: 'Dirección local de colima',
-      //     totalSitios: '3',
-      //     intervalos: [
-      //       {
-      //         calificacion: '<50',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '51-60',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '61-70',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '71-80',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '81-90',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '91-100',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     ocdl: 'Dirección local de Estado de México',
-      //     totalSitios: '3',
-      //     intervalos: [
-      //       {
-      //         calificacion: '<50',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '51-60',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '61-70',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '71-80',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '81-90',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '91-100',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     ocdl: 'Dirección local de Estado de México',
-      //     totalSitios: '3',
-      //     intervalos: [
-      //       {
-      //         calificacion: '<50',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '51-60',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '61-70',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '71-80',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '81-90',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '91-100',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     ocdl: 'Dirección local de Estado de México',
-      //     totalSitios: '3',
-      //     intervalos: [
-      //       {
-      //         calificacion: '<50',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '51-60',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '61-70',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '71-80',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '81-90',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '91-100',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     ocdl: 'Dirección local de Estado de México',
-      //     totalSitios: '3',
-      //     intervalos: [
-      //       {
-      //         calificacion: '<50',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '51-60',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '61-70',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '71-80',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //       {
-      //         calificacion: '81-90',
-      //         numeroSitios: '1',
-      //         porcentaje: '100%',
-      //       },
-      //       {
-      //         calificacion: '91-100',
-      //         numeroSitios: '1',
-      //         porcentaje: '0%',
-      //       },
-      //     ],
-      //   },
-      // ],
       nombreFirma: this.getDatosResponsable().nombre,
       puestoFirma: this.registroForm.value.puesto,
       copias: this.copias,

@@ -58,7 +58,7 @@ export class InformeSupervisionService {
   putInforme(informe: InformeMensualSupervisionGeneral, informeId: string) {
     let usuario = this.authService.getUser().usuarioId;
     var formData = new FormData();
-    formData.append('archivo', informe.archivo, 'filename.pdf');
+    formData.append('archivo', informe.archivo, informe.archivo.name);
     formData.append('oficio', informe.oficio);
     formData.append('lugar', informe.lugar);
     formData.append('fecha', informe.fecha);
@@ -77,8 +77,17 @@ export class InformeSupervisionService {
     );
   }
 
-  getDatosGeneralesInforme() {
-    let params = new HttpParams().set('anioReporte', '2022').set('mes', '9');
+  getDatosGeneralesInforme(
+    anioReporte: string,
+    anioRegistro: string,
+    mes: string,
+    ocId: string
+  ) {
+    let params = new HttpParams()
+      .set('anioReporte', anioReporte)
+      .set('anioRegistro', anioRegistro)
+      .set('mes', mes)
+      .set('ocId', ocId);
 
     return this.http.get(
       environment.apiUrl +
@@ -111,12 +120,36 @@ export class InformeSupervisionService {
       .set('mesReporte', criteriosBusqueda.mesReporte)
       .set('contrato', criteriosBusqueda.contrato)
       .set('fechaRegistro', criteriosBusqueda.fechaRegistro)
-      .set('fechaFin', criteriosBusqueda.fechaRegistroFin)
+      .set('fechaRegistroFin', criteriosBusqueda.fechaRegistroFin)
       .set('iniciales', '');
 
     return this.http.get(
       environment.apiUrl + '/ReporteSupervisionMuestreo/BusquedaInformeMensual',
       { params }
+    );
+  }
+
+  postArchivoInforme(informe: string, archivoInforme: any) {
+    var formData = new FormData();
+    formData.append('archivoInforme', archivoInforme, archivoInforme.name);
+    return this.http.post(
+      environment.apiUrl +
+        '/ReporteSupervisionMuestreo/InformeFirmado?' +
+        'informe=' +
+        informe,
+      formData
+    );
+  }
+
+  getLugaresInformeSupervision() {
+    return this.http.get(
+      environment.apiUrl + '/ReporteSupervisionMuestreo/LugaresInformeMensual'
+    );
+  }
+
+  getMemorandosInformeSupervision() {
+    return this.http.get(
+      environment.apiUrl + '/ReporteSupervisionMuestreo/MemorandoInformeMensual'
     );
   }
 }
