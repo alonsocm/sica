@@ -13,6 +13,7 @@
         public string? FechaRegistro { get; set; }
         public string? FechaRegistroFin { get; set; }
         public string? Iniciales { get; set; }
+        public bool ExisteInformeFirmado { get; set; }
         public InformeMensualSupervisionBusquedaDto()
         {
             this.Id = 0;

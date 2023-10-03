@@ -27,6 +27,14 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetInformeMensualSupervisionById { Informe = informe }));
         }
 
+        [HttpGet("ArchivoInforme")]
+        public async Task<IActionResult> Get(long informe, int tipo)
+        {
+            var archivo = await Mediator.Send(new GetArchivoInformeMensualSupervision { InformeId = informe, Tipo = tipo });
+
+            return File(archivo.Data.Archivo, "application/pdf", archivo.Data.NombreArchivo);
+        }
+
         [HttpGet("DirectoresResponsables")]
         public async Task<IActionResult> DirectoresResponsables(string anio)
         {
@@ -36,7 +44,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("InformeMensualResultados")]
         public async Task<IActionResult> InformeMensualResultados(string anioReporte, string? anioRegistro, int? mes, long? ocId)
         {
-            return Ok(await Mediator.Send(new GetInformeMensualPorMesAnioQuery { anioReporte = anioReporte, anioRegistro = anioRegistro, mes = mes, ocId = ocId }));
+            return Ok(await Mediator.Send(new GetInformeMensualPorMesAnioQuery { AnioReporte = anioReporte, AnioRegistro = anioRegistro, Mes = mes, OcId = ocId }));
         }
 
         [HttpGet("BusquedaInformeMensual")]

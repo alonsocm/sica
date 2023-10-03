@@ -24,7 +24,8 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Commands
 
         public async Task<Response<bool>> Handle(UpdateInformeMensualSupervision request, CancellationToken cancellationToken)
         {
-            bool actualizado = _informeMensualSupervisionRepository.UpdateInformeMensual(request.Informe, request.InformeId);
+            var archivo = await _archivoService.ConvertIFormFileToByteArray(request.Informe.Archivo);
+            bool actualizado = _informeMensualSupervisionRepository.UpdateInformeMensual(request.Informe, request.InformeId, archivo);
 
             return new Response<bool>(actualizado);
         }

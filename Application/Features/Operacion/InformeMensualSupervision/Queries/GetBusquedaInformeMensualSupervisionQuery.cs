@@ -18,11 +18,11 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Queries
             _informe = informe;
         }
 
-        public async Task<Response<List<InformeMensualSupervisionBusquedaDto>>> Handle(GetBusquedaInformeMensualSupervisionQuery request, CancellationToken cancellationToken)
+        public Task<Response<List<InformeMensualSupervisionBusquedaDto>>> Handle(GetBusquedaInformeMensualSupervisionQuery request, CancellationToken cancellationToken)
         {
-            List<InformeMensualSupervisionBusquedaDto> datos = _informe.GetBusquedaInformeMensual(request.Busqueda).Result.ToList();
+            List<InformeMensualSupervisionBusquedaDto> informes = _informe.GetBusquedaInformeMensual(request.Busqueda);
 
-            return new Response<List<InformeMensualSupervisionBusquedaDto>>((datos == null) ? new List<InformeMensualSupervisionBusquedaDto>() : datos);
+            return Task.FromResult(new Response<List<InformeMensualSupervisionBusquedaDto>>(informes));
         }
     }
 }

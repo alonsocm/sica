@@ -17,6 +17,8 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Queries
         }
 
         public async Task<Response<List<string>>> Handle(GetMemorandoInformeMensualQuery request, CancellationToken cancellationToken)
-        { return new Response<List<string>>(_informe.GetMemorandoInformeMensual().Result.ToList()); }
+        {
+            return new Response<List<string>>(await _informe.GetMemorandoInformeMensual());
+        }
     }
 }

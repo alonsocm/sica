@@ -18,7 +18,7 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Queries
 
         public async Task<Response<List<string>>> Handle(GetLugaresInformeMensualQuery request, CancellationToken cancellationToken)
         {
-            return new Response<List<string>>(_informe.GetLugaresInformeMensual().Result.ToList());
+            return new Response<List<string>>(await _informe.GetLugaresInformeMensual());
         }
     }
 }
