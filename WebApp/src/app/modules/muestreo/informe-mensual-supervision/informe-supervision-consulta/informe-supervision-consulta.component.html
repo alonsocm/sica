@@ -1,13 +1,13 @@
 <app-menu></app-menu>
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-7 col-md-12 col-sm-12">
+    <div class="clearfix">
+        <div class="float-left">
             <h1>Consulta de informe mensual de supervisión de campo.</h1>
         </div>
-        <div class="col-lg-5 d-flex justify-content-end btn-registro">
+        <div class="float-right">
             <button type="button" class="btn btn-primary mr-2" (click)="onRegistrarInformeSupervisionClick()"><i
                     class="bi bi-pencil-square"></i>
-                Registrar Informe Mensual de Supervisión de campo</button>
+                Nuevo informe</button>
         </div>
     </div>
     <hr class="red">
@@ -94,11 +94,11 @@
                         title="Iniciales de las personas involucradas, separado por '/'. Ejemplo: CEVS/MAVO/BRG">
                 </div> -->
             </div>
-            <div class="row d-flex justify-content-end mb-4">
-                <button type="submit" class="btn btn-primary mr-3">
-                    <i class="bi bi-search"></i>&nbsp; Buscar</button>
-                <button type="submit" class="btn btn-secondary" (click)="onLimpiarClick()">
+            <div class="clearfix mb-2">
+                <button type="submit" class="btn btn-secondary float-right" (click)="onLimpiarClick()">
                     <i class="bi bi-x-circle"></i>&nbsp; Limpiar</button>
+                <button type="submit" class="btn btn-primary mr-1 float-right">
+                    <i class="bi bi-search"></i>&nbsp; Buscar</button>
             </div>
         </form>
     </div>

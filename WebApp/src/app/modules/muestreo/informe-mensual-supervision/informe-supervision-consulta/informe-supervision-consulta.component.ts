@@ -195,7 +195,12 @@ export class InformeSupervisionConsultaComponent
     if (this.informeId != 0 && this.informeId != null) {
       this.informeSupervisionService.deleteInforme(this.informeId).subscribe({
         next: (response: any) => {
-          alert('eliminado');
+          this.informeSupervisionService.updateMensaje({
+            tipoMensaje: TipoMensaje.Correcto,
+            mensaje: 'Registro eliminado correctamente',
+            mostrar: true,
+          });
+          this.getInformes();
         },
         error: (error) => {},
       });
