@@ -34,9 +34,9 @@ export class InformeSupervisionComponent implements OnInit {
     private router: Router
   ) {
     this.registroForm = this.formBuilder.group({
-      memorando: ['No. BOO_B1208.3-08/2012', Validators.required],
-      lugar: ['Guadalajara Jalisco', Validators.required],
-      fecha: ['2023-09-26', Validators.required],
+      memorando: ['', Validators.required],
+      lugar: ['', Validators.required],
+      fecha: ['', Validators.required],
       responsable: [0, [Validators.required]],
       puesto: ['', Validators.required],
       nombreCopia: [''],
