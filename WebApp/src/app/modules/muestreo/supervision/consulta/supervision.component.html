@@ -115,15 +115,15 @@
                         <td>{{supervision.tipoCuerpoAgua}}</td>
                         <td>{{supervision.puntajeObtenido}}</td>
                         <td>
-                            <button type="button" class="btn-action btn-primary-action" title="Editar">
-                                <i class="bi bi-pencil-square icon-action" (click)="onEditClick(supervision.id)"></i>
+                            <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"
+                                (click)="onEditClick(supervision.id)"><i class="bi bi-pencil-square icon-action"></i>
                             </button>
                             <!-- <div class="btn btn-group"> -->
-                            <button type="button" class="btn-action btn-info-action" title="Ver">
-                                <i class="bi bi-eye" (click)="onViewClick(supervision.id)"></i>
+                            <button type="button" class="btn-action btn-info-action mr-1" title="Ver"
+                                (click)="onViewClick(supervision.id)"><i class="bi bi-eye"></i>
                             </button>
-                            <button type="button" class="btn-action btn-danger-action" title="Eliminar">
-                                <i class="bi bi-trash" (click)="onDeleteClick(supervision.id)"></i>
+                            <button type="button" class="btn-action btn-danger-action" title="Eliminar"
+                                (click)="onDeleteClick(supervision.id)"><i class="bi bi-trash"></i>
                             </button>
 
                             <!-- </div> -->

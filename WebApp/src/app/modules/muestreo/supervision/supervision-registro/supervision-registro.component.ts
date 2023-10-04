@@ -59,6 +59,12 @@ export class SupervisionRegistroComponent
       this.esConsulta = data;
     });
 
+    this.supervisionService.updateMensaje({
+      tipoMensaje: '',
+      mensaje: '',
+      mostrar: false,
+    });
+
     if (this.supervisionId !== 0) {
       this.supervisionService.getSupervision(this.supervisionId).subscribe({
         next: (response: any) => {
@@ -250,7 +256,10 @@ export class SupervisionRegistroComponent
 
         if (reemplazarClaveMuestreo) {
           this.supervisionForm.patchValue({
-            claveMuestreo: this.sitio.claveSitio + '-',
+            claveMuestreo:
+              this.sitio.clavesMuestreo === undefined
+                ? ''
+                : this.sitio.clavesMuestreo[0],
           });
         }
       },
@@ -384,11 +393,12 @@ export class SupervisionRegistroComponent
         .subscribe({
           next: (response: any) => {
             this.supervisionService.updateSupervisionId(0);
+            this.supervisionService.updateMensaje({
+              tipoMensaje: TipoMensaje.Correcto,
+              mensaje: 'Supervisión de muestreo guardado correctamente',
+              mostrar: true,
+            });
             this.router.navigate(['/supervision-muestreo']);
-            this.mostrarMensaje(
-              'Supervisión de muestreo registrada correctamente',
-              TipoMensaje.Correcto
-            );
           },
           error: (error) => {
             console.log(error);
@@ -479,10 +489,6 @@ export class SupervisionRegistroComponent
         if (response.succeded) {
           this.supervision.id = response.data.supervisionMuestreoId;
           this.hacerScroll();
-          this.mostrarMensaje(
-            'Supervisión de muestreo guardada correctamente.',
-            TipoMensaje.Correcto
-          );
           if (
             this.supervision.archivoPdfSupervision != null ||
             (this.supervision.archivosEvidencias != null &&
@@ -492,6 +498,11 @@ export class SupervisionRegistroComponent
             this.uploadArchivosSupervision();
           } else {
             this.supervisionService.updateSupervisionId(0);
+            this.supervisionService.updateMensaje({
+              tipoMensaje: TipoMensaje.Correcto,
+              mensaje: 'Supervisión de muestreo guardado correctamente.',
+              mostrar: true,
+            });
             this.router.navigate(['/supervision-muestreo']);
           }
         }

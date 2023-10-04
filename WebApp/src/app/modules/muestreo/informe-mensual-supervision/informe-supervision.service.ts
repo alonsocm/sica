@@ -163,4 +163,13 @@ export class InformeSupervisionService {
       { responseType: 'blob' }
     );
   }
+
+  deleteInforme(informe: number) {
+    let params = new HttpParams().set('informe', informe);
+
+    return this.http.delete(
+      environment.apiUrl + '/ReporteSupervisionMuestreo',
+      { params }
+    );
+  }
 }

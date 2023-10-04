@@ -14,6 +14,12 @@ export class SupervisionService {
   private esConsultaDataSource = new BehaviorSubject(false);
   public supervisionId = this.supervisionIdDataSource.asObservable();
   public esConsulta = this.esConsultaDataSource.asObservable();
+  private mensajeDataSource = new BehaviorSubject({
+    tipoMensaje: '',
+    mensaje: '',
+    mostrar: false,
+  });
+  public mensaje = this.mensajeDataSource.asObservable();
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -23,6 +29,14 @@ export class SupervisionService {
 
   updateEsConsulta(value: boolean) {
     this.esConsultaDataSource.next(value);
+  }
+
+  updateMensaje(value: {
+    tipoMensaje: string;
+    mensaje: string;
+    mostrar: boolean;
+  }) {
+    this.mensajeDataSource.next(value);
   }
 
   getSupervisiones(supervision: SupervisionBusqueda) {

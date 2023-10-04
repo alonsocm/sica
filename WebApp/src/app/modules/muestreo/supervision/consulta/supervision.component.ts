@@ -36,6 +36,11 @@ export class SupervisionComponent extends BaseService implements OnInit {
     private supervisionService: SupervisionService
   ) {
     super();
+    this.supervisionService.mensaje.subscribe((data) => {
+      if (data.mostrar) {
+        this.mostrarMensaje(data.mensaje, data.tipoMensaje);
+      }
+    });
   }
 
   supervisionBusquedaForm = new FormGroup({

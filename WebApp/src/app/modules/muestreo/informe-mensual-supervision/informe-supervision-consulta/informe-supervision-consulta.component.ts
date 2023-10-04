@@ -93,8 +93,6 @@ export class InformeSupervisionConsultaComponent
     document.getElementById('btnUploadInforme')?.click();
   }
 
-  onDeleteClick(registro: number) {}
-
   getFormValues() {
     let criteriosBusqueda: InformeMensualSupervisionRegistro = {
       id: 1,
@@ -186,5 +184,21 @@ export class InformeSupervisionConsultaComponent
         },
         error: (error) => {},
       });
+  }
+
+  onDeleteClick(informe: number) {
+    this.informeId = informe;
+    document.getElementById('btn-confirm-modal')?.click();
+  }
+
+  onConfirmDeleteClick() {
+    if (this.informeId != 0 && this.informeId != null) {
+      this.informeSupervisionService.deleteInforme(this.informeId).subscribe({
+        next: (response: any) => {
+          alert('eliminado');
+        },
+        error: (error) => {},
+      });
+    }
   }
 }
