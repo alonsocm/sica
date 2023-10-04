@@ -13,5 +13,6 @@ namespace Application.Interfaces.IRepositories
         Task<List<string>> GetLugaresInformeMensual();
         Task<List<string>> GetMemorandoInformeMensual();
         Task<ArchivoInformeMensualSupervision> GetArchivoInformeMensual(long informeId, int tipo = 1);
+        Task<bool> DeleteInformeMensualAsync(long informeId);
     }
 }

@@ -21,6 +21,12 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new UpdateInformeMensualSupervision { Informe = informe, InformeId = informeId }));
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> Delete(long informe)
+        {
+            return Ok(await Mediator.Send(new DeleteInformeMensualSupervision { InformeId = informe }));
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get(long informe)
         {

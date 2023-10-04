@@ -253,5 +253,21 @@ namespace Persistence.Repository
         {
             return _dbContext.ArchivoInformeMensualSupervision.FirstAsync(x => x.InformeMensualSupervisionId == informeId && x.TipoArchivoInformeMensualSupervisionId == tipo);
         }
+
+        public async Task<bool> DeleteInformeMensualAsync(long informeId)
+        {
+            var informe = await _dbContext.InformeMensualSupervision
+                .Include(x => x.ArchivoInformeMensualSupervision)
+                .Include(x => x.CopiaInformeMensualSupervision)
+                .FirstAsync(x => x.Id == informeId);
+
+            _dbContext.RemoveRange(informe.ArchivoInformeMensualSupervision);
+            _dbContext.RemoveRange(informe.CopiaInformeMensualSupervision);
+            _=_dbContext.Remove(informe);
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
