@@ -7,7 +7,7 @@ import { InformeSupervisionService } from '../informe-supervision.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { DirectorResponsable } from '../../supervision/models/director-responsable';
 import { NotificationService } from 'src/app/shared/services/notification.service';
-import { NotificationType } from 'src/app/shared/models/notification-type';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
 
 @Component({
   selector: 'app-informe-supervision-consulta',

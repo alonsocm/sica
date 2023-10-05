@@ -17,7 +17,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { Router } from '@angular/router';
 import { FileService } from 'src/app/shared/services/file.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
-import { NotificationType } from 'src/app/shared/models/notification-type';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
 
 @Component({
   selector: 'app-supervision-registro',
