@@ -33,7 +33,7 @@ import { ReglasValidarComponent } from './modules/muestreo/validacion/pages/regl
 import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/maximo-comun/maximo-comun.component';
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
-import { SupervisionComponent } from './modules/muestreo/supervision/consulta/supervision.component';
+import { SupervisionConsultaComponent } from './modules/muestreo/supervision/consulta/supervision-consulta.component';
 import { SupervisionRegistroComponent } from './modules/muestreo/supervision/supervision-registro/supervision-registro.component';
 import { InformeSupervisionComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision/informe-supervision.component';
 import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision-consulta/informe-supervision-consulta.component';
@@ -211,8 +211,8 @@ const routes: Routes = [
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   {
-    path: 'supervision-muestreo',
-    component: SupervisionComponent,
+    path: 'supervision-muestreo-consulta',
+    component: SupervisionConsultaComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   {

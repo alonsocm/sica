@@ -15,11 +15,11 @@ import { Sitio } from '../models/sitio';
 import { SupervisionBusqueda } from '../models/supervision-busqueda';
 
 @Component({
-  selector: 'app-supervision',
-  templateUrl: './supervision.component.html',
-  styleUrls: ['./supervision.component.css'],
+  selector: 'app-supervision-consulta',
+  templateUrl: './supervision-consulta.component.html',
+  styleUrls: ['./supervision-consulta.component.css'],
 })
-export class SupervisionComponent extends BaseService implements OnInit {
+export class SupervisionConsultaComponent extends BaseService implements OnInit {
   organismosDirecciones: Array<OrganismoDireccion> = [];
   laboratorios: Array<Laboratorio> = [];
   tiposCuerpoAgua: Array<TipoCuerpoAgua> = [];
