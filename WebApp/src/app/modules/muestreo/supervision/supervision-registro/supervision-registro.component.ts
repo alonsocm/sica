@@ -17,6 +17,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { Router } from '@angular/router';
 import { FileService } from 'src/app/shared/services/file.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -47,7 +48,8 @@ export class SupervisionRegistroComponent
 
   constructor(
     private router: Router,
-    private supervisionService: SupervisionService
+    private supervisionService: SupervisionService,
+    private notificationService: NotificationService
   ) {
     super();
 
@@ -57,12 +59,6 @@ export class SupervisionRegistroComponent
 
     this.supervisionService.esConsulta.subscribe((data) => {
       this.esConsulta = data;
-    });
-
-    this.supervisionService.updateMensaje({
-      tipoMensaje: '',
-      mensaje: '',
-      mostrar: false,
     });
 
     if (this.supervisionId !== 0) {
@@ -393,20 +389,21 @@ export class SupervisionRegistroComponent
         .subscribe({
           next: (response: any) => {
             this.supervisionService.updateSupervisionId(0);
-            this.supervisionService.updateMensaje({
-              tipoMensaje: TipoMensaje.Correcto,
-              mensaje: 'Supervisión de muestreo guardado correctamente',
-              mostrar: true,
+            this.notificationService.updateNotification({
+              type: TipoMensaje.Correcto,
+              text: 'Supervisión de muestreo guardado correctamente',
+              show: true,
             });
             this.router.navigate(['/supervision-muestreo']);
           },
           error: (error) => {
             console.log(error);
             this.hacerScroll();
-            this.mostrarMensaje(
-              'Error al guardar los archivos de supervisión de muestreo',
-              TipoMensaje.Error
-            );
+            this.notificationService.updateNotification({
+              text: 'Error al guardar los archivos de supervisión de muestreo',
+              type: TipoMensaje.Error,
+              show: true,
+            });
           },
         });
     }
@@ -472,10 +469,12 @@ export class SupervisionRegistroComponent
       this.hacerScroll();
       return;
     } else if (this.validateCriteriosObligatorios()) {
-      this.mostrarMensaje(
-        'Se encontraron criterios obligatorios marcados como "NO CUMPLE". Es necesario capturar las observaciones.',
-        TipoMensaje.Alerta
-      );
+      this.notificationService.updateNotification({
+        text: 'Se encontraron criterios obligatorios marcados como "NO CUMPLE". Es necesario capturar las observaciones.',
+        type: TipoMensaje.Alerta,
+        show: true,
+      });
+
       this.hacerScroll();
       return;
     } else if (this.validateArchivoSupervision()) {
@@ -498,10 +497,10 @@ export class SupervisionRegistroComponent
             this.uploadArchivosSupervision();
           } else {
             this.supervisionService.updateSupervisionId(0);
-            this.supervisionService.updateMensaje({
-              tipoMensaje: TipoMensaje.Correcto,
-              mensaje: 'Supervisión de muestreo guardado correctamente.',
-              mostrar: true,
+            this.notificationService.updateNotification({
+              type: TipoMensaje.Correcto,
+              text: 'Supervisión de muestreo guardado correctamente.',
+              show: true,
             });
             this.router.navigate(['/supervision-muestreo']);
           }
@@ -509,10 +508,11 @@ export class SupervisionRegistroComponent
       },
       error: (error) => {
         this.hacerScroll();
-        this.mostrarMensaje(
-          'Error al guardar supervisión de muestreo',
-          TipoMensaje.Error
-        );
+        this.notificationService.updateNotification({
+          text: 'Error al guardar supervisión de muestreo',
+          type: TipoMensaje.Error,
+          show: true,
+        });
       },
     });
   }

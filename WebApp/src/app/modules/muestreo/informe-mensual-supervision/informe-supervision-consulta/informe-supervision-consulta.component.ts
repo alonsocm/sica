@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { InformeSupervisionService } from '../informe-supervision.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { DirectorResponsable } from '../../supervision/models/director-responsable';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-informe-supervision-consulta',
@@ -28,7 +29,8 @@ export class InformeSupervisionConsultaComponent
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private informeSupervisionService: InformeSupervisionService
+    private informeSupervisionService: InformeSupervisionService,
+    private notificacionService: NotificationService
   ) {
     super();
     this.informeSupervisionService.mensaje.subscribe((data) => {
@@ -64,7 +66,6 @@ export class InformeSupervisionConsultaComponent
     let criteriosBusqueda = this.getFormValues();
     this.informeSupervisionService.getInformes(criteriosBusqueda).subscribe({
       next: (response: any) => {
-        console.table(response.data);
         this.registrosInformeMensual = response.data;
       },
       error: (error) => {},
@@ -195,10 +196,10 @@ export class InformeSupervisionConsultaComponent
     if (this.informeId != 0 && this.informeId != null) {
       this.informeSupervisionService.deleteInforme(this.informeId).subscribe({
         next: (response: any) => {
-          this.informeSupervisionService.updateMensaje({
-            tipoMensaje: TipoMensaje.Correcto,
-            mensaje: 'Registro eliminado correctamente',
-            mostrar: true,
+          this.notificacionService.updateNotification({
+            type: TipoMensaje.Correcto,
+            text: 'Registro eliminado correctamente',
+            show: true,
           });
           this.getInformes();
         },

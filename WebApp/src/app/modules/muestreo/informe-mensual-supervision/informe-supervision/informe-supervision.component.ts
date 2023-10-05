@@ -9,6 +9,7 @@ import { InformeMensualSupervisionGeneral } from '../models/informe-mensual-supe
 import { Router } from '@angular/router';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { DirectorResponsable } from '../../supervision/models/director-responsable';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -31,7 +32,8 @@ export class InformeSupervisionComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private informeSupervisionService: InformeSupervisionService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {
     this.registroForm = this.formBuilder.group({
       memorando: ['', Validators.required],
@@ -46,12 +48,6 @@ export class InformeSupervisionComponent implements OnInit {
         [Validators.required, Validators.pattern(/^[a-zA-Z/]*$/)],
       ],
       mes: [1, [Validators.required, Validators.min(1)]],
-    });
-
-    this.informeSupervisionService.updateMensaje({
-      tipoMensaje: '',
-      mensaje: '',
-      mostrar: false,
     });
 
     this.informeSupervisionService.informeId.subscribe((data) => {
@@ -273,10 +269,10 @@ export class InformeSupervisionComponent implements OnInit {
       if (this.informeId === 0) {
         this.informeSupervisionService.postInforme(datosOficio).subscribe({
           next: (response: any) => {
-            this.informeSupervisionService.updateMensaje({
-              tipoMensaje: TipoMensaje.Correcto,
-              mensaje: 'Informe creado correctamente',
-              mostrar: true,
+            this.notificationService.updateNotification({
+              type: TipoMensaje.Correcto,
+              text: 'Informe creado correctamente',
+              show: true,
             });
             this.router.navigate(['/informe-mensual-supervision-consulta']);
           },
@@ -287,10 +283,10 @@ export class InformeSupervisionComponent implements OnInit {
           .putInforme(datosOficio, String(this.informeId))
           .subscribe({
             next: (response: any) => {
-              this.informeSupervisionService.updateMensaje({
-                tipoMensaje: TipoMensaje.Correcto,
-                mensaje: 'Informe actualizado correctamente',
-                mostrar: true,
+              this.notificationService.updateNotification({
+                type: TipoMensaje.Correcto,
+                text: 'Informe actualizado correctamente',
+                show: true,
               });
               this.router.navigate(['/informe-mensual-supervision-consulta']);
             },
