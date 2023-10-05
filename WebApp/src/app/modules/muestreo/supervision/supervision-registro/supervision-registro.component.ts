@@ -14,10 +14,10 @@ import { Muestreador } from '../models/muestreador';
 import { Laboratorio } from '../models/laboratorio';
 import { Sitio } from '../models/sitio';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { Router } from '@angular/router';
 import { FileService } from 'src/app/shared/services/file.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from 'src/app/shared/models/notification-type';
 
 @Component({
   selector: 'app-supervision-registro',
@@ -390,7 +390,7 @@ export class SupervisionRegistroComponent
           next: (response: any) => {
             this.supervisionService.updateSupervisionId(0);
             this.notificationService.updateNotification({
-              type: TipoMensaje.Correcto,
+              type: NotificationType.success,
               text: 'Supervisión de muestreo guardado correctamente',
               show: true,
             });
@@ -401,7 +401,7 @@ export class SupervisionRegistroComponent
             this.hacerScroll();
             this.notificationService.updateNotification({
               text: 'Error al guardar los archivos de supervisión de muestreo',
-              type: TipoMensaje.Error,
+              type: NotificationType.danger,
               show: true,
             });
           },
@@ -471,7 +471,7 @@ export class SupervisionRegistroComponent
     } else if (this.validateCriteriosObligatorios()) {
       this.notificationService.updateNotification({
         text: 'Se encontraron criterios obligatorios marcados como "NO CUMPLE". Es necesario capturar las observaciones.',
-        type: TipoMensaje.Alerta,
+        type: NotificationType.alert,
         show: true,
       });
 
@@ -498,7 +498,7 @@ export class SupervisionRegistroComponent
           } else {
             this.supervisionService.updateSupervisionId(0);
             this.notificationService.updateNotification({
-              type: TipoMensaje.Correcto,
+              type: NotificationType.success,
               text: 'Supervisión de muestreo guardado correctamente.',
               show: true,
             });
@@ -510,7 +510,7 @@ export class SupervisionRegistroComponent
         this.hacerScroll();
         this.notificationService.updateNotification({
           text: 'Error al guardar supervisión de muestreo',
-          type: TipoMensaje.Error,
+          type: NotificationType.danger,
           show: true,
         });
       },

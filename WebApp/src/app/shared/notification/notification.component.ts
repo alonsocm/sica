@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationModel } from '../models/notification-model';
 import { NotificationService } from '../services/notification.service';
+import { NotificationType } from '../models/notification-type';
 
 @Component({
   selector: 'app-notification',
@@ -8,7 +9,7 @@ import { NotificationService } from '../services/notification.service';
   styleUrls: ['./notification.component.css'],
 })
 export class NotificationComponent implements OnInit {
-  alert: NotificationModel = { text: '', type: '', show: false };
+  alert: NotificationModel = { show: false };
 
   constructor(private notificationService: NotificationService) {
     this.notificationService.notification.subscribe((notification) => {
@@ -21,7 +22,7 @@ export class NotificationComponent implements OnInit {
           this.notificationService.updateNotification({
             show: false,
             text: '',
-            type: '',
+            type: NotificationType.success,
           });
         }, 10000);
       }
@@ -33,8 +34,6 @@ export class NotificationComponent implements OnInit {
   close() {
     this.notificationService.updateNotification({
       show: false,
-      text: '',
-      type: '',
     });
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { NotificationModel } from '../models/notification-model';
+import { NotificationType } from '../models/notification-type';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +9,7 @@ import { NotificationModel } from '../models/notification-model';
 export class NotificationService {
   private notificationDataSource = new BehaviorSubject<NotificationModel>({
     show: false,
-    type: '',
+    type: NotificationType.success,
     text: '',
   });
 

@@ -7,9 +7,9 @@ import { ReporteMensualSupervisionDefinition } from './reporte-mensual-supervisi
 import { InformeSupervisionService } from '../informe-supervision.service';
 import { InformeMensualSupervisionGeneral } from '../models/informe-mensual-supervision-general';
 import { Router } from '@angular/router';
-import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { DirectorResponsable } from '../../supervision/models/director-responsable';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from 'src/app/shared/models/notification-type';
 (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -270,7 +270,7 @@ export class InformeSupervisionComponent implements OnInit {
         this.informeSupervisionService.postInforme(datosOficio).subscribe({
           next: (response: any) => {
             this.notificationService.updateNotification({
-              type: TipoMensaje.Correcto,
+              type: NotificationType.success,
               text: 'Informe creado correctamente',
               show: true,
             });
@@ -284,7 +284,7 @@ export class InformeSupervisionComponent implements OnInit {
           .subscribe({
             next: (response: any) => {
               this.notificationService.updateNotification({
-                type: TipoMensaje.Correcto,
+                type: NotificationType.success,
                 text: 'Informe actualizado correctamente',
                 show: true,
               });

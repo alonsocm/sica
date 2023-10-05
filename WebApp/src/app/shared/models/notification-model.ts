@@ -1,5 +1,7 @@
+import { NotificationType } from './notification-type';
+
 export interface NotificationModel {
   show: boolean;
-  type: string;
-  text: string;
+  type?: NotificationType;
+  text?: string;
 }
