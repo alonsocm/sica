@@ -11,6 +11,10 @@ public partial class OrganismoCuenca
 
     public string Clave { get; set; } = null!;
 
+    public string Direccion { get; set; } = null!;
+
+    public string Telefono { get; set; } = null!;
+
     public virtual ICollection<CuencaDireccionesLocales> CuencaDireccionesLocales { get; set; } = new List<CuencaDireccionesLocales>();
 
     public virtual ICollection<Directorio> Directorio { get; set; } = new List<Directorio>();
