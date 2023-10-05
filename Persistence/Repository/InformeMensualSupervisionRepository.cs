@@ -17,7 +17,7 @@ namespace Persistence.Repository
         {
             InformeMensualSupervisionDto informe = new InformeMensualSupervisionDto();
             informe.Atencion = _dbContext.DestinatariosAtencion.Where(x => x.Activo == true).ToListAsync().Result.Select(x => x.Descripcion).ToList();
-            informe.GerenteCalidadAgua = _dbContext.Directorio.Where(x => x.PuestoId == (int)Application.Enums.Puestos.GerenteCalidadAgua).FirstOrDefault().Nombre ?? string.Empty;
+            informe.GerenteCalidadAgua = _dbContext.Directorio.Where(x => x.PuestoId == (int)Application.Enums.Puestos.SubgerenteRedNacionalMediciónCalidadAgua).FirstOrDefault().Nombre ?? string.Empty;
             var plantilla = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == anioReporte).FirstOrDefault();
             informe.Contrato = plantilla.Contrato;
             informe.DenominacionContrato = plantilla.DenominacionContrato;
@@ -29,8 +29,11 @@ namespace Persistence.Repository
                 List<long> ocdlExistentes = new();
                 var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Year == Convert.ToInt32(anioRegistro) && x.FechaRegistro.Month == mes && x.Ocid == ocId).ToList();
 
+
                 if (resultados != null)
                 {
+                    informe.DireccionOC = resultados.FirstOrDefault().Direccion;
+                    informe.TelefonoOC = resultados.FirstOrDefault().Telefono;
                     var resultadosInforme = (from r in resultados
                                              orderby r.OrganismoCuencaDireccionLocal
                                              group new { r } by new
@@ -263,7 +266,7 @@ namespace Persistence.Repository
 
             _dbContext.RemoveRange(informe.ArchivoInformeMensualSupervision);
             _dbContext.RemoveRange(informe.CopiaInformeMensualSupervision);
-            _=_dbContext.Remove(informe);
+            _ = _dbContext.Remove(informe);
 
             await _dbContext.SaveChangesAsync();
 

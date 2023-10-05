@@ -15,6 +15,9 @@
         public string Indicaciones { get; set; }
         public List<ResultadoInformeDto> Resultados { get; set; }
 
+        public string DireccionOC { get; set; }
+        public string TelefonoOC { get; set; }
+
         public InformeMensualSupervisionDto()
         {
             this.Oficio = string.Empty;
@@ -29,6 +32,8 @@
             this.NumeroSitios = string.Empty;
             this.Indicaciones = string.Empty;
             this.Resultados = new List<ResultadoInformeDto>();
+            this.DireccionOC = string.Empty;
+            this.TelefonoOC = string.Empty;
         }
     }
 

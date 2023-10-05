@@ -6,6 +6,7 @@
         EncargadoSubdirecciónTecnica = 2,
         JefeDepartamentoAguasSuperficiales = 3,
         SubdirectorTecnico = 4,
-        GerenteCalidadAgua = 5
+        GerenteCalidadAgua = 5,
+        SubgerenteRedNacionalMediciónCalidadAgua = 6
     }
 }
