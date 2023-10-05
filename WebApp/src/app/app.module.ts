@@ -22,7 +22,6 @@ import { NotFoundComponent } from './core/pages/not-found/not-found.component';
 import { NavChildComponent } from './shared/navigation/nav-child/nav-child.component';
 import { CargaComponent } from './modules/muestreo/liberacion/pages/carga/carga.component';
 import { ValidadosComponent } from './modules/muestreo/revision/OCDL/resultados-validados/pages/validados/validados.component';
-import { TablaComponent } from './shared/tablaGral/tabla/tabla.component';
 import { ResumenComponent } from './modules/muestreo/revision/OCDL/resultados-resumen/pages/resumen/resumen.component';
 import { AlertComponent } from './shared/alert/alert.component';
 import { TotalComponent } from './modules/muestreo/revision/OCDL/resultados-total/pages/total/total.component';
@@ -68,7 +67,6 @@ import { NotificationComponent } from './shared/notification/notification.compon
     NavChildComponent,
     CargaComponent,
     ValidadosComponent,
-    TablaComponent,
     ResumenComponent,
     AlertComponent,
     TotalComponent,
