@@ -20,11 +20,11 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { NotificationType } from 'src/app/shared/enums/notification-type';
 
 @Component({
-  selector: 'app-supervision-registro',
-  templateUrl: './supervision-registro.component.html',
-  styleUrls: ['./supervision-registro.component.css'],
+  selector: 'app-supervision-muestreo',
+  templateUrl: './supervision-muestreo.component.html',
+  styleUrls: ['./supervision-muestreo.component.css'],
 })
-export class SupervisionRegistroComponent
+export class SupervisionMuestreoComponent
   extends BaseService
   implements OnInit
 {
@@ -394,7 +394,7 @@ export class SupervisionRegistroComponent
               text: 'Supervisión de muestreo guardado correctamente',
               show: true,
             });
-            this.router.navigate(['/supervision-muestreo']);
+            this.router.navigate(['/supervision-muestreo-consulta']);
           },
           error: (error) => {
             console.log(error);
@@ -502,7 +502,7 @@ export class SupervisionRegistroComponent
               text: 'Supervisión de muestreo guardado correctamente.',
               show: true,
             });
-            this.router.navigate(['/supervision-muestreo']);
+            this.router.navigate(['/supervision-muestreo-consulta']);
           }
         }
       },
@@ -585,7 +585,7 @@ export class SupervisionRegistroComponent
 
   onCancelarClick() {
     this.supervisionService.updateSupervisionId(0);
-    this.router.navigate(['/supervision-muestreo']);
+    this.router.navigate(['/supervision-muestreo-consulta']);
   }
 
   existeClaveMuestreo(claveMuestreo: string) {

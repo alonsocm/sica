@@ -15,11 +15,14 @@ import { Sitio } from '../models/sitio';
 import { SupervisionBusqueda } from '../models/supervision-busqueda';
 
 @Component({
-  selector: 'app-supervision-consulta',
-  templateUrl: './supervision-consulta.component.html',
-  styleUrls: ['./supervision-consulta.component.css'],
+  selector: 'app-supervision-muestreo-consulta',
+  templateUrl: './supervision-muestreo-consulta.component.html',
+  styleUrls: ['./supervision-muestreo-consulta.component.css'],
 })
-export class SupervisionConsultaComponent extends BaseService implements OnInit {
+export class SupervisionMuestreoConsultaComponent
+  extends BaseService
+  implements OnInit
+{
   organismosDirecciones: Array<OrganismoDireccion> = [];
   laboratorios: Array<Laboratorio> = [];
   tiposCuerpoAgua: Array<TipoCuerpoAgua> = [];
@@ -252,18 +255,18 @@ export class SupervisionConsultaComponent extends BaseService implements OnInit 
   }
 
   registrarSupervision() {
-    this.router.navigate(['/supervision-muestreo-registro']);
+    this.router.navigate(['/supervision-muestreo']);
   }
 
   onEditClick(supervision: number) {
     this.supervisionService.updateSupervisionId(supervision);
-    this.router.navigate(['/supervision-muestreo-registro']);
+    this.router.navigate(['/supervision-muestreo']);
   }
 
   onViewClick(supervision: number) {
     this.supervisionService.updateSupervisionId(supervision);
     this.supervisionService.updateEsConsulta(true);
-    this.router.navigate(['/supervision-muestreo-registro']);
+    this.router.navigate(['/supervision-muestreo']);
   }
 
   onDeleteClick(supervision: number) {

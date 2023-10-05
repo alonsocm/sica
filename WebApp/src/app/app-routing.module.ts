@@ -33,8 +33,8 @@ import { ReglasValidarComponent } from './modules/muestreo/validacion/pages/regl
 import { MaximoComunComponent } from './modules/muestreo/sustitucion-limites/maximo-comun/maximo-comun.component';
 import { LaboratorioComponent } from './modules/muestreo/sustitucion-limites/laboratorio/laboratorio.component';
 import { EmergenciaComponent } from './modules/muestreo/sustitucion-limites/emergencia/emergencia.component';
-import { SupervisionConsultaComponent } from './modules/muestreo/supervision/consulta/supervision-consulta.component';
-import { SupervisionRegistroComponent } from './modules/muestreo/supervision/supervision-registro/supervision-registro.component';
+import { SupervisionMuestreoConsultaComponent } from './modules/muestreo/supervision/supervision-muestreo-consulta/supervision-muestreo-consulta.component';
+import { SupervisionMuestreoComponent } from './modules/muestreo/supervision/supervision-muestreo/supervision-muestreo.component';
 import { InformeSupervisionComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision/informe-supervision.component';
 import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision-consulta/informe-supervision-consulta.component';
 
@@ -212,12 +212,12 @@ const routes: Routes = [
   },
   {
     path: 'supervision-muestreo-consulta',
-    component: SupervisionConsultaComponent,
+    component: SupervisionMuestreoConsultaComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   {
-    path: 'supervision-muestreo-registro',
-    component: SupervisionRegistroComponent,
+    path: 'supervision-muestreo',
+    component: SupervisionMuestreoComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   {
