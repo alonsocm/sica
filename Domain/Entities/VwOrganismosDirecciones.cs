@@ -12,4 +12,8 @@ public partial class VwOrganismosDirecciones
     public long OrganismoCuencaId { get; set; }
 
     public string NombreOrganismoCuenca { get; set; } = null!;
+
+    public string Direccion { get; set; } = null!;
+
+    public string Telefono { get; set; } = null!;
 }

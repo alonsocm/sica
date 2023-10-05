@@ -13,6 +13,10 @@ public partial class VwIntervalosTotalesOcDl
 
     public decimal PuntajeObtenido { get; set; }
 
+    public string Direccion { get; set; } = null!;
+
+    public string Telefono { get; set; } = null!;
+
     public int? _50 { get; set; }
 
     public int? _5160 { get; set; }

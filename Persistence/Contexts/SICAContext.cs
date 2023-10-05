@@ -1437,6 +1437,7 @@ public partial class SicaContext : DbContext
                 .HasNoKey()
                 .ToView("VwIntervalosTotalesOC_DL");
 
+            entity.Property(e => e.Direccion).HasMaxLength(300);
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
             entity.Property(e => e.Ocdlid).HasColumnName("OCDLId");
             entity.Property(e => e.Ocid).HasColumnName("OCId");
@@ -1444,6 +1445,7 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(201)
                 .IsUnicode(false);
             entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e.Telefono).HasMaxLength(14);
             entity.Property(e => e._50).HasColumnName("<50");
             entity.Property(e => e._5160).HasColumnName("51-60");
             entity.Property(e => e._6170).HasColumnName("61-70");
@@ -1494,12 +1496,14 @@ public partial class SicaContext : DbContext
                 .HasNoKey()
                 .ToView("VwOrganismosDirecciones");
 
+            entity.Property(e => e.Direccion).HasMaxLength(300);
             entity.Property(e => e.NombreOrganismoCuenca)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.OrganismoCuencaDireccionLocal)
                 .HasMaxLength(201)
                 .IsUnicode(false);
+            entity.Property(e => e.Telefono).HasMaxLength(14);
         });
 
         modelBuilder.Entity<VwReplicaRevisionResultado>(entity =>
