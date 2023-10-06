@@ -15,25 +15,28 @@ namespace Persistence.Repository
 
         public InformeMensualSupervisionDto GetInformeMensualPorAnioMes(string anioReporte, string? anioRegistro, int? mes, long? ocId)
         {
-            InformeMensualSupervisionDto informe = new InformeMensualSupervisionDto();
-            informe.Atencion = _dbContext.DestinatariosAtencion.Where(x => x.Activo == true).ToListAsync().Result.Select(x => x.Descripcion).ToList();
-            informe.GerenteCalidadAgua = _dbContext.Directorio.Where(x => x.PuestoId == (int)Application.Enums.Puestos.SubgerenteRedNacionalMediciónCalidadAgua).FirstOrDefault().Nombre ?? string.Empty;
-            var plantilla = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == anioReporte).FirstOrDefault();
-            informe.Contrato = plantilla.Contrato;
-            informe.DenominacionContrato = plantilla.DenominacionContrato;
-            informe.NumeroSitios = plantilla.SitiosMiniMax;
-            informe.Indicaciones = plantilla.Indicaciones;
+            var plantilla = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == anioReporte).FirstOrDefault()??throw new KeyNotFoundException("No se encontró una plantilla para el año especificado");
+            var oc = _dbContext.OrganismoCuenca.Where(x => x.Id == ocId).FirstOrDefault()??throw new KeyNotFoundException("No se encontró información del OC especificado");
+
+            InformeMensualSupervisionDto informe = new()
+            {
+                Atencion = _dbContext.DestinatariosAtencion.Where(x => x.Activo == true).Select(x => x.Descripcion).ToList(),
+                GerenteCalidadAgua = _dbContext.Directorio.Where(x => x.PuestoId == (int)Application.Enums.Puestos.SubgerenteRedNacionalMediciónCalidadAgua).FirstOrDefault()?.Nombre ?? string.Empty,
+                Contrato = plantilla?.Contrato??"",
+                DenominacionContrato = plantilla?.DenominacionContrato??"",
+                NumeroSitios = plantilla?.SitiosMiniMax ?? "",
+                Indicaciones = plantilla?.Indicaciones ?? "",
+                DireccionOC = oc.Direccion,
+                TelefonoOC = oc.Telefono
+            };
 
             if (mes != null)
             {
                 List<long> ocdlExistentes = new();
                 var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Year == Convert.ToInt32(anioRegistro) && x.FechaRegistro.Month == mes && x.Ocid == ocId).ToList();
 
-
                 if (resultados != null)
                 {
-                    informe.DireccionOC = resultados.FirstOrDefault().Direccion;
-                    informe.TelefonoOC = resultados.FirstOrDefault().Telefono;
                     var resultadosInforme = (from r in resultados
                                              orderby r.OrganismoCuencaDireccionLocal
                                              group new { r } by new
