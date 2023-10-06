@@ -15,19 +15,21 @@ namespace Persistence.Repository
 
         public InformeMensualSupervisionDto GetInformeMensualPorAnioMes(string anioReporte, string? anioRegistro, int? mes, long? ocId)
         {
-            var plantilla = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == anioReporte).FirstOrDefault()??throw new KeyNotFoundException("No se encontró una plantilla para el año especificado");
-            var oc = _dbContext.OrganismoCuenca.Where(x => x.Id == ocId).FirstOrDefault()??throw new KeyNotFoundException("No se encontró información del OC especificado");
+            var plantilla = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == anioReporte).FirstOrDefault() ?? throw new KeyNotFoundException("No se encontró una plantilla para el año especificado");
+            var oc = _dbContext.OrganismoCuenca.Where(x => x.Id == ocId).FirstOrDefault() ?? throw new KeyNotFoundException("No se encontró información del OC especificado");
 
             InformeMensualSupervisionDto informe = new()
             {
                 Atencion = _dbContext.DestinatariosAtencion.Where(x => x.Activo == true).Select(x => x.Descripcion).ToList(),
                 GerenteCalidadAgua = _dbContext.Directorio.Where(x => x.PuestoId == (int)Application.Enums.Puestos.SubgerenteRedNacionalMediciónCalidadAgua).FirstOrDefault()?.Nombre ?? string.Empty,
-                Contrato = plantilla?.Contrato??"",
-                DenominacionContrato = plantilla?.DenominacionContrato??"",
+                Contrato = plantilla?.Contrato ?? "",
+                DenominacionContrato = plantilla?.DenominacionContrato ?? "",
                 NumeroSitios = plantilla?.SitiosMiniMax ?? "",
                 Indicaciones = plantilla?.Indicaciones ?? "",
                 DireccionOC = oc.Direccion,
-                TelefonoOC = oc.Telefono
+                TelefonoOC = oc.Telefono,
+                DireccionTecnica = oc.Descripcion
+
             };
 
             if (mes != null)
