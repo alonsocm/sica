@@ -29,7 +29,6 @@ namespace Persistence.Repository
                 DireccionOC = oc.Direccion,
                 TelefonoOC = oc.Telefono,
                 DireccionTecnica = oc.Descripcion
-
             };
 
             if (mes != null)

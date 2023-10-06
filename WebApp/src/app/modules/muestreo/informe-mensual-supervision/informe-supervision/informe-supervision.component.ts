@@ -313,7 +313,7 @@ export class InformeSupervisionComponent implements OnInit {
       oficio: this.registroForm.value.memorando,
       lugar: this.registroForm.value.lugar,
       fecha: this.getLongFormatDate(this.registroForm.value.fecha),
-      direccionTecnica: this.getDatosResponsable().ocDl,
+      direccionTecnica: this.datosPlantilla.direccionTecnica,
       gerenteCalidadAgua: this.datosPlantilla.gerenteCalidadAgua,
       mesReporte:
         new Date(this.registroForm.value.mes + '-01-' + '2023').toLocaleString(
