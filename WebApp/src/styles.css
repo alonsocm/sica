@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 body {
+    font-family: sans-serif;
     font-size: 17px;
     text-align: initial;
 }
 
 h1{
-    font-size: 2em;  
+    font-size: 2em;
 }
 
 h2{
@@ -32,6 +33,10 @@ hr.red {
     width: auto;
     font-size: 17px;
     padding: 10px 15px;
+}
+
+.btn-secondary{
+    font-family: sans-serif;
 }
 
 .btn-action {

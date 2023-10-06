@@ -1,7 +1,15 @@
 <app-menu></app-menu>
 <div class="container-fluid">
-    <h1 *ngIf="!this.esConsulta">{{this.supervisionId === 0 ? 'Registro de supervision de muestreo' : 'Edición de
-        supervisión de muestreo'}}</h1>
+    <div class="clearfix">
+        <div class="float-left">
+            <h1 *ngIf="!this.esConsulta">{{this.supervisionId === 0 ? 'Registro de supervision de muestreo' : 'Edición
+                de supervisión de muestreo'}}</h1>
+        </div>
+        <div class="float-right">
+            <button type="button" class="btn btn-secondary" (click)="onCancelarClick()"><i
+                    class="bi bi-box-arrow-left"></i> Regresar</button>
+        </div>
+    </div>
     <h1 *ngIf="this.esConsulta">Supervisión de muestreo</h1>
     <hr class="red">
     <app-notification></app-notification>

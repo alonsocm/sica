@@ -15,6 +15,8 @@ export interface InformeMensualSupervision {
   puestoFirma: string;
   copias: Array<{ nombre: string; puesto: string }>;
   personasInvolucradas: string;
+  direccionOC: string;
+  telefonoOC: string;
 }
 
 export interface Resultado {

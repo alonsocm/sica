@@ -26,7 +26,7 @@ export class ReporteMensualSupervisionDefinition {
       {
         stack: [
           datosReporte.gerenteCalidadAgua,
-          'Gerente de Calidad del Agua',
+          'Subgerente de la Red Nacional de Medición de Calidad del Agua',
           'Presente',
         ],
         bold: true,
@@ -134,7 +134,7 @@ export class ReporteMensualSupervisionDefinition {
         datosReporte.lugar,
         datosReporte.fecha
       ),
-      footer: this.getFooter(),
+      footer: this.getFooter(datosReporte.direccionOC, datosReporte.telefonoOC),
       content: content,
       styles: {
         header: {
@@ -174,13 +174,14 @@ export class ReporteMensualSupervisionDefinition {
     return header;
   }
 
-  getFooter() {
+  getFooter(direccion: string, telefono: string) {
     let footer: any = {};
 
     footer = [
       {
-        text: '',
+        text: `${direccion}. Teléfono: ${telefono} www.gob.mx/conagua`,
         fontSize: 7,
+        color: '#B38E5D',
         margin: [50, 10, 0, 0],
       },
       {

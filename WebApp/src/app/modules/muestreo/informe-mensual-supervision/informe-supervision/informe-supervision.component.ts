@@ -332,6 +332,8 @@ export class InformeSupervisionComponent implements OnInit {
       puestoFirma: this.registroForm.value.puesto,
       copias: this.copias,
       personasInvolucradas: this.registroForm.value.inicialesPersonas,
+      direccionOC: this.datosPlantilla.direccionOC,
+      telefonoOC: this.datosPlantilla.telefonoOC,
     };
   }
 }
