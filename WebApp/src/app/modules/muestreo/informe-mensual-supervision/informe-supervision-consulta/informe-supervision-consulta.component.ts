@@ -34,11 +34,6 @@ export class InformeSupervisionConsultaComponent
     private notificacionService: NotificationService
   ) {
     super();
-    this.informeSupervisionService.mensaje.subscribe((data) => {
-      if (data.mostrar) {
-        this.mostrarMensaje(data.mensaje, data.tipoMensaje);
-      }
-    });
 
     this.formBusqueda = this.formBuilder.group({
       memorando: [''],
@@ -123,13 +118,13 @@ export class InformeSupervisionConsultaComponent
 
   onGuardarArchivoInformeClick() {
     this.informeSupervisionService
-      .postArchivoInforme(String(this.informeId), this.archivoInforme)
+      .putArchivoInforme(String(this.informeId), this.archivoInforme)
       .subscribe({
         next: (response: any) => {
-          this.informeSupervisionService.updateMensaje({
-            tipoMensaje: TipoMensaje.Correcto,
-            mensaje: 'Archivo cargado correctamente',
-            mostrar: true,
+          this.notificacionService.updateNotification({
+            type: NotificationType.success,
+            text: 'Archivo cargado correctamente',
+            show: true,
           });
         },
         error: (error) => {},

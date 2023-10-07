@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Form, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { SupervisionService } from '../supervision.service';
@@ -13,6 +12,8 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { Sitio } from '../models/sitio';
 import { SupervisionBusqueda } from '../models/supervision-busqueda';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
 
 @Component({
   selector: 'app-supervision-muestreo-consulta',
@@ -36,14 +37,10 @@ export class SupervisionMuestreoConsultaComponent
 
   constructor(
     private router: Router,
-    private supervisionService: SupervisionService
+    private supervisionService: SupervisionService,
+    private notificationService: NotificationService
   ) {
     super();
-    this.supervisionService.mensaje.subscribe((data) => {
-      if (data.mostrar) {
-        this.mostrarMensaje(data.mensaje, data.tipoMensaje);
-      }
-    });
   }
 
   supervisionBusquedaForm = new FormGroup({
@@ -285,10 +282,11 @@ export class SupervisionMuestreoConsultaComponent
             if (index > -1) {
               this.supervisiones?.splice(index, 1);
             }
-            this.mostrarMensaje(
-              'Registro eliminado correctamente',
-              TipoMensaje.Correcto
-            );
+            this.notificationService.updateNotification({
+              show: true,
+              text: 'Registro eliminado correctamente',
+              type: NotificationType.success,
+            });
           }
         },
         error: (error) => {

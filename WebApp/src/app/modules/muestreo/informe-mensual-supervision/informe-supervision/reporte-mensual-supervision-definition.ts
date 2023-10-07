@@ -8,7 +8,10 @@ export class ReporteMensualSupervisionDefinition {
   getDocumentDefinition(datosReporte: InformeMensualSupervision) {
     let content: any = [];
 
-    content.push({ text: datosReporte.direccionTecnica, bold: true });
+    content.push({
+      text: `Organismo de Cuenca ${datosReporte.direccionTecnica}`,
+      bold: true,
+    });
     content.push({
       text: 'Dirección Técnica',
       bold: true,

@@ -13,10 +13,7 @@
         </div>
     </div>
     <hr class="red">
-    <div class="message-container">
-        <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-            [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
-    </div>
+    <app-notification></app-notification>
     <div class="panel-busqueda">
         <form [formGroup]="supervisionBusquedaForm" (ngSubmit)="onBuscarClick()">
             <div class="row">

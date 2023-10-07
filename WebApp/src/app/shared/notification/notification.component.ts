@@ -24,7 +24,7 @@ export class NotificationComponent implements OnInit {
             text: '',
             type: NotificationType.success,
           });
-        }, 10000);
+        }, 3000);
       }
     });
   }

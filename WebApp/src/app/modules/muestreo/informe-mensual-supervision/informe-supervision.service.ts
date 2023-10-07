@@ -129,14 +129,18 @@ export class InformeSupervisionService {
     );
   }
 
-  postArchivoInforme(informe: string, archivoInforme: any) {
+  putArchivoInforme(informe: string, archivoInforme: any) {
+    let usuario = this.authService.getUser().usuarioId;
     var formData = new FormData();
     formData.append('archivoInforme', archivoInforme, archivoInforme.name);
-    return this.http.post(
+
+    return this.http.put(
       environment.apiUrl +
         '/ReporteSupervisionMuestreo/InformeFirmado?' +
         'informe=' +
-        informe,
+        informe +
+        '&usuario=' +
+        usuario,
       formData
     );
   }
