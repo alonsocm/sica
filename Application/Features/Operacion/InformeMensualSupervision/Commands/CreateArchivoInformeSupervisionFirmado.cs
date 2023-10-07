@@ -10,6 +10,7 @@ namespace WebAPI.Controllers.v1.Operacion
     {
         public IFormFile Archivo { get; set; }
         public long InformeId { get; set; }
+        public long UsuarioId { get; set; }
     }
 
     public class CreateArchivoInformeSupervisionFirmadoHandler : IRequestHandler<CreateArchivoInformeSupervisionFirmado, Response<bool>>
@@ -24,10 +25,10 @@ namespace WebAPI.Controllers.v1.Operacion
 
         async Task<Response<bool>> IRequestHandler<CreateArchivoInformeSupervisionFirmado, Response<bool>>.Handle(CreateArchivoInformeSupervisionFirmado request, CancellationToken cancellationToken)
         {
-            byte[] archivo = await _archivoService.ConvertIFormFileToByteArray(request.Archivo);
-            _informeMensualSupervisionRepository.UpdateInformeMensualArchivoFirmado(request.InformeId, request.Archivo.FileName, archivo, 43);
+            byte[] file = await _archivoService.ConvertIFormFileToByteArray(request.Archivo);
+            var updated = _informeMensualSupervisionRepository.UpdateInformeMensualArchivoFirmado(request.InformeId, request.Archivo.FileName, file, request.UsuarioId);
 
-            return new Response<bool>(true);
+            return new Response<bool>(updated);
         }
     }
 }

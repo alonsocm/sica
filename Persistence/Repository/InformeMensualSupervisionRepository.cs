@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.InformeMensualSupervisionCampo;
+using Application.Enums;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,8 @@ namespace Persistence.Repository
             if (mes != null)
             {
                 List<long> ocdlExistentes = new();
-                var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Year == Convert.ToInt32(anioRegistro) && x.FechaRegistro.Month == mes && x.Ocid == ocId).ToList();
+                var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Year == Convert.ToInt32(anioRegistro) &&
+                                                                               x.FechaRegistro.Month == mes && x.Ocid == ocId).ToList();
 
                 if (resultados != null)
                 {
@@ -130,7 +132,7 @@ namespace Persistence.Repository
             informeDb.MesId = informe.Mes;
             informeDb.FechaRegistro = DateTime.Now;
             informeDb.UsuarioRegistroId = informe.Usuario;
-            informeDb.ArchivoInformeMensualSupervision.First(x => x.TipoArchivoInformeMensualSupervisionId == 1).Archivo = archivo;
+            informeDb.ArchivoInformeMensualSupervision.First(x => x.TipoArchivoInformeMensualSupervisionId == (int)TipoArchivoInformeSupervision.Informe).Archivo = archivo;
             informeDb.CopiaInformeMensualSupervision = informe.Copias.Select(x => new CopiaInformeMensualSupervision
             {
                 InformeMensualSupervisionId = informeDb.Id,
@@ -152,7 +154,9 @@ namespace Persistence.Repository
 
         public bool UpdateInformeMensualArchivoFirmado(long informeId, string nombreArchivo, byte[] archivo, long usuarioId)
         {
-            var archivoFirmado = _dbContext.ArchivoInformeMensualSupervision.Where(w => w.InformeMensualSupervisionId == informeId && w.TipoArchivoInformeMensualSupervisionId == 2).FirstOrDefault();
+            var archivoFirmado = _dbContext.ArchivoInformeMensualSupervision
+                .Where(w => w.InformeMensualSupervisionId == informeId && w.TipoArchivoInformeMensualSupervisionId == (int)TipoArchivoInformeSupervision.InformeFirmado)
+                .FirstOrDefault();
 
             if (archivoFirmado != null)
             {
@@ -166,7 +170,7 @@ namespace Persistence.Repository
                 _dbContext.ArchivoInformeMensualSupervision.Add(new ArchivoInformeMensualSupervision
                 {
                     InformeMensualSupervisionId = informeId,
-                    TipoArchivoInformeMensualSupervisionId = 2,
+                    TipoArchivoInformeMensualSupervisionId = (int)TipoArchivoInformeSupervision.InformeFirmado,
                     NombreArchivo = nombreArchivo,
                     Archivo = archivo,
                     FechaCarga = DateTime.Now,
@@ -225,7 +229,8 @@ namespace Persistence.Repository
                     informef.PuestoFirma = directorio.Puesto;
                     informef.Iniciales = informe.Iniciales;
                     informef.Contrato = _dbContext.PlantillaInformeMensualSupervision.Where(x => x.Anio == informe.Fecha.Year.ToString()).Select(x => x.Contrato).FirstOrDefault();
-                    informef.ExisteInformeFirmado = informe.ArchivoInformeMensualSupervision.Any(x => x.TipoArchivoInformeMensualSupervisionId == 2);
+                    informef.ExisteInformeFirmado = informe.ArchivoInformeMensualSupervision
+                        .Any(x => x.TipoArchivoInformeMensualSupervisionId == (int)TipoArchivoInformeSupervision.InformeFirmado);
                     lstInformeDto.Add(informef);
                 }
 
@@ -256,7 +261,7 @@ namespace Persistence.Repository
             return _dbContext.InformeMensualSupervision.Select(x => x.Memorando).Distinct().ToListAsync();
         }
 
-        public Task<ArchivoInformeMensualSupervision> GetArchivoInformeMensual(long informeId, int tipo = 1)
+        public Task<ArchivoInformeMensualSupervision> GetArchivoInformeMensual(long informeId, int tipo = (int)TipoArchivoInformeSupervision.InformeFirmado)
         {
             return _dbContext.ArchivoInformeMensualSupervision.FirstAsync(x => x.InformeMensualSupervisionId == informeId && x.TipoArchivoInformeMensualSupervisionId == tipo);
         }

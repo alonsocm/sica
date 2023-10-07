@@ -59,10 +59,10 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetBusquedaInformeMensualSupervisionQuery { Busqueda = busqueda }));
         }
 
-        [HttpPost("InformeFirmado")]
-        public async Task<IActionResult> Post(IFormFile archivoInforme, long informe)
+        [HttpPut("InformeFirmado")]
+        public async Task<IActionResult> Put([FromForm] IFormFile archivoInforme, long informe, long usuario)
         {
-            return Ok(await Mediator.Send(new CreateArchivoInformeSupervisionFirmado { Archivo = archivoInforme, InformeId = informe }));
+            return Ok(await Mediator.Send(new CreateArchivoInformeSupervisionFirmado { Archivo = archivoInforme, InformeId = informe, UsuarioId = usuario }));
         }
 
         [HttpGet("LugaresInformeMensual")]
