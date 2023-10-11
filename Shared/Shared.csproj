@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="DynamicExpresso.Core" Version="2.16.0" />
     <PackageReference Include="EPPlus" Version="6.0.7" />
+    <PackageReference Include="MetadataExtractor" Version="2.8.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="6.0.0" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
