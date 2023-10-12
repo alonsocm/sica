@@ -25,7 +25,6 @@ import { FormatoResultadoComponent } from './modules/muestreo/formatoResultado/p
 import { EvidenciasComponent } from './modules/muestreo/evidencias/pages/evidencias/evidencias.component';
 import { ConsultaResultadoComponent } from './modules/muestreo/originalesAprobados/consulta-resultado/pages/consulta-resultado.component';
 import { ConsultaEvidenciaComponent } from './modules/muestreo/originalesAprobados/consulta-evidencia/pages/consulta-evidencia.component';
-import { ValidacionReglasComponent } from './modules/muestreo/validacion/pages/validacion-reglas/validacion-reglas.component';
 import { AcumulacionResultadosComponent } from './modules/muestreo/validacion/pages/acumulacion-resultados/acumulacion-resultados.component';
 import { ResumenReglasComponent } from './modules/muestreo/validacion/pages/resumen-reglas/resumen-reglas.component';
 import { InicialReglasComponent } from './modules/muestreo/validacion/pages/inicial-reglas/inicial-reglas.component';
@@ -165,12 +164,7 @@ const routes: Routes = [
     component: ConsultaEvidenciaComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
     canActivate: [AuthGuardService],
-  },
-  {
-    path: 'validacion-reglas',
-    component: ValidacionReglasComponent,
-    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
-  },
+  },  
   {
     path: 'acumulacion-resultados',
     component: AcumulacionResultadosComponent,
