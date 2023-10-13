@@ -5,119 +5,107 @@
   </div>
 </form>
 <div class="container-fluid">
-  <h3>Resumen de carga de resultados para validar resultados (Por monitoreo)</h3>
+  <h1 class="row col">Resumen de carga de resultados para validar (por monitoreo)</h1>
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
-
   <div class="row">
-    <div class="col-md-3">
+    <div class="form-group col-lg-2 align-self-end">
       <label for="anios">Seleccionar año(s):*</label>
-      <select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados" [size]="this.anios.length">
-
+      <select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados"
+        [size]="this.anios.length">
         <option *ngFor="let anio of anios" value="{{anio}}">{{anio}}</option>
       </select>
     </div>
-
-    <div class="col-md-3">
+    <div class="form-group col-lg-3 align-self-end">
       <label for="entrega">Seleccionar número(s) de entrega:*</label>
-      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas" [size]="this.entregas.length">
+      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas"
+        [size]="this.entregas.length">
         <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
       </select>
     </div>
-    <div class="col-md-2">
-      <button style="text-align:right" class="btn btn-primary rigth" type="button" (click)="cargaResultados()">
+    <div class="form-group col align-self-end">
+      <button class="btn btn-primary" type="button" (click)="cargaResultados()">
         <i class="bi bi-send"></i> Ver resultados
       </button>
     </div>
-    <div class="col-md-2">
-      <button class="btn btn-secondary" type="button" (click)="onDownload()">
+    <div class="form-group col align-self-end">
+      <button class=" btn btn-secondary mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
-    </div>
-    <div class="col-md-1">
       <button class="btn btn-secondary" type="button">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12 table-responsive dvTable">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th class="checkBox-center" style="text-align:center">
-              <label for="chckAll">SELECCIONAR TODOS</label>
-              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                     (change)="seleccionarAll(this.resultadosFiltradosn)" />
-            </th>
-
-            <th *ngFor="let columna of columnas">
-              {{columna.etiqueta}}
-              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                               (selected)="columna.filtro.selectedValue = $event; filtrarn()"
-                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                               placeholder="seleccione">
-              </ng-autocomplete>
-              <ng-template #itemTemplate let-item>
-                <a [innerHTML]="item"></a>
-              </ng-template>
-            </th>
-          </tr>
-        </thead>
-        <tbody style="text-align:left;">
-          <tr *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
-            <td style="text-align:center" class="checkBox-center">
-              <input type="checkbox" [(ngModel)]="dato.isChecked"
-                     (change)="seleccionarn()">
-            </td>
-            <td style="text-align: center;">{{dato.claveSitio}}</td>
-            <td style="text-align: center;">{{dato.claveMonitoreo}}</td>
-            <td style="text-align: center;">{{dato.nombreSitio}}</td>
-            <td style="text-align: center;">{{dato.fechaRealizacion}}</td>
-            <td style="text-align: center;">{{dato.fechaProgramada}}</td>
-            <td style="text-align: center;">{{dato.diferenciaDias}}</td>
-            <td style="text-align: center;">{{dato.fechaEntregaTeorica}}</td>
-            <td style="text-align: center;">{{dato.laboratorioRealizoMuestreo}}</td>
-            <td style="text-align: center;">{{dato.cuerpoAgua}}</td>
-            <td style="text-align: center;">{{dato.tipoCuerpoAgua}}</td>
-            <td style="text-align: center;">{{dato.subTipoCuerpoAgua}}</td>
-            <td style="text-align: center;">{{dato.numParametrosEsperados}}</td>
-            <td style="text-align: center;">{{dato.numParametrosCargados}}</td>
-            <td style="text-align: center;">{{dato.muestreoCompletoPorResultados}}</td>
-
-            <td style="text-align: center;">{{dato.cumpleReglasCondic}}</td>
-            <td style="text-align: center;">{{dato.observaciones}}</td>
-            <td style="text-align: center;">{{dato.cumpleFechaEntrega}}</td>
-            <td style="text-align: center;"></td>
-            <td style="text-align: center;"></td>
-            <td style="text-align: center;"></td>
-          </tr>
-          <tr>
-            <td colspan="20">
-              <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">
-                No se encontraron registros
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-    </pagination-controls>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th class="checkBox-center col-lg-4">
+            <label for="chckAll">SELECCIONAR TODOS</label>
+            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+              (change)="seleccionarAll(this.resultadosFiltradosn)" />
+          </th>
+          <th *ngFor="let columna of columnas">
+            {{columna.etiqueta}}
+            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+              (selected)="columna.filtro.selectedValue = $event; filtrarn()"
+              (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+              placeholder="seleccione">
+            </ng-autocomplete>
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item"></a>
+            </ng-template>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          <td class="td-center">
+            <input type="checkbox" [(ngModel)]="dato.isChecked" (change)="seleccionarn()" title="Seleccionar">
+          </td>
+          <td>{{dato.claveSitio}}</td>
+          <td>{{dato.claveMonitoreo}}</td>
+          <td>{{dato.nombreSitio}}</td>
+          <td>{{dato.fechaRealizacion}}</td>
+          <td>{{dato.fechaProgramada}}</td>
+          <td>{{dato.diferenciaDias}}</td>
+          <td>{{dato.fechaEntregaTeorica}}</td>
+          <td>{{dato.laboratorioRealizoMuestreo}}</td>
+          <td>{{dato.cuerpoAgua}}</td>
+          <td>{{dato.tipoCuerpoAgua}}</td>
+          <td>{{dato.subTipoCuerpoAgua}}</td>
+          <td>{{dato.numParametrosEsperados}}</td>
+          <td>{{dato.numParametrosCargados}}</td>
+          <td>{{dato.muestreoCompletoPorResultados}}</td>
+          <td>{{dato.cumpleReglasCondic}}</td>
+          <td>{{dato.observaciones}}</td>
+          <td>{{dato.cumpleFechaEntrega}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr *ngIf="this.resultadosFiltradosn.length==0">
+          <td colspan="21" class="td-center">
+            No se encontraron registros
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <div style="text-align:right" class="d-flex justify-content-between">
-    <div style="text-align:right" class="col-md-12">
+  <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+  </pagination-controls>
+  <div class="clearfix">
+    <div class="float-right">
       <button class="btn btn-primary rigth" type="button" (click)="enviaraValidacion()">
         <i class="bi bi-send"></i> Enviar a validación
       </button>
-
     </div>
   </div>
   <br />
 </div>
-

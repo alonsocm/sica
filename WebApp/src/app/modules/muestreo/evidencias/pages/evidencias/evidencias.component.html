@@ -3,27 +3,26 @@
     <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-    <h3>Evidencias de monitoreo</h3>
+    <h1 class="row col">Evidencias de monitoreo</h1>
     <hr class="red">
     <div class="message-container">
         <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
             [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <input type="file" style="display: none" (change)="cargarEvidencias($event)" accept=".xls, .xlsx, .jpg, .pdf" multiple #fileUpload>
-            <button class="btn btn-primary" (click)="fileUpload.click()">
+    <div class="clearfix">
+        <div class="float-left">
+            <input type="file" class="element-hidden" (change)="cargarEvidencias($event)"
+                accept=".xls, .xlsx, .jpg, .pdf" multiple title="Seleccionar archivos" #fileUpload>
+            <button type="button" class="btn btn-primary" (click)="fileUpload.click()">
                 <i class="bi bi-cloud-upload"></i>
-                Seleccionar y cargar evidencias...
+                Seleccionar y cargar evidencias
             </button>
         </div>
-        <div class="col-md-4">
-            <button class="btn btn-secondary" (click)="descargarEvidencias()">
-            <i class="bi bi-cloud-download"></i>
+        <div class="float-right">
+            <button type="button" class="btn btn-secondary mr-1" (click)="descargarEvidencias()">
+                <i class="bi bi-cloud-download"></i>
                 Descargar evidencias
             </button>
-        </div>
-        <div class="col-md-4 text-right">
             <button class="btn btn-secondary btnAcciones" type="button" (click)="limpiarFiltros()">
                 <i class="bi bi-funnel"></i>
                 Limpiar filtros
@@ -37,7 +36,8 @@
                     <tr>
                         <th class="checkBox-center">
                             <label for="chckAll">SELECCIONAR TODOS</label>
-                            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck" (change)="seleccionarTodos()" />
+                            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                                (change)="seleccionarTodos()" />
                         </th>
                         <ng-container *ngFor="let columna of this.columnas">
                             <th *ngIf="mostrarColumna(columna.etiqueta)">
@@ -50,7 +50,7 @@
                                 <ng-template #itemTemplate let-item>
                                     <a [innerHTML]="item"></a>
                                 </ng-template>
-                            </th>                            
+                            </th>
                         </ng-container>
                         <th>BITÁCORA</th>
                         <th>FOTO MUESTREO</th>
@@ -62,9 +62,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
+                    <tr
+                        *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
                         <td class="checkBox-center">
-                            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()">
+                            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()"
+                                title="Seleccionar">
                         </td>
                         <td *ngIf="mostrarCampo()">{{muestreo.numeroEntrega}}</td>
                         <td>-</td>
@@ -91,25 +93,32 @@
                                 <div [ngSwitch]="sufijo">
                                     <img *ngSwitchCase="'R'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/ionoexel.png" />
+                                        class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'M'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'S'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'E'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'D'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoPDF.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'A'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'O'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/ionoexel.png" />
+                                        class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                        title="Click para descargar" />
                                 </div>
                             </td>
                             <ng-template #elseBlock>

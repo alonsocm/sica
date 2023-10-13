@@ -3,21 +3,23 @@
     <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-    <h3>Carga de resultados validados</h3>
+    <h1 class="row col">Carga de resultados validados</h1>
     <hr class="red">
     <div class="message-container">
         <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
             [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <input type="file" style="display: none" (change)="cargarArchivo($event)" accept=".xls, .xlsx" #inputExcelMonitoreos>
-            <button class="btn btn-primary" (click)="inputExcelMonitoreos.click()">
+    <div class="clearfix">
+        <div class="float-left">
+            <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
+                title="Seleccionar archivo" #inputExcelMonitoreos>
+            <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()"
+                title="Seleccionar archivo">
                 <i class="bi bi-cloud-upload"></i>
                 Seleccionar y procesar archivo...
             </button>
         </div>
-        <div class="col-md-6" style="text-align: right;">
+        <div class="float-right">
             <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
                 <i class="bi bi-funnel"></i>
                 Limpiar filtros
@@ -78,25 +80,32 @@
                                 <div [ngSwitch]="sufijo">
                                     <img *ngSwitchCase="'R'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/ionoexel.png" />
+                                        class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'M'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'S'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'E'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'D'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoPDF.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'A'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/iconoimagen.png" />
+                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                        title="Click para descargar" />
                                     <img *ngSwitchCase="'O'"
                                         (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        style="cursor:pointer" src="./assets/images/site/ionoexel.png" />
+                                        class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                        title="Click para descargar" />
                                 </div>
                             </td>
                             <ng-template #elseBlock>
@@ -110,8 +119,8 @@
         <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
         </pagination-controls>
     </div>
-    <button id="btnMdlConfirmacion" style="display:none" class="btn btn-primary rigth" type="button"
-    data-toggle="modal" data-target="#mdlConfirmacion"></button>
+    <button id="btnMdlConfirmacion" class="element-hidden" type="button" data-toggle="modal"
+        data-target="#mdlConfirmacion">Abrir modal</button>
     <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -119,7 +128,9 @@
                     <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar carga de resultados</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Los resultados correspondientes al número de entrega <b>{{this.numeroEntrega}}</b> del año <b>{{this.anioOperacion}}</b>, ya han sido cargados previamente.</p>
+                    <p>Los resultados correspondientes al número de entrega <b>{{this.numeroEntrega}}</b> del año
+                        <b>{{this.anioOperacion}}</b>, ya han sido cargados previamente.
+                    </p>
                     <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá los valores de los resultados.</p>
                 </div>
                 <div class="modal-footer">

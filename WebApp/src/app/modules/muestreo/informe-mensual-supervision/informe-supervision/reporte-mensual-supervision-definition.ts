@@ -164,7 +164,7 @@ export class ReporteMensualSupervisionDefinition {
           width: 350,
         },
         [
-          { text: 'Oficio', bold: true, margin: [10, 0, 0, 0] },
+          { text: 'Memorando', bold: true, margin: [10, 0, 0, 0] },
           { text: oficio, margin: [10, 0, 0, 0] },
           { text: 'Lugar', bold: true, margin: [10, 5, 0, 0] },
           { text: lugar, margin: [10, 0, 0, 0] },

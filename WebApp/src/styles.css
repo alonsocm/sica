@@ -25,8 +25,16 @@ hr.red {
     margin: 10px 0 25px
 }
 
+.element-hidden{
+    display: none !important;
+}
+
 .btn-hidden{
     display: none;
+}
+
+.cursor-pointer{
+    cursor: pointer;
 }
 
 .btn{
@@ -98,6 +106,10 @@ border-color: #0062cc;
 
 table thead tr th{
     text-align: left;
+}
+
+.td-center{
+    text-align: center
 }
 
 .dvTable {
