@@ -466,11 +466,6 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.SupervisionMuestreoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_EvidenciaSupervisionMuestreo_SupervisionMuestreo");
-
-            entity.HasOne(d => d.TipoEvidencia).WithMany(p => p.EvidenciaSupervisionMuestreo)
-                .HasForeignKey(d => d.TipoEvidenciaId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EvidenciaSupervisionMuestreo_TipoEvidenciaMuestreo");
         });
 
         modelBuilder.Entity<FormaReporteEspecifica>(entity =>
