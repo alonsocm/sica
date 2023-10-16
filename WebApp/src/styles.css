@@ -115,7 +115,7 @@ table thead tr th{
 .dvTable {
     overflow-y: auto;
     max-height: 600px;
-    margin: 20px 0px 10px 0px;
+    margin: 1% 0px 1% 0px;
 }
 
 /* .dvTable tbody>tr:hover {

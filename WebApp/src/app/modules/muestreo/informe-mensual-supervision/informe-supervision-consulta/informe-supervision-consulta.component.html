@@ -99,58 +99,56 @@
             </div>
         </form>
     </div>
-    <div class="row">
-        <div class="col table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th class="col-lg-2">Organismo de cuenca</th>
-                        <th class="col-lg-2">Memorando</th>
-                        <th class="col-lg-2">Lugar</th>
-                        <th class="col-lg-1">Mes reportado</th>
-                        <th class="col-lg-1">Fecha de creación</th>
-                        <th class="col-lg-2">Director Técnico/Responsable</th>
-                        <th class="col-lg-1">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        *ngFor="let registro of this.registrosInformeMensual | paginate: { itemsPerPage:30, currentPage: page }">
-                        <td>{{registro.direccionTecnica}}</td>
-                        <td>{{registro.oficio}}</td>
-                        <td>{{registro.lugar}}</td>
-                        <td>{{registro.mesReporte}}</td>
-                        <td>{{registro.fechaRegistro}}</td>
-                        <td>{{registro.nombreFirma}}</td>
-                        <td>
-                            <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver informe"
-                                (click)="onVerInformeClick(registro.id)">
-                                <i class="bi bi-eye icon-action"></i>
-                            </button>
-                            <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"
-                                (click)="onEditClick(registro.id)">
-                                <i class="bi bi-pencil-square icon-action"></i>
-                            </button>
-                            <!-- <div class="btn btn-group"> -->
-                            <button type="button" class="btn-action btn-info-action mr-1" title="Cargar informe firmado"
-                                (click)="onViewClick(registro.id)">
-                                <i class="bi bi-file-earmark-arrow-up"></i>
-                            </button>
-                            <button type="button" class="btn-action btn-danger-action" title="Eliminar"
-                                (click)="onDeleteClick(registro.id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                            <!-- </div> -->
-                        </td>
-                    </tr>
-                    <tr *ngIf="this.registrosInformeMensual.length === 0">
-                        <td class="td-center" colspan="12">No se
-                            encontraron registros
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th class="col-lg-2">Organismo de cuenca</th>
+                    <th class="col-lg-2">Memorando</th>
+                    <th class="col-lg-2">Lugar</th>
+                    <th class="col-lg-1">Mes reportado</th>
+                    <th class="col-lg-1">Fecha de creación</th>
+                    <th class="col-lg-2">Director Técnico/Responsable</th>
+                    <th class="col-lg-1">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let registro of this.registrosInformeMensual | paginate: { itemsPerPage:30, currentPage: page }">
+                    <td>{{registro.direccionTecnica}}</td>
+                    <td>{{registro.oficio}}</td>
+                    <td>{{registro.lugar}}</td>
+                    <td>{{registro.mesReporte}}</td>
+                    <td>{{registro.fechaRegistro}}</td>
+                    <td>{{registro.nombreFirma}}</td>
+                    <td>
+                        <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver informe"
+                            (click)="onVerInformeClick(registro.id)">
+                            <i class="bi bi-eye icon-action"></i>
+                        </button>
+                        <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"
+                            (click)="onEditClick(registro.id)">
+                            <i class="bi bi-pencil-square icon-action"></i>
+                        </button>
+                        <!-- <div class="btn btn-group"> -->
+                        <button type="button" class="btn-action btn-info-action mr-1" title="Cargar informe firmado"
+                            (click)="onViewClick(registro.id)">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                        </button>
+                        <button type="button" class="btn-action btn-danger-action" title="Eliminar"
+                            (click)="onDeleteClick(registro.id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        <!-- </div> -->
+                    </td>
+                </tr>
+                <tr *ngIf="this.registrosInformeMensual.length === 0">
+                    <td class="td-center" colspan="12">No se
+                        encontraron registros
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div class="row-group">
         <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
