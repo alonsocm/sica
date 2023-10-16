@@ -23,7 +23,7 @@ export class BaseService {
   resultadosFiltradosn: Array<any> = [];
 
   resultadosn: Array<any> = [];
-  sufijos: Array<string> = ['E', 'M', 'S', 'D', 'R', 'O', 'A', 'V', 'C'];
+  sufijos: Array<string> = ['A', 'C', 'D', 'E', 'M', 'O', 'R', 'S', 'V'];
 
   @ViewChild('mensajes') mensajes: any;
   @ViewChildren('filtros') filtros: any;

@@ -29,109 +29,116 @@
             </button>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12 table-responsive dvTable">
-            <div class="table table-striped">
-                <thead>
-                    <tr>
-                        <th class="checkBox-center">
-                            <label for="chckAll">SELECCIONAR TODOS</label>
-                            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                                (change)="seleccionarTodos()" />
-                        </th>
-                        <ng-container *ngFor="let columna of this.columnas">
-                            <th *ngIf="mostrarColumna(columna.etiqueta)">
-                                {{columna.etiqueta}}
-                                <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                                    (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                                    (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                                    [itemTemplate]="itemTemplate" placeholder="seleccione">
-                                </ng-autocomplete>
-                                <ng-template #itemTemplate let-item>
-                                    <a [innerHTML]="item"></a>
-                                </ng-template>
-                            </th>
-                        </ng-container>
-                        <th>BITÁCORA</th>
-                        <th>FOTO MUESTREO</th>
-                        <th>FOTO MUESTRA</th>
-                        <th>TRACK</th>
-                        <th>CADENA CUSTODIA</th>
-                        <th>FOTO CAUDAL</th>
-                        <th>FORMATO CAUDAL</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
-                        <td class="checkBox-center">
-                            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()"
-                                title="Seleccionar">
-                        </td>
-                        <td *ngIf="mostrarCampo()">{{muestreo.numeroEntrega}}</td>
-                        <td>-</td>
-                        <td>{{muestreo.claveSitio}}</td>
-                        <td>{{muestreo.claveMonitoreo}}</td>
-                        <td>{{muestreo.nombreSitio}}</td>
-                        <td>{{muestreo.ocdl}}</td>
-                        <td>{{muestreo.cuerpoAgua}}</td>
-                        <td>-</td>
-                        <td>{{muestreo.tipoCuerpoAgua}}</td>
-                        <td>{{muestreo.tipoSitio}}</td>
-                        <td>{{muestreo.laboratorio}}</td>
-                        <td>-</td>
-                        <td>{{muestreo.fechaProgramada}}</td>
-                        <td>{{muestreo.fechaRealizacion}}</td>
-                        <td>{{muestreo.programaAnual}}</td>
-                        <td>{{muestreo.horaInicio}}</td>
-                        <td>{{muestreo.horaFin}}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <ng-container *ngFor="let sufijo of sufijos;">
-                            <td *ngIf="existeEvidencia(muestreo.evidencias, sufijo) else elseBlock">
-                                <div [ngSwitch]="sufijo">
-                                    <img *ngSwitchCase="'R'"
-                                        (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        class="cursor-pointer" src="./assets/images/site/ionoexel.png"
-                                        title="Click para descargar" />
-                                    <img *ngSwitchCase="'M'"
-                                        (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                        title="Click para descargar" />
-                                    <img *ngSwitchCase="'S'"
-                                        (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                        title="Click para descargar" />
-                                    <img *ngSwitchCase="'E'"
-                                        (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                        title="Click para descargar" />
-                                    <img *ngSwitchCase="'D'"
-                                        (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
-                                        title="Click para descargar" />
-                                    <img *ngSwitchCase="'A'"
-                                        (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                        title="Click para descargar" />
-                                    <img *ngSwitchCase="'O'"
-                                        (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                        class="cursor-pointer" src="./assets/images/site/ionoexel.png"
-                                        title="Click para descargar" />
-                                </div>
-                            </td>
-                            <ng-template #elseBlock>
-                                <td>-</td>
+    <div class="table-responsive dvTable">
+        <div class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th class="checkBox-center">
+                        <label for="chckAll">SELECCIONAR TODOS</label>
+                        <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                            (change)="seleccionarTodos()" />
+                    </th>
+                    <ng-container *ngFor="let columna of this.columnas">
+                        <th *ngIf="mostrarColumna(columna.etiqueta)">
+                            {{columna.etiqueta}}
+                            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                                (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
+                                [itemTemplate]="itemTemplate" placeholder="seleccione">
+                            </ng-autocomplete>
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item"></a>
                             </ng-template>
-                        </ng-container>
-                    </tr>
-                </tbody>
-            </div>
+                        </th>
+                    </ng-container>
+                    <th>FOTO CAUDAL</th>
+                    <th>MÁSCARA DE CAMPO</th>
+                    <th>CADENA CUSTODIA</th>
+                    <th>BITÁCORA</th>
+                    <th>FOTO MUESTREO</th>
+                    <th>FORMATO CAUDAL</th>
+                    <th>TRACK</th>
+                    <th>FOTO MUESTRA</th>
+                    <th>FORMATO DE EVENTUALIDAD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
+                    <td class="checkBox-center">
+                        <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()"
+                            title="Seleccionar">
+                    </td>
+                    <td *ngIf="mostrarCampo()">{{muestreo.numeroEntrega}}</td>
+                    <td>-</td>
+                    <td>{{muestreo.claveSitio}}</td>
+                    <td>{{muestreo.claveMonitoreo}}</td>
+                    <td>{{muestreo.nombreSitio}}</td>
+                    <td>{{muestreo.ocdl}}</td>
+                    <td>{{muestreo.cuerpoAgua}}</td>
+                    <td>-</td>
+                    <td>{{muestreo.tipoCuerpoAgua}}</td>
+                    <td>{{muestreo.tipoSitio}}</td>
+                    <td>{{muestreo.laboratorio}}</td>
+                    <td>-</td>
+                    <td>{{muestreo.fechaProgramada}}</td>
+                    <td>{{muestreo.fechaRealizacion}}</td>
+                    <td>{{muestreo.programaAnual}}</td>
+                    <td>{{muestreo.horaInicio}}</td>
+                    <td>{{muestreo.horaFin}}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <ng-container *ngFor="let sufijo of sufijos;">
+                        <td *ngIf="existeEvidencia(muestreo.evidencias, sufijo) else elseBlock">
+                            <div [ngSwitch]="sufijo">
+                                <img *ngSwitchCase="'A'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'C'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'D'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'E'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'M'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'O'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'R'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'S'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                    title="Click para descargar" />
+                                <img *ngSwitchCase="'V'"
+                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                    title="Click para descargar" />
+                            </div>
+                        </td>
+                        <ng-template #elseBlock>
+                            <td>-</td>
+                        </ng-template>
+                    </ng-container>
+                </tr>
+            </tbody>
         </div>
-        <div class="row-group">
-            <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-            </pagination-controls>
-        </div>
+    </div>
+    <div class="row-group">
+        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
     </div>
 </div>

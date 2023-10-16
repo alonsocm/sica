@@ -1,5 +1,5 @@
 export enum Perfil {
-  ADMINISTRADOR = "Administrador",
+  ADMINISTRADOR = 'ADMINISTRADOR',
   SECAIA1 = 'SECAIA 1',
   SECAIA2 = 'SECAIA 2',
   SECAIA3 = 'SECAIA 3',
@@ -9,5 +9,5 @@ export enum Perfil {
   OC = 'OC',
   DL = 'DL',
   VISTA = 'Vista',
-  EXTERNO = 'Externo'
+  EXTERNO = 'Externo',
 }
