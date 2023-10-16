@@ -21,7 +21,5 @@ public partial class ArchivoInformeMensualSupervision
 
     public virtual InformeMensualSupervision InformeMensualSupervision { get; set; } = null!;
 
-    public virtual TipoArchivoInformeMensualSupervision TipoArchivoInformeMensualSupervision { get; set; } = null!;
-
     public virtual Usuario UsuarioCarga { get; set; } = null!;
 }

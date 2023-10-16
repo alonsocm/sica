@@ -13,7 +13,29 @@ public partial class EvidenciaMuestreo
 
     public string NombreArchivo { get; set; } = null!;
 
-    public byte[]? Archivo { get; set; }
+    public decimal? Latitud { get; set; }
+
+    public decimal? Longitud { get; set; }
+
+    public decimal? Altitud { get; set; }
+
+    public string? MarcaCamara { get; set; }
+
+    public string? ModeloCamara { get; set; }
+
+    public string? Iso { get; set; }
+
+    public string? Apertura { get; set; }
+
+    public string? Obturador { get; set; }
+
+    public string? DistanciaFocal { get; set; }
+
+    public string? Flash { get; set; }
+
+    public string? Tamano { get; set; }
+
+    public string? Direccion { get; set; }
 
     public virtual Muestreo Muestreo { get; set; } = null!;
 

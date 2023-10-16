@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -229,11 +231,6 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ArchivoInformeMensualSupervision_InformeMensualSupervision");
 
-            entity.HasOne(d => d.TipoArchivoInformeMensualSupervision).WithMany(p => p.ArchivoInformeMensualSupervision)
-                .HasForeignKey(d => d.TipoArchivoInformeMensualSupervisionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ArchivoInformeMensualSupervision_TipoArchivoInformeMensualSupervision");
-
             entity.HasOne(d => d.UsuarioCarga).WithMany(p => p.ArchivoInformeMensualSupervision)
                 .HasForeignKey(d => d.UsuarioCargaId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -419,7 +416,19 @@ public partial class SicaContext : DbContext
 
             entity.HasIndex(e => e.TipoEvidenciaMuestreoId, "IX_EvidenciaMuestreo_TipoEvidenciaMuestreoId");
 
+            entity.Property(e => e.Altitud).HasColumnType("decimal(12, 9)");
+            entity.Property(e => e.Apertura).HasMaxLength(50);
+            entity.Property(e => e.Direccion).HasMaxLength(50);
+            entity.Property(e => e.DistanciaFocal).HasMaxLength(50);
+            entity.Property(e => e.Flash).HasMaxLength(50);
+            entity.Property(e => e.Iso).HasMaxLength(50);
+            entity.Property(e => e.Latitud).HasColumnType("decimal(12, 9)");
+            entity.Property(e => e.Longitud).HasColumnType("decimal(12, 9)");
+            entity.Property(e => e.MarcaCamara).HasMaxLength(50);
+            entity.Property(e => e.ModeloCamara).HasMaxLength(50);
             entity.Property(e => e.NombreArchivo).IsUnicode(false);
+            entity.Property(e => e.Obturador).HasMaxLength(50);
+            entity.Property(e => e.Tamano).HasMaxLength(50);
 
             entity.HasOne(d => d.Muestreo).WithMany(p => p.EvidenciaMuestreo)
                 .HasForeignKey(d => d.MuestreoId)
@@ -500,7 +509,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<HistorialSustitucionLimites>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07E25AC404");
+            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07AA0BB2AD");
 
             entity.Property(e => e.Fecha).HasColumnType("datetime");
 
@@ -641,8 +650,6 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<Muestreadores>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_Muestradores");
-
             entity.Property(e => e.ApellidoMaterno).HasMaxLength(50);
             entity.Property(e => e.ApellidoPaterno).HasMaxLength(50);
             entity.Property(e => e.Iniciales).HasMaxLength(5);
@@ -713,7 +720,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<MuestreoEmergencia>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC078DE004E5");
+            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC07EB386B26");
 
             entity.Property(e => e.ClaveUnica).HasMaxLength(150);
             entity.Property(e => e.FechaProgramada).HasColumnType("date");
@@ -1326,7 +1333,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<TipoSustitucion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0762844A01");
+            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0783A7C692");
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(20)
