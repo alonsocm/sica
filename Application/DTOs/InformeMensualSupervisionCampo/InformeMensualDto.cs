@@ -9,6 +9,7 @@ namespace Application.DTOs.InformeMensualSupervisionCampo
         public string Lugar { get; set; }
         public string Fecha { get; set; }
         public int ResponsableId { get; set; }
+        public int Anio { get; set; }
         public int Mes { get; set; }
         public string PersonasInvolucradas { get; set; }
         public int Usuario { get; set; }

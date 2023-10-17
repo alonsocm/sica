@@ -28,6 +28,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 Lugar = informe.Lugar,
                 Fecha = informe.Fecha.ToString("yyyy-MM-dd"),
                 ResponsableId = informe.DirectorioFirmaId,
+                Anio = informe.Anio,
                 Mes = informe.MesId,
                 PersonasInvolucradas = informe.Iniciales,
                 Copias = informe.CopiaInformeMensualSupervision.Select(s => new Copia()

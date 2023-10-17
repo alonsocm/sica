@@ -31,6 +31,7 @@ namespace Application.Features.Operacion.InformeMensualSupervision.Commands
                 Fecha = Convert.ToDateTime(request.Informe.Fecha),
                 DirectorioFirmaId = request.Informe.ResponsableId,
                 Iniciales = request.Informe.PersonasInvolucradas,
+                Anio = request.Informe.Anio,
                 MesId = request.Informe.Mes,
                 FechaRegistro = DateTime.Now,
                 UsuarioRegistroId = request.Informe.Usuario,

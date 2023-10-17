@@ -129,6 +129,7 @@ namespace Persistence.Repository
             informeDb.Fecha = Convert.ToDateTime(informe.Fecha);
             informeDb.DirectorioFirmaId = informe.ResponsableId;
             informeDb.Iniciales = informe.PersonasInvolucradas;
+            informeDb.Anio = informe.Anio;
             informeDb.MesId = informe.Mes;
             informeDb.FechaRegistro = DateTime.Now;
             informeDb.UsuarioRegistroId = informe.Usuario;
