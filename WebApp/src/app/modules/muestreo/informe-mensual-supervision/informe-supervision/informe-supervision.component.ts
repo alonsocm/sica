@@ -41,13 +41,14 @@ export class InformeSupervisionComponent implements OnInit {
       fecha: ['', Validators.required],
       responsable: [0, [Validators.required]],
       puesto: ['', Validators.required],
+      anio: ['0', Validators.required],
       nombreCopia: [''],
       puestoCopia: [''],
       inicialesPersonas: [
         '',
         [Validators.required, Validators.pattern(/^[a-zA-Z/]*$/)],
       ],
-      mes: [1, [Validators.required, Validators.min(1)]],
+      mes: [0, [Validators.required, Validators.min(1)]],
     });
 
     this.informeSupervisionService.informeId.subscribe((data) => {
@@ -186,7 +187,7 @@ export class InformeSupervisionComponent implements OnInit {
     this.informeSupervisionService
       .getDatosGeneralesInforme(
         String(2022),
-        String(2023),
+        String(this.registroForm.value.anio),
         this.registroForm.value.mes,
         String(this.getOCId())
       )
@@ -260,6 +261,7 @@ export class InformeSupervisionComponent implements OnInit {
         lugar: informe.lugar,
         fecha: informe.fecha,
         responsableId: this.registroForm.value.responsable,
+        anio: this.registroForm.value.anio,
         mes: this.registroForm.value.mes,
         copias: this.copias,
         personasInvolucradas: informe.personasInvolucradas,
@@ -316,12 +318,11 @@ export class InformeSupervisionComponent implements OnInit {
       direccionTecnica: this.datosPlantilla.direccionTecnica,
       gerenteCalidadAgua: this.datosPlantilla.gerenteCalidadAgua,
       mesReporte:
-        new Date(this.registroForm.value.mes + '-01-' + '2023').toLocaleString(
-          'es',
-          { month: 'long' }
-        ) +
+        new Date(
+          this.registroForm.value.mes + '-01-' + this.registroForm.value.anio
+        ).toLocaleString('es', { month: 'long' }) +
         ' ' +
-        '2023',
+        this.registroForm.value.anio,
       atencion: this.datosPlantilla.atencion,
       contrato: this.datosPlantilla.contrato,
       denominacionContrato: this.datosPlantilla.denominacionContrato,

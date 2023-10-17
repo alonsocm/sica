@@ -54,8 +54,14 @@
                         <div>Campo requerido</div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12 form-group">
-                    <label for="mes">Mes a reportar:*</label>
+                <div class="col-lg-2 col-md-2 col-sm-12 form-group">
+                    <label for="mes">Año y mes a reportar:*</label>
+                    <select class="form-control" id="anio" formControlName="anio" title="año a reportar">
+                        <option value="0">Seleccione</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12 form-group align-self-end">
                     <select class="form-control" id="mes" formControlName="mes"
                         [ngClass]="{'is-invalid': this.submitted && registroForm.get('mes')?.hasError('min')}">
                         <option value="0">Seleccione</option>

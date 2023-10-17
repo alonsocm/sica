@@ -42,6 +42,7 @@ export class InformeSupervisionService {
     formData.append('lugar', informe.lugar);
     formData.append('fecha', informe.fecha);
     formData.append('responsableId', String(informe.responsableId));
+    formData.append('anio', String(informe.anio));
     formData.append('mes', String(informe.mes));
     formData.append('personasInvolucradas', informe.personasInvolucradas);
     formData.append('usuario', String(usuario));
@@ -63,6 +64,7 @@ export class InformeSupervisionService {
     formData.append('lugar', informe.lugar);
     formData.append('fecha', informe.fecha);
     formData.append('responsableId', String(informe.responsableId));
+    formData.append('anio', String(informe.anio));
     formData.append('mes', String(informe.mes));
     formData.append('personasInvolucradas', informe.personasInvolucradas);
     formData.append('usuario', String(usuario));
