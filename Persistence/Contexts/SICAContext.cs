@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -416,7 +414,7 @@ public partial class SicaContext : DbContext
 
             entity.HasIndex(e => e.TipoEvidenciaMuestreoId, "IX_EvidenciaMuestreo_TipoEvidenciaMuestreoId");
 
-            entity.Property(e => e.Altitud).HasColumnType("decimal(12, 9)");
+            entity.Property(e => e.Altitud).HasColumnType("decimal(12, 2)");
             entity.Property(e => e.Apertura).HasMaxLength(50);
             entity.Property(e => e.Direccion).HasMaxLength(50);
             entity.Property(e => e.DistanciaFocal).HasMaxLength(50);
