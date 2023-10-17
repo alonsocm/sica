@@ -502,7 +502,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<HistorialSustitucionLimites>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07AA0BB2AD");
+            entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07E25AC404");
 
             entity.Property(e => e.Fecha).HasColumnType("datetime");
 
@@ -643,6 +643,8 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<Muestreadores>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_Muestradores");
+
             entity.Property(e => e.ApellidoMaterno).HasMaxLength(50);
             entity.Property(e => e.ApellidoPaterno).HasMaxLength(50);
             entity.Property(e => e.Iniciales).HasMaxLength(5);
@@ -713,7 +715,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<MuestreoEmergencia>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC07EB386B26");
+            entity.HasKey(e => e.Id).HasName("PK__Muestreo__3214EC078DE004E5");
 
             entity.Property(e => e.ClaveUnica).HasMaxLength(150);
             entity.Property(e => e.FechaProgramada).HasColumnType("date");
@@ -1326,7 +1328,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<TipoSustitucion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0783A7C692");
+            entity.HasKey(e => e.Id).HasName("PK__TipoSust__3214EC0762844A01");
 
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(20)
@@ -1439,6 +1441,7 @@ public partial class SicaContext : DbContext
 
             entity.Property(e => e.Direccion).HasMaxLength(300);
             entity.Property(e => e.FechaRegistro).HasColumnType("datetime");
+            entity.Property(e => e.FehaMuestreo).HasColumnType("datetime");
             entity.Property(e => e.Ocdlid).HasColumnName("OCDLId");
             entity.Property(e => e.Ocid).HasColumnName("OCId");
             entity.Property(e => e.OrganismoCuencaDireccionLocal)

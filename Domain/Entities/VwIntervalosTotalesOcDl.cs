@@ -34,4 +34,6 @@ public partial class VwIntervalosTotalesOcDl
     public int? _96100 { get; set; }
 
     public DateTime FechaRegistro { get; set; }
+
+    public DateTime FehaMuestreo { get; set; }
 }
