@@ -35,8 +35,8 @@ namespace Persistence.Repository
             if (mes != null)
             {
                 List<long> ocdlExistentes = new();
-                var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FechaRegistro.Year == Convert.ToInt32(anioRegistro) &&
-                                                                               x.FechaRegistro.Month == mes && x.Ocid == ocId).ToList();
+                var resultados = _dbContext.VwIntervalosTotalesOcDl.Where(x => x.FehaMuestreo.Year == Convert.ToInt32(anioReporte) &&
+                                                                               x.FehaMuestreo.Month == mes && x.Ocid == ocId).ToList();
 
                 if (resultados != null)
                 {
