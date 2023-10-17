@@ -23,6 +23,8 @@ public partial class InformeMensualSupervision
 
     public long UsuarioRegistroId { get; set; }
 
+    public int Anio { get; set; }
+
     public virtual ICollection<ArchivoInformeMensualSupervision> ArchivoInformeMensualSupervision { get; set; } = new List<ArchivoInformeMensualSupervision>();
 
     public virtual ICollection<CopiaInformeMensualSupervision> CopiaInformeMensualSupervision { get; set; } = new List<CopiaInformeMensualSupervision>();
