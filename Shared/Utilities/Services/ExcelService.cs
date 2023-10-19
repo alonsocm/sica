@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.EvidenciasMuestreo;
 using Application.Exceptions;
 using Application.Models;
 using OfficeOpenXml;
@@ -9,6 +10,7 @@ namespace Shared.Utilities.Services
 {
     public static class ExcelService
     {
+
         public static List<KeyValuePair<string, string>> Mappings;
         public static int StartColumn = 1;
 
@@ -17,6 +19,7 @@ namespace Shared.Utilities.Services
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new(fileInfo);
             ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
             List<T> list = new();
 
             if (worksheet.Name != workSheetName)
@@ -69,6 +72,47 @@ namespace Shared.Utilities.Services
             return list;
         }
 
+        public static ExtrasionDatosEvidenciaDto ImportarDatosExcelCaudal(Stream fileCaudal)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage package = new(fileCaudal);
+            string[] tiposMetodos = { "Sección-Velocidad", "Volumen-Tiempo", "Flotador", "EstaciónHidrométrica",
+                "PARSHALL", "Sección-Velocidad(Tablas)","Sección-Velocidad (Angulo)" };
+
+            bool respuestaAforo = false;
+            ExtrasionDatosEvidenciaDto extracción = new ExtrasionDatosEvidenciaDto();
+            foreach (var item in tiposMetodos)
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[item];
+                if (worksheet != null && !respuestaAforo)
+                {
+                    extracción.LatitudAforo = (worksheet.Cells["O5"].Value != null) ? worksheet.Cells["O5"].Value.ToString() : string.Empty;
+                    extracción.LongitudAforo = (worksheet.Cells["O6"].Value != null) ? worksheet.Cells["O6"].Value.ToString() : string.Empty;
+                    respuestaAforo = (extracción.LatitudAforo != string.Empty && extracción.LongitudAforo != string.Empty) ? true : false;
+                }
+            }
+            return extracción;
+        }
+        public static ExtrasionDatosEvidenciaDto ImportarDatosExcelTrack(Stream fileTrack)
+        {
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage packageTrack = new(fileTrack);
+            ExtrasionDatosEvidenciaDto extracción = new ExtrasionDatosEvidenciaDto();
+
+            ExcelWorksheet worksheetTrack = packageTrack.Workbook.Worksheets[0];
+            extracción.Placas = (worksheetTrack.Cells["A3"].Value != null) ? worksheetTrack.Cells["A3"].Value.ToString() : string.Empty;
+            extracción.Placas = extracción.Placas.Replace("PLACAS: ", "").Trim();
+            string FechaReporte = worksheetTrack.Cells["A2"].Value.ToString();
+            string[] DatosFechaReporte = FechaReporte.Split(' ');
+            extracción.FechaInicio = DatosFechaReporte[1];
+            extracción.HoraInicio = DatosFechaReporte[2];
+            extracción.FechaFinal = DatosFechaReporte[4];
+            extracción.HoraFinal = DatosFechaReporte[5];
+            extracción.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value != null) ? worksheetTrack.Cells["D2"].Value.ToString() : ((worksheetTrack.Cells["E2"].Value != null) ? worksheetTrack.Cells["E2"].Value.ToString() : string.Empty);
+            return extracción;
+        }
+
         public static void ExportToExcel<T>(List<T> data, FileInfo fileInfo, bool esPlantilla = false, string nombreHoja = "ebaseca")
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -114,7 +158,7 @@ namespace Shared.Utilities.Services
 
             var rangoObservaciones = hojaValores.Cells[$"A1:A{fila}"];
 
-            for (int i = 2; i <=data.Count + 1; i++)
+            for (int i = 2; i <= data.Count + 1; i++)
             {
                 var validation = hojaResultados.DataValidations.AddListValidation("K" + i);
                 validation.ShowErrorMessage = false;

@@ -11,12 +11,12 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
 
         public CargaEvidenciasCommandValidator(IMuestreoRepository muestreoRepository)
         {
-            _muestreoRepository= muestreoRepository;
+            _muestreoRepository = muestreoRepository;
 
             RuleForEach(x => x.Archivos).ChildRules(archivo =>
             {
                 archivo.RuleFor(x => x.FileName)
-                       .Matches("[a-zA-Z0-9]\\-[0-9]{6}\\-[EMSDROAVC]\\.(jpg|JPG|PDF|pdf|XLS|xls|XLSX|xlsx|XLMS|xmls)")
+                       .Matches("[a-zA-Z0-9]\\-[0-9]{6}\\-[EMSDROAVC]\\.(jpg|JPG|PDF|pdf|XLS|xls|XLSX|xlsx|XLMS|xmls|XLSM)")
                        .WithMessage(archivo => $"El nombre del archivo {archivo.FileName} no cumple con el formato requerido");
             }).DependentRules(() =>
             {
@@ -34,14 +34,14 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                     clavesMuestreos.Distinct().ToList().ForEach(claveMuestreo =>
                     {
                         var evidenciasMonitoreo = nombresArchivos.Where(nombre => nombre.StartsWith(claveMuestreo)).ToList();
-                        var sufijosMonitoreo = new List<string>();  
+                        var sufijosMonitoreo = new List<string>();
 
                         foreach (var evidencia in evidenciasMonitoreo)
                         {
                             var sufijo = evidencia[(evidencia.LastIndexOf('-') + 1)..evidencia.LastIndexOf('.')];
                             sufijosMonitoreo.Add(sufijo);
                         }
-                        
+
                         var tipoCuerpoAgua = _muestreoRepository.GetTipoCuerpoAguaHomologado(claveMuestreo);
 
                         if (tipoCuerpoAgua is null)
