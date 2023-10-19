@@ -72,7 +72,7 @@ namespace Shared.Utilities.Services
             return list;
         }
 
-        public static ExtrasionDatosEvidenciaDto ImportarDatosExcelCaudal(Stream fileCaudal)
+        public static ExtraccionDatosEvidenciaDto ImportarDatosExcelCaudal(Stream fileCaudal)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new(fileCaudal);
@@ -80,36 +80,36 @@ namespace Shared.Utilities.Services
                 "PARSHALL", "Sección-Velocidad(Tablas)","Sección-Velocidad (Angulo)" };
 
             bool respuestaAforo = false;
-            ExtrasionDatosEvidenciaDto extracción = new ExtrasionDatosEvidenciaDto();
+            ExtraccionDatosEvidenciaDto extraccion = new ExtraccionDatosEvidenciaDto();
             foreach (var item in tiposMetodos)
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[item];
                 if (worksheet != null && !respuestaAforo)
                 {
-                    extracción.LatitudAforo = (worksheet.Cells["O5"].Value != null) ? worksheet.Cells["O5"].Value.ToString() : string.Empty;
-                    extracción.LongitudAforo = (worksheet.Cells["O6"].Value != null) ? worksheet.Cells["O6"].Value.ToString() : string.Empty;
-                    respuestaAforo = (extracción.LatitudAforo != string.Empty && extracción.LongitudAforo != string.Empty) ? true : false;
+                    extraccion.LatitudAforo = (worksheet.Cells["O5"].Value != null) ? worksheet.Cells["O5"].Value.ToString() : string.Empty;
+                    extraccion.LongitudAforo = (worksheet.Cells["O6"].Value != null) ? worksheet.Cells["O6"].Value.ToString() : string.Empty;
+                    respuestaAforo = (extraccion.LatitudAforo != string.Empty && extraccion.LongitudAforo != string.Empty) ? true : false;
                 }
             }
-            return extracción;
+            return extraccion;
         }
-        public static ExtrasionDatosEvidenciaDto ImportarDatosExcelTrack(Stream fileTrack)
+        public static ExtraccionDatosEvidenciaDto ImportarDatosExcelTrack(Stream fileTrack)
         {
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage packageTrack = new(fileTrack);
-            ExtrasionDatosEvidenciaDto extracción = new ExtrasionDatosEvidenciaDto();
+            ExtraccionDatosEvidenciaDto extraccion = new ExtraccionDatosEvidenciaDto();
 
             ExcelWorksheet worksheetTrack = packageTrack.Workbook.Worksheets[0];
-            extracción.Placas = (worksheetTrack.Cells["A3"].Value != null) ? worksheetTrack.Cells["A3"].Value.ToString() : string.Empty;
-            extracción.Placas = extracción.Placas.Replace("PLACAS: ", "").Trim();
+            extraccion.Placas = (worksheetTrack.Cells["A3"].Value != null) ? worksheetTrack.Cells["A3"].Value.ToString() : string.Empty;
+            extraccion.Placas = extraccion.Placas.Replace("PLACAS: ", "").Trim();
             string FechaReporte = worksheetTrack.Cells["A2"].Value.ToString();
             string[] DatosFechaReporte = FechaReporte.Split(' ');
-            extracción.FechaInicio = DatosFechaReporte[1];
-            extracción.HoraInicio = DatosFechaReporte[2];
-            extracción.FechaFinal = DatosFechaReporte[4];
+            extraccion.FechaInicio = DatosFechaReporte[1];
+            extraccion.HoraInicio = DatosFechaReporte[2];
+            extraccion.FechaFinal = DatosFechaReporte[4];
             extracción.HoraFinal = DatosFechaReporte[5];
-            extracción.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value != null) ? worksheetTrack.Cells["D2"].Value.ToString() : ((worksheetTrack.Cells["E2"].Value != null) ? worksheetTrack.Cells["E2"].Value.ToString() : string.Empty);
+            extraccion.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value != null) ? worksheetTrack.Cells["D2"].Value.ToString() : ((worksheetTrack.Cells["E2"].Value != null) ? worksheetTrack.Cells["E2"].Value.ToString() : string.Empty);
             return extracción;
         }
 
