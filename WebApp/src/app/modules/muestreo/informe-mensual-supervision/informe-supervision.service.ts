@@ -34,6 +34,10 @@ export class InformeSupervisionService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
+  getAniosConRegistroMonitoreos() {
+    return this.http.get(environment.apiUrl + '/Muestreos/AniosConRegistro');
+  }
+
   postInforme(informe: InformeMensualSupervisionGeneral) {
     let usuario = this.authService.getUser().usuarioId;
     var formData = new FormData();

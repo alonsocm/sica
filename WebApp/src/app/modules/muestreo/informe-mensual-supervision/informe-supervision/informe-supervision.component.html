@@ -56,10 +56,14 @@
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12 form-group">
                     <label for="mes">Año y mes a reportar:*</label>
-                    <select class="form-control" id="anio" formControlName="anio" title="año a reportar">
+                    <select class="form-control" id="anio" formControlName="anio" title="año a reportar"
+                        [ngClass]="{'is-invalid': this.submitted && registroForm.get('anio')?.hasError('min')}">
                         <option value="0">Seleccione</option>
-                        <option value="2022">2022</option>
+                        <option *ngFor="let anio of this.aniosConRegistros" [value]="anio">{{anio}}</option>
                     </select>
+                    <div class="invalid-feedback">
+                        <div>Campo requerido</div>
+                    </div>
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12 form-group align-self-end">
                     <select class="form-control" id="mes" formControlName="mes"

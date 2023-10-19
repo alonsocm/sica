@@ -28,6 +28,7 @@ export class InformeSupervisionComponent implements OnInit {
   reporteInformeMensualSupervisionDefinition =
     new ReporteMensualSupervisionDefinition();
   mensaje = {};
+  aniosConRegistros: Array<number> = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,7 +42,7 @@ export class InformeSupervisionComponent implements OnInit {
       fecha: ['', Validators.required],
       responsable: [0, [Validators.required]],
       puesto: ['', Validators.required],
-      anio: ['0', Validators.required],
+      anio: ['0', Validators.min(1)],
       nombreCopia: [''],
       puestoCopia: [''],
       inicialesPersonas: [
@@ -57,11 +58,21 @@ export class InformeSupervisionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getAniosConRegistroMonitoreos();
     this.getDirectoresResponsables();
 
     if (this.informeId !== 0) {
       this.getInformeSupervision(String(this.informeId));
     }
+  }
+
+  getAniosConRegistroMonitoreos() {
+    this.informeSupervisionService.getAniosConRegistroMonitoreos().subscribe({
+      next: (response: any) => {
+        this.aniosConRegistros = response.data;
+      },
+      error: (error) => {},
+    });
   }
 
   onSubmit() {}
@@ -85,6 +96,7 @@ export class InformeSupervisionComponent implements OnInit {
           lugar: informe.lugar,
           fecha: informe.fecha,
           responsable: informe.responsableId,
+          anio: informe.anio,
           mes: informe.mes,
           inicialesPersonas: informe.personasInvolucradas,
         });
@@ -180,6 +192,7 @@ export class InformeSupervisionComponent implements OnInit {
   }
 
   onCancelarClick() {
+    this.informeSupervisionService.updateInformeId(0);
     this.router.navigate(['/informe-mensual-supervision-consulta']);
   }
 
