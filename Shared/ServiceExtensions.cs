@@ -16,6 +16,7 @@ namespace Shared
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IArchivoService, ArchivoService>();
             services.AddTransient<IReglaService, ReglaService>();
+            services.AddTransient<IMetadataExtractorService, MetadataExtractorService>();
         }
     }
 }

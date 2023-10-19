@@ -10,8 +10,8 @@
         public string? Flash { get; set; }
         public string? Shutter { get; set; }
         public DateTime? DateTime { get; set; }
-        public string? Height { get; set; }
-        public string? Width { get; set; }
+        public int? Height { get; set; }
+        public int? Width { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public double? Altitude { get; set; }

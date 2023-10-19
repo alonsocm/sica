@@ -1,13 +1,14 @@
 ﻿using Application.DTOs.EvidenciasMuestreo;
+using Application.Interfaces;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using MetadataExtractor.Formats.Jpeg;
 
 namespace Shared.Utilities.Services
 {
-    public class MetadataExtractorService
+    public class MetadataExtractorService : IMetadataExtractorService
     {
-        public static ImageInformationDto GetMetadaFromImage(Stream stream)
+        public ImageInformationDto GetMetadaFromImage(Stream stream)
         {
             var directories = ImageMetadataReader.ReadMetadata(stream);
             ImageInformationDto imageInformation = new();
@@ -39,8 +40,8 @@ namespace Shared.Utilities.Services
 
             if (jpegDirectory != null)
             {
-                imageInformation.Height = jpegDirectory.GetDescription(JpegDirectory.TagImageHeight);
-                imageInformation.Width = jpegDirectory.GetDescription(JpegDirectory.TagImageWidth);
+                imageInformation.Height = jpegDirectory.GetImageHeight();
+                imageInformation.Width = jpegDirectory.GetImageWidth();
             }
 
             return imageInformation;
