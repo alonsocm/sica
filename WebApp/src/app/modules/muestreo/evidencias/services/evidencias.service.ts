@@ -44,4 +44,10 @@ export class EvidenciasService {
       responseType: 'blob',
     });
   }
+
+  getInformacionEvidencias(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/EvidenciasMuestreos/InformacionEvidencias'
+    );
+  }
 }

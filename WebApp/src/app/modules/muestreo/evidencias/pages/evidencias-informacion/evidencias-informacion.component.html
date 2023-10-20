@@ -1,0 +1,64 @@
+<app-menu></app-menu>
+<div class="container-fluid">
+    <div class="clearfix">
+        <div class="float-left">
+            <h1>Información de evidencias de muestreo.</h1>
+        </div>
+    </div>
+    <hr class="red">
+    <app-notification></app-notification>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th class="col-lg-1">Muestreo</th>
+                    <th class="col-lg-1">Archivo</th>
+                    <th class="col-lg-1">Latitud</th>
+                    <th class="col-lg-1">Longitud</th>
+                    <th class="col-lg-1">Altitud</th>
+                    <th class="col-lg-2">Marca de la cámara</th>
+                    <th class="col-lg-2">Modelo de la cámara</th>
+                    <th class="col-lg-1">ISO</th>
+                    <th class="col-lg-1">Apertura</th>
+                    <th class="col-lg-1">Distancia focal</th>
+                    <th class="col-lg-1">Obturador</th>
+                    <th class="col-lg-1">Tamaño de la imágen</th>
+                    <th class="col-lg-1">Fecha de creación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let registro of this.informacionEvidencias | paginate: { itemsPerPage:30, currentPage: page }">
+                    <td>{{registro.muestreo}}</td>
+                    <td>{{registro.nombreArchivo}}</td>
+                    <td>{{registro.latitud}}</td>
+                    <td>{{registro.longitud}}</td>
+                    <td>{{registro.altitud}}</td>
+                    <td>{{registro.marca}}</td>
+                    <td>{{registro.modelo}}</td>
+                    <td>{{registro.iso}}</td>
+                    <td>{{registro.apertura}}</td>
+                    <td>{{registro.distanciaFocal}}</td>
+                    <td>{{registro.obturador}}</td>
+                    <td>{{registro.tamanio}}</td>
+                    <td>{{registro.fechaCreacion}}</td>
+                    <!-- <td>
+                        <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver informe"
+                            (click)="onVerInformeClick(registro.id)">
+                            <i class="bi bi-eye icon-action"></i>
+                        </button>
+                    </td> -->
+                </tr>
+                <tr *ngIf="this.informacionEvidencias.length === 0">
+                    <td class="td-center" colspan="13">No se
+                        encontraron registros
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row-group">
+        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
+    </div>
+</div>

@@ -53,6 +53,7 @@ import { SupervisionMuestreoComponent } from './modules/muestreo/supervision/sup
 import { InformeSupervisionComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision/informe-supervision.component';
 import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision-consulta/informe-supervision-consulta.component';
 import { NotificationComponent } from './shared/notification/notification.component';
+import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pages/evidencias-informacion/evidencias-informacion.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +99,7 @@ import { NotificationComponent } from './shared/notification/notification.compon
     InformeSupervisionComponent,
     InformeSupervisionConsultaComponent,
     NotificationComponent,
+    EvidenciasInformacionComponent,
   ],
   imports: [
     BrowserModule,

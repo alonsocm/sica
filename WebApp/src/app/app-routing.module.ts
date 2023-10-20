@@ -36,6 +36,7 @@ import { SupervisionMuestreoConsultaComponent } from './modules/muestreo/supervi
 import { SupervisionMuestreoComponent } from './modules/muestreo/supervision/supervision-muestreo/supervision-muestreo.component';
 import { InformeSupervisionComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision/informe-supervision.component';
 import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision-consulta/informe-supervision-consulta.component';
+import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pages/evidencias-informacion/evidencias-informacion.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -164,7 +165,7 @@ const routes: Routes = [
     component: ConsultaEvidenciaComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
     canActivate: [AuthGuardService],
-  },  
+  },
   {
     path: 'acumulacion-resultados',
     component: AcumulacionResultadosComponent,
@@ -222,6 +223,11 @@ const routes: Routes = [
   {
     path: 'informe-mensual-supervision-consulta',
     component: InformeSupervisionConsultaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'evidencias-informacion',
+    component: EvidenciasInformacionComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   { path: '**', component: NotFoundComponent },
