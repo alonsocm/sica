@@ -37,6 +37,20 @@ public partial class EvidenciaMuestreo
 
     public string? Direccion { get; set; }
 
+    public string? Placas { get; set; }
+
+    public string? Laboratorio { get; set; }
+
+    public string? FechaInicio { get; set; }
+
+    public string? FechaFin { get; set; }
+
+    public string? HoraInicio { get; set; }
+
+    public string? HoraFin { get; set; }
+
+    public DateTime? FechaCreacion { get; set; }
+
     public virtual Muestreo Muestreo { get; set; } = null!;
 
     public virtual TipoEvidenciaMuestreo TipoEvidenciaMuestreo { get; set; } = null!;

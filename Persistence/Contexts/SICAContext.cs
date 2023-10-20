@@ -420,14 +420,21 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Apertura).HasMaxLength(50);
             entity.Property(e => e.Direccion).HasMaxLength(50);
             entity.Property(e => e.DistanciaFocal).HasMaxLength(50);
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaFin).HasMaxLength(25);
+            entity.Property(e => e.FechaInicio).HasMaxLength(25);
             entity.Property(e => e.Flash).HasMaxLength(50);
+            entity.Property(e => e.HoraFin).HasMaxLength(25);
+            entity.Property(e => e.HoraInicio).HasMaxLength(25);
             entity.Property(e => e.Iso).HasMaxLength(50);
+            entity.Property(e => e.Laboratorio).HasMaxLength(25);
             entity.Property(e => e.Latitud).HasColumnType("decimal(12, 9)");
             entity.Property(e => e.Longitud).HasColumnType("decimal(12, 9)");
             entity.Property(e => e.MarcaCamara).HasMaxLength(50);
             entity.Property(e => e.ModeloCamara).HasMaxLength(50);
             entity.Property(e => e.NombreArchivo).IsUnicode(false);
             entity.Property(e => e.Obturador).HasMaxLength(50);
+            entity.Property(e => e.Placas).HasMaxLength(25);
             entity.Property(e => e.Tamano).HasMaxLength(50);
 
             entity.HasOne(d => d.Muestreo).WithMany(p => p.EvidenciaMuestreo)
