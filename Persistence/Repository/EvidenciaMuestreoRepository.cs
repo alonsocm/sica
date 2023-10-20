@@ -1,11 +1,8 @@
-﻿using Application.Interfaces.IRepositories;
+﻿using Application.DTOs.EvidenciasMuestreo;
+using Application.Interfaces.IRepositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
@@ -25,6 +22,35 @@ namespace Persistence.Repository
             }
 
             return true;
+        }
+
+        public async Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync()
+        {
+            var informacionEvidencias = _dbContext.EvidenciaMuestreo;
+            List<InformacionEvidenciaDto> informacionEvidenciaDtos = new();
+
+            if (informacionEvidencias.Any())
+            {
+                informacionEvidenciaDtos = await informacionEvidencias.Select(x => new InformacionEvidenciaDto
+                {
+                    Muestreo = x.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo ?? string.Empty,
+                    NombreArchivo = x.NombreArchivo,
+                    Latitud = x.Latitud.ToString() ?? string.Empty,
+                    Longitud = x.Longitud.ToString() ?? string.Empty,
+                    Altitud = x.Altitud.ToString() ?? string.Empty,
+                    Marca = x.MarcaCamara ?? string.Empty,
+                    Modelo = x.ModeloCamara ?? string.Empty,
+                    Iso = x.Iso ?? string.Empty,
+                    Apertura = x.Apertura ?? string.Empty,
+                    Obturador = x.Obturador ?? string.Empty,
+                    Direccion = x.Direccion ?? string.Empty,
+                    DistanciaFocal = x.DistanciaFocal ?? string.Empty,
+                    Flash = x.Flash ?? string.Empty,
+                    Tamanio = x.Tamano ?? string.Empty,
+                }).ToListAsync();
+            }
+
+            return informacionEvidenciaDtos;
         }
     }
 }

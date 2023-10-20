@@ -1,11 +1,7 @@
 ﻿using Application.DTOs;
-using Application.Exceptions;
 using Application.Features.CargaMasivaEvidencias.Commands;
 using Application.Features.Evidencias.Queries;
-using Application.Features.Operacion.Replicas.Queries;
-using Application.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using Shared.Utilities.Services;
 using WebAPI.Shared;
 
@@ -81,10 +77,16 @@ namespace WebAPI.Controllers.v1.Operacion
 
             ExcelService.ExportToExcel(resultados, fileInfo, true);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
-         
+
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
         #endregion
+
+        [HttpGet("InformacionEvidencias")]
+        public async Task<ActionResult> Get()
+        {
+            return Ok(await Mediator.Send(new GetInformacionEvidencias { }));
+        }
     }
 }

@@ -1,14 +1,11 @@
-﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.DTOs.EvidenciasMuestreo;
+using Domain.Entities;
 
 namespace Application.Interfaces.IRepositories
 {
     public interface IEvidenciaMuestreoRepository : IRepository<EvidenciaMuestreo>
     {
+        public Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync();
         public bool EliminarEvidenciasMuestreo(long idMuestreo);
     }
 }
