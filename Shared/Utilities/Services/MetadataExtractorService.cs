@@ -3,6 +3,7 @@ using Application.Interfaces;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using MetadataExtractor.Formats.Jpeg;
+using OfficeOpenXml;
 
 namespace Shared.Utilities.Services
 {
@@ -45,6 +46,49 @@ namespace Shared.Utilities.Services
             }
 
             return imageInformation;
+        }
+
+        public InformacionEvidenciaExcelDto ObtenerDatosExcelCaudal(Stream fileCaudal)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage package = new(fileCaudal);
+            string[] tiposMetodos = { "Sección-Velocidad", "Volumen-Tiempo", "Flotador", "EstaciónHidrométrica",
+                                      "PARSHALL", "Sección-Velocidad(Tablas)","Sección-Velocidad (Angulo)" };
+            bool respuestaAforo = false;
+            InformacionEvidenciaExcelDto informacionEvidencia = new();
+
+            foreach (var item in tiposMetodos)
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[item];
+
+                if (worksheet != null && !respuestaAforo)
+                {
+                    informacionEvidencia.LatitudAforo = worksheet.Cells["O5"].Value.ToString() ?? string.Empty;
+                    informacionEvidencia.LongitudAforo = worksheet.Cells["O6"].Value.ToString() ?? string.Empty;
+                    respuestaAforo = informacionEvidencia.LatitudAforo != string.Empty && informacionEvidencia.LongitudAforo != string.Empty;
+                }
+            }
+
+            return informacionEvidencia;
+        }
+
+        public InformacionEvidenciaExcelDto ObtenerDatosExcelTrack(Stream fileTrack)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using ExcelPackage package = new(fileTrack);
+            InformacionEvidenciaExcelDto informacionEvidencia = new();
+
+            ExcelWorksheet worksheetTrack = package.Workbook.Worksheets[0];
+            informacionEvidencia.Placas = worksheetTrack.Cells["A3"].Value.ToString() ?? string.Empty;
+            informacionEvidencia.Placas = informacionEvidencia.Placas.Replace("PLACAS: ", "").Trim();
+            string fechaReporte = worksheetTrack.Cells["A2"].Value.ToString() ?? string.Empty;
+            string[] datosFechaReporte = fechaReporte.Split(' ');
+            informacionEvidencia.FechaInicio = datosFechaReporte[1];
+            informacionEvidencia.HoraInicio = datosFechaReporte[2];
+            informacionEvidencia.FechaFinal = datosFechaReporte[4];
+            informacionEvidencia.HoraFinal = datosFechaReporte[5];
+            informacionEvidencia.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value.ToString()) ?? worksheetTrack.Cells["E2"].Value.ToString() ?? string.Empty;
+            return informacionEvidencia;
         }
     }
 }

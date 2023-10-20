@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.EvidenciasMuestreo;
+using Application.Enums;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.Interfaces.IRepositories;
@@ -56,10 +57,38 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                         var sufijoEvidencia = archivo.FileName.Substring(archivo.FileName.LastIndexOf('-') + 1, 1);
                         var tipoEvidenciaId = tiposEvidencia.First(f => f.Sufijo == sufijoEvidencia).Id;
                         ImageInformationDto imageInformationDto = new();
+                        EvidenciaMuestreo evidencia = new();
 
                         if (archivo.ContentType == "image/jpeg")
                         {
                             imageInformationDto = _metadataExtractorService.GetMetadaFromImage(archivo.OpenReadStream());
+
+                            evidencia.Tamano = imageInformationDto.Height != null && imageInformationDto.Width != null ? $"{imageInformationDto.Height} x {imageInformationDto.Width} pixeles" : null;
+                            evidencia.MarcaCamara = imageInformationDto.Make;
+                            evidencia.ModeloCamara = imageInformationDto.Model;
+                            evidencia.Iso = imageInformationDto.Iso;
+                            evidencia.Apertura = imageInformationDto.Aperture;
+                            evidencia.Obturador = imageInformationDto.Shutter;
+                            evidencia.DistanciaFocal = imageInformationDto.FocalLength;
+                            evidencia.Flash = imageInformationDto.Flash;
+                            evidencia.Direccion = imageInformationDto.Direction?.ToString();
+                            evidencia.Latitud = imageInformationDto.Latitude is null ? null : (decimal)imageInformationDto.Latitude;
+                            evidencia.Longitud = imageInformationDto.Longitude is null ? null : (decimal)imageInformationDto.Longitude;
+                            evidencia.Altitud = imageInformationDto.Altitude is null ? null : (decimal)imageInformationDto.Altitude;
+                        }
+                        else if (tipoEvidenciaId == (int)TipoEvidencia.FormatoCaudal)
+                        {
+                            using MemoryStream stream = new();
+                            await archivo.CopyToAsync(stream, cancellationToken);
+                            var informacionArchivoCaudal = _metadataExtractorService.ObtenerDatosExcelCaudal(stream);
+                            evidencia.Latitud = informacionArchivoCaudal.LatitudAforo is null ? null : Convert.ToDecimal(informacionArchivoCaudal.LatitudAforo);
+                            evidencia.Longitud = informacionArchivoCaudal.LongitudAforo is null ? null : Convert.ToDecimal(informacionArchivoCaudal.LongitudAforo);
+                        }
+                        else if (tipoEvidenciaId == (int)TipoEvidencia.Track)
+                        {
+                            using MemoryStream stream = new();
+                            await archivo.CopyToAsync(stream, cancellationToken);
+                            var informacionArchivoTrack = _metadataExtractorService.ObtenerDatosExcelTrack(stream);
                         }
 
                         evidencias.Add(new()
@@ -67,18 +96,6 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                             MuestreoId = muestreo.Id,
                             TipoEvidenciaMuestreoId = tipoEvidenciaId,
                             NombreArchivo = archivo.FileName.ToUpper(),
-                            Tamano = imageInformationDto.Height != null && imageInformationDto.Width != null ? $"{imageInformationDto.Height} x {imageInformationDto.Width} pixeles" : null,
-                            MarcaCamara = imageInformationDto.Make,
-                            ModeloCamara = imageInformationDto.Model,
-                            Iso = imageInformationDto.Iso,
-                            Apertura = imageInformationDto.Aperture,
-                            Obturador = imageInformationDto.Shutter,
-                            DistanciaFocal = imageInformationDto.FocalLength,
-                            Flash = imageInformationDto.Flash,
-                            Direccion = imageInformationDto.Direction?.ToString(),
-                            Latitud = imageInformationDto.Latitude is null ? null : (decimal)imageInformationDto.Latitude,
-                            Longitud = imageInformationDto.Longitude is null ? null : (decimal)imageInformationDto.Longitude,
-                            Altitud = imageInformationDto.Altitude is null ? null : (decimal)imageInformationDto.Altitude,
                         });
                     }
 

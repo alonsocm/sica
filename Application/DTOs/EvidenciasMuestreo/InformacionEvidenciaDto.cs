@@ -17,5 +17,11 @@
         public string Obturador { get; set; }
         public string Tamanio { get; set; }
         public string NombreArchivo { get; set; }
+        public string FechaInicio { get; set; }
+        public string FechaFinal { get; set; }
+        public string HoraInicio { get; set; }
+        public string HoraFinal { get; set; }
+        public string Placas { get; set; }
+        public string Laboratorio { get; set; }
     }
 }

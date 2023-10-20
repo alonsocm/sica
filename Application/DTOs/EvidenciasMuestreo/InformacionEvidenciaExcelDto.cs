@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs.EvidenciasMuestreo
 {
-    public class ExtraccionDatosEvidenciaDto
+    public class InformacionEvidenciaExcelDto
     {
         public string LatitudAforo { get; set; }
         public string LongitudAforo { get; set; }
@@ -13,7 +13,7 @@
         public string HoraFinal { get; set; }
         public string ClaveMuestreo { get; set; }
 
-        public ExtraccionDatosEvidenciaDto()
+        public InformacionEvidenciaExcelDto()
         {
             this.LatitudAforo = string.Empty;
             this.LongitudAforo = string.Empty;
