@@ -108,9 +108,9 @@ namespace Shared.Utilities.Services
             extraccion.FechaInicio = DatosFechaReporte[1];
             extraccion.HoraInicio = DatosFechaReporte[2];
             extraccion.FechaFinal = DatosFechaReporte[4];
-            extracción.HoraFinal = DatosFechaReporte[5];
+            extraccion.HoraFinal = DatosFechaReporte[5];
             extraccion.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value != null) ? worksheetTrack.Cells["D2"].Value.ToString() : ((worksheetTrack.Cells["E2"].Value != null) ? worksheetTrack.Cells["E2"].Value.ToString() : string.Empty);
-            return extracción;
+            return extraccion;
         }
 
         public static void ExportToExcel<T>(List<T> data, FileInfo fileInfo, bool esPlantilla = false, string nombreHoja = "ebaseca")
