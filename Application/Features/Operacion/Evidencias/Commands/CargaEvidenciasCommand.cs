@@ -63,7 +63,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                         {
                             imageInformationDto = _metadataExtractorService.GetMetadaFromImage(archivo.OpenReadStream());
 
-                            evidencia.Tamano = imageInformationDto.Height != null && imageInformationDto.Width != null ? $"{imageInformationDto.Height} x {imageInformationDto.Width} pixeles" : null;
+                            evidencia.Tamano = imageInformationDto.Height != null && imageInformationDto.Width != null ? $"{imageInformationDto.Height} x {imageInformationDto.Width} píxeles" : null;
                             evidencia.MarcaCamara = imageInformationDto.Make;
                             evidencia.ModeloCamara = imageInformationDto.Model;
                             evidencia.Iso = imageInformationDto.Iso;
