@@ -87,7 +87,7 @@ namespace Shared.Utilities.Services
             informacionEvidencia.HoraInicio = datosFechaReporte[2];
             informacionEvidencia.FechaFinal = datosFechaReporte[4];
             informacionEvidencia.HoraFinal = datosFechaReporte[5];
-            informacionEvidencia.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value.ToString()) ?? worksheetTrack.Cells["E2"].Value.ToString() ?? string.Empty;
+            informacionEvidencia.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value?.ToString()) ?? worksheetTrack.Cells["E2"].Value?.ToString() ?? string.Empty;
             return informacionEvidencia;
         }
     }

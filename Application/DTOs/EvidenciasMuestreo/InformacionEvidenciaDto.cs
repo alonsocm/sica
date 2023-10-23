@@ -7,7 +7,7 @@
         public string Apertura { get; set; }
         public string Direccion { get; set; }
         public string DistanciaFocal { get; set; }
-        public DateTime FechaCreacion { get; set; }
+        public string FechaCreacion { get; set; }
         public string Flash { get; set; }
         public string Iso { get; set; }
         public string Latitud { get; set; }
@@ -23,5 +23,6 @@
         public string HoraFinal { get; set; }
         public string Placas { get; set; }
         public string Laboratorio { get; set; }
+        public string TipoEvidencia { get; set; }
     }
 }

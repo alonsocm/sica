@@ -75,6 +75,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                             evidencia.Latitud = imageInformationDto.Latitude is null ? null : (decimal)imageInformationDto.Latitude;
                             evidencia.Longitud = imageInformationDto.Longitude is null ? null : (decimal)imageInformationDto.Longitude;
                             evidencia.Altitud = imageInformationDto.Altitude is null ? null : (decimal)imageInformationDto.Altitude;
+                            evidencia.FechaCreacion = imageInformationDto.DateTime is null ? null : imageInformationDto.DateTime;
                         }
                         else if (tipoEvidenciaId == (int)TipoEvidencia.FormatoCaudal)
                         {
@@ -89,14 +90,18 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                             using MemoryStream stream = new();
                             await archivo.CopyToAsync(stream, cancellationToken);
                             var informacionArchivoTrack = _metadataExtractorService.ObtenerDatosExcelTrack(stream);
+                            evidencia.Placas = informacionArchivoTrack.Placas;
+                            evidencia.FechaInicio = informacionArchivoTrack.FechaInicio;
+                            evidencia.FechaFin = informacionArchivoTrack.FechaFinal;
+                            evidencia.HoraInicio = informacionArchivoTrack.HoraInicio;
+                            evidencia.HoraFin = informacionArchivoTrack.HoraFinal;
                         }
 
-                        evidencias.Add(new()
-                        {
-                            MuestreoId = muestreo.Id,
-                            TipoEvidenciaMuestreoId = tipoEvidenciaId,
-                            NombreArchivo = archivo.FileName.ToUpper(),
-                        });
+                        evidencia.MuestreoId = muestreo.Id;
+                        evidencia.TipoEvidenciaMuestreoId = tipoEvidenciaId;
+                        evidencia.NombreArchivo = archivo.FileName.ToUpper();
+
+                        evidencias.Add(evidencia);
                     }
 
                     muestreo.EstatusId = (int)Enums.EstatusMuestreo.EvidenciasCargadas;

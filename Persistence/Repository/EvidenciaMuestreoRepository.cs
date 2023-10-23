@@ -34,6 +34,7 @@ namespace Persistence.Repository
                 informacionEvidenciaDtos = await informacionEvidencias.Select(x => new InformacionEvidenciaDto
                 {
                     Muestreo = x.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo ?? string.Empty,
+                    TipoEvidencia = x.TipoEvidenciaMuestreo.Descripcion,
                     NombreArchivo = x.NombreArchivo,
                     Latitud = x.Latitud.ToString() ?? string.Empty,
                     Longitud = x.Longitud.ToString() ?? string.Empty,
@@ -47,6 +48,13 @@ namespace Persistence.Repository
                     DistanciaFocal = x.DistanciaFocal ?? string.Empty,
                     Flash = x.Flash ?? string.Empty,
                     Tamanio = x.Tamano ?? string.Empty,
+                    FechaCreacion = x.FechaCreacion == null ? string.Empty : x.FechaCreacion.Value.ToString("dd/MM/yyyy hh:mm:ss"),
+                    Placas = x.Placas ?? string.Empty,
+                    Laboratorio = x.Laboratorio ?? string.Empty,
+                    FechaInicio = x.FechaInicio ?? string.Empty,
+                    FechaFinal = x.FechaFin ?? string.Empty,
+                    HoraInicio = x.HoraInicio ?? string.Empty,
+                    HoraFinal = x.HoraFin ?? string.Empty
                 }).ToListAsync();
             }
 
