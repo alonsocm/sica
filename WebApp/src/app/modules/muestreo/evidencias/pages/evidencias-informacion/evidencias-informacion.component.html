@@ -12,6 +12,7 @@
             <thead class="thead-light">
                 <tr>
                     <th class="col-lg-1">Muestreo</th>
+                    <th class="col-lg-1">Tipo evidencia</th>
                     <th class="col-lg-1">Archivo</th>
                     <th class="col-lg-1">Latitud</th>
                     <th class="col-lg-1">Longitud</th>
@@ -22,14 +23,21 @@
                     <th class="col-lg-1">Apertura</th>
                     <th class="col-lg-1">Distancia focal</th>
                     <th class="col-lg-1">Obturador</th>
-                    <th class="col-lg-1">Tamaño de la imágen</th>
+                    <th class="col-lg-1">Tamaño de la imagen</th>
                     <th class="col-lg-1">Fecha de creación</th>
+                    <th class="col-lg-1">Placas</th>
+                    <th class="col-lg-1">Laboratorio</th>
+                    <th class="col-lg-1">Fecha inicio</th>
+                    <th class="col-lg-1">Fecha final</th>
+                    <th class="col-lg-1">Hora inicio</th>
+                    <th class="col-lg-1">Hora fin</th>
                 </tr>
             </thead>
             <tbody>
                 <tr
                     *ngFor="let registro of this.informacionEvidencias | paginate: { itemsPerPage:30, currentPage: page }">
                     <td>{{registro.muestreo}}</td>
+                    <td>{{registro.tipoEvidencia}}</td>
                     <td>{{registro.nombreArchivo}}</td>
                     <td>{{registro.latitud}}</td>
                     <td>{{registro.longitud}}</td>
@@ -42,6 +50,12 @@
                     <td>{{registro.obturador}}</td>
                     <td>{{registro.tamanio}}</td>
                     <td>{{registro.fechaCreacion}}</td>
+                    <td>{{registro.placas}}</td>
+                    <td>{{registro.laboratorio}}</td>
+                    <td>{{registro.fechaInicio}}</td>
+                    <td>{{registro.fechaFinal}}</td>
+                    <td>{{registro.horaInicio}}</td>
+                    <td>{{registro.horaFinal}}</td>
                     <!-- <td>
                         <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver informe"
                             (click)="onVerInformeClick(registro.id)">
