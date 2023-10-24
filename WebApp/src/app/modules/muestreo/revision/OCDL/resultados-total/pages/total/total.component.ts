@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { Filter } from '../../../../../../../interfaces/filtro.interface';
 import { Resultado } from '../../../../../../../interfaces/Resultado.interface';
 import { NumberService } from '../../../../../../../shared/services/number.service';
@@ -12,33 +18,36 @@ import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 @Component({
   selector: 'app-total',
   templateUrl: './total.component.html',
-  styleUrls: ['./total.component.css']
+  styleUrls: ['./total.component.css'],
 })
 export class TotalComponent extends BaseService implements OnInit {
-  @ViewChild('inputExcelObservaciones') fileUpload: ElementRef = {} as ElementRef;
+  @ViewChild('inputExcelObservaciones') fileUpload: ElementRef =
+    {} as ElementRef;
   @ViewChildren('filtrosn') filtrosn: any;
   public pages: number = 1;
   public observacionesCat: any[] = [];
-  registroParam: FormGroup;  
+  registroParam: FormGroup;
   archivo: any = null;
   muestreoSeleccionadoDatos: any = null;
   tipoaprobacion: number = 0;
-  ismuestreoModal: boolean = false;  
+  ismuestreoModal: boolean = false;
   muestreoActualizar: Array<any> = [];
   encabezadosDatosMuestreo: Array<string> = [
-    "CLAVE SITIO",
-    "CLAVE MONITOREO",
-    "NOMBRE SITIO",
-    "FECHA"
-  ]
+    'CLAVE SITIO',
+    'CLAVE MONITOREO',
+    'NOMBRE SITIO',
+    'FECHA',
+  ];
   encabezadosParametros: Array<string> = [
-    "CLAVE PARÁMETRO",
-    "NOMBRE PARÁMETRO",
-    "RESULTADO",
-    "OBSERVACIÓN OC/DL", "OTRO"]
+    'CLAVE PARÁMETRO',
+    'NOMBRE PARÁMETRO',
+    'RESULTADO',
+    'OBSERVACIÓN OC/DL',
+    'OTRO',
+  ];
   fileName: string = '';
   nombredeArchivo: string = '';
-  fechaLimiteRevision: string = '';  
+  fechaLimiteRevision: string = '';
 
   constructor(
     public numberService: NumberService,
@@ -46,7 +55,7 @@ export class TotalComponent extends BaseService implements OnInit {
     private totalService: TotalService,
     private fb: FormBuilder
   ) {
-    super()
+    super();
     this.registroParam = this.fb.group({
       dropObservaciones: [null],
     });
@@ -54,17 +63,72 @@ export class TotalComponent extends BaseService implements OnInit {
 
   ngOnInit(): void {
     this.columnas = [
-      { nombre: 'noEntregaOCDL', etiqueta: 'N°. ENTREGA A REVISAR', orden: 0, filtro: new Filter() },
-      { nombre: 'organismoCuenca', etiqueta: 'OC/DL CORRESPONDIENTE', orden: 0, filtro: new Filter() },
-      { nombre: 'claveSitio', etiqueta: 'CLAVE SITIO', orden: 0, filtro: new Filter() },
-      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 0, filtro: new Filter() },
-      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 0, filtro: new Filter() },
-      { nombre: 'fechaRealizacion', etiqueta: 'FECHA LÍMITE DE REALIZACIÓN', orden: 0, filtro: new Filter() },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 0, filtro: new Filter() },
-      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO DE CUERPO DE AGUA ORIGINAL', orden: 0, filtro: new Filter() },
-      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO DE CUERPO DE AGUA', orden: 0, filtro: new Filter() },
-      { nombre: 'observaciones', etiqueta: 'OBSERVACIÓN LAB QUE HIZO DEL MUESTREO', orden: 0, filtro: new Filter() },
-      { nombre: 'fechaLimiteRevision', etiqueta: 'FECHA LÍMITE DE REVISIÓN', orden: 0, filtro: new Filter() },
+      {
+        nombre: 'noEntregaOCDL',
+        etiqueta: 'N°. ENTREGA A REVISAR',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'organismoCuenca',
+        etiqueta: 'OC/DL CORRESPONDIENTE',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'claveSitio',
+        etiqueta: 'CLAVE SITIO',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'claveMonitoreo',
+        etiqueta: 'CLAVE MONITOREO',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'nombreSitio',
+        etiqueta: 'NOMBRE SITIO',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'fechaRealizacion',
+        etiqueta: 'FECHA LÍMITE DE REALIZACIÓN',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'laboratorio',
+        etiqueta: 'LABORATORIO',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'tipoCuerpoAgua',
+        etiqueta: 'TIPO DE CUERPO DE AGUA ORIGINAL',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'tipoCuerpoAgua',
+        etiqueta: 'TIPO DE CUERPO DE AGUA',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'observaciones',
+        etiqueta: 'OBSERVACIÓN LAB QUE HIZO DEL MUESTREO',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
+        nombre: 'fechaLimiteRevision',
+        etiqueta: 'FECHA LÍMITE DE REVISIÓN',
+        orden: 0,
+        filtro: new Filter(),
+      },
     ];
     this.resultadosn = [];
     this.resultadosFiltradosn = [];
@@ -74,14 +138,17 @@ export class TotalComponent extends BaseService implements OnInit {
   exportarResultados(): void {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
     if (muestreosSeleccionados.length === 0) {
-      this.mostrarMensaje('Debe seleccionar al menos un monitoreo para descargar la información', 'warning');
+      this.mostrarMensaje(
+        'Debe seleccionar al menos un monitoreo para descargar la información',
+        'warning'
+      );
       return this.hacerScroll();
     }
     this.loading = true;
-    this.totalService.exportarResultadosExcel(muestreosSeleccionados)
+    this.totalService
+      .exportarResultadosExcel(muestreosSeleccionados)
       .subscribe({
         next: (response: any) => {
-
           this.resultadosFiltradosn = this.resultadosFiltradosn.map((m) => {
             m.isChecked = false;
             return m;
@@ -94,7 +161,6 @@ export class TotalComponent extends BaseService implements OnInit {
           this.mostrarMensaje(
             'No fue posible descargar la información',
             'danger'
-
           );
           this.loading = false;
           this.hacerScroll();
@@ -111,10 +177,7 @@ export class TotalComponent extends BaseService implements OnInit {
       this.totalService.cargarArchivo(file).subscribe({
         next: (response: any) => {
           this.loading = false;
-          this.mostrarMensaje(
-            'Archivo cargado correctamente.',
-            'success'
-          );
+          this.mostrarMensaje('Archivo cargado correctamente.', 'success');
           this.consultarMonitoreos();
         },
         error: (error: any) => {
@@ -144,14 +207,19 @@ export class TotalComponent extends BaseService implements OnInit {
         this.resultadosn = response.data;
         this.resultadosFiltradosn = this.resultadosn;
         if (this.resultadosn.length > 0) {
-          this.totalService.getObseravciones().subscribe(result => {
-            this.observacionesCat = result.data;
-          }, error => console.error(error));          
-        } 
+          this.totalService.getObseravciones().subscribe(
+            (result) => {
+              this.observacionesCat = result.data;
+            },
+            (error) => console.error(error)
+          );
+        }
         this.establecerValoresFiltrosTablan();
         this.loading = false;
       },
-      error: (error) => { this.loading = false; },
+      error: (error) => {
+        this.loading = false;
+      },
     });
   }
 
@@ -163,12 +231,13 @@ export class TotalComponent extends BaseService implements OnInit {
         tipoAprobId: estatusMuestreo.EnviadoConExtensionFecha,
         muestreoId: lstVencidos[i].muestreoId,
         lstparametros: lstVencidos[i].lstParametros,
-        isOCDL: true
-      }
+        isOCDL: true,
+      };
       this.muestreoActualizar.push(valr);
     }
 
-    this.totalService.actualizacionMuestreosParametros(this.muestreoActualizar)
+    this.totalService
+      .actualizacionMuestreosParametros(this.muestreoActualizar)
       .subscribe({
         next: (response) => {
           this.consultarMonitoreos();
@@ -176,8 +245,7 @@ export class TotalComponent extends BaseService implements OnInit {
           this.hacerScroll();
           this.seleccionarTodosChck = false;
         },
-        error: (error) => {
-        },
+        error: (error) => {},
       });
   }
 
@@ -190,35 +258,45 @@ export class TotalComponent extends BaseService implements OnInit {
   DescargarArch(valor: Resultado, tipoArchivo: number): void {
     let nomarch;
     if (valor.lstEvidencias != null) {
-      let nombrearchivo = valor.lstEvidencias.filter(x => x.tipoEvidencia == tipoArchivo);
+      let nombrearchivo = valor.lstEvidencias.filter(
+        (x) => x.tipoEvidencia == tipoArchivo
+      );
       nomarch = nombrearchivo[0].nombreArchivo;
       this.nombredeArchivo = nombrearchivo[0].nombreArchivo;
     }
 
-    this.muestreoService.descargarArchivo(nomarch)
-      .subscribe({
-        next: (response: any) => {
-          FileService.download(response, this.nombredeArchivo);
-        },
-        error: (response: any) => {
-          this.mostrarMensaje(
-            'No fue posible descargar la información',
-            'danger'
-          );
-          this.hacerScroll();
-        },
-      });
+    this.muestreoService.descargarArchivo(nomarch).subscribe({
+      next: (response: any) => {
+        FileService.download(response, this.nombredeArchivo);
+      },
+      error: (response: any) => {
+        this.mostrarMensaje(
+          'No fue posible descargar la información',
+          'danger'
+        );
+        this.hacerScroll();
+      },
+    });
   }
 
   //metodo para actualizar
   enviarMonitoreos(): void {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
-    this.muestreoSeleccionadoDatos = muestreosSeleccionados;  
-    this.ismuestreoModal = (this.muestreoSeleccionadoDatos.length == 1) ? true : false;
+    this.muestreoSeleccionadoDatos = muestreosSeleccionados;
+    this.ismuestreoModal =
+      this.muestreoSeleccionadoDatos.length == 1 ? true : false;
     if (this.ismuestreoModal == false) {
       if (this.muestreoSeleccionadoDatos.length == 0)
-        this.mostrarMensaje('Debe seleccionar un monitoreo para realizar la validación manual', 'warning');
-      else if (this.muestreoSeleccionadoDatos.length > 1) { this.mostrarMensaje('Solo debes de  seleccionar un monitoreo para realizar la validación manual', 'warning'); }
+        this.mostrarMensaje(
+          'Debe seleccionar un monitoreo para realizar la validación manual',
+          'warning'
+        );
+      else if (this.muestreoSeleccionadoDatos.length > 1) {
+        this.mostrarMensaje(
+          'Solo debes de  seleccionar un monitoreo para realizar la validación manual',
+          'warning'
+        );
+      }
       return this.hacerScroll();
     }
   }
@@ -229,19 +307,28 @@ export class TotalComponent extends BaseService implements OnInit {
     this.muestreoSeleccionadoDatos = muestreosSeleccionados;
 
     if (this.muestreoSeleccionadoDatos.length == 0) {
-      this.mostrarMensaje('Debe seleccionar al menos un monitoreo para ser enviado a resultados validados por OC/DL', 'warning');
+      this.mostrarMensaje(
+        'Debe seleccionar al menos un monitoreo para ser enviado a resultados validados por OC/DL',
+        'warning'
+      );
       return this.hacerScroll();
+    } else {
+      this.guardarEnvios(1);
     }
-    else { this.guardarEnvios(1); }
   }
 
   guardarEnvios(tipoaprobacion: number): void {
-
     for (var i = 0; i < this.muestreoSeleccionadoDatos.length; i++) {
-
-      for (var j = 0; j < this.muestreoSeleccionadoDatos[0].lstParametros.length; j++) {
-        let input = document.getElementById("tdcaja" + j) as HTMLInputElement | null;
-        this.muestreoSeleccionadoDatos[i].lstParametros[j].observacionesOCDL = input?.value;
+      for (
+        var j = 0;
+        j < this.muestreoSeleccionadoDatos[0].lstParametros.length;
+        j++
+      ) {
+        let input = document.getElementById(
+          'tdcaja' + j
+        ) as HTMLInputElement | null;
+        this.muestreoSeleccionadoDatos[i].lstParametros[j].observacionesOCDL =
+          input?.value;
       }
 
       let valr = {
@@ -250,13 +337,14 @@ export class TotalComponent extends BaseService implements OnInit {
         tipoAprobId: tipoaprobacion,
         muestreoId: this.muestreoSeleccionadoDatos[i].muestreoId,
         lstparametros: this.muestreoSeleccionadoDatos[i].lstParametros,
-        isOCDL: true
-      }
+        isOCDL: true,
+      };
       this.muestreoActualizar.push(valr);
     }
-    
+
     this.loading = true;
-    this.totalService.actualizacionMuestreosParametros(this.muestreoActualizar)
+    this.totalService
+      .actualizacionMuestreosParametros(this.muestreoActualizar)
       .subscribe({
         next: (response) => {
           this.consultarMonitoreos();

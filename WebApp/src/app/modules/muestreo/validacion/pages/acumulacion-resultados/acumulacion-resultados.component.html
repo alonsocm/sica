@@ -22,64 +22,62 @@
       </button>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12 table-responsive dvTable">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-
-            <th *ngFor="let columna of columnas">
-              {{columna.etiqueta}}
-              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                placeholder="seleccione">
-              </ng-autocomplete>
-              <ng-template #itemTemplate let-item>
-                <a [innerHTML]="item"></a>
-              </ng-template>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
-            <td>{{dato.claveUnica}}</td>
-            <td>{{dato.claveMonitoreo}}</td>
-            <td>{{dato.claveSitio}}</td>
-            <td>{{dato.nombreSitio}}</td>
-            <td>{{dato.fechaProgramada}}</td>
-            <td>{{dato.fechaRealizacion}}</td>
-            <td>{{dato.horaInicio}}</td>
-            <td>{{dato.horaFin}}</td>
-            <td>{{dato.zonaEstrategica}}</td>
-            <td>{{dato.tipoCuerpoAgua}}</td>
-            <td>{{dato.subTipoCuerpoAgua}}</td>
-            <td>{{dato.laboratorio}}</td>
-            <td>{{dato.laboratorioRealizoMuestreo}}</td>
-            <td>{{dato.laboratorioSubrogado}}</td>
-            <td>{{dato.grupoParametro}}</td>
-            <td>{{dato.subGrupo}}</td>
-            <td>{{dato.claveParametro}}</td>
-            <td>{{dato.parametro}}</td>
-            <td>{{dato.unidadMedida}}</td>
-            <td>{{dato.resultado}}</td>
-            <td>{{dato.nuevoResultadoReplica}}</td>
-            <td>{{dato.programaAnual}}</td>
-            <td>{{dato.idResultadoLaboratorio}}</td>
-            <td>{{dato.fechaEntrega}}</td>
-            <td>{{dato.replica}}</td>
-            <td>{{dato.cambioResultado}}</td>
-          </tr>
-          <tr *ngIf="this.resultadosFiltradosn.length==0">
-            <td colspan="24">
-              No se encontraron registros
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-    </pagination-controls>
+  <div class="table-responsive dvTable">
+    <table class="table table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th *ngFor="let columna of columnas">
+            {{columna.etiqueta}}
+            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+              (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+              (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+              placeholder="seleccione">
+            </ng-autocomplete>
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item"></a>
+            </ng-template>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          <td>{{dato.claveUnica}}</td>
+          <td>{{dato.claveMonitoreo}}</td>
+          <td>{{dato.claveSitio}}</td>
+          <td>{{dato.nombreSitio}}</td>
+          <td>{{dato.fechaProgramada}}</td>
+          <td>{{dato.fechaRealizacion}}</td>
+          <td>{{dato.horaInicio}}</td>
+          <td>{{dato.horaFin}}</td>
+          <td>{{dato.zonaEstrategica}}</td>
+          <td>{{dato.tipoCuerpoAgua}}</td>
+          <td>{{dato.subTipoCuerpoAgua}}</td>
+          <td>{{dato.laboratorio}}</td>
+          <td>{{dato.laboratorioRealizoMuestreo}}</td>
+          <td>{{dato.laboratorioSubrogado}}</td>
+          <td>{{dato.grupoParametro}}</td>
+          <td>{{dato.subGrupo}}</td>
+          <td>{{dato.claveParametro}}</td>
+          <td>{{dato.parametro}}</td>
+          <td>{{dato.unidadMedida}}</td>
+          <td>{{dato.resultado}}</td>
+          <td>{{dato.nuevoResultadoReplica}}</td>
+          <td>{{dato.programaAnual}}</td>
+          <td>{{dato.idResultadoLaboratorio}}</td>
+          <td>{{dato.fechaEntrega}}</td>
+          <td>{{dato.replica}}</td>
+          <td>{{dato.cambioResultado}}</td>
+        </tr>
+        <tr *ngIf="this.resultadosFiltradosn.length==0">
+          <td colspan="24">
+            No se encontraron registros
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+  </pagination-controls>
+
 </div>

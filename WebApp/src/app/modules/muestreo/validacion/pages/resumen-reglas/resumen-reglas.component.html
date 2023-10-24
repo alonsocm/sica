@@ -5,92 +5,81 @@
   </div>
 </form>
 <div class="container-fluid">
-  <h3>Resumen de la validación de reglas por resultado</h3>
+  <h1>Resumen de la validación de reglas por resultado</h1>
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
-  <div class="d-flex flex-row-reverse opciones-tabla">
-    <div class="p-2">
-      <button class="btn btn-secondary" type="button" (click)="onDownload()">
+  <div class="clearfix">
+    <div class="float-right">
+      <button class="btn btn-secondary mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
-    </div>
-    <div class="p-2">
       <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltrosn()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
   </div>
-
-  <div class="row">
-    <div class="col-md-12 table-responsive dvTable">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-
-            <th *ngFor="let columna of columnas">
-              {{columna.etiqueta}}
-              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                               (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                               placeholder="seleccione">
-              </ng-autocomplete>
-              <ng-template #itemTemplate let-item>
-                <a [innerHTML]="item"></a>
-              </ng-template>
-            </th>
-          </tr>
-        </thead>
-        <tbody style="text-align:left;">
-          <tr *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
-
-            <td style="text-align: center;">ENTREGA-0</td>
-            <td style="text-align: center;">{{dato.claveUnica}}</td>
-            <td style="text-align: center;">{{dato.claveMonitoreo}}</td>
-            <td style="text-align: center;">{{dato.claveSitio}}</td>
-            <td style="text-align: center;">{{dato.nombreSitio}}</td>
-            <td style="text-align: center;">{{dato.fechaProgramada}}</td>
-            <td style="text-align: center;">{{dato.fechaRealizacion}}</td>
-            <td style="text-align: center;">{{dato.horaInicio}}</td>
-            <td style="text-align: center;">{{dato.horaFin}}</td>
-            <td style="text-align: center;">{{dato.zonaEstrategica}}</td>
-            <td style="text-align: center;">{{dato.tipoCuerpoAgua}}</td>
-            <td style="text-align: center;">{{dato.subTipoCuerpoAgua}}</td>
-            <td style="text-align: center;">{{dato.laboratorio}}</td>
-            <td style="text-align: center;">{{dato.laboratorioRealizoMuestreo}}</td>
-            <td style="text-align: center;">{{dato.laboratorioSubrogado}}</td>
-
-            <td style="text-align: center;">{{dato.grupoParametro}}</td>
-            <td style="text-align: center;">{{dato.subGrupo}}</td>
-            <td style="text-align: center;">{{dato.claveParametro}}</td>
-            <td style="text-align: center;">{{dato.parametro}}</td>
-            <td style="text-align: center;">{{dato.unidadMedida}}</td>
-            <td style="text-align: center;">{{dato.resultado}}</td>
-            <td style="text-align: center;">{{dato.nuevoResultadoReplica}}</td>
-            <td style="text-align: center;">{{dato.programaAnual}}</td>
-            <td style="text-align: center;">{{dato.idResultadoLaboratorio}}</td>
-            <td style="text-align: center;">{{dato.fechaEntrega}}</td>
-            <td style="text-align: center;">{{dato.replica}}</td>
-            <td style="text-align: center;">{{dato.cambioResultado}}</td>
-          </tr>
-          <tr>
-            <td colspan="24">
-              <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">
-                No se encontraron registros
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-    </pagination-controls>
+  <div class="table-responsive dvTable">
+    <table class="table table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th *ngFor="let columna of columnas">
+            {{columna.etiqueta}}
+            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+              (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+              (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+              placeholder="seleccione">
+            </ng-autocomplete>
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item"></a>
+            </ng-template>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          <td>ENTREGA-0</td>
+          <td>{{dato.claveUnica}}</td>
+          <td>{{dato.claveMonitoreo}}</td>
+          <td>{{dato.claveSitio}}</td>
+          <td>{{dato.nombreSitio}}</td>
+          <td>{{dato.fechaProgramada}}</td>
+          <td>{{dato.fechaRealizacion}}</td>
+          <td>{{dato.horaInicio}}</td>
+          <td>{{dato.horaFin}}</td>
+          <td>{{dato.zonaEstrategica}}</td>
+          <td>{{dato.tipoCuerpoAgua}}</td>
+          <td>{{dato.subTipoCuerpoAgua}}</td>
+          <td>{{dato.laboratorio}}</td>
+          <td>{{dato.laboratorioRealizoMuestreo}}</td>
+          <td>{{dato.laboratorioSubrogado}}</td>
+          <td>{{dato.grupoParametro}}</td>
+          <td>{{dato.subGrupo}}</td>
+          <td>{{dato.claveParametro}}</td>
+          <td>{{dato.parametro}}</td>
+          <td>{{dato.unidadMedida}}</td>
+          <td>{{dato.resultado}}</td>
+          <td>{{dato.nuevoResultadoReplica}}</td>
+          <td>{{dato.programaAnual}}</td>
+          <td>{{dato.idResultadoLaboratorio}}</td>
+          <td>{{dato.fechaEntrega}}</td>
+          <td>{{dato.replica}}</td>
+          <td>{{dato.cambioResultado}}</td>
+        </tr>
+        <tr class="td-center">
+          <td colspan="27">
+            <div *ngIf="this.resultadosFiltradosn.length==0">
+              No se encontraron registros
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
+  <pagination-controls (pageChange)=" page=$event" previousLabel="Anterior" nextLabel="Siguiente">
+  </pagination-controls>
 </div>
-
-
-

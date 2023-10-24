@@ -5,26 +5,24 @@
   </div>
 </form>
 <div class="container-fluid">
-  <h3>Total de resultados a revisar por OC/DL</h3>
+  <h1>Total de resultados a revisar por OC/DL</h1>
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
-  <div class="row">
-    <div class="col-md-6">
-      <input type="file" style="display: none" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-             #inputExcelObservaciones>
-      <button class="btn btn-primary" (click)="inputExcelObservaciones.click()">
+  <div class="clearfix">
+    <div class="float-left">
+      <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
+        title="Seleccionar" #inputExcelObservaciones>
+      <button type="button" class="btn btn-primary" (click)="inputExcelObservaciones.click()">
         <i class="bi bi-cloud-upload"></i> Seleccionar y cargar Excel con observaciones...
       </button>
     </div>
-    <div style="text-align:right" class="col-md-4">
-      <button class="btn btn-primary" type="button" (click)="exportarResultados()">
+    <div class="float-right">
+      <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
-    </div>
-    <div style="text-align:left" class="col-md-1">
       <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltrosn()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
@@ -32,110 +30,107 @@
     </div>
   </div>
   <br />
-  <div class="row">
-    <div class="col-md-12 table-responsive dvTable">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th class="checkBox-center">
-              <label for="chckAll">SELECCIONAR TODOS</label>
-              <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                     (change)="seleccionarAll(this.resultadosFiltradosn)" />
-            </th>
-            <th *ngFor="let columna of columnas">
-              {{columna.etiqueta}}
-              <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                               (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-                               (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                               placeholder="seleccione">
-              </ng-autocomplete>
-              <ng-template #itemTemplate let-item>
-                <a [innerHTML]="item"></a>
-              </ng-template>
-            </th>
-            <th class="text-center">M FOTO MUESTREO</th>
-            <th class="text-center">S FOTO MUESTRA</th>
-            <th class="text-center">A FOTO CUADAL</th>
-            <th class="text-center">R TRACK</th>
-            <th class="text-center">O FORMATO CAUDAL</th>
-            <th class="text-center">E BITÁCORA</th>
-            <th class="text-center">D CADENA CUSTODIA</th>
-            <th class="text-center">V Formato de eventualidad</th>
-            <th class="text-center">C Máscara de campo</th>
-          </tr>
-        </thead>
-        <tbody style="text-align:left;">
-          <tr *ngFor="let muestreo of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
-            <td style="text-align:center" class="checkBox-center">
-              <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()">
-            </td>
-            <td style="text-align: center;">{{muestreo.noEntregaOCDL}}</td>
-            <td style="text-align: center;">
-              {{(muestreo.DireccionLocal == null) ? muestreo.organismoCuenca : muestreo.DireccionLocal}}
-            </td>
-            <td style="text-align: center;">{{muestreo.claveSitio}}</td>
-            <td style="text-align: center;">{{muestreo.claveMonitoreo}}</td>
-            <td style="text-align: center;">{{muestreo.nombreSitio}}</td>
-            <td style="text-align: center;">{{muestreo.fechaRealizacion}}</td>
-            <td style="text-align: center;">{{muestreo.laboratorio}}</td>
-            <td style="text-align: center;">{{muestreo.tipoCuerpoAguaOriginal}}</td>
-            <td style="text-align: center;">{{muestreo.tipoCuerpoAgua}}</td>
-            <td style="text-align: center;">{{muestreo.observaciones}}</td>
-            <td style="text-align: center;">{{muestreo.fechaLimiteRevision}}</td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 2)"
-                   width="60px" src="./assets/images/site/iconoimagen.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 3)"
-                   width="60px" src="./assets/images/site/iconoimagen.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 7)"
-                   width="60px" src="./assets/images/site/iconoimagen.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 5)"
-                   width="60px" src="./assets/images/site/ionoexel.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 6)"
-                   width="60px" src="./assets/images/site/ionoexel.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 1)"
-                   width="60px" src="./assets/images/site/iconoPDF.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 4)"
-                   width="60px" src="./assets/images/site/iconoPDF.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 8)"
-                   width="60px" src="./assets/images/site/ionoexel.png" />
-            </td>
-            <td style="text-align: center;">
-              <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 9)"
-                   width="60px" src="./assets/images/site/ionoexel.png" />
-            </td>
-          </tr>
-          <tr>
-            <td colspan="24">
-              <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">
-                No se encontraron registros
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-    </pagination-controls>
+  <div class="table-responsive dvTable">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th class="checkBox-center">
+            <label for="chckAll">SELECCIONAR TODOS</label>
+            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+              (change)="seleccionarAll(this.resultadosFiltradosn)" />
+          </th>
+          <th *ngFor="let columna of columnas">
+            {{columna.etiqueta}}
+            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+              (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+              (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+              placeholder="seleccione">
+            </ng-autocomplete>
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item"></a>
+            </ng-template>
+          </th>
+          <th class="text-center">FOTO MUESTREO (M)</th>
+          <th class="text-center">FOTO MUESTRA (S)</th>
+          <th class="text-center">FOTO CUADAL(A)</th>
+          <th class="text-center">TRACK (R)</th>
+          <th class="text-center">FORMATO CAUDAL (O)</th>
+          <th class="text-center">BITÁCORA (E)</th>
+          <th class="text-center">CADENA CUSTODIA (D)</th>
+          <th class="text-center">FORMATO DE EVENTUALIDAD (V)</th>
+          <th class="text-center">MÁSCARA DE CAMPO (C)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let muestreo of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          <td class="checkBox-center">
+            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
+          </td>
+          <td>{{muestreo.noEntregaOCDL}}</td>
+          <td>
+            {{(muestreo.DireccionLocal == null) ? muestreo.organismoCuenca : muestreo.DireccionLocal}}
+          </td>
+          <td>{{muestreo.claveSitio}}</td>
+          <td>{{muestreo.claveMonitoreo}}</td>
+          <td>{{muestreo.nombreSitio}}</td>
+          <td>{{muestreo.fechaRealizacion}}</td>
+          <td>{{muestreo.laboratorio}}</td>
+          <td>{{muestreo.tipoCuerpoAguaOriginal}}</td>
+          <td>{{muestreo.tipoCuerpoAgua}}</td>
+          <td>{{muestreo.observaciones}}</td>
+          <td>{{muestreo.fechaLimiteRevision}}</td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 2)" class="icon-evidencia"
+              src="./assets/images/site/iconoimagen.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 3)" class="icon-evidencia"
+              src="./assets/images/site/iconoimagen.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 7)" class="icon-evidencia"
+              src="./assets/images/site/iconoimagen.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 5)" class="icon-evidencia"
+              src="./assets/images/site/ionoexel.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 6)" class="icon-evidencia"
+              src="./assets/images/site/ionoexel.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 1)" class="icon-evidencia"
+              src="./assets/images/site/iconoPDF.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 4)" class="icon-evidencia"
+              src="./assets/images/site/iconoPDF.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 8)" class="icon-evidencia"
+              src="./assets/images/site/ionoexel.png" title="descargar archivo" />
+          </td>
+          <td>
+            <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 9)" class="icon-evidencia"
+              src="./assets/images/site/ionoexel.png" title="descargar archivo" />
+          </td>
+        </tr>
+        <tr *ngIf="this.resultadosFiltradosn.length==0">
+          <td class="td-center" colspan="24">
+            No se encontraron registros
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+  </pagination-controls>
   <div class="d-flex justify-content-between">
     <div class="p-2">
       <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleParametros"
-              (click)="enviarMonitoreos()">
+        (click)="enviarMonitoreos()">
         &nbsp;Validación manual de resultados
       </button>
     </div>
@@ -149,7 +144,7 @@
   <br />
   <br />
   <div *ngIf="this.muestreoSeleccionadoDatos != null && this.ismuestreoModal == true" class="modal fade"
-       id="modalDetalleParametros" data-bs-backdrop="static" data-toggle="modal">
+    id="modalDetalleParametros" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 75%;">
       <div class="modal-content">
         <div class="modal-header">
@@ -169,7 +164,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody style="text-align:left;">
+                  <tbody>
                     <tr>
                       <td>{{this.muestreoSeleccionadoDatos[0].claveSitio}}</td>
                       <td> {{this.muestreoSeleccionadoDatos[0].claveMonitoreo}}</td>
@@ -178,7 +173,7 @@
                     </tr>
                     <tr>
                       <td colspan="12">
-                        <div *ngIf="muestreoSeleccionadoDatos == null" style="text-align: center;">{{noRegistro}}</div>
+                        <div *ngIf="muestreoSeleccionadoDatos == null">{{noRegistro}}</div>
                       </td>
                     </tr>
                   </tbody>
@@ -196,42 +191,38 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody style="text-align:left;">
+                  <tbody>
                     <tr *ngFor="let muestreo of this.muestreoSeleccionadoDatos[0].lstParametros; let valor = index; ">
                       <td>{{muestreo.claveParametro}}</td>
                       <td>{{muestreo.nombreParametro}}</td>
                       <td>{{muestreo.resulatdo}}</td>
                       <td>
                         <select name="{{muestreo.id}}{{valor}}" id="{{muestreo.id}}{{valor}}" class="form-control"
-                                [(ngModel)]="muestreo.observacionesOCDLId" formControlName="dropObservaciones">
+                          [(ngModel)]="muestreo.observacionesOCDLId" formControlName="dropObservaciones">
                           <option [ngValue]="null">--Seleccione la observación--</option>
                           <option *ngFor="let observacion of observacionesCat" [ngValue]="observacion.id">
                             {{observacion.descripcion}}
                           </option>
                         </select>
                       </td>
-
                       <td>
-                        <input id="tdcaja{{valor}}" *ngIf="muestreo.observacionesOCDLId==11" class="form-control tdcaja"/>
-
+                        <input id="tdcaja{{valor}}" *ngIf="muestreo.observacionesOCDLId==11"
+                          class="form-control tdcaja" />
                       </td>
                     </tr>
-                    <tr>
-                      <td colspan="12">
-                        <div *ngIf="this.muestreoSeleccionadoDatos[0].lstParametros.length==0"
-                             style="text-align: center;">
-                          {{noRegistro}}
-                        </div>
+                    <tr *ngIf="this.muestreoSeleccionadoDatos[0].lstParametros.length==0">
+                      <td class="td-center" colspan="12">
+                        {{noRegistro}}
                       </td>
                     </tr>
                   </tbody>
-                </table>                
+                </table>
               </div>
             </div>
             <div class="modal-footer">
               <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
               <button type="button" id="btnEnvioRevision" (click)="guardarEnvios(2)" class="btn btn-primary"
-                      data-dismiss="modal">
+                data-dismiss="modal">
                 <i class="bi bi-send"></i>Confirmar revisión
               </button>
             </div>

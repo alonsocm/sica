@@ -33,59 +33,57 @@
         </div>
     </div>
     <br />
-    <div class="row">
-        <div class="col-md-12 table-responsive dvTable">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th class="checkBox-center">
-                            <label for="chckAll">SELECCIONAR TODOS</label>
-                            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                                (change)="seleccionarAll(resultadosFiltrados)" />
+    <div class="table-responsive dvTable">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th class="checkBox-center">
+                        <label for="chckAll">SELECCIONAR TODOS</label>
+                        <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                            (change)="seleccionarAll(resultadosFiltrados)" />
+                    </th>
+                    <ng-container *ngFor="let columna of this.columnas">
+                        <th *ngIf="mostrarColumna(columna.etiqueta)">
+                            {{columna.etiqueta}}
+                            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                                (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
+                                [itemTemplate]="itemTemplate" placeholder="seleccione">
+                            </ng-autocomplete>
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item"></a>
+                            </ng-template>
                         </th>
-                        <ng-container *ngFor="let columna of this.columnas">
-                            <th *ngIf="mostrarColumna(columna.etiqueta)">
-                                {{columna.etiqueta}}
-                                <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                                    (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                                    (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                                    [itemTemplate]="itemTemplate" placeholder="seleccione">
-                                </ng-autocomplete>
-                                <ng-template #itemTemplate let-item>
-                                    <a [innerHTML]="item"></a>
-                                </ng-template>
-                            </th>
-                        </ng-container>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        *ngFor="let muestreo of this.resultadosFiltrados| paginate: { itemsPerPage:30, currentPage: page }; let indice=index">
-                        <td class="checkBox-center">
-                            <input type="checkbox" [(ngModel)]="muestreo.isChecked" title="seleccionar">
-                        </td>
-                        <td *ngIf="perfil == 'Administrador' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
-                            {{muestreo.noEntregaOCDL}}
-                        </td>
-                        <td>{{muestreo.claveSitioOriginal}}</td>
-                        <td>{{muestreo.claveSitio}}</td>
-                        <td>{{muestreo.claveMonitoreo}}</td>
-                        <td>{{muestreo.fechaRealizacion}}</td>
-                        <td>{{muestreo.laboratorio}}</td>
-                        <td> {{muestreo.tipoCuerpoAgua}}</td>
-                        <td>{{muestreo.tipoHomologado}}</td>
-                        <td>{{muestreo.tipoSitio}}</td>
-                        <ng-container *ngFor="let parametrotot of muestreo.lstParametros">
-                            <td>{{ parametrotot.resulatdo }}</td>
-                        </ng-container>
-                    </tr>
-                    <tr *ngIf="this.resultadosFiltrados.length==0">
-                        <td class="td-center" colspan="16">No se encontraron registros</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-        </pagination-controls>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let muestreo of this.resultadosFiltrados| paginate: { itemsPerPage:30, currentPage: page }; let indice=index">
+                    <td class="checkBox-center">
+                        <input type="checkbox" [(ngModel)]="muestreo.isChecked" title="seleccionar">
+                    </td>
+                    <td *ngIf="perfil == 'Administrador' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
+                        {{muestreo.noEntregaOCDL}}
+                    </td>
+                    <td>{{muestreo.claveSitioOriginal}}</td>
+                    <td>{{muestreo.claveSitio}}</td>
+                    <td>{{muestreo.claveMonitoreo}}</td>
+                    <td>{{muestreo.fechaRealizacion}}</td>
+                    <td>{{muestreo.laboratorio}}</td>
+                    <td> {{muestreo.tipoCuerpoAgua}}</td>
+                    <td>{{muestreo.tipoHomologado}}</td>
+                    <td>{{muestreo.tipoSitio}}</td>
+                    <ng-container *ngFor="let parametrotot of muestreo.lstParametros">
+                        <td>{{ parametrotot.resulatdo }}</td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="this.resultadosFiltrados.length==0">
+                    <td class="td-center" colspan="16">No se encontraron registros</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
 </div>
