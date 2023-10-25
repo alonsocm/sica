@@ -63,8 +63,8 @@ namespace Shared.Utilities.Services
 
                 if (worksheet != null && !respuestaAforo)
                 {
-                    informacionEvidencia.LatitudAforo = worksheet.Cells["O5"].Value.ToString() ?? string.Empty;
-                    informacionEvidencia.LongitudAforo = worksheet.Cells["O6"].Value.ToString() ?? string.Empty;
+                    informacionEvidencia.LatitudAforo = (worksheet.Cells["O5"].Value == null) ? string.Empty : worksheet.Cells["O5"].Value.ToString();
+                    informacionEvidencia.LongitudAforo = (worksheet.Cells["O6"].Value == null) ? string.Empty : worksheet.Cells["O6"].Value.ToString();
                     respuestaAforo = informacionEvidencia.LatitudAforo != string.Empty && informacionEvidencia.LongitudAforo != string.Empty;
                 }
             }
@@ -79,15 +79,19 @@ namespace Shared.Utilities.Services
             InformacionEvidenciaExcelDto informacionEvidencia = new();
 
             ExcelWorksheet worksheetTrack = package.Workbook.Worksheets[0];
-            informacionEvidencia.Placas = worksheetTrack.Cells["A3"].Value.ToString() ?? string.Empty;
+            informacionEvidencia.Placas = (worksheetTrack.Cells["A3"].Value == null) ? string.Empty : worksheetTrack.Cells["A3"].Value.ToString();
             informacionEvidencia.Placas = informacionEvidencia.Placas.Replace("PLACAS: ", "").Trim();
-            string fechaReporte = worksheetTrack.Cells["A2"].Value.ToString() ?? string.Empty;
-            string[] datosFechaReporte = fechaReporte.Split(' ');
-            informacionEvidencia.FechaInicio = datosFechaReporte[1];
-            informacionEvidencia.HoraInicio = datosFechaReporte[2];
-            informacionEvidencia.FechaFinal = datosFechaReporte[4];
-            informacionEvidencia.HoraFinal = datosFechaReporte[5];
-            informacionEvidencia.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value?.ToString()) ?? worksheetTrack.Cells["E2"].Value?.ToString() ?? string.Empty;
+            if (worksheetTrack.Cells["A2"].Value != null)
+            {
+                string fechaReporte = worksheetTrack.Cells["A2"].Value.ToString() ?? string.Empty;
+                string[] datosFechaReporte = fechaReporte.Split(' ');
+                informacionEvidencia.FechaInicio = datosFechaReporte[1];
+                informacionEvidencia.HoraInicio = datosFechaReporte[2];
+                informacionEvidencia.FechaFinal = datosFechaReporte[4];
+                informacionEvidencia.HoraFinal = datosFechaReporte[5];
+                informacionEvidencia.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value?.ToString()) ?? worksheetTrack.Cells["E2"].Value?.ToString() ?? string.Empty;
+
+            }
             return informacionEvidencia;
         }
     }

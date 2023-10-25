@@ -26,12 +26,12 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
 
         public CargaEvidenciasCommandHandler(IArchivoService archivos, IEvidenciaMuestreoRepository evidenciaMuestreoRepository, IVwClaveMonitoreo vwClaveMonitoreoRepository, IMuestreoRepository muestreoRepository, ITipoEvidenciaMuestreoRepository tipoEvidenciaMuestreoRepository, IMetadataExtractorService metadataExtractorService)
         {
-            _archivos=archivos;
-            _evidenciaMuestreoRepository=evidenciaMuestreoRepository;
-            _vwClaveMonitoreoRepository=vwClaveMonitoreoRepository;
-            _muestreoRepository=muestreoRepository;
-            _tipoEvidenciaMuestreoRepository=tipoEvidenciaMuestreoRepository;
-            _metadataExtractorService=metadataExtractorService;
+            _archivos = archivos;
+            _evidenciaMuestreoRepository = evidenciaMuestreoRepository;
+            _vwClaveMonitoreoRepository = vwClaveMonitoreoRepository;
+            _muestreoRepository = muestreoRepository;
+            _tipoEvidenciaMuestreoRepository = tipoEvidenciaMuestreoRepository;
+            _metadataExtractorService = metadataExtractorService;
         }
 
         public async Task<Response<bool>> Handle(CargaEvidenciasCommand request, CancellationToken cancellationToken)
@@ -41,9 +41,9 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
 
             foreach (var evidenciasMuestreo in evidenciasPorMuestreo)
             {
-                var clavesMonitoreos = await _vwClaveMonitoreoRepository.ObtenerElementosPorCriterioAsync(e => e.ClaveMuestreo == evidenciasMuestreo.Muestreo)??throw new ApiException("No se encontraron claves de muestreo correspondientes a las evidencias procesadas");
+                var clavesMonitoreos = await _vwClaveMonitoreoRepository.ObtenerElementosPorCriterioAsync(e => e.ClaveMuestreo == evidenciasMuestreo.Muestreo) ?? throw new ApiException("No se encontraron claves de muestreo correspondientes a las evidencias procesadas");
                 var programaMuestreoId = clavesMonitoreos.FirstOrDefault()?.ProgramaMuestreoId;
-                var muestreo = _muestreoRepository.ObtenerElementosPorCriterioAsync(e => e.ProgramaMuestreoId == programaMuestreoId).Result.FirstOrDefault()??throw new ApiException($"No se encontró en la base de datos, el registro del muestreo: {evidenciasMuestreo.Muestreo}");
+                var muestreo = _muestreoRepository.ObtenerElementosPorCriterioAsync(e => e.ProgramaMuestreoId == programaMuestreoId).Result.FirstOrDefault() ?? throw new ApiException($"No se encontró en la base de datos, el registro del muestreo: {evidenciasMuestreo.Muestreo}");
                 List<EvidenciaMuestreo> evidencias = new();
                 List<string> muestreosProcesados = new();
 
@@ -82,8 +82,8 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                             using MemoryStream stream = new();
                             await archivo.CopyToAsync(stream, cancellationToken);
                             var informacionArchivoCaudal = _metadataExtractorService.ObtenerDatosExcelCaudal(stream);
-                            evidencia.Latitud = informacionArchivoCaudal.LatitudAforo is null ? null : Convert.ToDecimal(informacionArchivoCaudal.LatitudAforo);
-                            evidencia.Longitud = informacionArchivoCaudal.LongitudAforo is null ? null : Convert.ToDecimal(informacionArchivoCaudal.LongitudAforo);
+                            evidencia.Latitud = (informacionArchivoCaudal.LatitudAforo == string.Empty) ? null : Convert.ToDecimal(informacionArchivoCaudal.LatitudAforo);
+                            evidencia.Longitud = (informacionArchivoCaudal.LongitudAforo == string.Empty) ? null : Convert.ToDecimal(informacionArchivoCaudal.LongitudAforo);
                         }
                         else if (tipoEvidenciaId == (int)TipoEvidencia.Track)
                         {
