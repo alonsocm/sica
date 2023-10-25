@@ -8,22 +8,13 @@ using Application.Features.Resultados.Comands;
 using Application.Features.ResumenResultados.Queries;
 using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
-using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
 using AutoMapper;
-using Azure.Core;
-using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using WebAPI.Controllers.v1.Catalogos;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -38,7 +29,7 @@ namespace WebAPI.Controllers.v1.Operacion
         const int estatusVencido = (int)Application.Enums.EstatusMuestreo.PendienteDeEnvioAprobacionFinal;
         const int aprobacionSistema = (int)Application.Enums.TipoAprobacion.Sistema;
 
-        public Resultados(IConfiguration configuration, IWebHostEnvironment env, IMapper mapper )
+        public Resultados(IConfiguration configuration, IWebHostEnvironment env, IMapper mapper)
         {
             _configuration = configuration;
             _env = env;
@@ -535,7 +526,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ValidarResultadosPorReglas")]
         public async Task<IActionResult> Get([FromQuery] ValidarResultadosPorReglasCommand request)
         {
-            return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Muestreos = request.Muestreos}));
+            return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Muestreos = request.Muestreos }));
         }
 
         [HttpGet("ExportarResumenValidacion")]
@@ -607,10 +598,10 @@ namespace WebAPI.Controllers.v1.Operacion
                     fechaEntrega = dato.fechaEntrega,
                     replica = (dato.replica) ? "SI" : "NO",
                     cambioResultado = (dato.cambioResultado) ? "SI" : "NO"
-                
+
                 };
-                
-                lstmuestreosExcel.Add(resultadosAcumulados);               
+
+                lstmuestreosExcel.Add(resultadosAcumulados);
             }
 
             var plantilla = new Plantilla(_configuration, _env);
@@ -624,7 +615,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost("exportExcelResultadosaValidar")]
         public IActionResult ExportExcelResultadosaValidar(List<AcumuladosResultadoDto> muestreos)
         {
-            List<ResultadosValidarExcel> lstmuestreosExcel = new ();
+            List<ResultadosValidarExcel> lstmuestreosExcel = new();
             foreach (var dato in muestreos)
             {
                 ResultadosValidarExcel resultadosaValidar = new()
@@ -646,9 +637,9 @@ namespace WebAPI.Controllers.v1.Operacion
                     cumpleReglasCond = dato.cumpleReglasCondic,
                     observaciones = dato.claveParametro
                 };
-               
+
                 lstmuestreosExcel.Add(resultadosaValidar);
-            }          
+            }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("InicioReglas");
@@ -670,11 +661,11 @@ namespace WebAPI.Controllers.v1.Operacion
                     claveMonitoreo = dato.ClaveMonitoreo,
                     nombreSitio = dato.NombreSitio,
                     fechaRealizacion = dato.FechaRealizacion,
-                    fechaProgramada = dato.FechaProgramada,                    
+                    fechaProgramada = dato.FechaProgramada,
                     laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
                     cuerpoAgua = dato.CuerpoAgua,
                     tipoCuerpoAgua = dato.TipoCuerpoAgua,
-                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,           
+                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
                     muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados
                 };
 
@@ -692,12 +683,12 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost("exportExcelResumenResultados")]
         public IActionResult ExportExcelResumenResultados(List<AcumuladosResultadoDto> muestreos)
         {
-            List<ResumenResultadosExcel> lstmuestreosExcel = new ();
+            List<ResumenResultadosExcel> lstmuestreosExcel = new();
             foreach (var dato in muestreos)
             {
                 ResumenResultadosExcel resultadosAcumulados = new()
                 {
-                     numeroEntrega = dato.NumeroEntrega,
+                    numeroEntrega = dato.NumeroEntrega,
                     claveUnica = dato.claveUnica,
                     claveMonitoreo = dato.ClaveMonitoreo,
                     claveSitio = dato.ClaveSitio,
@@ -722,12 +713,12 @@ namespace WebAPI.Controllers.v1.Operacion
                     programaAnual = dato.ProgramaAnual,
                     idResultadoLaboratorio = dato.idResultadoLaboratorio,
                     fechaEntrega = dato.fechaEntrega,
-                    replica = (dato.replica) ? "SI":"NO",
-                    cambioResultado = (dato.cambioResultado) ? "SI":"NO",
+                    replica = (dato.replica) ? "SI" : "NO",
+                    cambioResultado = (dato.cambioResultado) ? "SI" : "NO",
                     validadoReglas = (dato.validadoReglas) ? "SI" : "NO",
                     observacionesReglas = dato.resultadoReglas,
                     costoParametro = dato.costoParametro,
-                    
+
 
                 };
                 lstmuestreosExcel.Add(resultadosAcumulados);
@@ -753,8 +744,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
-       
+
 
     }
 }
-  

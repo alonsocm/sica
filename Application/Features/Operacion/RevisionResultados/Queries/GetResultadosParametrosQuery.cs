@@ -1,10 +1,7 @@
 ﻿
 using Application.DTOs;
 using Application.Interfaces.IRepositories;
-using Application.Specifications;
 using Application.Wrappers;
-using AutoMapper;
-using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.ResumenResultados.Queries
@@ -25,14 +22,16 @@ namespace Application.Features.ResumenResultados.Queries
         {
             _repositoryAsync = repository;
         }
-      
+
         public async Task<Response<List<ResultadoMuestreoDto>>> Handle(GetResultadosParametrosQuery request, CancellationToken cancellationToken)
         {
-            var datos = await _repositoryAsync.GetResumenResultados(request.UserId, request.isOCDL); ;
+            var datos = await _repositoryAsync.GetResumenResultados(request.UserId, request.isOCDL);
+
             if (datos == null)
             {
                 throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
             }
+
             return new Response<List<ResultadoMuestreoDto>>(datos.ToList());
         }
     }
