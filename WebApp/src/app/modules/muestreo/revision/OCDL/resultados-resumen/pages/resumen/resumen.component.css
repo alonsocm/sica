@@ -10,16 +10,16 @@
   margin: 1% 0px 0% 0px;
 }
 
-.dvTable {
+/* .dvTable {
   overflow-y: auto;
   max-height: 600px;
-}
+} */
 
-  .dvTable thead th {
+  /* .dvTable thead th {
     position: sticky;
     top: 0;
     background: white;
-  }
+  } */
 
   .dvTable tbody > tr:hover {
     background-color: #DDDDDD;

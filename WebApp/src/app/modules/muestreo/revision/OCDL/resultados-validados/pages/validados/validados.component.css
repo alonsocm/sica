@@ -11,11 +11,11 @@
   max-height: 600px;
 }
 
-.dvTable thead th {
+/* .dvTable thead th {
   position: sticky;
   top: 0;
   background: white;
-}
+} */
 
 .resumen {
   margin: 1%;

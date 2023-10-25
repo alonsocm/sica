@@ -118,6 +118,10 @@ table thead tr th{
     margin: 1% 0px 1% 0px;
 }
 
+icon-evidencia{
+    width: 60px;
+}
+
 /* .dvTable tbody>tr:hover {
     background-color: #DDDDDD;
 } */

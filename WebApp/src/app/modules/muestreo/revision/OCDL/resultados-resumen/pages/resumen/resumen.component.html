@@ -1,39 +1,37 @@
 <router-outlet name="menu"></router-outlet>
 <div class="container-fluid">
-  <h3>Resumen Revisión Resultados</h3>
+  <h1>Resumen Revisión Resultados</h1>
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
-  <div class="d-flex flex-row-reverse opciones-tabla">
-    <div class="p-2">
-      <button class="btn btn-secondary" type="button" (click)="onDownload()">
+  <div class="clearfix">
+    <div class="float-right">
+      <button class="btn btn-secondary mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
-    </div>
-    <div class="p-2">
       <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltrosn()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
   </div>
-  
-  <div class="col-md-12 table-responsive dvTable">
-    <table id="TablaDatos" class="table table-striped">
-      <thead>
+  <div class="table-responsive dvTable">
+    <table id="TablaDatos" class="table table-bordered table-hover">
+      <thead class="thead-light">
         <tr>
           <th class="checkBox-center">
             <label for="chckAll">SELECCIONAR TODOS</label>
-            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck" (change)="seleccionarAll(this.resultadosFiltradosn); resumenDatos();" />
+            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+              (change)="seleccionarAll(this.resultadosFiltradosn); resumenDatos();" />
           </th>
           <th *ngFor="let columna of columnas">
             {{columna.etiqueta}}
             <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                             (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-                             (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                             placeholder="seleccione">
+              (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+              (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+              placeholder="seleccione">
             </ng-autocomplete>
             <ng-template #itemTemplate let-item>
               <a [innerHTML]="item"></a>
@@ -44,37 +42,34 @@
       <tbody>
         <tr *ngFor="let datos of this.resultadosFiltradosn | paginate: {itemsPerPage:NoPage, currentPage:page }">
           <td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="datos.isChecked" (change)="changeSelection()">
-          <td style="text-align: center;">{{datos.noEntregaOCDL == '0' ? '' : this.numberService.getOrdinalYear(datos.noEntregaOCDL) }} </td>
-          <td style="text-align: center;">{{datos.claveUnica}}</td>
-          <td style="text-align: center;">{{datos.claveSitio}}</td>
-          <td style="text-align: center;">{{datos.claveMonitoreo}}</td>
-          <td style="text-align: center;">{{datos.nombreSitio}}</td>
-          <td style="text-align: center;">{{datos.claveParametro}}</td>
-          <td style="text-align: center;">{{datos.laboratorio}}</td>
-          <td style="text-align: center;">{{datos.tipoCuerpoAgua}}</td>
-          <td style="text-align: center;">{{datos.tipoCuerpoAguaOriginal}}</td>
-          <td style="text-align: center;">{{datos.resultado}}</td>
-          <td style="text-align: center;">{{datos.tipoAprobacion}}</td>
-          <td style="text-align: center;">{{datos.esCorrectoResultado}}</td>
-          <td style="text-align: center;">{{datos.observaciones}}</td>
-          <td style="text-align: center;">{{datos.fechaLimiteRevision}}</td>
-          <td style="text-align: center;">{{datos.nombreUsuario}}</td>
-          <td style="text-align: center;">{{datos.estatusResultado}}</td>
+            <input type="checkbox" [(ngModel)]="datos.isChecked" (change)="changeSelection()" title="seleccionar">
+          <td>{{datos.noEntregaOCDL == '0' ? '' :
+            this.numberService.getOrdinalYear(datos.noEntregaOCDL) }} </td>
+          <td>{{datos.claveUnica}}</td>
+          <td>{{datos.claveSitio}}</td>
+          <td>{{datos.claveMonitoreo}}</td>
+          <td>{{datos.nombreSitio}}</td>
+          <td>{{datos.claveParametro}}</td>
+          <td>{{datos.laboratorio}}</td>
+          <td>{{datos.tipoCuerpoAgua}}</td>
+          <td>{{datos.tipoCuerpoAguaOriginal}}</td>
+          <td>{{datos.resultado}}</td>
+          <td>{{datos.tipoAprobacion}}</td>
+          <td>{{datos.esCorrectoResultado}}</td>
+          <td>{{datos.observaciones}}</td>
+          <td>{{datos.fechaLimiteRevision}}</td>
+          <td>{{datos.nombreUsuario}}</td>
+          <td>{{datos.estatusResultado}}</td>
         </tr>
-        <tr>
-          <td colspan="18">
-            <div *ngIf="this.resultadosFiltradosn.length==0" style="text-align: center;">
-              No se encontraron registros
-            </div>
+        <tr *ngIf="this.resultadosFiltradosn.length==0">
+          <td class="td-center" colspan="18">
+            No se encontraron registros
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <pagination-controls (pageChange)="page= $event"
-                       previousLabel="Anterior"
-                       nextLabel="Siguiente"></pagination-controls>
+  <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
   <div class="d-flex justify-content-center">
     <div class="resumen ">
       <table class="table table-striped">
