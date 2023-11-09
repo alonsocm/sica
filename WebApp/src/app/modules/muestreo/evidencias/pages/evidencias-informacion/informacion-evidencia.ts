@@ -21,4 +21,5 @@ export interface InformacionEvidencia {
   horaFinal: string;
   fechaInicio: string;
   fechaFinal: string;
+  tipoEvidenciaMuestreo: number;
 }

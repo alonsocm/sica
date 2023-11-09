@@ -38,7 +38,9 @@
                     *ngFor="let registro of this.informacionEvidencias | paginate: { itemsPerPage:30, currentPage: page }">
                     <td>{{registro.muestreo}}</td>
                     <td>{{registro.tipoEvidencia}}</td>
-                    <td>{{registro.nombreArchivo}}</td>
+                    <td><button type="button" class="btn btn-link"
+                            (click)="onPreviewDownloadArchivoClick(registro.nombreArchivo, registro.tipoEvidenciaMuestreo)">{{registro.nombreArchivo}}</button>
+                    </td>
                     <td>{{registro.latitud}}</td>
                     <td>{{registro.longitud}}</td>
                     <td>{{registro.altitud}}</td>
@@ -64,7 +66,7 @@
                     </td> -->
                 </tr>
                 <tr *ngIf="this.informacionEvidencias.length === 0">
-                    <td class="td-center" colspan="13">No se
+                    <td class="td-center" colspan="20">No se
                         encontraron registros
                     </td>
                 </tr>
@@ -74,5 +76,30 @@
     <div class="row-group">
         <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
         </pagination-controls>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<button id="btn-img-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#imgModal">
+    Mostrar imagen
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">nombre archivo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img [src]="this.imgSrc" class="img-thumbnail" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
 </div>
