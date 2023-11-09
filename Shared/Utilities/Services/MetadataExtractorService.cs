@@ -23,8 +23,8 @@ namespace Shared.Utilities.Services
                 var geolocalization = gpsDirectory.GetGeoLocation();
                 imageInformation.Latitude = geolocalization?.Latitude;
                 imageInformation.Longitude = geolocalization?.Longitude;
-                imageInformation.Altitude = gpsDirectory.GetDouble(GpsDirectory.TagAltitude);
-                imageInformation.Direction = gpsDirectory.GetDouble(GpsDirectory.TagImgDirection);
+                imageInformation.Altitude = gpsDirectory.ContainsTag(GpsDirectory.TagAltitude) ? gpsDirectory.GetDouble(GpsDirectory.TagAltitude) : null;
+                imageInformation.Direction = gpsDirectory.ContainsTag(GpsDirectory.TagImgDirection) ? gpsDirectory.GetDouble(GpsDirectory.TagImgDirection) : null;
             }
 
             if (exifDirectory != null)

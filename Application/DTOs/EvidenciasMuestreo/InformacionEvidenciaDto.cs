@@ -24,5 +24,6 @@
         public string Placas { get; set; }
         public string Laboratorio { get; set; }
         public string TipoEvidencia { get; set; }
+        public long TipoEvidenciaMuestreo { get; set; }
     }
 }
