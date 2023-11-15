@@ -37,6 +37,7 @@ import { SupervisionMuestreoComponent } from './modules/muestreo/supervision/sup
 import { InformeSupervisionComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision/informe-supervision.component';
 import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision-consulta/informe-supervision-consulta.component';
 import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pages/evidencias-informacion/evidencias-informacion.component';
+import { MapComponent } from './modules/map/map.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -228,6 +229,11 @@ const routes: Routes = [
   {
     path: 'evidencias-informacion',
     component: EvidenciasInformacionComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'mapa',
+    component: MapComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   { path: '**', component: NotFoundComponent },
