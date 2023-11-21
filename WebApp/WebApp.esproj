@@ -18,6 +18,7 @@
     <Folder Include="src\app\modules\muestreo\aprobacion\revision-resultado\pages\" />
     <Folder Include="src\app\modules\usuario\services\" />
     <Folder Include="src\app\shared\tablaGral\" />
+    <Folder Include="src\assets\images\map\" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

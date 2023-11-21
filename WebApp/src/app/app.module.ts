@@ -55,6 +55,7 @@ import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-
 import { NotificationComponent } from './shared/notification/notification.component';
 import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pages/evidencias-informacion/evidencias-informacion.component';
 import { MapComponent } from './modules/map/map.component';
+import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-track.component';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { MapComponent } from './modules/map/map.component';
     NotificationComponent,
     EvidenciasInformacionComponent,
     MapComponent,
+    RutaTrackComponent,
   ],
   imports: [
     BrowserModule,

@@ -15,12 +15,12 @@ namespace Application.Features.Evidencias.Queries
 
         public GetInformacionEvidenciasHandler(IEvidenciaMuestreoRepository evidenciaMuestreoRepository)
         {
-            _evidenciaMuestreoRepository=evidenciaMuestreoRepository;
+            _evidenciaMuestreoRepository = evidenciaMuestreoRepository;
         }
 
         public async Task<Response<IEnumerable<InformacionEvidenciaDto>>> Handle(GetInformacionEvidencias request, CancellationToken cancellationToken)
         {
-            var evidencias = await _evidenciaMuestreoRepository.GetInformacionEvidenciasAsync();
+            var evidencias = await _evidenciaMuestreoRepository.GetInformacionEvidenciasAsync(null);
 
             return new Response<IEnumerable<InformacionEvidenciaDto>>(evidencias);
         }

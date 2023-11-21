@@ -1,0 +1,85 @@
+<app-menu></app-menu>
+
+<app-evidencias-informacion></app-evidencias-informacion>
+<!--<div class="container-fluid">
+  <div class="clearfix">
+    <div class="float-left">
+      <h1>Información de track.</h1>
+    </div>
+  </div>
+  <hr class="red">
+  <app-notification></app-notification>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th class="col-lg-4">Muestreo</th>
+          <th class="col-lg-1">Tipo evidencia</th>
+          <th class="col-lg-1">Archivo</th>
+          <th class="col-lg-1">Latitud</th>
+          <th class="col-lg-1">Longitud</th>
+          <th class="col-lg-1">Altitud</th>
+          <th class="col-lg-1">Marca de la cámara</th>
+          <th class="col-lg-2">Modelo de la cámara</th>
+          <th class="col-lg-1">ISO</th>
+          <th class="col-lg-1">Apertura</th>
+          <th class="col-lg-1">Distancia focal</th>
+          <th class="col-lg-1">Obturador</th>
+          <th class="col-lg-1">Tamaño de la imagen</th>
+          <th class="col-lg-1">Fecha de creación</th>
+          <th class="col-lg-1">Placas</th>
+          <th class="col-lg-1">Laboratorio</th>
+          <th class="col-lg-1">Fecha inicio</th>
+          <th class="col-lg-1">Fecha final</th>
+          <th class="col-lg-1">Hora inicio</th>
+          <th class="col-lg-1">Hora fin</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let registro of this.informacionEvidencias | paginate: { itemsPerPage:30, currentPage: page }">
+          <td>{{registro.muestreo}}</td>
+          <td>{{registro.tipoEvidencia}}</td>
+          <td>
+            <button type="button" class="btn btn-link"
+                    (click)="onPreviewDownloadArchivoClick(registro.nombreArchivo, registro.tipoEvidenciaMuestreo)">
+              {{registro.nombreArchivo}}
+            </button>
+          </td>
+          <td>{{registro.latitud}}</td>
+          <td>{{registro.longitud}}</td>
+          <td>{{registro.altitud}}</td>
+          <td>{{registro.marca}}</td>
+          <td>{{registro.modelo}}</td>
+          <td>{{registro.iso}}</td>
+          <td>{{registro.apertura}}</td>
+          <td>{{registro.distanciaFocal}}</td>
+          <td>{{registro.obturador}}</td>
+          <td>{{registro.tamanio}}</td>
+          <td>{{registro.fechaCreacion}}</td>
+          <td>{{registro.placas}}</td>
+          <td>{{registro.laboratorio}}</td>
+          <td>{{registro.fechaInicio}}</td>
+          <td>{{registro.fechaFinal}}</td>
+          <td>{{registro.horaInicio}}</td>
+          <td>{{registro.horaFinal}}</td>-->
+          <!-- <td>
+              <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver informe"
+                  (click)="onVerInformeClick(registro.id)">
+                  <i class="bi bi-eye icon-action"></i>
+              </button>
+          </td> -->
+        <!--</tr>
+        <tr *ngIf="this.informacionEvidencias.length === 0">
+          <td class="td-center" colspan="20">
+            No se
+            encontraron registros
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row-group">
+    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    </pagination-controls>
+  </div>
+</div>-->

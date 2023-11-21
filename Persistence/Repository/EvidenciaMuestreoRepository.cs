@@ -8,6 +8,7 @@ namespace Persistence.Repository
 {
     public class EvidenciaMuestreoRepository : Repository<EvidenciaMuestreo>, IEvidenciaMuestreoRepository
     {
+
         public EvidenciaMuestreoRepository(SicaContext dbContext) : base(dbContext)
         {
         }
@@ -24,7 +25,7 @@ namespace Persistence.Repository
             return true;
         }
 
-        public async Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync()
+        public async Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync(bool? isTrack)
         {
             var informacionEvidencias = _dbContext.EvidenciaMuestreo;
             List<InformacionEvidenciaDto> informacionEvidenciaDtos = new();
@@ -57,6 +58,8 @@ namespace Persistence.Repository
                     HoraFinal = x.HoraFin ?? string.Empty,
                     TipoEvidenciaMuestreo = x.TipoEvidenciaMuestreoId
                 }).ToListAsync();
+
+                if (isTrack != null && true) { informacionEvidenciaDtos.Select(x => x.TipoEvidenciaMuestreo == Convert.ToInt64(Application.Enums.TipoEvidencia.Track)).ToList(); }
             }
 
             return informacionEvidenciaDtos;
