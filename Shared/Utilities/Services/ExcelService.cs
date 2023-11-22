@@ -71,6 +71,34 @@ namespace Shared.Utilities.Services
             return list;
         }
 
+        public static List<T> ImportarDatosRango<T>(int startcell, int startcolumna, ExcelWorksheet worksheet)
+        {
+            var columns = worksheet.Cells[startcell, startcolumna, 1, worksheet.Dimension.End.Column].Select((v, i) => new { ColName = v.Value, ColIndex = i + 1 });
+            columns = columns.Where(x => x.ColName != null);
+            List<T> list = new();
+            Type typeOfObject = typeof(T);
+
+            for (int i = startcell + 1; i <= worksheet.Dimension.End.Row; i++)
+            {
+                var properties = typeof(T).GetProperties();
+
+                T obj = (T)Activator.CreateInstance(typeOfObject);
+                var value = new object();
+                for (int j = 0; j < properties.Length; j++)
+                {
+                    var type = properties[j].PropertyType;
+                    value = worksheet.Cells[i, j + 1].Value ?? string.Empty;
+                    properties[j].SetValue(obj, Convert.ChangeType(value, type));
+                }
+
+                if (obj != null)
+                { list.Add(obj); }
+            }
+
+            return list;
+
+        }
+
         public static void ExportToExcel<T>(List<T> data, FileInfo fileInfo, bool esPlantilla = false, string nombreHoja = "ebaseca")
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

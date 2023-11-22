@@ -89,12 +89,15 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                         {
                             using MemoryStream stream = new();
                             await archivo.CopyToAsync(stream, cancellationToken);
+
                             var informacionArchivoTrack = _metadataExtractorService.ObtenerDatosExcelTrack(stream);
                             evidencia.Placas = informacionArchivoTrack.Placas;
                             evidencia.FechaInicio = informacionArchivoTrack.FechaInicio;
                             evidencia.FechaFin = informacionArchivoTrack.FechaFinal;
                             evidencia.HoraInicio = informacionArchivoTrack.HoraInicio;
                             evidencia.HoraFin = informacionArchivoTrack.HoraFinal;
+                            evidencia.Longitud = (informacionArchivoTrack.LongitudAforo == string.Empty) ? null : Convert.ToDecimal(informacionArchivoTrack.LongitudAforo);
+                            evidencia.Latitud = (informacionArchivoTrack.LatitudAforo == string.Empty) ? null : Convert.ToDecimal(informacionArchivoTrack.LatitudAforo);
                         }
 
                         evidencia.MuestreoId = muestreo.Id;

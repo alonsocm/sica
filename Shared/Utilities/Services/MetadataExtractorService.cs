@@ -9,6 +9,8 @@ namespace Shared.Utilities.Services
 {
     public class MetadataExtractorService : IMetadataExtractorService
     {
+        public static int StartColumn = 1;
+
         public ImageInformationDto GetMetadaFromImage(Stream stream)
         {
             var directories = ImageMetadataReader.ReadMetadata(stream);
@@ -53,7 +55,7 @@ namespace Shared.Utilities.Services
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new(fileCaudal);
             string[] tiposMetodos = { "Sección-Velocidad", "Volumen-Tiempo", "Flotador", "EstaciónHidrométrica",
-                                      "PARSHALL", "Sección-Velocidad(Tablas)","Sección-Velocidad (Angulo)" };
+                                      "PARSHALL", "Sección-Velocidad(Tablas)","Sección-Velocidad(Angulo)" };
             bool respuestaAforo = false;
             InformacionEvidenciaExcelDto informacionEvidencia = new();
 
@@ -77,21 +79,24 @@ namespace Shared.Utilities.Services
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using ExcelPackage package = new(fileTrack);
             InformacionEvidenciaExcelDto informacionEvidencia = new();
-
             ExcelWorksheet worksheetTrack = package.Workbook.Worksheets[0];
-            informacionEvidencia.Placas = (worksheetTrack.Cells["A3"].Value == null) ? string.Empty : worksheetTrack.Cells["A3"].Value.ToString();
-            informacionEvidencia.Placas = informacionEvidencia.Placas.Replace("PLACAS: ", "").Trim();
-            if (worksheetTrack.Cells["A2"].Value != null)
-            {
-                string fechaReporte = worksheetTrack.Cells["A2"].Value.ToString() ?? string.Empty;
-                string[] datosFechaReporte = fechaReporte.Split(' ');
-                informacionEvidencia.FechaInicio = datosFechaReporte[1];
-                informacionEvidencia.HoraInicio = datosFechaReporte[2];
-                informacionEvidencia.FechaFinal = datosFechaReporte[4];
-                informacionEvidencia.HoraFinal = datosFechaReporte[5];
-                informacionEvidencia.ClaveMuestreo = (worksheetTrack.Cells["D2"].Value?.ToString()) ?? worksheetTrack.Cells["E2"].Value?.ToString() ?? string.Empty;
 
+            informacionEvidencia.Placas = (worksheetTrack.Cells["B2"].Value == null) ? string.Empty : worksheetTrack.Cells["B2"].Value.ToString();
+            informacionEvidencia.FechaInicio = (worksheetTrack.Cells["B3"].Value == null) ? string.Empty : worksheetTrack.Cells["B3"].Value.ToString().Trim().Split(' ')[0];
+            informacionEvidencia.HoraInicio = (worksheetTrack.Cells["B4"].Value == null) ? string.Empty : worksheetTrack.Cells["B4"].Value.ToString().Trim().Split(' ')[1];
+            informacionEvidencia.FechaFinal = (worksheetTrack.Cells["B5"].Value == null) ? string.Empty : worksheetTrack.Cells["B5"].Value.ToString().Trim().Split(' ')[0];
+            informacionEvidencia.HoraFinal = (worksheetTrack.Cells["B6"].Value == null) ? string.Empty : worksheetTrack.Cells["B6"].Value.ToString().Trim().Split(' ')[1];
+            informacionEvidencia.ClaveMuestreo = (worksheetTrack.Cells["D4"].Value == null) ? string.Empty : worksheetTrack.Cells["D4"].Value.ToString();
+
+            string identificacionGeocerca = (informacionEvidencia.ClaveMuestreo != string.Empty) ? informacionEvidencia.ClaveMuestreo.Split('-')[0].ToString() : string.Empty;
+            var registros = ExcelService.ImportarDatosRango<InformacionTrackDto>(11, 1, worksheetTrack).Where(x => x.IdentificacionGeocerca == identificacionGeocerca && x.Fecha == worksheetTrack.Cells["B3"].Value.ToString().Trim() && x.Hora.Trim() == worksheetTrack.Cells["B4"].Value.ToString().Trim()).FirstOrDefault();
+
+            if (registros != null)
+            {
+                informacionEvidencia.LatitudAforo = registros.LatitudGeocercaCercana ?? string.Empty;
+                informacionEvidencia.LongitudAforo = registros.LongitudGeocercaCercana ?? string.Empty;
             }
+
             return informacionEvidencia;
         }
     }
