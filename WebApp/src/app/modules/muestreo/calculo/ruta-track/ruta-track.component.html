@@ -1,7 +1,6 @@
 <app-menu></app-menu>
 
-<app-evidencias-informacion></app-evidencias-informacion>
-<!--<div class="container-fluid">
+<div class="container-fluid">
   <div class="clearfix">
     <div class="float-left">
       <h1>Información de track.</h1>
@@ -61,14 +60,14 @@
           <td>{{registro.fechaInicio}}</td>
           <td>{{registro.fechaFinal}}</td>
           <td>{{registro.horaInicio}}</td>
-          <td>{{registro.horaFinal}}</td>-->
-          <!-- <td>
-              <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver informe"
-                  (click)="onVerInformeClick(registro.id)">
+          <td>{{registro.horaFinal}}</td>
+          <td>
+              <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver mapa"
+                  (click)="onVerMapaClick(registro.muestreo)">
                   <i class="bi bi-eye icon-action"></i>
               </button>
-          </td> -->
-        <!--</tr>
+          </td>
+        </tr>
         <tr *ngIf="this.informacionEvidencias.length === 0">
           <td class="td-center" colspan="20">
             No se
@@ -82,4 +81,4 @@
     <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
     </pagination-controls>
   </div>
-</div>-->
+</div>

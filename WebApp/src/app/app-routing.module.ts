@@ -39,6 +39,7 @@ import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-
 import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pages/evidencias-informacion/evidencias-informacion.component';
 import { MapComponent } from './modules/map/map.component';
 import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/map-muestreo.component';
+import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-track.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -240,6 +241,11 @@ const routes: Routes = [
   {
     path: 'map-muestreo',
     component: MapMuestreoComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'track-informacion',
+    component: RutaTrackComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
   { path: '**', component: NotFoundComponent },

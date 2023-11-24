@@ -7,6 +7,7 @@ namespace Application.Features.Evidencias.Queries
 {
     public class GetInformacionEvidencias : IRequest<Response<IEnumerable<InformacionEvidenciaDto>>>
     {
+        public bool? isTrack { get; set; }
     }
 
     public class GetInformacionEvidenciasHandler : IRequestHandler<GetInformacionEvidencias, Response<IEnumerable<InformacionEvidenciaDto>>>
@@ -20,7 +21,7 @@ namespace Application.Features.Evidencias.Queries
 
         public async Task<Response<IEnumerable<InformacionEvidenciaDto>>> Handle(GetInformacionEvidencias request, CancellationToken cancellationToken)
         {
-            var evidencias = await _evidenciaMuestreoRepository.GetInformacionEvidenciasAsync(null);
+            var evidencias = await _evidenciaMuestreoRepository.GetInformacionEvidenciasAsync(request.isTrack);
 
             return new Response<IEnumerable<InformacionEvidenciaDto>>(evidencias);
         }

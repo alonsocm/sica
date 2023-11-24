@@ -45,9 +45,12 @@ export class EvidenciasService {
     });
   }
 
-  getInformacionEvidencias(): Observable<Object> {
+  getInformacionEvidencias(isTrack: boolean): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: { isTrack: isTrack },
+    });
     return this.http.get(
-      environment.apiUrl + '/EvidenciasMuestreos/InformacionEvidencias'
+      environment.apiUrl + '/EvidenciasMuestreos/InformacionEvidencias', { params }
     );
   }
 }

@@ -25,7 +25,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 return BadRequest("No se encontraron archivos para procesar.");
             }
 
-            return Ok(await Mediator.Send(new CargaEvidenciasCommand { Archivos=archivos }));
+            return Ok(await Mediator.Send(new CargaEvidenciasCommand { Archivos = archivos }));
         }
 
         [HttpGet]
@@ -84,7 +84,7 @@ namespace WebAPI.Controllers.v1.Operacion
         #endregion
 
         [HttpGet("InformacionEvidencias")]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> Get(bool isTrack)
         {
             return Ok(await Mediator.Send(new GetInformacionEvidencias { }));
         }
