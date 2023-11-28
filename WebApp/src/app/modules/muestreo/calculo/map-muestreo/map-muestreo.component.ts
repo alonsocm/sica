@@ -30,7 +30,8 @@ export class MapMuestreoComponent implements OnInit {
     private evidenciasService: EvidenciasService,
     private mapService: MapService) { }
   ngOnInit(): void {
-    this.cargarPuntosMuestreo(); 
+    this.cargarPuntosMuestreo();
+ 
   }
   cargarPuntosMuestreo() {
     this.obtenerCoordenadas();
@@ -56,7 +57,7 @@ export class MapMuestreoComponent implements OnInit {
     });
     let map = L.map('map', {
       center: [puntoPR.latitud, puntoPR.longitud],
-      zoom: 15,
+      zoom: 20,
       layers: [osm, puntos]
     });
     let osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -83,7 +84,23 @@ export class MapMuestreoComponent implements OnInit {
     });
 
     layerControl.addBaseLayer(openTopoMap, "OpenTopoMap");
-    this.cargarCapas(map, layerControl);  }
+    this.cargarCapas(map, layerControl);
+
+    let radioPR_PM = L.polygon([
+      [puntoPR.latitud, puntoPR.longitud],
+      [puntoPM.latitud, puntoPM.longitud]
+    ], {color:'yellow'}).addTo(map);
+
+    var distance = map.distance([puntoPR.latitud, puntoPR.longitud], [puntoPM.latitud, puntoPM.longitud]);
+
+    let circle = L.circle([puntoPR.latitud, puntoPR.longitud], {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5,
+      radius: distance
+    }).addTo(map);
+
+  }
   obtenerCoordenadas() {
     this.evidenciasService.coordenadas.subscribe((data) => {
       this.puntosmuestreos = data;
