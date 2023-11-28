@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { EvidenciasService } from '../../evidencias/services/evidencias.service';
 import { MapService } from '../../../map/map.service';
-import { puntosMuestreo } from 'src/app/shared/enums/puntosMuestreo';
+import { PuntosMuestreo } from 'src/app/shared/enums/puntosMuestreo';
 import { PuntosEvidenciaMuestreo } from 'src/app/interfaces/puntosEvidenciaMuestreo.interface';
 
 @Component({
@@ -42,22 +42,22 @@ export class MapMuestreoComponent implements OnInit {
   cargarPuntosMuestreo() {
     this.obtenerCoordenadas();
     let puntoFA = this.puntosMuestreo.filter(
-      (x) => x.punto == puntosMuestreo.FotodeAforo_FA
+      (x) => x.punto == PuntosMuestreo.FotodeAforo_FA
     )[0];
     let puntoFM = this.puntosMuestreo.filter(
-      (x) => x.punto == puntosMuestreo.FotodeMuestreo_FM
+      (x) => x.punto == PuntosMuestreo.FotodeMuestreo_FM
     )[0];
     let puntoTR = this.puntosMuestreo.filter(
-      (x) => x.punto == puntosMuestreo.PuntoCercanoalTrack_TR
+      (x) => x.punto == PuntosMuestreo.PuntoCercanoalTrack_TR
     )[0];
     let puntoFS = this.puntosMuestreo.filter(
-      (x) => x.punto == puntosMuestreo.FotodeMuestras_FS
+      (x) => x.punto == PuntosMuestreo.FotodeMuestras_FS
     )[0];
     let puntoPR = this.puntosMuestreo.filter(
-      (x) => x.punto == puntosMuestreo.PuntodeReferencia_PR
+      (x) => x.punto == PuntosMuestreo.PuntodeReferencia_PR
     )[0];
     let puntoPM = this.puntosMuestreo.filter(
-      (x) => x.punto == puntosMuestreo.PuntodeMuestreo_PM
+      (x) => x.punto == PuntosMuestreo.PuntodeMuestreo_PM
     )[0];
 
     let FA = L.marker([puntoFA.latitud, puntoFA.longitud], {
