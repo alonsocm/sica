@@ -24,8 +24,8 @@ namespace WebAPI.Controllers.v1.Operacion
 
         public Muestreos(IConfiguration configuration, IWebHostEnvironment env, IProgramaAnioRepository progepo)
         {
-            _configuration=configuration;
-            _env=env;
+            _configuration = configuration;
+            _env = env;
             _progrepor = progepo;
         }
 
@@ -52,7 +52,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             System.IO.File.Delete(filePath);
 
-            return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar=cargaMuestreos.Reemplazar }));
+            return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar = cargaMuestreos.Reemplazar }));
         }
 
         [HttpPost("CargaEmergencias")]
@@ -131,7 +131,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPut]
         public async Task<IActionResult> Put(List<MuestreoRevisionDto> request)
         {
-            return Ok(await Mediator.Send(new EnvioRevisionMuestreosCommand { Muestreos=request }));
+            return Ok(await Mediator.Send(new EnvioRevisionMuestreosCommand { Muestreos = request }));
         }
 
         [HttpDelete]
@@ -168,13 +168,20 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("CambioEstatus")]
         public async Task<IActionResult> CambioEstatus(int estatus, long muestreoId)
         {
-            return Ok(await Mediator.Send(new PutMuestreoEstatus { estatus = estatus, muestreoId =  muestreoId }));
+            return Ok(await Mediator.Send(new PutMuestreoEstatus { estatus = estatus, muestreoId = muestreoId }));
         }
 
         [HttpPut("cambioEstatusMuestreos")]
         public async Task<IActionResult> CambioEstatusMuestreos(ActualizarEstatusListMuestreos datos)
         {
             return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { estatusId = datos.estatusId, muestreos = datos.muestreos }));
+        }
+
+
+        [HttpGet("obtenerPuntosPorMuestreo")]
+        public async Task<IActionResult> obtenerPuntosPorMuestreo(string claveMuestreo)
+        {
+            return Ok(await Mediator.Send(new GetPuntosMuestreo { claveMuestreo = claveMuestreo }));
         }
     }
 }

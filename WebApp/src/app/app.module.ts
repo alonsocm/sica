@@ -56,6 +56,7 @@ import { NotificationComponent } from './shared/notification/notification.compon
 import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pages/evidencias-informacion/evidencias-informacion.component';
 import { MapComponent } from './modules/map/map.component';
 import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-track.component';
+import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/map-muestreo.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +105,8 @@ import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-t
     EvidenciasInformacionComponent,
     MapComponent,
     RutaTrackComponent,
+    MapMuestreoComponent
+    
   ],
   imports: [
     BrowserModule,

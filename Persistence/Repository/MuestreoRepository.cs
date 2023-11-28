@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
@@ -21,24 +22,24 @@ namespace Persistence.Repository
                                    select new MuestreoDto
                                    {
                                        MuestreoId = m.Id,
-                                       OCDL = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal == null ? m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave : m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Clave??string.Empty,
+                                       OCDL = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal == null ? m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave : m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Clave ?? string.Empty,
                                        ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
-                                       ClaveMonitoreo = vpm.ClaveMuestreo??string.Empty,
-                                       Estado = m.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre??string.Empty,
+                                       ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
+                                       Estado = m.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre ?? string.Empty,
                                        CuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                       TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion??string.Empty,
-                                       Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion??string.Empty,
-                                       FechaRealizacion = m.FechaRealVisita.ToString()??string.Empty,
-                                       FechaLimiteRevision = m.FechaLimiteRevision.ToString()??string.Empty,
-                                       NumeroEntrega = m.NumeroEntrega.ToString()??string.Empty,
+                                       TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                       Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
+                                       FechaRealizacion = m.FechaRealVisita.ToString() ?? string.Empty,
+                                       FechaLimiteRevision = m.FechaLimiteRevision.ToString() ?? string.Empty,
+                                       NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty,
                                        Estatus = m.Estatus.Descripcion,
-                                       HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}"??string.Empty,
-                                       HoraFin =$"{m.HoraFin:hh\\:mm\\:ss}"??string.Empty,
-                                       ProgramaAnual = m.AnioOperacion.ToString()??string.Empty,
+                                       HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
+                                       HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
+                                       ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,
                                        FechaProgramada = m.ProgramaMuestreo.DiaProgramado.ToString(),
-                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString()??string.Empty,
+                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString() ?? string.Empty,
                                        NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
-                                       FechaCarga = m.FechaCarga.ToString("yyyy-MM-dd")??string.Empty,
+                                       FechaCarga = m.FechaCarga.ToString("yyyy-MM-dd") ?? string.Empty,
                                        LaboratorioSubrogado = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
                                        Observaciones = string.Empty,
                                        ClaveSitioOriginal = string.Empty,
@@ -101,7 +102,7 @@ namespace Persistence.Repository
                               select new ResultadoMuestreo
                               {
                                   ParametroId = p.Id,
-                                  Resultado = cm.Resultado??string.Empty,
+                                  Resultado = cm.Resultado ?? string.Empty,
                                   LaboratorioId = l.Id,
                                   LaboratorioSubrogadoId = laboratorioSubrogado?.Id,
                                   FechaEntrega = cm.FechaEntrega,
@@ -259,7 +260,7 @@ namespace Persistence.Repository
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
                                        cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI"
-                                   }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId==estatusId).ToListAsync();
+                                   }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId == estatusId).ToListAsync();
 
             foreach (var dato in muestreos)
             {
@@ -343,6 +344,42 @@ namespace Persistence.Repository
             }
 
             return existe;
+        }
+
+        public async Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo)
+        {
+            List<long> idParametros = new();
+            idParametros.Add((long)Application.Enums.IdLatitudLongitudParametro.latitusSitio);
+            idParametros.Add((long)Application.Enums.IdLatitudLongitudParametro.LongitudSitio);
+            var informacionMuestreo = _dbContext.VwClaveMuestreo.Where(x => x.ClaveMuestreo == claveMuestreo).FirstOrDefault();
+            var puntoPR = _dbContext.Sitio.Where(x => x.Id == informacionMuestreo.SitioId).FirstOrDefault();
+
+            List<PuntosMuestreoDto> puntosMuestreoDto = new();
+            puntosMuestreoDto.Add(new PuntosMuestreoDto
+            {
+                ClaveMuestreo = claveMuestreo,
+                Longitud = puntoPR.Longitud,
+                Latitud = puntoPR.Latitud,
+                NombrePunto = Application.Enums.PuntosMuestreo.PuntodeReferencia_PR.ToString(),
+                Punto = Application.Enums.PuntosMuestreo.PuntodeReferencia_PR.ToString().Split('_')[1]
+            });
+
+            var puntoPM = await (from resultado in _dbContext.ResultadoMuestreo
+                                 join muestreo in _dbContext.Muestreo on resultado.MuestreoId equals muestreo.Id
+                                 where muestreo.ProgramaMuestreoId == informacionMuestreo.ProgramaMuestreoId && idParametros.Contains(resultado.ParametroId)
+                                 select resultado).ToListAsync();
+
+
+            puntosMuestreoDto.Add(new PuntosMuestreoDto
+            {
+                ClaveMuestreo = claveMuestreo,
+                Longitud = Convert.ToDouble(puntoPM.Where(x => x.ParametroId == (long)Application.Enums.IdLatitudLongitudParametro.LongitudSitio).FirstOrDefault().Resultado),
+                Latitud = Convert.ToDouble(puntoPM.Where(x => x.ParametroId == (long)Application.Enums.IdLatitudLongitudParametro.latitusSitio).FirstOrDefault().Resultado),
+                NombrePunto = Application.Enums.PuntosMuestreo.PuntodeMuestreo_PM.ToString(),
+                Punto = Application.Enums.PuntosMuestreo.PuntodeMuestreo_PM.ToString().Split('_')[1]
+            });
+            return puntosMuestreoDto;
+
         }
     }
 }

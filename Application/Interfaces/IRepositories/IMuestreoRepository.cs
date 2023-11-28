@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Domain.Entities;
 
@@ -15,5 +16,9 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId);
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga, int estatusId);
         Task<bool> ExisteSustitucionPrevia(int periodo);
+
+        public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
+
+
     }
 }

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { EvidenciasService } from '../../evidencias/services/evidencias.service';
 import { MapService } from '../../../map/map.service';
+import { puntosMuestreo } from 'src/app/shared/enums/puntosMuestreo';
+import { PuntosEvidenciaMuestreo } from 'src/app/interfaces/puntosEvidenciaMuestreo.interface';
 
 @Component({
   selector: 'app-map-muestreo',
@@ -9,6 +11,7 @@ import { MapService } from '../../../map/map.service';
   styleUrls: ['./map-muestreo.component.css'],
 })
 export class MapMuestreoComponent implements OnInit {
+  puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
   iconRojo: string = 'assets/images/map/iconRojo.png';
   iconVerde: string = 'assets/images/map/iconVerde.png';
   iconAmarillo: string = 'assets/images/map/iconAmarillo.png';
@@ -33,43 +36,88 @@ export class MapMuestreoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let FA = L.marker([19.414022989, -98.988707758], {
+    this.cargarPuntosMuestreo();
+  }
+
+  cargarPuntosMuestreo() {
+    this.obtenerCoordenadas();
+    let puntoFA = this.puntosMuestreo.filter(
+      (x) => x.punto == puntosMuestreo.FotodeAforo_FA
+    )[0];
+    let puntoFM = this.puntosMuestreo.filter(
+      (x) => x.punto == puntosMuestreo.FotodeMuestreo_FM
+    )[0];
+    let puntoTR = this.puntosMuestreo.filter(
+      (x) => x.punto == puntosMuestreo.PuntoCercanoalTrack_TR
+    )[0];
+    let puntoFS = this.puntosMuestreo.filter(
+      (x) => x.punto == puntosMuestreo.FotodeMuestras_FS
+    )[0];
+    let puntoPR = this.puntosMuestreo.filter(
+      (x) => x.punto == puntosMuestreo.PuntodeReferencia_PR
+    )[0];
+    let puntoPM = this.puntosMuestreo.filter(
+      (x) => x.punto == puntosMuestreo.PuntodeMuestreo_PM
+    )[0];
+
+    let FA = L.marker([puntoFA.latitud, puntoFA.longitud], {
         icon: this.iconControl(this.iconVerde),
       }).bindPopup('Foto de aforo'),
-      FM = L.marker([19.414025766, -98.988697555], {
+      FM = L.marker([puntoFM.latitud, puntoFM.longitud], {
         icon: this.iconControl(this.iconNaranja),
       }).bindPopup('Foto de Muestreo'),
-      TR = L.marker([19.41403, -98.98866], {
+      TR = L.marker([puntoTR.latitud, puntoTR.longitud], {
         icon: this.iconControl(this.iconMorado),
       }).bindPopup('Punto más cercano al Track'),
-      FS = L.marker([19.413751843, -98.988978327], {
+      FS = L.marker([puntoFS.latitud, puntoFS.longitud], {
         icon: this.iconControl(this.iconRojo),
-      }).bindPopup('Foto de la Muestra');
+      }).bindPopup('Foto de la Muestra'),
+      PR = L.marker([puntoPR.latitud, puntoPR.longitud], {
+        icon: this.iconControl(this.iconAzul),
+      }).bindPopup('Punto de referencia'),
+      PM = L.marker([puntoPM.latitud, puntoPM.longitud], {
+        icon: this.iconControl(this.iconAmarillo),
+      }).bindPopup('Punto de muestreo');
 
-    let puntos = L.layerGroup([FA, FM, TR, FS]);
+    let puntos = L.layerGroup([FA, FM, TR, FS, PR, PM]);
 
     let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
 
     let map = L.map('map', {
-      center: [19.41403, -98.98866],
-      zoom: 15,
+      center: [puntoPR.latitud, puntoPR.longitud],
+      zoom: 20,
       layers: [osm, puntos],
     });
-
-    let baseMaps = {
-      OpenStreetMap: osm,
-    };
 
     let layerControl = L.control.layers().addTo(map);
 
     this.cargarCapas(map, layerControl);
 
-    let circle = L.circle([19.414022989, -98.988707758], {
+    let radioPR_PM = L.polygon(
+      [
+        [puntoPR.latitud, puntoPR.longitud],
+        [puntoPM.latitud, puntoPM.longitud],
+      ],
+      { color: 'yellow' }
+    ).addTo(map);
+
+    let distance = map.distance(
+      [puntoPR.latitud, puntoPR.longitud],
+      [puntoPM.latitud, puntoPM.longitud]
+    );
+
+    let circle = L.circle([puntoPR.latitud, puntoPR.longitud], {
       color: 'red',
       fillColor: '#f03',
       fillOpacity: 0.5,
-      radius: 150,
+      radius: distance,
     }).addTo(map);
+  }
+
+  obtenerCoordenadas() {
+    this.evidenciasService.coordenadas.subscribe((data) => {
+      this.puntosMuestreo = data;
+    });
   }
 
   onEachFeature(feature: any, layer: any) {
@@ -136,7 +184,6 @@ export class MapMuestreoComponent implements OnInit {
               'xxxx';
               break;
           }
-
           layerControl.addOverlay(capa, nombreCapa);
         },
         error: (error) => {},
