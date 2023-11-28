@@ -25,7 +25,7 @@ namespace Persistence.Repository
             return true;
         }
 
-        public async Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync(bool? isTrack)
+        public async Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync()
         {
             var informacionEvidencias = _dbContext.EvidenciaMuestreo;
             List<InformacionEvidenciaDto> informacionEvidenciaDtos = new();
@@ -59,7 +59,6 @@ namespace Persistence.Repository
                     TipoEvidenciaMuestreo = x.TipoEvidenciaMuestreoId
                 }).ToListAsync();
 
-                if (isTrack != null && true) { informacionEvidenciaDtos.Select(x => x.TipoEvidenciaMuestreo == Convert.ToInt64(Application.Enums.TipoEvidencia.Track)).ToList(); }
             }
 
             return informacionEvidenciaDtos;

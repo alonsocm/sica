@@ -5,8 +5,7 @@ import { MapService } from '../../../map/map.service';
 import { PuntosMuestreo } from 'src/app/shared/enums/puntosMuestreo';
 import { PuntosEvidenciaMuestreo } from 'src/app/interfaces/puntosEvidenciaMuestreo.interface';
 
-let puntos;
-
+const pi: number = 3.141592653589793238462643383;
 @Component({
   selector: 'app-map-muestreo',
   templateUrl: './map-muestreo.component.html',
@@ -16,9 +15,7 @@ export class MapMuestreoComponent implements OnInit {
 
   coordinates: Array<any> = [];
   xmlDocument!: XMLDocument;
-
-
-  puntosmuestreos: Array<PuntosEvidenciaMuestreo> = [];
+  puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
   iconRojo: string = 'assets/images/map/iconRojo.png';
   iconVerde: string = 'assets/images/map/iconVerde.png';
   iconAmarillo: string = 'assets/images/map/iconAmarillo.png';
@@ -39,8 +36,7 @@ export class MapMuestreoComponent implements OnInit {
 
   constructor(
     private evidenciasService: EvidenciasService,
-    private mapService: MapService
-  ) {}
+    private mapService: MapService) {}
 
   ngOnInit(): void {
     this.cargarPuntosMuestreo();
@@ -68,8 +64,8 @@ export class MapMuestreoComponent implements OnInit {
     )[0];
 
     let FA = L.marker([puntoFA.latitud, puntoFA.longitud], {
-        icon: this.iconControl(this.iconVerde),
-      }).bindPopup('Foto de aforo'),
+      icon: this.iconControl(this.iconVerde),
+    }).bindPopup('Foto de aforo'),
       FM = L.marker([puntoFM.latitud, puntoFM.longitud], {
         icon: this.iconControl(this.iconNaranja),
       }).bindPopup('Foto de Muestreo'),
@@ -119,7 +115,8 @@ export class MapMuestreoComponent implements OnInit {
 
     let map = L.map('map', {
       center: [puntoPR.latitud, puntoPR.longitud],
-      zoom: 20,
+      zoom: 25,
+      maxZoom:40,
       layers: [osm, puntos],
     });
 
@@ -146,11 +143,25 @@ export class MapMuestreoComponent implements OnInit {
       fillOpacity: 0.5,
       radius: distance,
     }).addTo(map);
+
+    circle.bindPopup("<div>Radio:" + distance + "</br> Área:" + this.obtenerArea(distance) + "</br>Circunferencia:" + this.obtenerCircunferencia(distance) +  "</div>")
+  }
+
+  obtenerArea(radio: number) {
+    let area = (radio * radio);
+    area = area * pi;
+    return area;
+  }
+
+  obtenerCircunferencia(radio: number) {
+    let circunferencia = (2 * pi) * radio;
+    return circunferencia;
   }
 
   obtenerCoordenadas() {
     this.evidenciasService.coordenadas.subscribe((data) => {
       this.puntosMuestreo = data;
+      console.log(this.puntosMuestreo);
     });
   }
 
@@ -220,7 +231,7 @@ export class MapMuestreoComponent implements OnInit {
           }
           layerControl.addOverlay(capa, nombreCapa);
         },
-        error: (error) => {},
+        error: (error) => { },
       });
     }
   }
@@ -236,7 +247,6 @@ export class MapMuestreoComponent implements OnInit {
     const documentNode = this.xmlDocument.createElement('Document');
     kmlNode.appendChild(documentNode);
     this.xmlDocument.appendChild(kmlNode);
-  
 
     coordinates.forEach((coord, i) => {
       documentNode.appendChild(this.createPointNode(i.toString(), coord.lat, coord.lng));
