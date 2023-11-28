@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
-import { getJSON } from 'jquery';
 import { EvidenciasService } from '../../evidencias/services/evidencias.service';
 import { MapService } from '../../../map/map.service';
+import { puntosMuestreo, puntosMuestreoNombre } from 'src/app/shared/enums/puntosMuestreo';
+import { PuntosEvidenciaMuestreo } from 'src/app/interfaces/puntosEvidenciaMuestreo.interface';
 
-
-let _staticMessage = 'Cargando información de cuencas <br/>Espere por favor...';
-let _urlCuencasJson = "https://geosinav30.conagua.gob.mx:8080/geoserver/Sina/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Sina%3Am00_cuencas&outputFormat=application%2Fjson";
-let _htmlinfo;
+let puntos;
 
 @Component({
   selector: 'app-map-muestreo',
@@ -16,6 +14,7 @@ let _htmlinfo;
 })
 export class MapMuestreoComponent implements OnInit {
 
+  puntosmuestreos: Array<PuntosEvidenciaMuestreo> = [];
   iconRojo: string = 'assets/images/map/iconRojo.png';
   iconVerde: string = 'assets/images/map/iconVerde.png';
   iconAmarillo: string = 'assets/images/map/iconAmarillo.png';
@@ -23,75 +22,78 @@ export class MapMuestreoComponent implements OnInit {
   iconAzul: string = 'assets/images/map/iconAzul.png';
   iconNaranja: string = 'assets/images/map/iconNaranja.png';
 
-  mapas: Array<string> = ['Sina:m00_estados', 'Sina:m00_cuencas', 'Sina:m00_acuiferos', 'Sina:m00_cuerposagua', 'Sina:m00_consejocuencas','Sina:m00_riosprincipales'];
-
+  mapas: Array<string> = ['Sina:m00_estados', 'Sina:m00_cuencas', 'Sina:m00_acuiferos', 'Sina:m00_cuerposagua', 'Sina:m00_consejocuencas', 'Sina:m00_riosprincipales'];
   owsrootUrl = 'https://geosinav30.conagua.gob.mx:8080/geoserver/Sina/ows';
-
-  nombreMapa: string = '';
+  nombreMapa: string = ''; 
 
   constructor(
     private evidenciasService: EvidenciasService,
-    private mapService: MapService
-  ) {
-    
-  }
-
+    private mapService: MapService) { }
   ngOnInit(): void {
+    this.cargarPuntosMuestreo(); 
+  }
+  cargarPuntosMuestreo() {
+    this.obtenerCoordenadas();
+    let puntoFA = this.puntosmuestreos.filter((x) => x.punto == puntosMuestreo.FotodeAforo_FA)[0];
+    let puntoFM = this.puntosmuestreos.filter((x) => x.punto == puntosMuestreo.FotodeMuestreo_FM)[0];
+    let puntoTR = this.puntosmuestreos.filter((x) => x.punto == puntosMuestreo.PuntoCercanoalTrack_TR)[0];
+    let puntoFS = this.puntosmuestreos.filter((x) => x.punto == puntosMuestreo.FotodeMuestras_FS)[0];
+    let puntoPR = this.puntosmuestreos.filter((x) => x.punto == puntosMuestreo.PuntodeReferencia_PR)[0];
+    let puntoPM = this.puntosmuestreos.filter((x) => x.punto == puntosMuestreo.PuntodeMuestreo_PM)[0];
 
-    var FA = L.marker([19.414022989, -98.988707758], { icon: this.iconControl(this.iconVerde) }).bindPopup('Foto de aforo'),
-      FM = L.marker([19.414025766, -98.988697555], { icon: this.iconControl(this.iconNaranja) }).bindPopup('Foto de Muestreo'),
-      TR = L.marker([19.414030000, -98.988660000], { icon: this.iconControl(this.iconMorado) }).bindPopup('Punto más cercano al Track'),
-      FS = L.marker([19.413751843, -98.988978327], { icon: this.iconControl(this.iconRojo) }).bindPopup('Foto de la Muestra');
+    let FA = L.marker([puntoFA.latitud, puntoFA.longitud], { icon: this.iconControl(this.iconVerde) }).bindPopup('Foto de aforo'),
+      FM = L.marker([puntoFM.latitud, puntoFM.longitud], { icon: this.iconControl(this.iconNaranja) }).bindPopup('Foto de Muestreo'),
+      TR = L.marker([puntoTR.latitud, puntoTR.longitud], { icon: this.iconControl(this.iconMorado) }).bindPopup('Punto más cercano al Track'),
+      FS = L.marker([puntoFS.latitud, puntoFS.longitud], { icon: this.iconControl(this.iconRojo) }).bindPopup('Foto de la Muestra'),
+      PR = L.marker([puntoPR.latitud, puntoPR.longitud], { icon: this.iconControl(this.iconAzul) }).bindPopup('Punto de referencia'),
+      PM = L.marker([puntoPM.latitud, puntoPM.longitud], { icon: this.iconControl(this.iconAmarillo) }).bindPopup('Punto de muestreo');
 
-    var puntos = L.layerGroup([FA, FM, TR, FS]);
+    puntos = L.layerGroup([FA, FM, TR, FS, PR, PM]);
 
-    var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 20,
+    let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 30,
       attribution: '© OpenStreetMap'
     });
-
-    var map = L.map('map', {
-      center: [19.414030000, -98.988660000],
+    let map = L.map('map', {
+      center: [puntoPR.latitud, puntoPR.longitud],
       zoom: 15,
       layers: [osm, puntos]
     });
-
-
-    var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      maxZoom: 20,
+    let osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      maxZoom: 30,
       attribution: '© OpenStreetMap contributors, US Census Bureau'
     });
-
-    var baseMaps = {
-      "OpenStreetMap": osm, 
+    let baseMaps = {
+      "OpenStreetMap": osm,
       "OpenStreetMap.HOT": osmHOT
-  
     };
 
-    var mostrarPuntos = {
+    let mostrarPuntos = {
       "Todos los puntos  ": puntos,
       "FA (Foto de aforo)": FA,
       "FM (Foto de muestreo)": FM,
       "FS (Foto de la muestra)": FS,
-      "TR (Punto más cecano al track)": TR
-    };
-
-    var layerControl = L.control.layers(baseMaps, mostrarPuntos).addTo(map);
-
-    var openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
+      "TR (Punto más cecano al track)": TR,
+      "PR (Punto de referencia)": PR,
+      "PM (Punto de muestreo)": PM };
+    let layerControl = L.control.layers(baseMaps, mostrarPuntos).addTo(map);
+    let openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      maxZoom: 30,
       attribution: 'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
     });
 
-    layerControl.addBaseLayer(openTopoMap, "OpenTopoMap");    
-
-    this.cargarCapas(map, layerControl);
+    layerControl.addBaseLayer(openTopoMap, "OpenTopoMap");
+    this.cargarCapas(map, layerControl);  }
+  obtenerCoordenadas() {
+    this.evidenciasService.coordenadas.subscribe((data) => {
+      this.puntosmuestreos = data;
+      console.log('map');
+      console.log(this.puntosmuestreos);
+    });
   }
-
   onEachFeature(feature: any, layer: any) {
     layer.bindPopup('Nombre del acuífero ' + feature.properties.acuifero);
   }
-
   iconControl(ruta: string) {
     var greenIcon = L.icon({
       iconUrl: ruta,
@@ -99,7 +101,6 @@ export class MapMuestreoComponent implements OnInit {
     });
     return greenIcon;
   }
-
   obtenerCapa(nombrecapa: string) {
     var defaultParameters = {
       service: 'WFS',
@@ -111,20 +112,15 @@ export class MapMuestreoComponent implements OnInit {
     };
     return defaultParameters;
   }
-
   cargarCapas(map: any, layerControl: any) {
-  
+
     for (var i = 0; i < this.mapas.length; i++) {
-
       const urlToJSonMap: string = this.owsrootUrl + L.Util.getParamString(L.Util.extend(this.obtenerCapa(this.mapas[i])));
-
       this.mapService.getCapas(urlToJSonMap).subscribe({
         next: (response: any) => {
-
           var cuencas = L.geoJson(response, {
             style: { color: '#2ECCFA', weight: 2 },
             onEachFeature: this.onEachFeature.bind(this),
-
           }).addTo(map);
 
           switch (this.mapas[i]) {
@@ -134,17 +130,11 @@ export class MapMuestreoComponent implements OnInit {
               break;
             default: 'xxxx'; break;
           }
-       
-
           layerControl.addBaseLayer(cuencas, this.nombreMapa);
         },
         error: (error) => { },
       });
-    } 
-
+    }
   }
-
-
-
 }
 

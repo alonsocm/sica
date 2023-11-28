@@ -32,6 +32,7 @@
           <th class="col-lg-1">Fecha final</th>
           <th class="col-lg-1">Hora inicio</th>
           <th class="col-lg-1">Hora fin</th>
+          <th class="col-lg-1">Mapa</th>
         </tr>
       </thead>
       <tbody>
@@ -61,11 +62,11 @@
           <td>{{registro.fechaFinal}}</td>
           <td>{{registro.horaInicio}}</td>
           <td>{{registro.horaFinal}}</td>
-          <td>
-              <button type="button" class="btn-action btn-secondary-action mr-1" title="Ver mapa"
-                  (click)="onVerMapaClick(registro.muestreo)">
-                  <i class="bi bi-eye icon-action"></i>
-              </button>
+          <td>       
+            <button type="button" class="btn-action btn-secondary-action mr-1"
+                    (click)="onVerMapaClick(registro.muestreo)">
+              Ver mapa
+            </button>
           </td>
         </tr>
         <tr *ngIf="this.informacionEvidencias.length === 0">
