@@ -1,21 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
-import { getJSON } from 'jquery';
 import { EvidenciasService } from '../../evidencias/services/evidencias.service';
 import { MapService } from '../../../map/map.service';
-
-
-let _staticMessage = 'Cargando información de cuencas <br/>Espere por favor...';
-let _urlCuencasJson = "https://geosinav30.conagua.gob.mx:8080/geoserver/Sina/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Sina%3Am00_cuencas&outputFormat=application%2Fjson";
-let _htmlinfo;
 
 @Component({
   selector: 'app-map-muestreo',
   templateUrl: './map-muestreo.component.html',
-  styleUrls: ['./map-muestreo.component.css']
+  styleUrls: ['./map-muestreo.component.css'],
 })
 export class MapMuestreoComponent implements OnInit {
-
   iconRojo: string = 'assets/images/map/iconRojo.png';
   iconVerde: string = 'assets/images/map/iconVerde.png';
   iconAmarillo: string = 'assets/images/map/iconAmarillo.png';
@@ -23,69 +16,60 @@ export class MapMuestreoComponent implements OnInit {
   iconAzul: string = 'assets/images/map/iconAzul.png';
   iconNaranja: string = 'assets/images/map/iconNaranja.png';
 
-  mapas: Array<string> = ['Sina:m00_estados', 'Sina:m00_cuencas', 'Sina:m00_acuiferos', 'Sina:m00_cuerposagua', 'Sina:m00_consejocuencas','Sina:m00_riosprincipales'];
+  nombresCapas: Array<string> = [
+    'Sina:m00_estados',
+    'Sina:m00_cuencas',
+    'Sina:m00_acuiferos',
+    'Sina:m00_cuerposagua',
+    'Sina:m00_consejocuencas',
+    'Sina:m00_riosprincipales',
+  ];
 
   owsrootUrl = 'https://geosinav30.conagua.gob.mx:8080/geoserver/Sina/ows';
-
-  nombreMapa: string = '';
 
   constructor(
     private evidenciasService: EvidenciasService,
     private mapService: MapService
-  ) {
-    
-  }
+  ) {}
 
   ngOnInit(): void {
+    let FA = L.marker([19.414022989, -98.988707758], {
+        icon: this.iconControl(this.iconVerde),
+      }).bindPopup('Foto de aforo'),
+      FM = L.marker([19.414025766, -98.988697555], {
+        icon: this.iconControl(this.iconNaranja),
+      }).bindPopup('Foto de Muestreo'),
+      TR = L.marker([19.41403, -98.98866], {
+        icon: this.iconControl(this.iconMorado),
+      }).bindPopup('Punto más cercano al Track'),
+      FS = L.marker([19.413751843, -98.988978327], {
+        icon: this.iconControl(this.iconRojo),
+      }).bindPopup('Foto de la Muestra');
 
-    var FA = L.marker([19.414022989, -98.988707758], { icon: this.iconControl(this.iconVerde) }).bindPopup('Foto de aforo'),
-      FM = L.marker([19.414025766, -98.988697555], { icon: this.iconControl(this.iconNaranja) }).bindPopup('Foto de Muestreo'),
-      TR = L.marker([19.414030000, -98.988660000], { icon: this.iconControl(this.iconMorado) }).bindPopup('Punto más cercano al Track'),
-      FS = L.marker([19.413751843, -98.988978327], { icon: this.iconControl(this.iconRojo) }).bindPopup('Foto de la Muestra');
+    let puntos = L.layerGroup([FA, FM, TR, FS]);
 
-    var puntos = L.layerGroup([FA, FM, TR, FS]);
+    let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
 
-    var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 20,
-      attribution: '© OpenStreetMap'
-    });
-
-    var map = L.map('map', {
-      center: [19.414030000, -98.988660000],
+    let map = L.map('map', {
+      center: [19.41403, -98.98866],
       zoom: 15,
-      layers: [osm, puntos]
+      layers: [osm, puntos],
     });
 
-
-    var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      maxZoom: 20,
-      attribution: '© OpenStreetMap contributors, US Census Bureau'
-    });
-
-    var baseMaps = {
-      "OpenStreetMap": osm, 
-      "OpenStreetMap.HOT": osmHOT
-  
+    let baseMaps = {
+      OpenStreetMap: osm,
     };
 
-    var mostrarPuntos = {
-      "Todos los puntos  ": puntos,
-      "FA (Foto de aforo)": FA,
-      "FM (Foto de muestreo)": FM,
-      "FS (Foto de la muestra)": FS,
-      "TR (Punto más cecano al track)": TR
-    };
-
-    var layerControl = L.control.layers(baseMaps, mostrarPuntos).addTo(map);
-
-    var openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: 'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
-    });
-
-    layerControl.addBaseLayer(openTopoMap, "OpenTopoMap");    
+    let layerControl = L.control.layers().addTo(map);
 
     this.cargarCapas(map, layerControl);
+
+    let circle = L.circle([19.414022989, -98.988707758], {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5,
+      radius: 150,
+    }).addTo(map);
   }
 
   onEachFeature(feature: any, layer: any) {
@@ -93,7 +77,7 @@ export class MapMuestreoComponent implements OnInit {
   }
 
   iconControl(ruta: string) {
-    var greenIcon = L.icon({
+    let greenIcon = L.icon({
       iconUrl: ruta,
       iconSize: [45, 45],
     });
@@ -101,50 +85,62 @@ export class MapMuestreoComponent implements OnInit {
   }
 
   obtenerCapa(nombrecapa: string) {
-    var defaultParameters = {
+    let defaultParameters = {
       service: 'WFS',
       version: '1.0.0',
       request: 'GetFeature',
       typeName: nombrecapa,
       outputFormat: 'application/json',
-      srsName: "EPSG:4326"
+      srsName: 'EPSG:4326',
     };
     return defaultParameters;
   }
 
   cargarCapas(map: any, layerControl: any) {
-  
-    for (var i = 0; i < this.mapas.length; i++) {
-
-      const urlToJSonMap: string = this.owsrootUrl + L.Util.getParamString(L.Util.extend(this.obtenerCapa(this.mapas[i])));
+    for (let i = 0; i < this.nombresCapas.length; i++) {
+      const urlToJSonMap: string =
+        this.owsrootUrl +
+        L.Util.getParamString(
+          L.Util.extend(this.obtenerCapa(this.nombresCapas[i]))
+        );
 
       this.mapService.getCapas(urlToJSonMap).subscribe({
         next: (response: any) => {
-
-          var cuencas = L.geoJson(response, {
+          let capa = L.geoJson(response, {
             style: { color: '#2ECCFA', weight: 2 },
             onEachFeature: this.onEachFeature.bind(this),
+          });
 
-          }).addTo(map);
+          let nombreCapa = '';
 
-          switch (this.mapas[i]) {
-            case 'Sina: m00_cuencas': this.nombreMapa = 'Cuencas';
+          switch (this.nombresCapas[i]) {
+            case 'Sina:m00_cuencas':
+              nombreCapa = 'Cuencas';
               break;
-            case 'Sina: m00_acuiferos': this.nombreMapa = 'Acuiferos';
+            case 'Sina:m00_acuiferos':
+              nombreCapa = 'Acuiferos';
               break;
-            default: 'xxxx'; break;
+            case 'Sina:m00_estados':
+              nombreCapa = 'Estados';
+              break;
+            case 'Sina:m00_cuerposagua':
+              nombreCapa = 'Cuerpos de agua';
+              break;
+            case 'Sina:m00_consejocuencas':
+              nombreCapa = 'Consejo cuencas';
+              break;
+            case 'Sina:m00_riosprincipales':
+              nombreCapa = 'Principales rios';
+              break;
+            default:
+              'xxxx';
+              break;
           }
-       
 
-          layerControl.addBaseLayer(cuencas, this.nombreMapa);
+          layerControl.addOverlay(capa, nombreCapa);
         },
-        error: (error) => { },
+        error: (error) => {},
       });
-    } 
-
+    }
   }
-
-
-
 }
-
