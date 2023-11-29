@@ -18,4 +18,36 @@
   <div class="map-frame">
     <div id="map"></div>
   </div>
+
+  <br /><br />
+
+  <table class="table table-bordered table-hover">
+    <thead class="thead-light">
+      <tr>
+        <th class="col-lg-1">Punto origen (PR)</th>
+        <th class="col-lg-1">Punto elegido</th>
+        <th class="col-lg-1">Radio</th>
+        <th class="col-lg-1">Área</th>
+        <th class="col-lg-1">Circunferencia</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dato of this.datosCalculo">
+        <td>{{dato.puntoOrigen}}</td>
+        <td>{{dato.puntoDestino}}</td>
+        <td>{{dato.radio}}</td>
+        <td>{{dato.area}}</td>
+        <td>{{dato.circunferencia}}</td>
+
+      </tr>
+      <tr *ngIf="this.datosCalculo.length === 0">
+        <td class="td-center" colspan="20">
+         SIN REGISTROS
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
 </div>

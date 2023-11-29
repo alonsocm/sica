@@ -4,6 +4,7 @@ import { EvidenciasService } from '../../evidencias/services/evidencias.service'
 import { MapService } from '../../../map/map.service';
 import { PuntosMuestreo } from 'src/app/shared/enums/puntosMuestreo';
 import { PuntosEvidenciaMuestreo } from 'src/app/interfaces/puntosEvidenciaMuestreo.interface';
+import { calculosMuestreo } from '../../../../interfaces/calculosMuestreo.interface';
 
 const pi: number = 3.141592653589793238462643383;
 @Component({
@@ -12,10 +13,17 @@ const pi: number = 3.141592653589793238462643383;
   styleUrls: ['./map-muestreo.component.css'],
 })
 export class MapMuestreoComponent implements OnInit {
-
+  latitude: any;
+  longitude: any;
+  datosCalculo: Array<calculosMuestreo> = []; 
+  puntoPRGeneral!: PuntosEvidenciaMuestreo;
+  circle: any;
+  radio: number = 0;
+  map: any;
   coordinates: Array<any> = [];
   xmlDocument!: XMLDocument;
   puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
+
   iconRojo: string = 'assets/images/map/iconRojo.png';
   iconVerde: string = 'assets/images/map/iconVerde.png';
   iconAmarillo: string = 'assets/images/map/iconAmarillo.png';
@@ -31,17 +39,15 @@ export class MapMuestreoComponent implements OnInit {
     'Sina:m00_consejocuencas',
     'Sina:m00_riosprincipales',
   ];
-
   owsrootUrl = 'https://geosinav30.conagua.gob.mx:8080/geoserver/Sina/ows';
 
   constructor(
     private evidenciasService: EvidenciasService,
-    private mapService: MapService) {}
+    private mapService: MapService) { }
 
   ngOnInit(): void {
     this.cargarPuntosMuestreo();
   }
-
   cargarPuntosMuestreo() {
     this.obtenerCoordenadas();
     let puntoFA = this.puntosMuestreo.filter(
@@ -62,6 +68,8 @@ export class MapMuestreoComponent implements OnInit {
     let puntoPM = this.puntosMuestreo.filter(
       (x) => x.punto == PuntosMuestreo.PuntodeMuestreo_PM
     )[0];
+
+    this.puntoPRGeneral = puntoPR;
 
     let FA = L.marker([puntoFA.latitud, puntoFA.longitud], {
       icon: this.iconControl(this.iconVerde),
@@ -108,67 +116,88 @@ export class MapMuestreoComponent implements OnInit {
       { lat: 20.283663889, lng: -101.022544444 }
     ]
 
-
     let puntos = L.layerGroup([FA, FM, TR, FS, PR, PM]);
-
     let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
 
-    let map = L.map('map', {
+    this.map = L.map('map', {
       center: [puntoPR.latitud, puntoPR.longitud],
       zoom: 25,
-      maxZoom:40,
+      maxZoom: 40,
       layers: [osm, puntos],
     });
 
-    let layerControl = L.control.layers().addTo(map);
+    let layerControl = L.control.layers().addTo(this.map);
+    this.cargarCapas(this.map, layerControl);
+    this.latitude = puntoPM.latitud;
+    this.longitude = puntoPM.longitud;
+    this.crearCircunferencia(this.puntoPRGeneral, this.map);  
 
-    this.cargarCapas(map, layerControl);
+    this.circle.bindPopup("<div'>Radio:" + this.radio + "</br> Área:" + this.obtenerArea(this.radio) + "</br>Circunferencia:" + this.obtenerCircunferencia(this.radio) + "</div>")
+    this.map.on('click', (e: any) => { this.onMapClick(e) });
+  }
+  private crearCircunferencia(puntoPR: any, map: any) {
 
     let radioPR_PM = L.polygon(
       [
         [puntoPR.latitud, puntoPR.longitud],
-        [puntoPM.latitud, puntoPM.longitud],
+        [this.latitude, this.longitude],
       ],
       { color: 'yellow' }
     ).addTo(map);
 
-    let distance = map.distance(
+    this.radio = this.map.distance(
       [puntoPR.latitud, puntoPR.longitud],
-      [puntoPM.latitud, puntoPM.longitud]
+      [this.latitude, this.longitude]
     );
 
-    let circle = L.circle([puntoPR.latitud, puntoPR.longitud], {
+    this.circle = L.circle([puntoPR.latitud, puntoPR.longitud], {
       color: 'red',
       fillColor: '#f03',
       fillOpacity: 0.5,
-      radius: distance,
+      radius: this.radio,
     }).addTo(map);
 
-    circle.bindPopup("<div>Radio:" + distance + "</br> Área:" + this.obtenerArea(distance) + "</br>Circunferencia:" + this.obtenerCircunferencia(distance) +  "</div>")
   }
-
+  onMapClick(e: any) {
+    this.longitude = e.latlng.lng;
+    this.latitude = e.latlng.lat;    
+    this.crearCircunferencia(this.puntoPRGeneral, this.map);
+    this.calculosCircunferencia();
+  }
+  calculosCircunferencia() {
+    let calculos: calculosMuestreo = {
+      puntoOrigen: this.puntoPRGeneral.latitud + "," + this.puntoPRGeneral.longitud,
+      puntoDestino: this.latitude + "," + this.longitude,
+      radio: this.radio.toString(),
+      area: this.obtenerArea(this.radio).toString(),
+      circunferencia: this.obtenerCircunferencia(this.radio).toString()
+    };
+    this.datosCalculo.push(calculos);
+  }
   obtenerArea(radio: number) {
     let area = (radio * radio);
     area = area * pi;
     return area;
   }
-
   obtenerCircunferencia(radio: number) {
     let circunferencia = (2 * pi) * radio;
     return circunferencia;
   }
+  getLocation() {
+    this.evidenciasService.getPosition().then(pos => {
+      this.latitude = pos.lat;
+      this.longitude = pos.lng;
+    });
 
+  }
   obtenerCoordenadas() {
     this.evidenciasService.coordenadas.subscribe((data) => {
       this.puntosMuestreo = data;
-      console.log(this.puntosMuestreo);
     });
   }
-
   onEachFeature(feature: any, layer: any) {
     layer.bindPopup('Nombre del acuífero ' + feature.properties.acuifero);
   }
-
   iconControl(ruta: string) {
     let greenIcon = L.icon({
       iconUrl: ruta,
@@ -176,7 +205,6 @@ export class MapMuestreoComponent implements OnInit {
     });
     return greenIcon;
   }
-
   obtenerCapa(nombrecapa: string) {
     let defaultParameters = {
       service: 'WFS',
@@ -188,7 +216,6 @@ export class MapMuestreoComponent implements OnInit {
     };
     return defaultParameters;
   }
-
   cargarCapas(map: any, layerControl: any) {
     for (let i = 0; i < this.nombresCapas.length; i++) {
       const urlToJSonMap: string =
@@ -239,7 +266,6 @@ export class MapMuestreoComponent implements OnInit {
     const textXML = this.createKMLFileFromCoordinates(this.coordinates);
     this.download('points.kml', textXML);
   }
-
   createKMLFileFromCoordinates(coordinates: { lat: number, lng: number }[]): string {
     this.xmlDocument = document.implementation.createDocument("", "", null);
     const kmlNode = this.xmlDocument.createElement('kml');
@@ -253,7 +279,6 @@ export class MapMuestreoComponent implements OnInit {
     });
     return this.xmlDocumentToString(this.xmlDocument);
   }
-
   download(filename: string, xmlDocument: any): void {
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(xmlDocument));
@@ -261,18 +286,14 @@ export class MapMuestreoComponent implements OnInit {
 
     element.style.display = 'none';
     document.body.appendChild(element);
-
     element.click();
-
     document.body.removeChild(element);
   }
-
   xmlDocumentToString(xmlDocument: XMLDocument): string {
     let textXML = new XMLSerializer().serializeToString(this.xmlDocument);
     textXML = '<?xml version="1.0" encoding="UTF-8"?>' + textXML;
     return textXML;
   }
-
   createPointNode(name: string, lat: any, lng: any): HTMLElement {
     const placemarkNode = this.xmlDocument.createElement('Placemark');
     const nameNode = this.xmlDocument.createElement('name');
