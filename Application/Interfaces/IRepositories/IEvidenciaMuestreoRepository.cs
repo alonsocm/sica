@@ -5,7 +5,7 @@ namespace Application.Interfaces.IRepositories
 {
     public interface IEvidenciaMuestreoRepository : IRepository<EvidenciaMuestreo>
     {
-        public Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync(bool? isTrack);
+        public Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync();
         public bool EliminarEvidenciasMuestreo(long idMuestreo);
     }
 }

@@ -19,6 +19,7 @@ import { AuthService } from '../../../login/services/auth.service';
 export class RutaTrackComponent implements OnInit {
   page: number = 1;
   informacionEvidencias: Array<InformacionEvidencia> = [];
+  informacionEvidenciasTrack: Array<InformacionEvidencia> = [];
   tiposEvidenciasPuntos: Array<number> = [
     tipoEvidencia.FotoCaudal,
     tipoEvidencia.FotoMuestra,
@@ -39,6 +40,7 @@ export class RutaTrackComponent implements OnInit {
     this.evidenciasService.getInformacionEvidencias(true).subscribe({
       next: (response: any) => {
         this.informacionEvidencias = response.data;
+        this.informacionEvidenciasTrack = this.informacionEvidencias.filter(x => x.tipoEvidenciaMuestreo == tipoEvidencia.Track);
       },
       error: (response: any) => {},
     });

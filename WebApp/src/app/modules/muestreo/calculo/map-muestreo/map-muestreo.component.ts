@@ -5,12 +5,16 @@ import { MapService } from '../../../map/map.service';
 import { PuntosMuestreo } from 'src/app/shared/enums/puntosMuestreo';
 import { PuntosEvidenciaMuestreo } from 'src/app/interfaces/puntosEvidenciaMuestreo.interface';
 
+const pi: number = 3.141592653589793238462643383;
 @Component({
   selector: 'app-map-muestreo',
   templateUrl: './map-muestreo.component.html',
   styleUrls: ['./map-muestreo.component.css'],
 })
 export class MapMuestreoComponent implements OnInit {
+
+  coordinates: Array<any> = [];
+  xmlDocument!: XMLDocument;
   puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
   iconRojo: string = 'assets/images/map/iconRojo.png';
   iconVerde: string = 'assets/images/map/iconVerde.png';
@@ -32,8 +36,7 @@ export class MapMuestreoComponent implements OnInit {
 
   constructor(
     private evidenciasService: EvidenciasService,
-    private mapService: MapService
-  ) {}
+    private mapService: MapService) {}
 
   ngOnInit(): void {
     this.cargarPuntosMuestreo();
@@ -61,8 +64,8 @@ export class MapMuestreoComponent implements OnInit {
     )[0];
 
     let FA = L.marker([puntoFA.latitud, puntoFA.longitud], {
-        icon: this.iconControl(this.iconVerde),
-      }).bindPopup('Foto de aforo'),
+      icon: this.iconControl(this.iconVerde),
+    }).bindPopup('Foto de aforo'),
       FM = L.marker([puntoFM.latitud, puntoFM.longitud], {
         icon: this.iconControl(this.iconNaranja),
       }).bindPopup('Foto de Muestreo'),
@@ -79,6 +82,33 @@ export class MapMuestreoComponent implements OnInit {
         icon: this.iconControl(this.iconAmarillo),
       }).bindPopup('Punto de muestreo');
 
+
+    //this.coordinates = [
+    //  { lat: puntoFA.latitud, lng: puntoFA.longitud },
+    //  { lat: puntoFM.latitud, lng: puntoFM.longitud },
+    //  { lat: puntoTR.latitud, lng: puntoTR.longitud },
+    //  { lat: puntoFS.latitud, lng: puntoFS.longitud },
+    //  { lat: puntoPR.latitud, lng: puntoPR.longitud },
+    //  { lat: puntoPM.latitud, lng: puntoPM.longitud }
+    //];
+
+    //this.coordinates = [
+    //  { lat: 14.05891566, lng: -19.9981566 },
+    //  { lat: 14.05668566, lng: -19.9566123 },
+    //  { lat: 14.05567413, lng: -19.9467456 },
+    //  { lat: 14.05455655, lng: -19.9367125 }
+    //]
+
+    this.coordinates = [
+      { lat: 20.28375, lng: -101.02229 },
+      { lat: 20.28364, lng: -101.02232 },
+      { lat: 20.283622222, lng: -101.022638889 },
+      { lat: 20.283538889, lng: -101.022580556 },
+      { lat: 20.283750534, lng: -101.022293091 },
+      { lat: 20.283663889, lng: -101.022544444 }
+    ]
+
+
     let puntos = L.layerGroup([FA, FM, TR, FS, PR, PM]);
 
     let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -88,7 +118,8 @@ export class MapMuestreoComponent implements OnInit {
 
     let map = L.map('map', {
       center: [puntoPR.latitud, puntoPR.longitud],
-      zoom: 20,
+      zoom: 25,
+      maxZoom:40,
       layers: [osm, puntos],
     });
 
@@ -115,11 +146,25 @@ export class MapMuestreoComponent implements OnInit {
       fillOpacity: 0.5,
       radius: distance,
     }).addTo(map);
+
+    circle.bindPopup("<div>Radio:" + distance + "</br> Área:" + this.obtenerArea(distance) + "</br>Circunferencia:" + this.obtenerCircunferencia(distance) +  "</div>")
+  }
+
+  obtenerArea(radio: number) {
+    let area = (radio * radio);
+    area = area * pi;
+    return area;
+  }
+
+  obtenerCircunferencia(radio: number) {
+    let circunferencia = (2 * pi) * radio;
+    return circunferencia;
   }
 
   obtenerCoordenadas() {
     this.evidenciasService.coordenadas.subscribe((data) => {
       this.puntosMuestreo = data;
+      console.log(this.puntosMuestreo);
     });
   }
 
@@ -189,8 +234,60 @@ export class MapMuestreoComponent implements OnInit {
           }
           layerControl.addOverlay(capa, nombreCapa);
         },
-        error: (error) => {},
+        error: (error) => { },
       });
     }
+  }
+  createAndDownloadKML(): void {
+    const textXML = this.createKMLFileFromCoordinates(this.coordinates);
+    this.download('points.kml', textXML);
+  }
+
+  createKMLFileFromCoordinates(coordinates: { lat: number, lng: number }[]): string {
+    this.xmlDocument = document.implementation.createDocument("", "", null);
+    const kmlNode = this.xmlDocument.createElement('kml');
+    kmlNode.setAttribute('xmlns', 'http://www.opengis.net/kml/2.2');
+    const documentNode = this.xmlDocument.createElement('Document');
+    kmlNode.appendChild(documentNode);
+    this.xmlDocument.appendChild(kmlNode);
+
+    coordinates.forEach((coord, i) => {
+      documentNode.appendChild(this.createPointNode(i.toString(), coord.lat, coord.lng));
+    });
+    return this.xmlDocumentToString(this.xmlDocument);
+  }
+
+  download(filename: string, xmlDocument: any): void {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(xmlDocument));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
+  xmlDocumentToString(xmlDocument: XMLDocument): string {
+    let textXML = new XMLSerializer().serializeToString(this.xmlDocument);
+    textXML = '<?xml version="1.0" encoding="UTF-8"?>' + textXML;
+    return textXML;
+  }
+
+  createPointNode(name: string, lat: any, lng: any): HTMLElement {
+    const placemarkNode = this.xmlDocument.createElement('Placemark');
+    const nameNode = this.xmlDocument.createElement('name');
+    nameNode.innerHTML = name;
+    const descriptionNode = this.xmlDocument.createElement('description');
+    const pointNode = this.xmlDocument.createElement('Point');
+    const coordinatesNode = this.xmlDocument.createElement('coordinates');
+    coordinatesNode.innerHTML = `${lat},${lng}`;
+    placemarkNode.appendChild(nameNode);
+    placemarkNode.appendChild(descriptionNode);
+    placemarkNode.appendChild(pointNode);
+    pointNode.appendChild(coordinatesNode);
+    return placemarkNode;
   }
 }

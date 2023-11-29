@@ -36,7 +36,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let registro of this.informacionEvidencias | paginate: { itemsPerPage:30, currentPage: page }">
+        <tr *ngFor="let registro of this.informacionEvidenciasTrack | paginate: { itemsPerPage:30, currentPage: page }">
           <td>{{registro.muestreo}}</td>
           <td>{{registro.tipoEvidencia}}</td>
           <td>

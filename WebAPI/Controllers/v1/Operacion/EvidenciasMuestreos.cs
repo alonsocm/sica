@@ -84,9 +84,9 @@ namespace WebAPI.Controllers.v1.Operacion
         #endregion
 
         [HttpGet("InformacionEvidencias")]
-        public async Task<ActionResult> Get(bool isTrack)
+        public async Task<ActionResult> Get()
         {
-            return Ok(await Mediator.Send(new GetInformacionEvidencias { }));
+            return Ok(await Mediator.Send(new GetInformacionEvidencias()));
         }
     }
 }
