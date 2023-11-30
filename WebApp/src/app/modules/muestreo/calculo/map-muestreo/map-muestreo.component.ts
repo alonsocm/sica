@@ -12,7 +12,6 @@ const pi: number = 3.141592653589793238462643383;
   styleUrls: ['./map-muestreo.component.css'],
 })
 export class MapMuestreoComponent implements OnInit {
-
   coordinates: Array<any> = [];
   xmlDocument!: XMLDocument;
   puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
@@ -36,7 +35,8 @@ export class MapMuestreoComponent implements OnInit {
 
   constructor(
     private evidenciasService: EvidenciasService,
-    private mapService: MapService) {}
+    private mapService: MapService
+  ) {}
 
   ngOnInit(): void {
     this.cargarPuntosMuestreo();
@@ -64,8 +64,8 @@ export class MapMuestreoComponent implements OnInit {
     )[0];
 
     let FA = L.marker([puntoFA.latitud, puntoFA.longitud], {
-      icon: this.iconControl(this.iconVerde),
-    }).bindPopup('Foto de aforo'),
+        icon: this.iconControl(this.iconVerde),
+      }).bindPopup('Foto de aforo'),
       FM = L.marker([puntoFM.latitud, puntoFM.longitud], {
         icon: this.iconControl(this.iconNaranja),
       }).bindPopup('Foto de Muestreo'),
@@ -81,7 +81,6 @@ export class MapMuestreoComponent implements OnInit {
       PM = L.marker([puntoPM.latitud, puntoPM.longitud], {
         icon: this.iconControl(this.iconAmarillo),
       }).bindPopup('Punto de muestreo');
-
 
     //this.coordinates = [
     //  { lat: puntoFA.latitud, lng: puntoFA.longitud },
@@ -105,9 +104,8 @@ export class MapMuestreoComponent implements OnInit {
       { lat: 20.283622222, lng: -101.022638889 },
       { lat: 20.283538889, lng: -101.022580556 },
       { lat: 20.283750534, lng: -101.022293091 },
-      { lat: 20.283663889, lng: -101.022544444 }
-    ]
-
+      { lat: 20.283663889, lng: -101.022544444 },
+    ];
 
     let puntos = L.layerGroup([FA, FM, TR, FS, PR, PM]);
 
@@ -119,7 +117,7 @@ export class MapMuestreoComponent implements OnInit {
     let map = L.map('map', {
       center: [puntoPR.latitud, puntoPR.longitud],
       zoom: 25,
-      maxZoom:40,
+      maxZoom: 40,
       layers: [osm, puntos],
     });
 
@@ -147,17 +145,25 @@ export class MapMuestreoComponent implements OnInit {
       radius: distance,
     }).addTo(map);
 
-    circle.bindPopup("<div>Radio:" + distance + "</br> Área:" + this.obtenerArea(distance) + "</br>Circunferencia:" + this.obtenerCircunferencia(distance) +  "</div>")
+    circle.bindPopup(
+      '<div>Radio:' +
+        distance +
+        '</br> Área:' +
+        this.obtenerArea(distance) +
+        '</br>Circunferencia:' +
+        this.obtenerCircunferencia(distance) +
+        '</div>'
+    );
   }
 
   obtenerArea(radio: number) {
-    let area = (radio * radio);
+    let area = radio * radio;
     area = area * pi;
     return area;
   }
 
   obtenerCircunferencia(radio: number) {
-    let circunferencia = (2 * pi) * radio;
+    let circunferencia = 2 * pi * radio;
     return circunferencia;
   }
 
@@ -202,39 +208,64 @@ export class MapMuestreoComponent implements OnInit {
 
       this.mapService.getCapas(urlToJSonMap).subscribe({
         next: (response: any) => {
-          let capa = L.geoJson(response, {
-            style: { color: '#2ECCFA', weight: 2 },
-            onEachFeature: this.onEachFeature.bind(this),
-          });
-
           let nombreCapa = '';
-
+          let capa: any;
           switch (this.nombresCapas[i]) {
             case 'Sina:m00_cuencas':
               nombreCapa = 'Cuencas';
+              capa = L.geoJson(response, {
+                style: { color: '#2ECCFA', weight: 2 },
+                onEachFeature: this.onEachFeature.bind(this),
+              });
+              layerControl.addOverlay(capa, nombreCapa);
               break;
             case 'Sina:m00_acuiferos':
               nombreCapa = 'Acuiferos';
+              nombreCapa = 'Cuencas';
+              capa = L.geoJson(response, {
+                style: { color: '#2ECCFA', weight: 2 },
+                onEachFeature: this.onEachFeature.bind(this),
+              });
+              layerControl.addOverlay(capa, nombreCapa);
               break;
             case 'Sina:m00_estados':
               nombreCapa = 'Estados';
+              capa = L.geoJson(response, {
+                style: { color: '#DC7633', weight: 2 },
+                onEachFeature: this.onEachFeature.bind(this),
+              });
+              layerControl.addOverlay(capa, nombreCapa);
               break;
             case 'Sina:m00_cuerposagua':
               nombreCapa = 'Cuerpos de agua';
+              capa = L.geoJson(response, {
+                style: { color: '#85C1E9', weight: 2 },
+                onEachFeature: this.onEachFeature.bind(this),
+              });
+              layerControl.addOverlay(capa, nombreCapa);
               break;
             case 'Sina:m00_consejocuencas':
               nombreCapa = 'Consejo cuencas';
+              capa = L.geoJson(response, {
+                style: { color: '#2ECCFA', weight: 2 },
+                onEachFeature: this.onEachFeature.bind(this),
+              });
+              layerControl.addOverlay(capa, nombreCapa);
               break;
             case 'Sina:m00_riosprincipales':
               nombreCapa = 'Principales rios';
+              capa = L.geoJson(response, {
+                style: { color: '#2E86C1', weight: 2 },
+                onEachFeature: this.onEachFeature.bind(this),
+              });
+              layerControl.addOverlay(capa, nombreCapa);
               break;
             default:
               'xxxx';
               break;
           }
-          layerControl.addOverlay(capa, nombreCapa);
         },
-        error: (error) => { },
+        error: (error) => {},
       });
     }
   }
@@ -243,8 +274,10 @@ export class MapMuestreoComponent implements OnInit {
     this.download('points.kml', textXML);
   }
 
-  createKMLFileFromCoordinates(coordinates: { lat: number, lng: number }[]): string {
-    this.xmlDocument = document.implementation.createDocument("", "", null);
+  createKMLFileFromCoordinates(
+    coordinates: { lat: number; lng: number }[]
+  ): string {
+    this.xmlDocument = document.implementation.createDocument('', '', null);
     const kmlNode = this.xmlDocument.createElement('kml');
     kmlNode.setAttribute('xmlns', 'http://www.opengis.net/kml/2.2');
     const documentNode = this.xmlDocument.createElement('Document');
@@ -252,14 +285,19 @@ export class MapMuestreoComponent implements OnInit {
     this.xmlDocument.appendChild(kmlNode);
 
     coordinates.forEach((coord, i) => {
-      documentNode.appendChild(this.createPointNode(i.toString(), coord.lat, coord.lng));
+      documentNode.appendChild(
+        this.createPointNode(i.toString(), coord.lat, coord.lng)
+      );
     });
     return this.xmlDocumentToString(this.xmlDocument);
   }
 
   download(filename: string, xmlDocument: any): void {
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(xmlDocument));
+    element.setAttribute(
+      'href',
+      'data:text/plain;charset=utf-8,' + encodeURIComponent(xmlDocument)
+    );
     element.setAttribute('download', filename);
 
     element.style.display = 'none';
