@@ -117,7 +117,11 @@ export class MapMuestreoComponent implements OnInit {
     ]
 
     let puntos = L.layerGroup([FA, FM, TR, FS, PR, PM]);
-    let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+    let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 30,
+      attribution: '© OpenStreetMap',
+    });
 
     this.map = L.map('map', {
       center: [puntoPR.latitud, puntoPR.longitud],
