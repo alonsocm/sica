@@ -20,7 +20,7 @@ export class EvidenciasInformacionComponent implements OnInit {
   }
 
   getInformacionEvidencias() {
-    this.evidenciasService.getInformacionEvidencias().subscribe({
+    this.evidenciasService.getInformacionEvidencias(false).subscribe({
       next: (response: any) => {
         this.informacionEvidencias = response.data;
       },

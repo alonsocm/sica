@@ -2,11 +2,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EvidenciasService {
+  coordenada: Array<any> = [];
+  private datocordenada = new BehaviorSubject(this.coordenada);
+  public coordenadas = this.datocordenada.asObservable();
   constructor(private http: HttpClient) {}
 
   cargarEvidencias(archivos: FileList): Observable<any> {
@@ -45,9 +49,38 @@ export class EvidenciasService {
     });
   }
 
-  getInformacionEvidencias(): Observable<Object> {
+  getInformacionEvidencias(isTrack: boolean): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: { isTrack: isTrack },
+    });
     return this.http.get(
-      environment.apiUrl + '/EvidenciasMuestreos/InformacionEvidencias'
+      environment.apiUrl + '/EvidenciasMuestreos/InformacionEvidencias', { params }
     );
   }
+
+  getPuntosPB_PM(claveMuestreo: string): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: { claveMuestreo: claveMuestreo },
+    });
+    return this.http.get(
+      environment.apiUrl + '/Muestreos/obtenerPuntosPorMuestreo', { params }
+    );
+  }
+  updateCoordenadas(coordenadas: any) {
+    console.log("servicio informe");
+    console.log(coordenadas);
+    this.datocordenada.next(coordenadas);
+  }
+
+  getPosition(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resp => {
+        resolve({ lng: resp.coords.longitude, lat: resp.coords.latitude });
+      },
+        err => {
+          reject(err);
+        });
+    });
+  }
+  
 }

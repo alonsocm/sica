@@ -54,6 +54,9 @@ import { InformeSupervisionComponent } from './modules/muestreo/informe-mensual-
 import { InformeSupervisionConsultaComponent } from './modules/muestreo/informe-mensual-supervision/informe-supervision-consulta/informe-supervision-consulta.component';
 import { NotificationComponent } from './shared/notification/notification.component';
 import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pages/evidencias-informacion/evidencias-informacion.component';
+import { MapComponent } from './modules/map/map.component';
+import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-track.component';
+import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/map-muestreo.component';
 
 @NgModule({
   declarations: [
@@ -100,6 +103,10 @@ import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pa
     InformeSupervisionConsultaComponent,
     NotificationComponent,
     EvidenciasInformacionComponent,
+    MapComponent,
+    RutaTrackComponent,
+    MapMuestreoComponent
+    
   ],
   imports: [
     BrowserModule,

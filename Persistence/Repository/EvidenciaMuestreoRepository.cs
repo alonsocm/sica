@@ -8,6 +8,7 @@ namespace Persistence.Repository
 {
     public class EvidenciaMuestreoRepository : Repository<EvidenciaMuestreo>, IEvidenciaMuestreoRepository
     {
+
         public EvidenciaMuestreoRepository(SicaContext dbContext) : base(dbContext)
         {
         }
@@ -57,6 +58,7 @@ namespace Persistence.Repository
                     HoraFinal = x.HoraFin ?? string.Empty,
                     TipoEvidenciaMuestreo = x.TipoEvidenciaMuestreoId
                 }).ToListAsync();
+
             }
 
             return informacionEvidenciaDtos;

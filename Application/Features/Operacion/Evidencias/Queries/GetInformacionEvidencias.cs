@@ -7,6 +7,7 @@ namespace Application.Features.Evidencias.Queries
 {
     public class GetInformacionEvidencias : IRequest<Response<IEnumerable<InformacionEvidenciaDto>>>
     {
+
     }
 
     public class GetInformacionEvidenciasHandler : IRequestHandler<GetInformacionEvidencias, Response<IEnumerable<InformacionEvidenciaDto>>>
@@ -15,7 +16,7 @@ namespace Application.Features.Evidencias.Queries
 
         public GetInformacionEvidenciasHandler(IEvidenciaMuestreoRepository evidenciaMuestreoRepository)
         {
-            _evidenciaMuestreoRepository=evidenciaMuestreoRepository;
+            _evidenciaMuestreoRepository = evidenciaMuestreoRepository;
         }
 
         public async Task<Response<IEnumerable<InformacionEvidenciaDto>>> Handle(GetInformacionEvidencias request, CancellationToken cancellationToken)
