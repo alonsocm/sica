@@ -23,6 +23,7 @@ export class MapMuestreoComponent implements OnInit {
   coordinates: Array<any> = [];
   xmlDocument!: XMLDocument;
   puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
+  puntosElegidos: Array<PuntosEvidenciaMuestreo> = [];
 
   iconRojo: string = 'assets/images/map/iconRojo.png';
   iconVerde: string = 'assets/images/map/iconVerde.png';
@@ -169,7 +170,17 @@ export class MapMuestreoComponent implements OnInit {
       area: this.obtenerArea(this.radio).toString(),
       circunferencia: this.obtenerCircunferencia(this.radio).toString(),
     };
+
+    let puntosEleg: PuntosEvidenciaMuestreo = {
+      longitud: this.longitude,
+      latitud: this.latitude,
+      claveMuestreo: '',
+      nombrePunto: 'Destino ',
+      punto: ''
+       
+    };
     this.datosCalculo.push(calculos);
+    this.puntosElegidos.push(puntosEleg);
   }
   obtenerArea(radio: number) {
     let area = radio * radio;
@@ -300,7 +311,8 @@ export class MapMuestreoComponent implements OnInit {
     this.xmlDocument.appendChild(kmlNode);
 
     this.puntosMuestreo.forEach((coord, i) => { documentNode.appendChild(this.createPointNode(coord.punto, coord.longitud, coord.latitud)); });
-
+    this.puntosElegidos.forEach((coord, i) => { documentNode.appendChild(this.createPointNode(coord.nombrePunto + i, coord.longitud, coord.latitud)); });
+    
     return this.xmlDocumentToString(this.xmlDocument);
   }
   download(filename: string, xmlDocument: any): void {
