@@ -91,31 +91,15 @@ export class MapMuestreoComponent implements OnInit {
         icon: this.iconControl(this.iconAmarillo),
       }).bindPopup('Punto de muestreo');
 
-    //this.coordinates = [
-    //  { lat: puntoFA.latitud, lng: puntoFA.longitud },
-    //  { lat: puntoFM.latitud, lng: puntoFM.longitud },
-    //  { lat: puntoTR.latitud, lng: puntoTR.longitud },
-    //  { lat: puntoFS.latitud, lng: puntoFS.longitud },
-    //  { lat: puntoPR.latitud, lng: puntoPR.longitud },
-    //  { lat: puntoPM.latitud, lng: puntoPM.longitud }
-    //];
-
-    //this.coordinates = [
-    //  { lat: 14.05891566, lng: -19.9981566 },
-    //  { lat: 14.05668566, lng: -19.9566123 },
-    //  { lat: 14.05567413, lng: -19.9467456 },
-    //  { lat: 14.05455655, lng: -19.9367125 }
-    //]
-
     this.coordinates = [
-      { lat: 20.28375, lng: -101.02229 },
-      { lat: 20.28364, lng: -101.02232 },
-      { lat: 20.283622222, lng: -101.022638889 },
-      { lat: 20.283538889, lng: -101.022580556 },
-      { lat: 20.283750534, lng: -101.022293091 },
-      { lat: 20.283663889, lng: -101.022544444 },
+      { lat: puntoFA.latitud, lng: puntoFA.longitud },
+      { lat: puntoFM.latitud, lng: puntoFM.longitud },
+      { lat: puntoTR.latitud, lng: puntoTR.longitud },
+      { lat: puntoFS.latitud, lng: puntoFS.longitud },
+      { lat: puntoPR.latitud, lng: puntoPR.longitud },
+      { lat: puntoPM.latitud, lng: puntoPM.longitud }
     ];
-
+   
     let puntos = L.layerGroup([FA, FM, TR, FS, PR, PM]);
 
     let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -205,6 +189,8 @@ export class MapMuestreoComponent implements OnInit {
   obtenerCoordenadas() {
     this.evidenciasService.coordenadas.subscribe((data) => {
       this.puntosMuestreo = data;
+
+    
     });
   }
   onEachFeature(feature: any, layer: any) {
@@ -301,7 +287,7 @@ export class MapMuestreoComponent implements OnInit {
   }
   createAndDownloadKML(): void {
     const textXML = this.createKMLFileFromCoordinates(this.coordinates);
-    this.download('points.kml', textXML);
+    this.download('PuntosMuestreo' + localStorage.getItem('claveMuestreoCalculo') + '.kml', textXML);
   }
   createKMLFileFromCoordinates(
     coordinates: { lat: number; lng: number }[]
@@ -313,11 +299,8 @@ export class MapMuestreoComponent implements OnInit {
     kmlNode.appendChild(documentNode);
     this.xmlDocument.appendChild(kmlNode);
 
-    coordinates.forEach((coord, i) => {
-      documentNode.appendChild(
-        this.createPointNode(i.toString(), coord.lat, coord.lng)
-      );
-    });
+    this.puntosMuestreo.forEach((coord, i) => { documentNode.appendChild(this.createPointNode(coord.punto, coord.longitud, coord.latitud)); });
+
     return this.xmlDocumentToString(this.xmlDocument);
   }
   download(filename: string, xmlDocument: any): void {
