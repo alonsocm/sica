@@ -32,7 +32,7 @@ export class RutaTrackComponent implements OnInit {
     private evidenciasService: EvidenciasService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { localStorage.setItem('claveMuestreoCalculo', ''); }
   ngOnInit(): void {
     this.getInformacionEvidencias();
   }
@@ -56,6 +56,7 @@ export class RutaTrackComponent implements OnInit {
     this.getPuntos_PR_PM(muestreo);
   }
   getPuntos_PR_PM(claveMuestreo: string) {
+    localStorage.setItem('claveMuestreoCalculo', claveMuestreo );
     this.evidenciasService.getPuntosPB_PM(claveMuestreo).subscribe({
       next: (response: any) => {
         this.puntosMuestreo = response.data;
