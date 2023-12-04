@@ -123,12 +123,12 @@ export class MapMuestreoComponent implements OnInit {
 
     this.circle.bindPopup(
       "<div'>Radio:" +
-        this.radio +
-        '</br> Área:' +
-        this.obtenerArea(this.radio) +
-        '</br>Circunferencia:' +
-        this.obtenerCircunferencia(this.radio) +
-        '</div>'
+      parseFloat(this.radio.toFixed(2)) +
+        ' m. </br> Área:' +
+      parseFloat(this.obtenerArea(this.radio).toFixed(2)) +
+      ' m. </br>Circunferencia:' +
+      parseFloat(this.obtenerCircunferencia(this.radio).toFixed(2)) +
+        ' m. </div>'
     );
     this.map.on('click', (e: any) => {
       this.onMapClick(e);
@@ -165,7 +165,7 @@ export class MapMuestreoComponent implements OnInit {
     let calculos: calculosMuestreo = {
       puntoOrigen:
         this.puntoPRGeneral.latitud + ',' + this.puntoPRGeneral.longitud,
-      puntoDestino: this.latitude + ',' + this.longitude,
+      puntoDestino: parseFloat(this.latitude).toFixed(5) + ',' + parseFloat(this.longitude).toFixed(5),
       radio: this.radio.toString(),
       area: this.obtenerArea(this.radio).toString(),
       circunferencia: this.obtenerCircunferencia(this.radio).toString(),

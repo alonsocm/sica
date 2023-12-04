@@ -49,9 +49,9 @@
       <tr *ngFor="let dato of this.datosCalculo">
         <td>{{dato.puntoOrigen}}</td>
         <td>{{dato.puntoDestino}}</td>
-        <td>{{dato.radio}}</td>
-        <td>{{dato.area}}</td>
-        <td>{{dato.circunferencia}}</td>
+        <td>{{dato.radio|number : '1.2-2'}} m.</td>
+        <td>{{dato.area|number : '1.2-2'}} m.</td>
+        <td>{{dato.circunferencia|number : '1.2-2'}} m.</td>
       </tr>
       <tr *ngIf="this.datosCalculo.length === 0">
         <td class="td-center" colspan="20">
