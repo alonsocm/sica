@@ -13,51 +13,70 @@
         <i class="bi bi-cloud-download"></i> Descargar archivo kml
       </button>
     </div>
-    <div class="float-right">
-      <table class="table table-light">
-        <tr>
-          <td><img src="assets/images/map/iconRojo.png" height="25px" title="foto de la muestra">Foto de la muestra</td>
-          <td><img src="assets/images/map/iconNaranja.png" height="25px" title="foto de muestreo">Foto del muestreo</td>
-          <td><img src="assets/images/map/iconVerde.png" height="25px" title="foto de aforo">Foto del aforo</td>
-          <td><img src="assets/images/map/iconAmarillo.png" height="25px" title="punto de muestreo">Punto de muestreo
-          </td>
-          <td><img src="assets/images/map/iconAzul.png" height="25px" title="punto de referencia">Punto de referencia
-          </td>
-          <td><img src="assets/images/map/iconMorado.png" height="25px" title="Punto más cercano al Track">Punto más
-            cercano al track
-          </td>
-        </tr>
-      </table>
-    </div>
   </div>
   <br>
-  <div class="map-frame">
-    <div id="map"></div>
+  <div>
+    <div class="col-lg-8" style="width:70%">
+      <div id="map"></div>
+    </div>
+    <div class="col-lg-4" style="width:50%">
+      <div class="col-lg-4; float-left">
+        <div class="float-left">
+          <table class="table-responsive table-bordered" style="border-color:lightgray; font-size:smaller; padding:5px">
+            <tr>
+              <td colspan="2" style="text-align:center; background-color:lightblue">S I M B O L O G Í A</td>
+            </tr>
+            <tr>
+              <td><img src="assets/images/map/iconRojo.png" height="25px" title="foto de la muestra">Foto de la muestra</td>
+              <td><img src="assets/images/map/iconNaranja.png" height="25px" title="foto de muestreo">Foto del muestreo</td>
+            </tr>
+            <tr>
+              <td>
+                <img src="assets/images/map/iconAmarillo.png" height="25px" title="punto de muestreo">Punto de muestreo
+              </td>
+              <td>
+                <img src="assets/images/map/iconAzul.png" height="25px" title="punto de referencia">Punto de referencia
+              </td>
+            </tr>
+            <tr>
+              <td><img src="assets/images/map/iconVerde.png" height="25px" title="foto de aforo">Foto del aforo</td>
+              <td>
+                <img src="assets/images/map/iconMorado.png" height="25px" title="Punto más cercano al Track">Punto más
+                cercano al track
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="table-responsive table-bordere">
+        <br /><br />
+        <table class="table-bordered" style="font-size:medium; padding:5px; margin:1px">
+          <thead class="thead-light; td-center">
+            <tr style="background-color:lightgrey; text-align:center">
+              <th class="col-lg-1">Punto PR</th>
+              <th class="col-lg-1">Punto elegido</th>
+              <th class="col-lg-1">Radio (metros)</th>
+              <th class="col-lg-1">Área (metros)</th>
+              <th class="col-lg-1">Circunferencia (metros)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let dato of this.datosCalculo" style="text-align:center">
+              <td style="padding:2px">{{dato.puntoOrigen}}</td>
+              <td style="padding:2px">{{dato.puntoDestino}}</td>
+              <td>{{dato.radio|number : '1.2-2'}}</td>
+              <td>{{dato.area|number : '1.2-2'}}</td>
+              <td>{{dato.circunferencia|number : '1.2-2'}}</td>
+            </tr>
+            <tr *ngIf="this.datosCalculo.length === 0">
+              <td class="td-center" colspan="5">
+                SIN REGISTROS
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-  <br /><br />
-  <table class="table table-bordered table-hover">
-    <thead class="thead-light">
-      <tr>
-        <th class="col-lg-1">Punto origen (PR)</th>
-        <th class="col-lg-1">Punto elegido</th>
-        <th class="col-lg-1">Radio</th>
-        <th class="col-lg-1">Área</th>
-        <th class="col-lg-1">Circunferencia</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let dato of this.datosCalculo">
-        <td>{{dato.puntoOrigen}}</td>
-        <td>{{dato.puntoDestino}}</td>
-        <td>{{dato.radio|number : '1.2-2'}} m.</td>
-        <td>{{dato.area|number : '1.2-2'}} m.</td>
-        <td>{{dato.circunferencia|number : '1.2-2'}} m.</td>
-      </tr>
-      <tr *ngIf="this.datosCalculo.length === 0">
-        <td class="td-center" colspan="20">
-          SIN REGISTROS
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>
