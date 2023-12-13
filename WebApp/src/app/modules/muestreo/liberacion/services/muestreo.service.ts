@@ -96,4 +96,13 @@ export class MuestreoService {
     const options = { body: muestreos };
     return this.http.delete(environment.apiUrl + '/muestreos', options);
   }
+
+  exportarCargaResultadosEbaseca(muestreos: Array<Muestreo> = []): Observable<Blob> {
+    return this.http.post(
+      environment.apiUrl + '/Muestreos/ExportarCargaResultadosEbaseca',
+      muestreos,
+      { responseType: 'blob' }
+    );
+  }
+
 }

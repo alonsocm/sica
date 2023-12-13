@@ -183,5 +183,47 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new GetPuntosMuestreo { claveMuestreo = claveMuestreo }));
         }
+
+        [HttpPost("ExportarCargaResultadosEbaseca")]
+        public IActionResult CargaResultadosEbaseca(List<MuestreoDto> muestreos)
+        {
+            List<CargaResultadosEbaseca> muestreosExcel = new();
+
+            muestreos.ForEach(muestreo =>
+                muestreosExcel.Add(new CargaResultadosEbaseca
+                {
+                    Estatus = muestreo.Estatus,
+                    EvidenciasCompletas = (muestreo.Evidencias.Count > 0) ? "SI" : "NO",
+                    NumeroCarga = muestreo.NumeroEntrega,
+                    ClaveNOSEC = muestreo.ClaveSitio,
+                    Clave5K = string.Empty,
+                    ClaveMonitoreo = muestreo.ClaveMonitoreo,
+                    TipoSitio = muestreo.TipoSitio,
+                    NombreSitio = muestreo.NombreSitio,
+                    OCDL = muestreo.OCDL,
+                    TipoCuerpoAgua = muestreo.TipoCuerpoAgua,
+                    //SubtipoCuerpoAgua = muestreo.SUB
+                    ProgramaAnual = muestreo.ProgramaAnual,
+                    Laboratorio = muestreo.Laboratorio,
+                    //LaboratorioSubrogado
+                    FechaProgramacion = muestreo.FechaProgramada,
+                    FechaRealizacion = muestreo.FechaRealizacion,
+                    HoraInicioMuestreo = muestreo.HoraInicio,
+                    HoraFinMuestreo = muestreo.HoraFin,
+                    //FechaCaptura = muestreo.FEC
+                    //FechaCargaSica = str
+                    Observaciones = muestreo.Observaciones,
+                }
+            ));
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("CargaResultadosEbaseca");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportToExcel(muestreosExcel, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
     }
 }

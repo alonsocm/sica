@@ -1,143 +1,152 @@
 <router-outlet name="menu"></router-outlet>
 <div *ngIf="loading">
-    <app-loading></app-loading>
+  <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-    <h1 class="row col">Carga de resultados validados</h1>
-    <hr class="red">
-    <div class="message-container">
-        <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-            [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  <h1 class="row col">Carga de resultados validados</h1>
+  <hr class="red">
+  <div class="message-container">
+    <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+               [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+  </div>
+  <div class="clearfix">
+    <div class="float-left">
+      <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
+             title="Seleccionar archivo" #inputExcelMonitoreos>
+      <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()"
+              title="Seleccionar archivo">
+        <i class="bi bi-cloud-upload"></i>
+        Seleccionar y procesar archivo...
+      </button>
+      <button style="margin-left:5px" class="btn btn-primary" type="button" (click)="enviarMonitoreos()">
+        <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s) a revisión
+      </button>
     </div>
-    <div class="clearfix">
-        <div class="float-left">
-            <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-                title="Seleccionar archivo" #inputExcelMonitoreos>
-            <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()"
-                title="Seleccionar archivo">
-                <i class="bi bi-cloud-upload"></i>
-                Seleccionar y procesar archivo...
-            </button>
+    <div class="float-right">
+      <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
+        <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+      </button>
+      <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+  <div class="dvTable">
+    <table width="10000px" style="font-size:x-small" class="table-responsive table table-bordered table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th style="text-align:center" class="checkBox-center">
+            <label for="chckAll">SELECCIONAR TODOS</label>
+            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                   (change)="seleccionarAll(this.muestreosFiltrados); getMuestreos();" />
+          </th>
+          <th style="width:fit-content; text-align:center; font-size:x-small" scope="col" *ngFor="let columna of this.columnas">
+            {{columna.etiqueta}}
+            <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
+                             (selected)="columna.filtro.selectedValue = $event; filtrar();"
+                             (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
+                             [itemTemplate]="itemTemplate" placeholder="seleccione">
+            </ng-autocomplete>
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item"></a>
+            </ng-template>
+          </th>
+          <th style="width:2000px">OBSERVACIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="height:auto; text-align:center" *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
+          <td class="checkBox-center">
+            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
+          </td>
+          <td>{{muestreo.estatus}}</td>
+          <td></td>
+          <td>{{muestreo.numeroEntrega}}</td>
+          <td>{{muestreo.claveSitio}}</td>
+          <td>-</td>
+          <td style="width:300px">{{muestreo.claveMonitoreo}}</td>
+          <td style="width:2000px">{{muestreo.tipoSitio}}</td>
+          <td style="width:2000px; text-justify:auto; text-align:left; margin:auto">{{muestreo.nombreSitio}}</td>
+          <td>{{muestreo.ocdl}}</td>
+          <td style="width:500px">{{muestreo.tipoCuerpoAgua}}</td>
+          <td>--</td>
+          <td>{{muestreo.programaAnual}}</td>
+          <td>{{muestreo.laboratorio}}</td>
+
+          <td>{{muestreo.laboratorioSubrogado}}</td>
+
+          <td>{{muestreo.fechaProgramada}}</td>
+          <td>{{muestreo.fechaRealizacion}}</td>
+          <td>{{muestreo.horaInicio}}</td>
+          <td>{{muestreo.horaFin}}</td>
+          <td>{{muestreo.fechaCarga}}</td>
+          <td>--</td>
+          <td style="width:2000px">Observaciones</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+  </pagination-controls>
+
+  <div class="row">
+    <div class="col-md-6 align-self-end">
+      <button class="btn btn-secondary" type="button" (click)="confirmarEliminacion()">
+        <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
+      </button>
+      <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
+              data-target="#mdlConfirmacion" title="seleccionar"></button>
+    </div>
+  </div>
+  <hr />
+  <app-muestreos-totales></app-muestreos-totales>
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar eliminación</h4>
         </div>
-        <div class="float-right">
-            <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
-                <i class="bi bi-funnel"></i>
-                Limpiar filtros
-            </button>
+        <div class="modal-body">
+          <p>¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?</p>
         </div>
-    </div>
-    <div class="dvTable">
-        <table class="table table-bordered table-hover">
-            <thead class="thead-light">
-                <tr>
-                    <th scope="col" *ngFor="let columna of this.columnas">
-                        {{columna.etiqueta}}
-                        <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                            (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                            [itemTemplate]="itemTemplate" placeholder="seleccione">
-                        </ng-autocomplete>
-                        <ng-template #itemTemplate let-item>
-                            <a [innerHTML]="item"></a>
-                        </ng-template>
-                    </th>
-                    <th>LLUVIA</th>
-                    <th>OBSERVACIONES</th>
-                    <th>TRACK</th>
-                    <th>FOTO MUESTREO</th>
-                    <th>FOTO MUESTRA</th>
-                    <th>BITÁCORA</th>
-                    <th>CADENA CUSTODIA</th>
-                    <th>FOTO CAUDAL</th>
-                    <th>FORMATO CAUDAL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
-                    <td>{{muestreo.claveSitio}}</td>
-                    <td>-</td>
-                    <td>{{muestreo.claveMonitoreo}}</td>
-                    <td>{{muestreo.nombreSitio}}</td>
-                    <td>{{muestreo.ocdl}}</td>
-                    <td>{{muestreo.tipoCuerpoAgua}}</td>
-                    <td>{{muestreo.programaAnual}}</td>
-                    <td>{{muestreo.laboratorio}}</td>
-                    <td>-</td>
-                    <td>{{muestreo.fechaProgramada}}</td>
-                    <td>{{muestreo.fechaRealizacion}}</td>
-                    <td>{{muestreo.horaInicio}}</td>
-                    <td>{{muestreo.horaFin}}</td>
-                    <td>-</td>
-                    <td>{{muestreo.fechaCarga}}</td>
-                    <td>-</td>
-                    <td>{{muestreo.estatus}}</td>
-                    <td>Lluvia</td>
-                    <td>Observaciones</td>
-                    <ng-container *ngFor="let sufijo of sufijos;">
-                        <td *ngIf="this.existeEvidencia(muestreo.evidencias, sufijo) else elseBlock">
-                            <div [ngSwitch]="sufijo">
-                                <img *ngSwitchCase="'R'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
-                                    title="Click para descargar" />
-                                <img *ngSwitchCase="'M'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                    title="Click para descargar" />
-                                <img *ngSwitchCase="'S'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                    title="Click para descargar" />
-                                <img *ngSwitchCase="'E'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                    title="Click para descargar" />
-                                <img *ngSwitchCase="'D'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
-                                    title="Click para descargar" />
-                                <img *ngSwitchCase="'A'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
-                                    title="Click para descargar" />
-                                <img *ngSwitchCase="'O'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
-                                    title="Click para descargar" />
-                            </div>
-                        </td>
-                        <ng-template #elseBlock>
-                            <td>-</td>
-                        </ng-template>
-                    </ng-container>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-    </pagination-controls>
-    <button id="btnMdlConfirmacion" class="element-hidden" type="button" data-toggle="modal"
-        data-target="#mdlConfirmacion">Abrir modal</button>
-    <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar carga de resultados</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Los resultados correspondientes al número de entrega <b>{{this.numeroEntrega}}</b> del año
-                        <b>{{this.anioOperacion}}</b>, ya han sido cargados previamente.
-                    </p>
-                    <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá los valores de los resultados.</p>
-                </div>
-                <div class="modal-footer">
-                    <button id="btnCancelarModal" type="button" class="btn btn-secondary"
-                        data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="sustituirResultados()">
-                        Aceptar
-                    </button>
-                </div>
-            </div>
+        <div class="modal-footer">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="eliminarMuestreos()">
+            Aceptar
+          </button>
         </div>
+      </div>
     </div>
+  </div>
+
+  <button id="btnMdlConfirmacion" class="element-hidden" type="button" data-toggle="modal"
+          data-target="#mdlConfirmacion">
+    Abrir modal
+  </button>
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar carga de resultados</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            Los resultados correspondientes al número de entrega <b>{{this.numeroEntrega}}</b> del año
+            <b>{{this.anioOperacion}}</b>, ya han sido cargados previamente.
+          </p>
+          <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá los valores de los resultados.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary"
+                  data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="sustituirResultados()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
