@@ -169,7 +169,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       .getResultadosporMonitoreo(
         this.aniosSeleccionados,
         this.entregasSeleccionadas,
-        estatusMuestreo.Cargado
+        estatusMuestreo.InicialReglas
       )
       .subscribe({
         next: (response: any) => {

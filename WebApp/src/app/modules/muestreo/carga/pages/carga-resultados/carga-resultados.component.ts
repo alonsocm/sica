@@ -5,7 +5,9 @@ import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
+
 
 @Component({
   selector: 'app-carga-resultados',
@@ -17,6 +19,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreosFiltrados: Array<Muestreo> = [];
   muestreosseleccionados: Array<Muestreo> = [];
   reemplazarResultados: boolean = false;
+  resultadosEnviados: Array<number> = [];
   archivo: any;
   numeroEntrega: string = '';
   anioOperacion: string = '';
@@ -225,8 +228,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.hacerScroll();
         },
       });
-  }
-  enviarMonitoreos() { }
+  } 
   confirmarEliminacion() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
     if (!(muestreosSeleccionados.length > 0)) {
@@ -266,4 +268,50 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       },
     });
   }
+  enviarMonitoreos(): void {
+    console.log(this.muestreosFiltrados);
+    let valor = this.muestreosFiltrados.filter(x => x.estatus == "EvidenciasCargadas");
+    console.log(valor);
+    this.resultadosEnviados = this.Seleccionados(valor).map(
+      (m) => {
+        return m.muestreoId;
+      }
+    );
+
+    if (this.resultadosEnviados.length == 0) {
+      this.hacerScroll();
+      return this.mostrarMensaje(
+        'Debes de seleccionar al menos un muestreo para enviar a la etapa de "Acumulación resultados"',
+        'danger'
+      );
+    }
+
+    this.muestreoService.enviarMuestreoaAcumulados(
+      estatusMuestreo.AcumulacionResultados,
+        this.resultadosEnviados
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.loading = true;
+          if (response.succeded) {
+            this.loading = false;
+            this.consultarMonitoreos();
+            this.mostrarMensaje(
+              'Los muestreos fueron enviados a la etapa de "Acumulación resultados" correctamente',
+              'success'
+            );
+            this.hacerScroll();
+          }
+        },
+        error: (response: any) => {
+          this.loading = false;
+          this.mostrarMensaje(
+            ' Error al enviar los muestreos a la etapa de "Acumulación resultados"',
+            'danger'
+          );
+          this.hacerScroll();
+        },
+      });
+  }
+
 }

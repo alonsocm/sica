@@ -104,5 +104,9 @@ export class MuestreoService {
       { responseType: 'blob' }
     );
   }
+  enviarMuestreoaAcumulados(estatusId: number, muestreos: Array<number>) {
+    let datos = { estatusId: estatusId, muestreos: muestreos };
+    return this.http.put(environment.apiUrl + '/Muestreos/cambioEstatusMuestreos', datos);
+  }  
 
 }

@@ -1,4 +1,4 @@
-export enum estatusMuestreo {  
+export enum estatusMuestreo {
   NoEnviado = 1,
   Enviado = 2,
   EnviadoConExtensionFecha = 3,
@@ -27,5 +27,7 @@ export enum estatusMuestreo {
   OriginalesAprobados = 26,
   ValidadoPorReglas = 27,
   SeleccionadoParaValidar = 28,
+  AcumulacionResultados = 29,
+  InicialReglas = 30
 
 }

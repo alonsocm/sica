@@ -19,7 +19,7 @@
         Seleccionar y procesar archivo...
       </button>
       <button style="margin-left:5px" class="btn btn-primary" type="button" (click)="enviarMonitoreos()">
-        <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s) a revisión
+        <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s)
       </button>
     </div>
     <div class="float-right">
@@ -61,7 +61,7 @@
             <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
           </td>
           <td>{{muestreo.estatus}}</td>
-          <td></td>
+          <td>{{(muestreo.evidencias.length > 1) ? "SI":"NO"}} </td>
           <td>{{muestreo.numeroEntrega}}</td>
           <td>{{muestreo.claveSitio}}</td>
           <td>-</td>

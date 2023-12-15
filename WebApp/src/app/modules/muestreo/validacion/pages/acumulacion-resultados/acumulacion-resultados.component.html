@@ -26,12 +26,17 @@
     <table class="table table-bordered">
       <thead class="thead-light">
         <tr>
+          <th style="text-align:center" class="checkBox-center">
+            <label for="chckAll">SELECCIONAR TODOS</label>
+            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                   (change)="seleccionarAll(this.resultadosFiltradosn);" />
+          </th>
           <th *ngFor="let columna of columnas">
             {{columna.etiqueta}}
             <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-              (selected)="columna.filtro.selectedValue = $event; filtrarn();"
-              (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-              placeholder="seleccione">
+                             (selected)="columna.filtro.selectedValue = $event; filtrarn();"
+                             (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
+                             placeholder="seleccione">
             </ng-autocomplete>
             <ng-template #itemTemplate let-item>
               <a [innerHTML]="item"></a>
@@ -40,8 +45,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr
+        <tr style="text-align:center"
           *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          <td class="checkBox-center">
+            <input type="checkbox" [(ngModel)]="dato.isChecked" (change)="seleccionar()" title="seleccionar">
+          </td>
           <td>{{dato.claveUnica}}</td>
           <td>{{dato.claveMonitoreo}}</td>
           <td>{{dato.claveSitio}}</td>

@@ -46,8 +46,8 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
       { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 0, filtro: new Filter() },
       { nombre: 'replica', etiqueta: 'REPLICA', orden: 0, filtro: new Filter() },
       { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() }
-    ];  
-    this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.Cargado).subscribe({
+    ];
+    this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.AcumulacionResultados).subscribe({
      
       next: (response: any) => {
        
@@ -82,5 +82,6 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
         },
       });
   }
+  seleccionar() { }
 
 }
