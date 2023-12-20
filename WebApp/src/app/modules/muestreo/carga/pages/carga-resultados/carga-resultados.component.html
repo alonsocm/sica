@@ -81,8 +81,11 @@
           <td>{{muestreo.horaInicio}}</td>
           <td>{{muestreo.horaFin}}</td>
           <td>{{muestreo.fechaCarga}}</td>
-          <td>--</td>
+          <td>{{muestreo.fechaEntrega}}</td>
           <td style="width:2000px">Observaciones</td>
+        </tr>
+        <tr *ngIf="this.muestreosFiltrados.length==0">
+          <td class="td-center" colspan="22">No se encontraron registros</td>
         </tr>
       </tbody>
     </table>
@@ -120,11 +123,11 @@
     </div>
   </div>
 
-  <button id="btnMdlConfirmacion" class="element-hidden" type="button" data-toggle="modal"
-          data-target="#mdlConfirmacion">
+  <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
+          data-target="#mdlConfirmacionActualizacion">
     Abrir modal
   </button>
-  <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">

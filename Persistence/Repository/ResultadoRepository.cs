@@ -22,26 +22,26 @@ namespace Persistence.Repository
                                        where estatus.Contains((int)(r.EstatusResultado != null ? r.EstatusResultado : 0))
                                        select new ReplicaResultadoDto
                                        {
-                                           NoEntrega = r.Muestreo.NumeroEntrega.ToString()??string.Empty,
+                                           NoEntrega = r.Muestreo.NumeroEntrega.ToString() ?? string.Empty,
                                            ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}-{r.Muestreo.ProgramaMuestreo.DiaProgramado:ddMMyyyy}{r.Parametro.ClaveParametro}",
                                            ClaveSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                            ClaveMonitoreo = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}-{r.Muestreo.ProgramaMuestreo.DiaProgramado:ddMMyyyy}",
                                            Nombre = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
                                            ClaveParametro = r.Parametro.ClaveParametro,
-                                           Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio != null ? (r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion??string.Empty) : string.Empty,
+                                           Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio != null ? (r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty) : string.Empty,
                                            TipoCuerpoAgua = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                            TipoCuerpoAguaOriginal = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion,
                                            Resultado = r.Resultado,
                                            EsCorrectoOCDL = r.EsCorrectoOcdl == null ? string.Empty : (bool)r.EsCorrectoOcdl ? "SI" : "NO",
-                                           ObservacionOCDL = r.ObservacionesOcdl??string.Empty,
+                                           ObservacionOCDL = r.ObservacionesOcdl ?? string.Empty,
                                            EsCorrectoSECAIA = r.EsCorrectoSecaia == null ? string.Empty : (bool)r.EsCorrectoSecaia ? "SI" : "NO",
-                                           ObservacionSECAIA = r.ObservacionesSecaia??string.Empty,
+                                           ObservacionSECAIA = r.ObservacionesSecaia ?? string.Empty,
                                            ClasificacionObservacion = string.Empty,//TODO:Verificar a qué se refiere este campo
                                            CausaRechazo = string.Empty,//TODO:Verificar a qué se refiere este campo
                                            ResultadoAceptado = string.Empty, //TODO:Verificar si es necesario agregar un campo en ld BD
                                            ResultadoReplica = string.Empty, //TODO:Verificar si es necesario agregar un campo en ld BD
                                            EsMismoResultado = r.EsMismoResultado == null ? string.Empty : (bool)r.EsMismoResultado ? "SI" : "NO",
-                                           ObservacionLaboratorio = r.ObservacionLaboratorio??string.Empty,//TODO: Se debe agregar nuevo campo en la BD?
+                                           ObservacionLaboratorio = r.ObservacionLaboratorio ?? string.Empty,//TODO: Se debe agregar nuevo campo en la BD?
                                            FechaReplicaLaboratorio = DateTime.Now.ToString("dd/MM/yy"),//TODO: Agregar nuevo campo en la BD
                                            ObservacionSRNAMECA = string.Empty,//TODO: Agregar campo en la BD
                                            Comentarios = string.Empty,//TODO: Comentarios de quien?
@@ -70,15 +70,15 @@ namespace Persistence.Repository
                                     {
                                         Anio = (int)(r.Muestreo.AnioOperacion != null ? r.Muestreo.AnioOperacion : 0),
                                         NoEntrega = (int)(r.Muestreo.NumeroEntrega != null ? r.Muestreo.NumeroEntrega : 0),
-                                        TipoSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion??string.Empty,
+                                        TipoSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion ?? string.Empty,
                                         ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo}{r.Parametro.ClaveParametro}",
                                         ClaveSitio = $"{r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio}",
                                         ClaveMonitoreo = r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo,
                                         FechaRealizacion = r.Muestreo.FechaRealVisita != null ? r.Muestreo.FechaRealVisita.Value.ToString("dd-MM-yyyy") : string.Empty,
-                                        Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? string.Empty : r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura?? string.Empty,
+                                        Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? string.Empty : r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
                                         ClaveParametro = r.Parametro.ClaveParametro,
                                         Resultado = r.Resultado,
-                                        ValidacionPorReglas = r.ResultadoReglas??string.Empty,
+                                        ValidacionPorReglas = r.ResultadoReglas ?? string.Empty,
                                         FechaAplicacionReglas = DateTime.Now.ToString("dd-MM-yyyy"),
                                     }).ToListAsync();
 
@@ -98,7 +98,7 @@ namespace Persistence.Repository
                                         IdLaboratorio = r.LaboratorioId,
                                         ClaveParametro = p.ClaveParametro,
                                         Valor = r.Resultado,
-                                        ResultadoReglas = r.ResultadoReglas??string.Empty,
+                                        ResultadoReglas = r.ResultadoReglas ?? string.Empty,
                                         Validado = false
                                     }).ToListAsync();
 
@@ -123,7 +123,10 @@ namespace Persistence.Repository
             muestreosDto.ForEach(resultadoDto =>
             {
                 var resultado = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado))
-                                                            .ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado));
+                                                            .ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado).SetProperty(x => x.ObservacionLaboratorio, resultadoDto.ObservacionesLaboratorio));
+
+
+
                 if (resultado == 0)
                     resultadosNoEncontrados.Add(resultadoDto);
             });
@@ -205,7 +208,7 @@ namespace Persistence.Repository
                                    where muestreosId == null || muestreosId.Contains(muestreo.Id)
                                    select new MuestreoSustituidoDto
                                    {
-                                       NoEntrega = muestreo.NumeroEntrega.ToString()??string.Empty,
+                                       NoEntrega = muestreo.NumeroEntrega.ToString() ?? string.Empty,
                                        TipoSitio = muestreo.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion,
                                        ClaveSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                        NombreSitio = muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
@@ -230,7 +233,7 @@ namespace Persistence.Repository
                                   orderby parametro.Orden
                                   select new ResultadoSustituidoDto
                                   {
-                                      Id=parametro.Id,
+                                      Id = parametro.Id,
                                       Orden = parametro.Orden ?? 0,
                                       ClaveParametro = parametro.ClaveParametro,
                                       Valor = string.IsNullOrEmpty(subresultado.ResultadoSustituidoPorLimite) ? subresultado.Resultado : subresultado.ResultadoSustituidoPorLimite

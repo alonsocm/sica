@@ -5,11 +5,11 @@
   </div>
 </form>
 <div class="container-fluid">
-  <h1 class="row col">Acumulacion de resultados</h1>
+  <h1 class="row col">Acumulación de resultados</h1>
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-      (mostrando)="this.mostrarAlerta=$event"></app-alert>
+               (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
   <div class="clearfix">
     <div class="float-right">
@@ -46,7 +46,7 @@
       </thead>
       <tbody>
         <tr style="text-align:center"
-          *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+            *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
           <td class="checkBox-center">
             <input type="checkbox" [(ngModel)]="dato.isChecked" (change)="seleccionar()" title="seleccionar">
           </td>
@@ -87,5 +87,12 @@
   </div>
   <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
   </pagination-controls>
-
+  <div class="clearfix">
+    <div class="float-right">
+      <button class="btn btn-primary rigth" type="button" (click)="enviarmonitoreos()">
+        <i class="bi bi-send"></i> Enviar monitoreos
+      </button>
+    </div>
+  </div>
+  <br /><br />
 </div>

@@ -27,6 +27,7 @@ export interface Muestreo {
   isupdate: boolean;
   programaMuestreoId: number;
   estatusId: number;
+  fechaEntrega: string;
 }
 
 export interface Evidencia {

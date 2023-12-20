@@ -47,17 +47,19 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
       { nombre: 'replica', etiqueta: 'REPLICA', orden: 0, filtro: new Filter() },
       { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() }
     ];
+    this.cargarDatos();   
+  }
+  cargarDatos() {
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.AcumulacionResultados).subscribe({
-     
       next: (response: any) => {
-       
         this.datosAcumualdos = response.data;
-               this.resultadosFiltradosn = this.datosAcumualdos;
+        this.resultadosFiltradosn = this.datosAcumualdos;
         this.resultadosn = this.datosAcumualdos;
         this.loading = false;
-        },
+      },
       error: (error) => { this.loading = false; },
-      });    
+    }); 
+
   }
   onDownload(): void {
     if (this.resultadosFiltradosn.length == 0) {
@@ -83,5 +85,47 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
       });
   }
   seleccionar() { }
+  
+  enviarmonitoreos(): void {    
+    let resuladosenviados = this.Seleccionados(this.resultadosFiltradosn).map(
+      (m) => {
+        return m.muestreoId;
+      }
+    );
 
+    if (resuladosenviados.length == 0) {
+      this.hacerScroll();
+      return this.mostrarMensaje(
+        'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+        'danger'
+      );
+    }
+
+    this.validacionService.enviarMuestreoaValidar(
+      estatusMuestreo.InicialReglas,
+      resuladosenviados
+    )
+      .subscribe({
+        next: (response: any) => {
+          this.loading = true;
+          if (response.succeded) {
+            this.loading = false;
+            this.cargarDatos();
+            this.mostrarMensaje(
+              'Se enviaron ' + resuladosenviados.length + ' muestreos a la etapa de "Módulo inicial reglas" correctamente',
+              'success'
+            );
+            this.hacerScroll();
+          }
+        },
+        error: (response: any) => {
+          this.loading = false;
+          this.mostrarMensaje(
+            ' Error al enviar los muestreos a la etapa de "Módulo inicial reglas"',
+            'danger'
+          );
+          this.hacerScroll();
+        },
+      });
+  }
 }

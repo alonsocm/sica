@@ -53,8 +53,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new Filter(), },
       { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new Filter(), },
       { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new Filter(), },
-      { nombre: 'fechaCarga', etiqueta: 'FECHA CAPTURA', orden: 19, filtro: new Filter(), },
-      { nombre: 'fechaCargaEvidencias', etiqueta: 'FECHA CARGA SICA', orden: 20, filtro: new Filter(), },
+      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new Filter(), },
+      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new Filter(), },
     ];
     this.columnas = nombresColumnas;
   }
@@ -62,7 +62,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   private consultarMonitoreos(): void {
     this.muestreoService.obtenerMuestreos(false).subscribe({
       next: (response: any) => {
-        this.muestreos = response.data;
+        this.muestreos = response.data;      
         this.muestreosFiltrados = this.muestreos;
         this.establecerValoresFiltrosTabla();
       },
@@ -98,7 +98,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.loading = false;
             this.numeroEntrega = response.data.numeroEntrega;
             this.anioOperacion = response.data.anio;
-            document.getElementById('btnMdlConfirmacion')?.click();
+            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
           }
         },
         error: (error: any) => {
@@ -268,10 +268,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       },
     });
   }
-  enviarMonitoreos(): void {
-    console.log(this.muestreosFiltrados);
+  enviarMonitoreos(): void {    
     let valor = this.muestreosFiltrados.filter(x => x.estatus == "EvidenciasCargadas");
-    console.log(valor);
     this.resultadosEnviados = this.Seleccionados(valor).map(
       (m) => {
         return m.muestreoId;
@@ -281,7 +279,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (this.resultadosEnviados.length == 0) {
       this.hacerScroll();
       return this.mostrarMensaje(
-        'Debes de seleccionar al menos un muestreo para enviar a la etapa de "Acumulación resultados"',
+        'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
         'danger'
       );
     }
@@ -297,7 +295,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.loading = false;
             this.consultarMonitoreos();
             this.mostrarMensaje(
-              'Los muestreos fueron enviados a la etapa de "Acumulación resultados" correctamente',
+              'Se enviaron ' + this.resultadosEnviados.length + ' muestreos a la etapa de "Acumulación resultados" correctamente',
               'success'
             );
             this.hacerScroll();

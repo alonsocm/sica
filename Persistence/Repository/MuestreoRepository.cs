@@ -28,6 +28,7 @@ namespace Persistence.Repository
                                        Estado = m.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre ?? string.Empty,
                                        CuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                        TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                       SubTipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion ?? string.Empty,
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
                                        FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        FechaLimiteRevision = m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
@@ -40,8 +41,6 @@ namespace Persistence.Repository
                                        TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString() ?? string.Empty,
                                        NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
                                        FechaCarga = m.FechaCarga.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       //sacar correctamente el laboratorio subrogado
-                                       LaboratorioSubrogado = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
                                        Observaciones = string.Empty,
                                        ClaveSitioOriginal = string.Empty,
                                        HoraCargaEvidencias = $"{m.FechaCargaEvidencias:yyyy-MM-dd}",
@@ -50,6 +49,7 @@ namespace Persistence.Repository
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty
                                    }).ToListAsync();
+
 
             var evidencias = await (from e in _dbContext.EvidenciaMuestreo
                                     where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
@@ -60,8 +60,24 @@ namespace Persistence.Repository
                                         e.TipoEvidenciaMuestreo.Sufijo
                                     }).ToListAsync();
 
+            var laboratoriosubrogado = await (from e in _dbContext.ResultadoMuestreo
+                                              where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId) && e.LaboratorioSubrogadoId != null
+                                              select new { e.LaboratorioSubrogado.Nomenclatura, e.MuestreoId }).Distinct().ToListAsync();
+            var fechentrega = await (from e in _dbContext.ResultadoMuestreo
+                                     where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
+                                     select new { e.FechaEntrega, e.MuestreoId }).Distinct().ToListAsync();
+
             muestreos.ForEach(f =>
             {
+                var laboratorioSubrogado = laboratoriosubrogado.Where(s => s.MuestreoId == f.MuestreoId).ToList().Select(s => s.Nomenclatura).Distinct().ToList();
+                var Fechaentrega = fechentrega.Where(s => s.MuestreoId == f.MuestreoId).ToList().OrderBy(x => x.FechaEntrega).Select(s => s.FechaEntrega).Distinct();
+
+                for (int i = 0; i < laboratorioSubrogado.ToList().Count; i++)
+                {
+                    f.LaboratorioSubrogado += laboratorioSubrogado[i] + "/";
+                }
+                f.LaboratorioSubrogado = f.LaboratorioSubrogado.TrimEnd('/');
+                f.FechaEntrega = Fechaentrega.ToList()[0].ToString("dd/MM/yyyy");
                 f.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == f.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo }).ToList());
             });
 
@@ -73,7 +89,7 @@ namespace Persistence.Repository
             var laboratorios = _dbContext.Laboratorios.ToList();
             var parametros = _dbContext.ParametrosGrupo.ToList();
 
-            var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion }).Distinct().ToList();
+            var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion, s.NoEntrega }).Distinct().ToList();
             var muestreos = (from cm in cargaMuestreos
                              join vcm in _dbContext.VwClaveMuestreo on cm.Muestreo equals vcm.ClaveMuestreo
                              select new Muestreo
@@ -84,7 +100,7 @@ namespace Persistence.Repository
                                  HoraFin = TimeSpan.Parse(cm.HoraFinMuestreo),
                                  EstatusId = validado ? (int)Application.Enums.EstatusMuestreo.NoEnviado : (int)Application.Enums.EstatusMuestreo.Cargado,
                                  ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList, laboratorios, parametros),
-                                 NumeroEntrega = 0,
+                                 NumeroEntrega = Convert.ToInt32(cm.NoEntrega),
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
                                  FechaCarga = DateTime.Now
                              }).ToList();
@@ -107,7 +123,8 @@ namespace Persistence.Repository
                                   LaboratorioId = l.Id,
                                   LaboratorioSubrogadoId = laboratorioSubrogado?.Id,
                                   FechaEntrega = cm.FechaEntrega,
-                                  IdResultadoLaboratorio = Convert.ToInt64(cm.IdResultado)
+                                  IdResultadoLaboratorio = Convert.ToInt64(cm.IdResultado),
+                                  ObservacionLaboratorio = cm.ObservacionesLaboratorio
                               }).ToList();
 
             return resultados;

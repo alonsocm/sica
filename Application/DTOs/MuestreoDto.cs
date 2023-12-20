@@ -1,14 +1,7 @@
-﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTOs
+﻿namespace Application.DTOs
 {
     public class MuestreoDto
-    {        
+    {
         public long MuestreoId { get; set; }
         public string OCDL { get; set; }
         public string ClaveSitio { get; set; }
@@ -36,6 +29,7 @@ namespace Application.DTOs
         public string HoraCargaEvidencias { get; set; }
         public string NumeroCargaEvidencias { get; set; }
         public string TipoCuerpoAguaOriginal { get; set; }
+        public string? SubTipoCuerpoAgua { get; set; }
         public string DireccionLocal { get; set; }
         public string OrganismoCuenca { get; set; }
 
@@ -43,6 +37,7 @@ namespace Application.DTOs
 
         public long ProgramaMuestreoId { get; set; }
         public int estatusId { get; set; }
+        public string? FechaEntrega { get; set; }
 
         public MuestreoDto()
         {
@@ -66,11 +61,13 @@ namespace Application.DTOs
             this.LaboratorioSubrogado = string.Empty;
             this.OrganismoCuenca = string.Empty;
             this.ProgramaAnual = string.Empty;
-            this.TipoSitio =    string.Empty;
+            this.TipoSitio = string.Empty;
             this.TipoCuerpoAguaOriginal = string.Empty;
             this.ProgramaMuestreoId = 0;
             this.estatusId = 0;
             this.MuestreoId = 0;
+            this.SubTipoCuerpoAgua = string.Empty;
+            this.FechaEntrega = string.Empty;
 
         }
     }

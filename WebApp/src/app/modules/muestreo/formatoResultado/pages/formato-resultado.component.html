@@ -34,10 +34,10 @@
     </div>
     <br />
     <div class="table-responsive dvTable">
-        <table class="table table-bordered">
+        <table style="font-size:x-small" class="table table-bordered">
             <thead class="thead-light">
                 <tr>
-                    <th class="checkBox-center">
+                    <th style="text-align:center" class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
                         <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
                             (change)="seleccionarAll(resultadosFiltrados)" />
@@ -60,7 +60,7 @@
             <tbody>
                 <tr
                     *ngFor="let muestreo of this.resultadosFiltrados| paginate: { itemsPerPage:30, currentPage: page }; let indice=index">
-                    <td class="checkBox-center">
+                    <td style="text-align:center" class="checkBox-center">
                         <input type="checkbox" [(ngModel)]="muestreo.isChecked" title="seleccionar">
                     </td>
                     <td *ngIf="perfil == 'Administrador' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
