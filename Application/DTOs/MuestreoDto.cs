@@ -37,7 +37,7 @@
 
         public long ProgramaMuestreoId { get; set; }
         public int estatusId { get; set; }
-        public string? FechaEntrega { get; set; }
+        public string? FechaEntregaMuestreo { get; set; }
 
         public MuestreoDto()
         {
@@ -67,7 +67,7 @@
             this.estatusId = 0;
             this.MuestreoId = 0;
             this.SubTipoCuerpoAgua = string.Empty;
-            this.FechaEntrega = string.Empty;
+            this.FechaEntregaMuestreo = string.Empty;
 
         }
     }

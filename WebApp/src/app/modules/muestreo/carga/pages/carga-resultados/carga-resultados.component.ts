@@ -45,7 +45,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO                                                                                                                                       ', orden: 8, filtro: new Filter(), },
       { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new Filter(), },
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new Filter(), },
-      { nombre: 'subtipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new Filter(), },
+      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new Filter(), },
       { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new Filter(), },
       { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new Filter(), },
       { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new Filter(), },
@@ -62,8 +62,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   private consultarMonitoreos(): void {
     this.muestreoService.obtenerMuestreos(false).subscribe({
       next: (response: any) => {
-        this.muestreos = response.data;      
-        this.muestreosFiltrados = this.muestreos;
+        this.muestreos = response.data;        
+        this.muestreosFiltrados = this.muestreos;     
         this.establecerValoresFiltrosTabla();
       },
       error: (error) => { },

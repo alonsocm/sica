@@ -119,17 +119,26 @@ namespace Persistence.Repository
         public List<CargaMuestreoDto> ActualizarValorResultado(List<CargaMuestreoDto> muestreosDto)
         {
             var resultadosNoEncontrados = new List<CargaMuestreoDto>();
-
+            long idMuestreo = 0;
             muestreosDto.ForEach(resultadoDto =>
             {
-                var resultado = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado))
-                                                            .ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado).SetProperty(x => x.ObservacionLaboratorio, resultadoDto.ObservacionesLaboratorio));
+                var resultadoMuestreo = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado));
+                var resultado = resultadoMuestreo.ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado)
+                                                            .SetProperty(x => x.ObservacionLaboratorio, resultadoDto.ObservacionesLaboratorio)
+                                                            .SetProperty(s => s.FechaEntrega, resultadoDto.FechaEntrega)
+                                                            .SetProperty(s => s.LaboratorioSubrogadoId, _dbContext.Laboratorios.Where(x => x.Nomenclatura == resultadoDto.LaboratorioSubrogado).FirstOrDefault().Id));
+
+                idMuestreo = resultadoMuestreo.FirstOrDefault().MuestreoId;
 
 
-
-                if (resultado == 0)
-                    resultadosNoEncontrados.Add(resultadoDto);
             });
+            if (idMuestreo != 0)
+            {
+                var muestreo = _dbContext.Muestreo.Where(x => x.Id == idMuestreo).ExecuteUpdate(s => s.SetProperty(e => e.HoraInicio, TimeSpan.Parse(muestreosDto[0].HoraInicioMuestreo))
+            .SetProperty(s => s.HoraFin, TimeSpan.Parse(muestreosDto[0].HoraFinMuestreo))
+            .SetProperty(s => s.EstatusId, (int)Application.Enums.EstatusMuestreo.Cargado)
+            .SetProperty(s => s.FechaRealVisita, Convert.ToDateTime(muestreosDto[0].FechaRealVisita)));
+            }
 
             return resultadosNoEncontrados;
         }

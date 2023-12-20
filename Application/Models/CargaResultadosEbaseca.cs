@@ -20,8 +20,8 @@
         public string FechaRealizacion { get; set; }
         public string HoraInicioMuestreo { get; set; }
         public string HoraFinMuestreo { get; set; }
-        public string FechaCaptura { get; set; }
         public string FechaCargaSica { get; set; }
+        public string FechaEntrega { get; set; }
         public string Observaciones { get; set; }
 
         public CargaResultadosEbaseca()
@@ -44,7 +44,7 @@
             this.FechaRealizacion = string.Empty;
             this.HoraInicioMuestreo = string.Empty;
             this.HoraFinMuestreo = string.Empty;
-            this.FechaCaptura = string.Empty;
+            this.FechaEntrega = string.Empty;
             this.FechaCargaSica = string.Empty;
             this.Observaciones = string.Empty;
 

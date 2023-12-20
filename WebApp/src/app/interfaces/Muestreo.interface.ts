@@ -6,7 +6,7 @@ export interface Muestreo {
   estado: string;
   cuerpoAgua: string,
   tipoCuerpoAgua: string;
-  subtipoCuerpoAgua: string;
+  subTipoCuerpoAgua: string;
   laboratorio: string;
   laboratorioSubrogado: string
   fechaRealizacion: string;

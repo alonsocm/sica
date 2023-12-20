@@ -77,7 +77,7 @@ namespace Persistence.Repository
                     f.LaboratorioSubrogado += laboratorioSubrogado[i] + "/";
                 }
                 f.LaboratorioSubrogado = f.LaboratorioSubrogado.TrimEnd('/');
-                f.FechaEntrega = Fechaentrega.ToList()[0].ToString("dd/MM/yyyy");
+                f.FechaEntregaMuestreo = Fechaentrega.ToList()[0].ToString("dd/MM/yyyy");
                 f.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == f.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo }).ToList());
             });
 

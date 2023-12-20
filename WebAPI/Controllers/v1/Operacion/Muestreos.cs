@@ -202,16 +202,16 @@ namespace WebAPI.Controllers.v1.Operacion
                     NombreSitio = muestreo.NombreSitio,
                     OCDL = muestreo.OCDL,
                     TipoCuerpoAgua = muestreo.TipoCuerpoAgua,
-                    //SubtipoCuerpoAgua = muestreo.SUB
+                    SubtipoCuerpoAgua = muestreo.SubTipoCuerpoAgua,
                     ProgramaAnual = muestreo.ProgramaAnual,
                     Laboratorio = muestreo.Laboratorio,
-                    //LaboratorioSubrogado
+                    LaboratorioSubrogado = muestreo.LaboratorioSubrogado,
                     FechaProgramacion = muestreo.FechaProgramada,
                     FechaRealizacion = muestreo.FechaRealizacion,
                     HoraInicioMuestreo = muestreo.HoraInicio,
                     HoraFinMuestreo = muestreo.HoraFin,
-                    //FechaCaptura = muestreo.FEC
-                    //FechaCargaSica = str
+                    FechaCargaSica = muestreo.FechaCarga,
+                    FechaEntrega = muestreo.FechaEntregaMuestreo,
                     Observaciones = muestreo.Observaciones,
                 }
             ));

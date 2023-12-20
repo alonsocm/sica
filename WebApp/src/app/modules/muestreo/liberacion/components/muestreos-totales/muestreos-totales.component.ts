@@ -15,6 +15,7 @@ export class MuestreosTotalesComponent implements OnInit {
   muestreosFiltrados: Muestreo[] = [];
   grupoParametros: Array<GrupoParametro> = [];
   totalResultadosParametros: number = 0;
+  totalMuestreos: number = 0;
 
 
   constructor(private muestreoService: MuestreoService) {
@@ -23,6 +24,7 @@ export class MuestreosTotalesComponent implements OnInit {
     muestreoService.muestreos.subscribe(
       (muestreos) => {
         this.muestreosFiltrados = muestreos;
+        this.totalMuestreos = this.muestreosFiltrados.length;
         this.filtrarResumen();
         this.generarResumenMonitoreosGpoParametro(this.muestreosFiltrados);
       }
