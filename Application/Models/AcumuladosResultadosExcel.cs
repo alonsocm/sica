@@ -1,13 +1,4 @@
-﻿using Application.Interfaces.IRepositories;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-namespace Application.Models
+﻿namespace Application.Models
 {
     public class AcumuladosResultadosExcel
     {
@@ -19,7 +10,7 @@ namespace Application.Models
         public string fechaRealizacion { get; set; }
         public string horaInicio { get; set; }
         public string horaFin { get; set; }
-        public string zonaEstrategica { get; set; }
+        public string tipoSitio { get; set; }
         public string tipoCuerpoAgua { get; set; }
         public string subTipoCuerpoAgua { get; set; }
         public string laboratorio { get; set; }
@@ -47,7 +38,7 @@ namespace Application.Models
             this.fechaRealizacion = string.Empty;
             this.horaInicio = string.Empty;
             this.horaFin = string.Empty;
-            this.zonaEstrategica = string.Empty;
+            this.tipoSitio = string.Empty;
             this.tipoCuerpoAgua = string.Empty;
             this.subTipoCuerpoAgua = string.Empty;
             this.laboratorio = string.Empty;

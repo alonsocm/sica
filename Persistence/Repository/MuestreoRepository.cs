@@ -189,6 +189,15 @@ namespace Persistence.Repository
             return lista;
         }
 
+
+        public async Task<List<int?>> GetListNumeroEntrega()
+        {
+            var lista = await _dbContext.Muestreo.Select(t => t.NumeroEntrega).Distinct().ToListAsync();
+
+            return lista;
+        }
+
+
         public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId)
         {
             var muestreos = await (from m in _dbContext.Muestreo
@@ -203,8 +212,8 @@ namespace Persistence.Repository
                                        ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
                                        ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                        NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
-                                       FechaProgramada = m.ProgramaMuestreo.DiaProgramado.ToString(),
-                                       FechaRealizacion = m.FechaRealVisita.ToString() ?? string.Empty,
+                                       FechaProgramada = m.ProgramaMuestreo.DiaProgramado.ToString("dd/MM/yyyy"),
+                                       FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
                                        HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
                                        TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
@@ -212,6 +221,7 @@ namespace Persistence.Repository
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
                                        laboratorioRealizoMuestreo = resMuestreo.Laboratorio.Descripcion ?? string.Empty,
                                        LaboratorioSubrogado = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? string.Empty,
+                                       grupoParametro = resMuestreo.Parametro.GrupoParametro.Descripcion,
                                        subGrupo = resMuestreo.Parametro.IdSubgrupoNavigation.Descripcion,
                                        claveParametro = resMuestreo.Parametro.ClaveParametro,
                                        parametro = resMuestreo.Parametro.Descripcion,
@@ -224,7 +234,7 @@ namespace Persistence.Repository
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        costoParametro = costo.Precio,
                                        NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty,
-                                       fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yy") ?? string.Empty,
+                                       fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
                                        validadoReglas = (m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas) ? true : false,
                                        resultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty

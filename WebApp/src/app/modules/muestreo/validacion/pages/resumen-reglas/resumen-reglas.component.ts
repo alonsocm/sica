@@ -19,7 +19,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
   ngOnInit(): void {
     this.columnas = [
-      { nombre: 'numEntrega', etiqueta: 'NÚMERO DE ENTREGA', orden: 0, filtro: new Filter() },
+      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO DE ENTREGA', orden: 0, filtro: new Filter() },
       { nombre: 'claveUnica', etiqueta: 'CLAVE ÚNICA', orden: 0, filtro: new Filter() },
       { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MUESTREO', orden: 0, filtro: new Filter() },
       { nombre: 'claveSitio', etiqueta: 'CLAVE CONALAB', orden: 0, filtro: new Filter() },
@@ -53,7 +53,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.loading = true;
         this.datosAcumualdos = response.data;      
-        this.resultadosFiltradosn = this.datosAcumualdos;
+        this.resultadosFiltradosn = this.datosAcumualdos;        
         this.resultadosn = this.datosAcumualdos;
         this.loading = false;
       },

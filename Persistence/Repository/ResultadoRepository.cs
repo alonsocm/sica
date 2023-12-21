@@ -130,6 +130,10 @@ namespace Persistence.Repository
 
                 idMuestreo = resultadoMuestreo.FirstOrDefault().MuestreoId;
 
+                //solo hay que insertar el resultado no el muestreo cambiar
+                //if (resultado == 0 || (resultadoMuestreo.FirstOrDefault().ResultadoReglas != null && resultadoMuestreo.FirstOrDefault().ResultadoReglas != "OK"))
+                //resultadosNoEncontrados.Add(resultadoDto);
+
 
             });
             if (idMuestreo != 0)

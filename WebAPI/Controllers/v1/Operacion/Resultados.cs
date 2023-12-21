@@ -233,7 +233,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 DescargaSecaia secaia = new DescargaSecaia();
                 DescargarConsultaFormato consulForm = new DescargarConsultaFormato();
 
-                if (tipoExcel == "secaia")
+                if (tipoExcel.ToUpper() == "SECAIA")
                 {
                     secaia.NoEntregaOCDL = item.noEntregaOCDL;
                     secaia.Ocdl = item.ocdl;
@@ -243,7 +243,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     secaia.Laboratorio = item.laboratorio;
                     secaia.TipoCuerpoAgua = item.tipoCuerpoAgua;
                 }
-                else if (tipoExcel == "resultado" || tipoExcel == "consulta")
+                else if (tipoExcel.ToUpper() == "RESULTADO" || tipoExcel.ToUpper() == "CONSULTA")
                 {
                     if (admin)
                     {
@@ -276,44 +276,44 @@ namespace WebAPI.Controllers.v1.Operacion
                 PropertyInfo[] propiedad = typeof(DescargaParametrosCabecerasDto).GetProperties();
                 foreach (PropertyInfo p in propiedad)
                 {
-                    if (tipoExcel == "secaia")
+                    if (tipoExcel.ToUpper() == "SECAIA")
                     {
                         p.SetValue(secaia, datosfinales[num]);
                     }
-                    else if (tipoExcel == "resultado" || tipoExcel == "consulta")
+                    else if (tipoExcel == "RESULTADO" || tipoExcel.ToUpper() == "CONSULTA")
                     {
-                        p.SetValue(consulForm, datosfinales[num]);
+                        p.SetValue(consulForm, datosfinales[num].ToString());
                     }
                     num++;
                 }
 
-                if (tipoExcel == "secaia")
+                if (tipoExcel.ToUpper() == "SECAIA")
                 {
                     lstSecaia.Add(secaia);
                 }
-                else if (tipoExcel == "resultado" || tipoExcel == "consulta")
+                else if (tipoExcel.ToUpper() == "RESULTADO" || tipoExcel.ToUpper() == "CONSULTA")
                 {
                     lstConsulForm.Add(consulForm);
                 }
             }
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = string.Empty;
-            if (tipoExcel == "secaia")
+            if (tipoExcel.ToUpper() == "SECAIA")
             {
                 templatePath = plantilla.ObtenerRutaPlantilla("TotalSECAIA");
             }
-            else if (tipoExcel == "Resultado" || tipoExcel == "consulta")
+            else if (tipoExcel.ToUpper() == "RESULTADO" || tipoExcel.ToUpper() == "CONSULTA")
             {
                 templatePath = plantilla.ObtenerRutaPlantilla("ConsultaFormato");
             }
 
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
 
-            if (tipoExcel == "secaia")
+            if (tipoExcel.ToUpper() == "SECAIA")
             {
                 ExcelService.ExportToExcel(lstSecaia, fileInfo, true);
             }
-            else if (tipoExcel == "resultado" || tipoExcel == "consulta")
+            else if (tipoExcel.ToUpper() == "RESULTADO" || tipoExcel.ToUpper() == "CONSULTA")
             {
                 ExcelService.ExportToExcel(lstConsulForm, fileInfo, true);
             }
@@ -580,7 +580,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     fechaRealizacion = dato.FechaRealizacion,
                     horaInicio = dato.HoraInicio,
                     horaFin = dato.HoraFin,
-                    zonaEstrategica = dato.zonaEstrategica,
+                    tipoSitio = dato.TipoSitio,
                     tipoCuerpoAgua = dato.TipoCuerpoAgua,
                     subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
                     laboratorio = dato.Laboratorio,

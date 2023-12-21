@@ -20,7 +20,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   aniosSeleccionados: Array<number> = [];
   entregasSeleccionadas: Array<number> = [];
   anios: Array<number> = [];
-  entregas: Array<number> = [0];
+  entregas: Array<number> = [];
   resultadosEnviados: Array<any> = [];
   ngOnInit(): void {
     this.columnas = [
@@ -140,6 +140,12 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         this.anios = response.data;
       },
       error: (error) => {},
+    });
+    this.validacionService.obtenerNumerosEntrega().subscribe({
+      next: (response: any) => {
+        this.entregas = response.data;
+      },
+      error: (error) => { },
     });
   }
 

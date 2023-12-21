@@ -21,7 +21,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   entregasSeleccionadas: Array<number> = [];
   resultadosEnviados: Array<number> = [];
   anios: Array<number> = [];
-  entregas: Array<number> = [0];
+  entregas: Array<number> = [];
 
   ngOnInit(): void {
     this.columnas = [
@@ -152,6 +152,13 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       },
       error: (error) => {},
     });
+    this.validacionService.obtenerNumerosEntrega().subscribe({
+      next: (response: any) => {
+        this.entregas = response.data;
+      },
+      error: (error) => { },
+    });
+
   }
   cargaResultados() {
     if (

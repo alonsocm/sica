@@ -157,6 +157,11 @@ namespace WebAPI.Controllers.v1.Operacion
         {
             return Ok(await Mediator.Send(new GetAniosConOperacion()));
         }
+        [HttpGet("NumerosEntrega")]
+        public async Task<IActionResult> NumerosEntrega()
+        {
+            return Ok(await Mediator.Send(new GetNumeroEntrega()));
+        }
 
         [HttpGet("ProgramaAnios")]
         public async Task<IActionResult> ProgramaAnios()

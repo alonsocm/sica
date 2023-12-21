@@ -13,6 +13,9 @@ export class ValidacionReglasService {
   obtenerMuestreos(): Observable<Object> {
     return this.http.get(environment.apiUrl + '/Muestreos/AniosConRegistro');
   }
+  obtenerNumerosEntrega(): Observable<Object> {
+    return this.http.get(environment.apiUrl + '/Muestreos/NumerosEntrega');
+  }
 
   obtenerResultadosValidadosPorReglas(Muestreos: Array<number>){
     let params = new HttpParams({

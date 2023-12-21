@@ -66,9 +66,7 @@ export class EvidenciasService {
       environment.apiUrl + '/Muestreos/obtenerPuntosPorMuestreo', { params }
     );
   }
-  updateCoordenadas(coordenadas: any) {
-    console.log("servicio informe");
-    console.log(coordenadas);
+  updateCoordenadas(coordenadas: any) {  
     this.datocordenada.next(coordenadas);
   }
 

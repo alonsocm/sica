@@ -13,6 +13,7 @@ namespace Application.Interfaces.IRepositories
         List<Muestreo> ConvertMuestreosParamsList(List<UpdateMuestreoExcelDto> updateMuestreoExcelDtoList);
         string GetTipoCuerpoAguaHomologado(string claveMuestreo);
         Task<List<int?>> GetListAniosConRegistro();
+        Task<List<int?>> GetListNumeroEntrega();
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId);
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga, int estatusId);
         Task<bool> ExisteSustitucionPrevia(int periodo);

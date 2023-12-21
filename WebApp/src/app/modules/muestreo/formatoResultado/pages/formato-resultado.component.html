@@ -63,7 +63,7 @@
                     <td style="text-align:center" class="checkBox-center">
                         <input type="checkbox" [(ngModel)]="muestreo.isChecked" title="seleccionar">
                     </td>
-                    <td *ngIf="perfil == 'Administrador' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
+                    <td *ngIf="perfil == 'ADMINISTRADOR' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
                         {{muestreo.noEntregaOCDL}}
                     </td>
                     <td>{{muestreo.claveSitioOriginal}}</td>
@@ -79,7 +79,7 @@
                     </ng-container>
                 </tr>
                 <tr *ngIf="this.resultadosFiltrados.length==0">
-                    <td class="td-center" colspan="16">No se encontraron registros</td>
+                    <td class="td-center" colspan="650">No se encontraron registros</td>
                 </tr>
             </tbody>
         </table>

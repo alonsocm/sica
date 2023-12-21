@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="table-responsive dvTable">
-    <table class="table table-bordered">
+    <table width="10000px" style="font-size:x-small" class="table-responsive table table-bordered table-hover">
       <thead class="thead-light">
         <tr>
           <th *ngFor="let columna of columnas">
@@ -42,7 +42,7 @@
       <tbody>
         <tr
           *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
-          <td>ENTREGA-0</td>
+          <td>{{dato.numeroEntrega}}</td>
           <td>{{dato.claveUnica}}</td>
           <td>{{dato.claveMonitoreo}}</td>
           <td>{{dato.claveSitio}}</td>

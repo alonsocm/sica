@@ -28,7 +28,7 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
       { nombre: 'fechaRealizacion', etiqueta: 'FECHA REAL VISITA', orden: 0, filtro: new Filter() },
       { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 0, filtro: new Filter() },
       { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 0, filtro: new Filter() },
-      { nombre: 'zonaEstrategica', etiqueta: 'ZONA ESTRATEGICA', orden: 0, filtro: new Filter() },
+      { nombre: 'tipoSitio', etiqueta: 'TIPO SITIO', orden: 0, filtro: new Filter() },
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 0, filtro: new Filter() },
       { nombre: 'subtipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO AGUA', orden: 0, filtro: new Filter() },
       { nombre: 'laboratorio', etiqueta: 'LABORATORIO BASE DE DATOS', orden: 0, filtro: new Filter() },
@@ -53,7 +53,7 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
     this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.AcumulacionResultados).subscribe({
       next: (response: any) => {
         this.datosAcumualdos = response.data;
-        this.resultadosFiltradosn = this.datosAcumualdos;
+        this.resultadosFiltradosn = this.datosAcumualdos;        
         this.resultadosn = this.datosAcumualdos;
         this.loading = false;
       },
