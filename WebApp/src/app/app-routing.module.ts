@@ -40,6 +40,7 @@ import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pa
 import { MapComponent } from './modules/map/map.component';
 import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/map-muestreo.component';
 import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-track.component';
+import { ValidacionEvidenciasComponent } from './modules/muestreo/validacion-evidencias/pages/validacion-evidencias.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -248,6 +249,13 @@ const routes: Routes = [
     component: RutaTrackComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
+
+  {
+    path: 'validacion-evidencias',
+    component: ValidacionEvidenciasComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+
   { path: '**', component: NotFoundComponent },
 ];
 

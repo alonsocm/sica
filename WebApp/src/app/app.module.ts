@@ -57,6 +57,7 @@ import { EvidenciasInformacionComponent } from './modules/muestreo/evidencias/pa
 import { MapComponent } from './modules/map/map.component';
 import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-track.component';
 import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/map-muestreo.component';
+import { ValidacionEvidenciasComponent } from './modules/muestreo/validacion-evidencias/pages/validacion-evidencias.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/ma
     EvidenciasInformacionComponent,
     MapComponent,
     RutaTrackComponent,
-    MapMuestreoComponent
+    MapMuestreoComponent,
+    ValidacionEvidenciasComponent
     
   ],
   imports: [
