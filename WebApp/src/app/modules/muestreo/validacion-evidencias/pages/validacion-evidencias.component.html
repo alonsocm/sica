@@ -3,26 +3,55 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h1 class="row col">Carga de resultados validados</h1>
+  <h1 class="row col">Validaci&oacute;n de evidencias</h1>
   <hr class="red">
+</div>
+
+<div class="clearfix">
+  <div class="float-left">
+    <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
+           title="Seleccionar archivo" #inputExcelMonitoreos>
+    <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()"
+            title="Seleccionar archivo">
+      <i class="bi bi-cloud-upload"></i>
+      Seleccionar y procesar archivo...
+    </button>
+    
+  </div>
+  <div class="float-right">
+    <button class="btn btn-primary mr-1" type="button" (click)="validacion()">
+      <i class="bi bi-check2-circle"></i> Control de validaci&oacute;n
+    </button>
+    <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
+      <i class="bi bi-funnel"></i>
+      Limpiar filtros
+    </button>
+  </div>
 </div>
 
 <div class="dvTable">
   <table width="10000px" style="font-size:x-small" class="table-responsive table table-bordered table-hover">
     <thead class="thead-light">
 
-      <tr>
-        <th style="background-color:lightgrey; opacity:0.6; text-align:center; font-size:medium" colspan="21"><b>MUESTREO</b></th>
-        <th style="background-color:lightyellow; opacity: 1.5; text-align: center; font-size: medium" colspan="30"><b>CRITERIOS BITACORA DE MUESTREO</b></th>
+      <tr style="text-align:center; font-size:15px; color:white">
+        <th style="background-color: #5499C7; text-align:center" colspan="21"><strong> MUESTREO</strong></th>
+        <th style="background-color: #FFEE58; text-align:center" colspan="30"><b>CRITERIOS BITÁCORA DE MUESTREO</b></th>
+        <th style="background-color: #48C9B0; text-align:center" colspan="7"><b>CRITERIOS FOTO DE MUESTREO</b></th>
+        <th style="background-color: #EC407A; text-align:center" colspan="8"><b>CRITERIOS FOTO DE MUESTRAS</b></th>
+        <th style="background-color: #66BB6A; text-align:center" colspan="7"><b>CRITERIOS FOTO DE AFORO</b></th>
+        <th style="background-color: #42A5F5; text-align:center" colspan="7"><b>FORMATO DE AFORO</b></th>
+        <th style="background-color: #26A69A; text-align:center" colspan="11"><b>TRACK DE RUTA</b></th>
+        <th style="background-color: #FFA726; text-align:center" colspan="2"><b>CADENA DE CUSTODIA</b></th>
+        <th style="background-color: #78909C; text-align:center" colspan="2"><b>VALIDACIÓN</b></th>
       </tr>
       <tr>
-        <th style="text-align:center" class="checkBox-center">
+        <th style="text-align: center; background-color: #D4E6F1" class="checkBox-center">
           <label for="chckAll">SELECCIONAR TODOS</label>
           <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
                  (change)="seleccionarAll(this.muestreosFiltrados);" />
         </th>
         <!--TABLA 1-->
-        <th style="width:fit-content; text-align:center; font-size:x-small" scope="col" *ngFor="let columna of this.columnas">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnas">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -35,7 +64,7 @@
         </th>
 
         <!--TABLA 2 CRITERIOS BITACORA DE MUESTREO (BM)-->
-        <th style="width:fit-content; text-align:center; font-size:x-small; background-color:lightyellow" scope="col" *ngFor="let columna of this.columnasBitacoraMuestreo">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #FFF9C4" scope="col" *ngFor="let columna of this.columnasBitacoraMuestreo">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -48,7 +77,7 @@
         </th>
 
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
-        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:lightcyan" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuesreo">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D1F2EB" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuesreo">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -61,7 +90,7 @@
         </th>
 
         <!--TABLA 4 CRITERIOS FOTO DE AFORO (FA)-->
-        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:lightsalmon" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuestras">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #F8BBD0" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuestras">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -74,7 +103,7 @@
         </th>
 
         <!--TABLA 5 CRITERIOS FOTO DE MUESTRAS (FS)-->
-        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:lightskyblue" scope="col" *ngFor="let columna of this.columnasCriteriosFotoAforo">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#C8E6C9" scope="col" *ngFor="let columna of this.columnasCriteriosFotoAforo">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -87,7 +116,7 @@
         </th>
 
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
-        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:lightpink" scope="col" *ngFor="let columna of this.columnasFormatoAForo">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #BBDEFB" scope="col" *ngFor="let columna of this.columnasFormatoAForo">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -100,7 +129,7 @@
         </th>
 
         <!--TABLA 7 TRACK RUTA (TR)-->
-        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:lightseagreen" scope="col" *ngFor="let columna of this.columnasTrackRuta">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #B2DFDB" scope="col" *ngFor="let columna of this.columnasTrackRuta">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -113,7 +142,7 @@
         </th>
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
-        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:linen" scope="col" *ngFor="let columna of this.columnasCadenaCustodia">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#FFE0B2" scope="col" *ngFor="let columna of this.columnasCadenaCustodia">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -126,7 +155,7 @@
         </th>
 
         <!--TABLA 9-->
-        <th style="width: fit-content; text-align: center; font-size: x-small; background-color:linen" scope="col" *ngFor="let columna of this.columnasTabla9">
+        <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #CFD8DC" scope="col" *ngFor="let columna of this.columnasTabla9">
           {{columna.etiqueta}}
           <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                            (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -141,7 +170,7 @@
 
     </thead>
     <tbody>
-      <tr style="height:auto; text-align:center">
+      <tr style="height:auto; text-align:center" *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
 
         <!--TABLA 1-->
         <td class="checkBox-center">
@@ -171,35 +200,31 @@
         <!--TABLA 2 CRITERIOS BTACORA DE MUESTREO (BM)-->
 
         <td class="checkBox-center">
-          <input id="chkFolio" type="checkbox" title="seleccionar">
+          <input id="chkFolio" type="checkbox" [(ngModel)] ="muestreo.folioBM" title="seleccionar">
         </td>
         <td></td>
-        <td class="checkBox-center">
-          <input id="chkFechaRealizacon" type="checkbox" title="seleccionar">
+        <td>   
         </td>
         <td></td>
         <td></td>
         <td></td>
         <td></td>
-        <td class="checkBox-center">
-          <input id="chkTiempoMuestreo" type="checkbox" title="seleccionar">
+        <td>        
         </td>
         <td></td>
-        <td class="checkBox-center">
-          <input id="chkClaveConalab" type="checkbox" title="seleccionar">
+        <td>          
         </td>
         <td></td>
-        <td class="checkBox-center">
-          <input id="chkClaveMuestreo" type="checkbox" title="seleccionar">
+        <td>          
         </td>
         <td></td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkLiderBrigada" type="checkbox" title="seleccionar">
+          <input id="chkLiderBrigada" type="checkbox" [(ngModel)] ="muestreo.cumpleLiderBrigadaBM" title="seleccionar">
         </td>
         <td></td>
-        <td class="checkBox-center">
-          <input id="chkClaveBrigada" type="checkbox" title="seleccionar">
+        <td>
+          
         </td>
         <td></td>
         <td></td>
@@ -208,23 +233,23 @@
         <td></td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkGeocerca" type="checkbox" title="seleccionar">
+          <input id="chkGeocerca" type="checkbox" [(ngModel)] ="muestreo.cumpleGeocercaBM" title="seleccionar">
         </td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkCalibracion" type="checkbox" title="seleccionar">
+          <input id="chkCalibracion" type="checkbox" [(ngModel)] ="muestreo.calibracionVerificacionEquiposBM" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkRegistroResultados" type="checkbox" title="seleccionar">
+          <input id="chkRegistroResultados" type="checkbox" [(ngModel)] ="muestreo.registroResultadosCampoBM" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkFirmadoCancelado" type="checkbox" title="seleccionar">
+          <input id="chkFirmadoCancelado" type="checkbox"  [(ngModel)] ="muestreo.firmadoyCanceladoBM" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkFotografiaGPS" type="checkbox" title="seleccionar">
+          <input id="chkFotografiaGPS" type="checkbox" [(ngModel)] ="muestreo.fotografiaGPSPuntoMuestreoBM" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkRegistrosVisibles" type="checkbox" title="seleccionar">
+          <input id="chkRegistrosVisibles" type="checkbox" [(ngModel)] ="muestreo.registrosVisiblesBM" title="seleccionar">
         </td>
 
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
@@ -233,13 +258,13 @@
         <td></td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkMetadatosFM" type="checkbox" title="seleccionar">
+          <input id="chkMetadatosFM" type="checkbox" [(ngModel)] ="muestreo.cumpleMetadatosFM" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkLiderBrigadaFM" type="checkbox" title="seleccionar">
+          <input id="chkLiderBrigadaFM" type="checkbox" [(ngModel)] ="muestreo.liderBrigadaCuerpoAguaFM" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkFotoUnicaFM" type="checkbox" title="seleccionar">
+          <input id="chkFotoUnicaFM" type="checkbox" [(ngModel)] ="muestreo.fotoUnicaFM" title="seleccionar">
         </td>
 
         <!--TABLA 4 CRITERIOS FOTO DE MUESTRAS (FS)-->
@@ -248,16 +273,16 @@
         <td></td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkMetadatosFS" type="checkbox" title="seleccionar">
+          <input id="chkMetadatosFS" type="checkbox" [(ngModel)] ="muestreo.cumpleMetadatosFS" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkRegistrosRecipientesFS" type="checkbox" title="seleccionar">
+          <input id="chkRegistrosRecipientesFS" type="checkbox" [(ngModel)] ="muestreo.registroRecipientesFS" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkMuestrasPreservadasFS" type="checkbox" title="seleccionar">
+          <input id="chkMuestrasPreservadasFS" type="checkbox" [(ngModel)] ="muestreo.muestrasPreservadasFS" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkFotoUnicaFS" type="checkbox" title="seleccionar">
+          <input id="chkFotoUnicaFS" type="checkbox" [(ngModel)] ="muestreo.fotoUnicaFS" title="seleccionar">
         </td>
 
         <!--TABLA 5 CRITERIOS FOTO DE MUESTRAS (FS)-->
@@ -266,34 +291,33 @@
         <td></td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkMetadatosFA" type="checkbox" title="seleccionar">
+          <input id="chkMetadatosFA" type="checkbox" [(ngModel)] ="muestreo.cumpleMetadatosFA" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkMetodologiaFA" type="checkbox" title="seleccionar">
+          <input id="chkMetodologiaFA" type="checkbox" [(ngModel)] ="muestreo.metodologiaFA" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkFotoUnicaFA" type="checkbox" title="seleccionar">
+          <input id="chkFotoUnicaFA" type="checkbox" [(ngModel)] ="muestreo.fotoUnicaFA" title="seleccionar">
         </td>
 
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <td class="checkBox-center">
-          <input id="chkFormatoLlenadoFF" type="checkbox" title="seleccionar">
+          <input id="chkFormatoLlenadoFF" type="checkbox" [(ngModel)] ="muestreo.formatoLlenadoCorrectoFF" title="seleccionar">
         </td>
         <td></td>
         <td></td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkGeocercaFF" type="checkbox" title="seleccionar">
+          <input id="chkGeocercaFF" type="checkbox" [(ngModel)] ="muestreo.cumpleGeocercaFF" title="seleccionar">
         </td>
         <td></td>
         <td class="checkBox-center">
-          <input id="chkRegistrosLegiblesFF" type="checkbox" title="seleccionar">
+          <input id="chkRegistrosLegiblesFF" type="checkbox" [(ngModel)] ="muestreo.registrosLegiblesFF" title="seleccionar">
         </td>
 
         <!--TABLA 7 TRACK RUTA (TR)-->
         <td></td>
-        <td class="checkBox-center">
-          <input id="chkPlacasTR" type="checkbox" title="seleccionar">
+        <td>     
         </td>
         <td></td>
         <td></td>
@@ -301,26 +325,25 @@
         <td></td>
         <td></td>
         <td></td>
-        <td class="checkBox-center">
-          <input id="chkClaveConalabTR" type="checkbox" title="seleccionar">
+        <td>   
         </td>
         <td></td>
         <td></td>
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <td class="checkBox-center">
-          <input id="chkFormatoLlenadoCC" type="checkbox" title="seleccionar">
+          <input id="chkFormatoLlenadoCC" type="checkbox" [(ngModel)] ="muestreo.llenadoCorrectoCC" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="chkRegistrosLegiblesCC" type="checkbox" title="seleccionar">
+          <input id="chkRegistrosLegiblesCC" type="checkbox" [(ngModel)] ="muestreo.registrosLegiblesCC" title="seleccionar">
         </td>
 
         <!--TABLA 9-->
         <td class="checkBox-center">
-          <input id="chkRechazado" type="checkbox" title="seleccionar">
+          <input id="chkRechazado" type="checkbox" [(ngModel)] ="muestreo.rechazo" title="seleccionar">
         </td>
         <td class="checkBox-center">
-          <input id="txtObservaciones" type="text" title="seleccionar">
+          <input id="txtObservaciones" type="text" [(ngModel)] ="muestreo.observacionesRechazo" title="seleccionar">
         </td>
 
       </tr>

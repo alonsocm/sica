@@ -36,7 +36,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Columna> = [
       { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new Filter(), },
+      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new Filter(), },
       { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new Filter(), },
       { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new Filter(), },
       { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new Filter(), },

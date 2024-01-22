@@ -181,11 +181,13 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
 
 
   exportarResultados(): void {
+    console.log(this.resultadosFiltrados);
     let muestreosSeleccionados = this.obtenerSeleccionadosDescarga();
-    if (muestreosSeleccionados.length === 0) {
+    if (muestreosSeleccionados.length === 0 && this.resultadosFiltrados.length == 0) {
       this.mostrarMensaje('Debe seleccionar al menos un monitoreo', 'warning');
       return this.hacerScroll();
     }
+    
 
     this.formatoService
       .exportarResultadosExcel(muestreosSeleccionados, this.esAdmin)
@@ -210,7 +212,9 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
   }
 
   obtenerSeleccionadosDescarga(): Array<any> {
+
     var selec = this.resultadosFiltrados.filter((f) => f.isChecked);  
+    selec = (selec.length == 0) ? this.resultadosFiltrados : selec;
     this.camposDescarga = [];
     if (selec.length > 0) {
       for (var i = 0; i < selec.length; i++) {

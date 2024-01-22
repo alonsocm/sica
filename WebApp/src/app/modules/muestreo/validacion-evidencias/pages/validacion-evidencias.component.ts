@@ -1,9 +1,9 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from '../../../../shared/services/base.service';
-import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
+import { validacionEvidencia } from 'src/app/interfaces/validacionEvidencia.interface';
 import { MuestreoService } from '../../liberacion/services/muestreo.service';
 
 
@@ -14,7 +14,7 @@ import { MuestreoService } from '../../liberacion/services/muestreo.service';
 })
 export class ValidacionEvidenciasComponent extends BaseService implements OnInit {
 
-  muestreosFiltrados: Array<Muestreo> = [];
+  muestreosFiltrados: Array<validacionEvidencia> = [];
   columnasBitacoraMuestreo: Array<Columna> = [];
   columnasCriteriosFotoMuesreo: Array<Columna> = [];
   columnasCriteriosFotoMuestras: Array<Columna> = [];
@@ -23,6 +23,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   columnasTrackRuta: Array<Columna> = [];
   columnasCadenaCustodia: Array<Columna> = [];
   columnasTabla9: Array<Columna> = [];
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(private muestreoService: MuestreoService) {
     super();
   }
@@ -164,4 +165,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   seleccionar() { }
 
   filtrar() { }
+  cargarArchivo(event: Event) { }
+  validacion() { }
+  limpiarFiltros() { }
 }

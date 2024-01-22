@@ -86,12 +86,12 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
   }
   seleccionar() { }
   
-  enviarmonitoreos(): void {    
+  enviarmonitoreos(): void {
+    console.log(this.resultadosFiltradosn);
     let resuladosenviados = this.Seleccionados(this.resultadosFiltradosn).map(
-      (m) => {
-        return m.muestreoId;
-      }
-    );
+      (m) => { return m.muestreoId; });
+    let totalmuestreos = this.Seleccionados(this.resultadosFiltradosn).filter(x => x.claveSitio);
+    console.log(totalmuestreos);
 
     if (resuladosenviados.length == 0) {
       this.hacerScroll();
@@ -107,12 +107,13 @@ export class AcumulacionResultadosComponent extends BaseService  implements OnIn
     )
       .subscribe({
         next: (response: any) => {
+          console.log(resuladosenviados);
           this.loading = true;
           if (response.succeded) {
             this.loading = false;
             this.cargarDatos();
             this.mostrarMensaje(
-              'Se enviaron ' + resuladosenviados.length + ' muestreos a la etapa de "Módulo inicial reglas" correctamente',
+              'Se enviaron los muestreos a la etapa de "Módulo inicial reglas" correctamente',
               'success'
             );
             this.hacerScroll();
