@@ -16,6 +16,7 @@
     <Folder Include="src\app\modules\muestreo\aprobacion\replicas-total\pages\" />
     <Folder Include="src\app\modules\muestreo\aprobacion\revision-resultado\services\" />
     <Folder Include="src\app\modules\muestreo\aprobacion\revision-resultado\pages\" />
+    <Folder Include="src\app\modules\muestreo\validacion-evidencias\services\" />
     <Folder Include="src\app\modules\usuario\services\" />
     <Folder Include="src\app\shared\tablaGral\" />
     <Folder Include="src\assets\images\map\" />

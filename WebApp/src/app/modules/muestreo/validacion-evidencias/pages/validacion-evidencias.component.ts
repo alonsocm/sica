@@ -1,10 +1,13 @@
-
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from '../../../../shared/services/base.service';
 import { validacionEvidencia } from 'src/app/interfaces/validacionEvidencia.interface';
-import { MuestreoService } from '../../liberacion/services/muestreo.service';
+import { ValidacionService } from '../services/validacion.service';
+
+
+import { FileService } from 'src/app/shared/services/file.service';
+const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 
 @Component({
@@ -23,8 +26,10 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   columnasTrackRuta: Array<Columna> = [];
   columnasCadenaCustodia: Array<Columna> = [];
   columnasTabla9: Array<Columna> = [];
+  archivo: any;
+
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
-  constructor(private muestreoService: MuestreoService) {
+  constructor(private validacionService: ValidacionService) {
     super();
   }
 
@@ -35,36 +40,36 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   definirColumnas() {
     let nombresColumnasTabla1: Array<Columna> = [
       { nombre: 'estatus', etiqueta: 'MUESTREO', orden: 1, filtro: new Filter(), },
-      { nombre: 'evidencias', etiqueta: 'SITIO', orden: 2, filtro: new Filter(), },
+      { nombre: 'sitio', etiqueta: 'SITIO', orden: 2, filtro: new Filter(), },
       { nombre: 'numeroEntrega', etiqueta: 'CLAVE CONALAB', orden: 3, filtro: new Filter(), },
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 4, filtro: new Filter(), },
       { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 5, filtro: new Filter(), },
       { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO REALIZO MUESTREO', orden: 6, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'CON EVENTUALIDADES', orden: 7, filtro: new Filter(), },
+      { nombre: 'eventualidad', etiqueta: 'CON EVENTUALIDADES', orden: 7, filtro: new Filter(), },
       { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMADA VISITA', orden: 8, filtro: new Filter(), },
       { nombre: 'fechaRealizacion', etiqueta: 'FECHA REAL VISITA', orden: 9, filtro: new Filter(), },
       { nombre: 'brigada', etiqueta: 'BRIGADA', orden: 10, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'CON QC DE MUESTREO', orden: 11, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'TIPO DE SUPERVISIÓN', orden: 12, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'OBSERVACIÓN DEL MUESTREO', orden: 13, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'TIPO DE EVENTUALIDAD', orden: 14, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'FECHA DE REPROGRAMACIÓN', orden: 15, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'OBSERVACIONES EVIDENCIA CONAGUA', orden: 16, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'OBSERVACIONES EVIDENCIA CONAGUA 2', orden: 17, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'OBSERVACIONES EVIDENCIA CONAGUA 3', orden: 18, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'EVIDENCIAS ESPERADAS', orden: 19, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'CUMPLE NÚMERO EVIDENCIAS QUE SE ESPERABAN', orden: 20, filtro: new Filter(), },
+      { nombre: 'conqc', etiqueta: 'CON QC DE MUESTREO', orden: 11, filtro: new Filter(), },
+      { nombre: 'tiposupervision', etiqueta: 'TIPO DE SUPERVISIÓN', orden: 12, filtro: new Filter(), },
+      { nombre: 'observacionmuestreo', etiqueta: 'OBSERVACIÓN DEL MUESTREO', orden: 13, filtro: new Filter(), },
+      { nombre: 'tipoEventualidad', etiqueta: 'TIPO DE EVENTUALIDAD', orden: 14, filtro: new Filter(), },
+      { nombre: 'fechaProgramacion', etiqueta: 'FECHA DE REPROGRAMACIÓN', orden: 15, filtro: new Filter(), },
+      { nombre: 'observaciones1', etiqueta: 'OBSERVACIONES EVIDENCIA CONAGUA', orden: 16, filtro: new Filter(), },
+      { nombre: 'observaciones2', etiqueta: 'OBSERVACIONES EVIDENCIA CONAGUA 2', orden: 17, filtro: new Filter(), },
+      { nombre: 'observaciones3', etiqueta: 'OBSERVACIONES EVIDENCIA CONAGUA 3', orden: 18, filtro: new Filter(), },
+      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS ESPERADAS', orden: 19, filtro: new Filter(), },
+      { nombre: 'cumpleevidencias', etiqueta: 'CUMPLE NÚMERO EVIDENCIAS QUE SE ESPERABAN', orden: 20, filtro: new Filter(), },
     ];
     this.columnas = nombresColumnasTabla1;
 
     /*let criteriosBitacoraMuestreo: Array<Columna>*/
     this.columnasBitacoraMuestreo
       = [
-      { nombre: 'fechaRealizacion', etiqueta: 'FOLIO', orden: 1, filtro: new Filter(), },
+      { nombre: 'folio', etiqueta: 'FOLIO', orden: 1, filtro: new Filter(), },
       { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 2, filtro: new Filter(), },
       { nombre: '', etiqueta: 'CUMPLE CON FECHA REALIZACIÓN', orden: 3, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'HORA INICIO', orden: 4, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'HORA FIN', orden: 5, filtro: new Filter(), },
+      { nombre: 'horainio', etiqueta: 'HORA INICIO', orden: 4, filtro: new Filter(), },
+      { nombre: 'horafin', etiqueta: 'HORA FIN', orden: 5, filtro: new Filter(), },
       { nombre: '', etiqueta: 'TIEMPO MÍNIMO DE MUESTREO', orden: 6, filtro: new Filter(), },
       { nombre: '', etiqueta: 'TIEMPO DE MUESTREO', orden: 7, filtro: new Filter(), },
       { nombre: '', etiqueta: 'CUMPLE TIEMPO DE MUESTREO', orden: 8, filtro: new Filter(), },
@@ -165,7 +170,45 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   seleccionar() { }
 
   filtrar() { }
-  cargarArchivo(event: Event) { }
+
+  cargarArchivo(event: Event) {
+    this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
+
+    if (this.archivo) {
+      this.loading = !this.loading;
+
+      this.validacionService.cargarArchivo(this.archivo[0]).subscribe({
+        next: (response: any) => {
+          if (response.data.correcto) {
+            this.loading = false;
+            this.mostrarMensaje(
+              'Archivo procesado correctamente.',
+              TIPO_MENSAJE.exito
+            );
+            this.resetInputFile(this.inputExcelMonitoreos);
+            //this.consultarMonitoreos();
+          }
+          else {
+            this.loading = false;
+            //this.numeroEntrega = response.data.numeroEntrega;
+            //this.anioOperacion = response.data.anio;
+            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
+          }
+        },
+        error: (error: any) => {
+          this.loading = false;
+          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
+          this.mostrarMensaje(
+            'Se encontraron errores en el archivo procesado.',
+            TIPO_MENSAJE.error
+          );
+          this.hacerScroll();
+          FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelMonitoreos);
+        },
+      });
+    }
+  }
   validacion() { }
   limpiarFiltros() { }
 }

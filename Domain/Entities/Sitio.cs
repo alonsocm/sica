@@ -29,6 +29,10 @@ public partial class Sitio
 
     public long? DireccionLrevisionId { get; set; }
 
+    public int? AcuiferoId { get; set; }
+
+    public virtual Acuifero? Acuifero { get; set; }
+
     public virtual CuencaDireccionesLocales CuencaDireccionesLocales { get; set; } = null!;
 
     public virtual OrganismoCuenca? CuencaRevision { get; set; }

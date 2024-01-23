@@ -185,4 +185,26 @@
             new KeyValuePair<string, string>("Tipo de limite a considerar", "LimiteConsiderado"),
         };
     }
+
+    public static class ExcelAvisoRealizacion
+    {
+        public static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("TipoSitio", "TipoSitio"),
+            new KeyValuePair<string, string>("ClaveMuestreo", "ClaveMuestreo"),
+            new KeyValuePair<string, string>("ClaveSitio", "ClaveSitio"),
+            new KeyValuePair<string, string>("Laboratorio", "Laboratorio"),
+            new KeyValuePair<string, string>("ConEventualidades", "ConEventualidades"),
+            new KeyValuePair<string, string>("FechaProgramada", "FechaProgramada"),
+            new KeyValuePair<string, string>("FechaRealVisita", "FechaRealVisita"),
+            new KeyValuePair<string, string>("BrigadaMuestreo", "BrigadaMuestreo"),
+            new KeyValuePair<string, string>("ConQCMuestreos", "ConQCMuestreos"),
+            new KeyValuePair<string, string>("FolioEventualidad", "FolioEventualidad"),
+            new KeyValuePair<string, string>("FechaAprobacionEventualidad", "FechaAprobacionEventualidad"),
+            new KeyValuePair<string, string>("TipoSupervision", "TipoSupervision"),
+            new KeyValuePair<string, string>("DocumentoEventualidad", "DocumentoEventualidad"),
+            new KeyValuePair<string, string>("TipoEventualidad", "TipoEventualidad"),
+            new KeyValuePair<string, string>("FechaReprogramación", "FechaReprogramación"),
+        };
+    }
 }

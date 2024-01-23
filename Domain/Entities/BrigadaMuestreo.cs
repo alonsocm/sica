@@ -11,5 +11,15 @@ public partial class BrigadaMuestreo
 
     public bool Activo { get; set; }
 
+    public long? LaboratorioId { get; set; }
+
+    public string? Lider { get; set; }
+
+    public string? Placas { get; set; }
+
+    public virtual ICollection<AvisoRealizacion> AvisoRealizacion { get; set; } = new List<AvisoRealizacion>();
+
+    public virtual Laboratorios? Laboratorio { get; set; }
+
     public virtual ICollection<ProgramaMuestreo> ProgramaMuestreo { get; set; } = new List<ProgramaMuestreo>();
 }

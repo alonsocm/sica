@@ -60,4 +60,6 @@ public partial class Muestreo
     public virtual Usuario? UsuarioRevisionOcdl { get; set; }
 
     public virtual Usuario? UsuarioRevisionSecaia { get; set; }
+
+    public virtual ICollection<ValidacionEvidencia> ValidacionEvidencia { get; set; } = new List<ValidacionEvidencia>();
 }

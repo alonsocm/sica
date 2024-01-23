@@ -48,4 +48,6 @@ public partial class Usuario
     public virtual Perfil Perfil { get; set; } = null!;
 
     public virtual ICollection<SupervisionMuestreo> SupervisionMuestreo { get; set; } = new List<SupervisionMuestreo>();
+
+    public virtual ICollection<ValidacionEvidencia> ValidacionEvidencia { get; set; } = new List<ValidacionEvidencia>();
 }

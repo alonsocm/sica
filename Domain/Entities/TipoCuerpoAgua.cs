@@ -13,6 +13,12 @@ public partial class TipoCuerpoAgua
 
     public bool Activo { get; set; }
 
+    public string? Frecuencia { get; set; }
+
+    public int? EvidenciasEsperadas { get; set; }
+
+    public int? TiempoMinimoMuestreo { get; set; }
+
     public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = new List<CuerpoTipoSubtipoAgua>();
 
     public virtual ICollection<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; } = new List<ParametrosSitioTipoCuerpoAgua>();

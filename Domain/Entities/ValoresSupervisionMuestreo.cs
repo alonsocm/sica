@@ -9,11 +9,11 @@ public partial class ValoresSupervisionMuestreo
 
     public int CriterioSupervisionId { get; set; }
 
+    public string Resultado { get; set; } = null!;
+
     public string? ObservacionesCriterio { get; set; }
 
     public long SupervisionMuestreoId { get; set; }
-
-    public string Resultado { get; set; } = null!;
 
     public virtual SupervisionMuestreo SupervisionMuestreo { get; set; } = null!;
 }

@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs
 {
-    public class AvisoRealizacion
+    public class AvisoRealizacionDto
     {
         public long Id { get; set; }
         public string ClaveMuestreo { get; set; }
@@ -18,8 +18,9 @@
         public string? DocumentoEventualidad { get; set; }
         public string? TipoEventualidad { get; set; }
         public string? FechaReprogramación { get; set; }
+        public int Linea { get; set; }
 
-        public AvisoRealizacion()
+        public AvisoRealizacionDto()
         {
             this.Id = 0;
             this.ClaveMuestreo = string.Empty;

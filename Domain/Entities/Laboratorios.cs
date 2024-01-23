@@ -11,6 +11,10 @@ public partial class Laboratorios
 
     public string? Nomenclatura { get; set; }
 
+    public virtual ICollection<AvisoRealizacion> AvisoRealizacion { get; set; } = new List<AvisoRealizacion>();
+
+    public virtual ICollection<BrigadaMuestreo> BrigadaMuestreo { get; set; } = new List<BrigadaMuestreo>();
+
     public virtual ICollection<LimiteParametroLaboratorio> LimiteParametroLaboratorioLaboratorio { get; set; } = new List<LimiteParametroLaboratorio>();
 
     public virtual ICollection<LimiteParametroLaboratorio> LimiteParametroLaboratorioLaboratorioMuestreo { get; set; } = new List<LimiteParametroLaboratorio>();
