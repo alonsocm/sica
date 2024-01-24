@@ -259,10 +259,10 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.ClaveSitio).HasMaxLength(150);
             entity.Property(e => e.ConQcmuestreo).HasColumnName("ConQCMuestreo");
             entity.Property(e => e.DocumentoEventualidad).HasMaxLength(100);
-            entity.Property(e => e.FechaAprobacionEventualidad).HasColumnType("datetime");
-            entity.Property(e => e.FechaProgramada).HasColumnType("datetime");
-            entity.Property(e => e.FechaRealVisita).HasColumnType("datetime");
-            entity.Property(e => e.FechaReprogramacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaAprobacionEventualidad).HasColumnType("date");
+            entity.Property(e => e.FechaProgramada).HasColumnType("date");
+            entity.Property(e => e.FechaRealVisita).HasColumnType("date");
+            entity.Property(e => e.FechaReprogramacion).HasColumnType("date");
             entity.Property(e => e.FolioEventualidad).HasMaxLength(30);
             entity.Property(e => e.TipoEventualidad).HasMaxLength(100);
 
@@ -1398,6 +1398,8 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<TipoSupervision>(entity =>
         {
+            entity.ToTable("TipoSupervision", "cat");
+
             entity.Property(e => e.Descripcion).HasMaxLength(30);
         });
 

@@ -190,6 +190,7 @@
     {
         public static List<KeyValuePair<string, string>> keyValues = new()
         {
+            new KeyValuePair<string, string>("Selecciona","Id"),
             new KeyValuePair<string, string>("TipoSitio", "TipoSitio"),
             new KeyValuePair<string, string>("ClaveMuestreo", "ClaveMuestreo"),
             new KeyValuePair<string, string>("ClaveSitio", "ClaveSitio"),
@@ -204,7 +205,7 @@
             new KeyValuePair<string, string>("TipoSupervision", "TipoSupervision"),
             new KeyValuePair<string, string>("DocumentoEventualidad", "DocumentoEventualidad"),
             new KeyValuePair<string, string>("TipoEventualidad", "TipoEventualidad"),
-            new KeyValuePair<string, string>("FechaReprogramación", "FechaReprogramación"),
+            new KeyValuePair<string, string>("FechaReprogramación", "FechaReprogramacion"),
         };
     }
 }

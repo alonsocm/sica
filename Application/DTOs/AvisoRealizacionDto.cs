@@ -17,7 +17,7 @@
         public string TipoSupervision { get; set; }
         public string? DocumentoEventualidad { get; set; }
         public string? TipoEventualidad { get; set; }
-        public string? FechaReprogramación { get; set; }
+        public string? FechaReprogramacion { get; set; }
         public int Linea { get; set; }
 
         public AvisoRealizacionDto()
@@ -33,6 +33,14 @@
             this.BrigadaMuestreo = string.Empty;
             this.ConQCMuestreos = false;
             this.TipoSupervision = string.Empty;
+
+            this.FolioEventualidad = null;
+            this.FechaAprobacionEventualidad = null;
+            this.DocumentoEventualidad = null;
+            this.TipoEventualidad = null;
+            this.FechaReprogramacion = null;
+            this.Linea = 0;
+
 
 
 
