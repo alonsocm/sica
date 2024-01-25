@@ -19,7 +19,7 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 export class ValidacionEvidenciasComponent extends BaseService implements OnInit {
 
   muestreosFiltrados: Array<validacionEvidencia> = [];
-  muestreosaValidr: Array<any> = [];
+  muestreosaValidr: Array<vwValidacionEvidencia> = [];
   columnasBitacoraMuestreo: Array<Columna> = [];
   columnasCriteriosFotoMuesreo: Array<Columna> = [];
   columnasCriteriosFotoMuestras: Array<Columna> = [];
