@@ -2,10 +2,10 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from '../../../../shared/services/base.service';
-import { validacionEvidencia } from 'src/app/interfaces/validacionEvidencia.interface';
+import { validacionEvidencia } from 'src/app/interfaces/validacionEvidencias/validacionEvidencia.interface';
 import { ValidacionService } from '../services/validacion.service';
 import { EvidenciasService } from '../../evidencias/services/evidencias.service';
-
+import { vwValidacionEvidencia } from 'src/app/interfaces/validacionEvidencias/vwValidacionEvidencia.interface';
 
 import { FileService } from 'src/app/shared/services/file.service';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
@@ -19,6 +19,7 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 export class ValidacionEvidenciasComponent extends BaseService implements OnInit {
 
   muestreosFiltrados: Array<validacionEvidencia> = [];
+  muestreosaValidr: Array<any> = [];
   columnasBitacoraMuestreo: Array<Columna> = [];
   columnasCriteriosFotoMuesreo: Array<Columna> = [];
   columnasCriteriosFotoMuestras: Array<Columna> = [];
@@ -36,6 +37,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
 
   ngOnInit(): void {
     this.definirColumnas();
+    this.obtenerDatos();
   }
 
   definirColumnas() {
@@ -212,8 +214,17 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }
   validacion() { }
   limpiarFiltros() { }
-  obtenerDatos() {
 
+  private obtenerDatos(): void {
+    this.validacionService.obtenerDatosaValidar().subscribe({
+      next: (response: any) => {
+       
+        this.muestreosaValidr = response.data;
+        console.log(this.muestreosaValidr);
+        
+      },
+      error: (error) => { },
+    });
   }
   
 }
