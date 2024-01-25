@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -190,7 +192,9 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwSitios> VwSitios { get; set; }
 
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
 
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -1780,7 +1784,99 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<VwValidacionEviencias>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_ValidacionEviencias");
 
+            entity.Property(e => e.BrigadaProgramaMuestreo)
+                .HasMaxLength(50)
+                .HasColumnName("BRIGADA PROGRAMA MUESTREO");
+            entity.Property(e => e.ClaveBrigadaArm)
+                .HasMaxLength(50)
+                .HasColumnName("CLAVE BRIGADA ARM");
+            entity.Property(e => e.ClaveConalab)
+                .HasMaxLength(150)
+                .HasColumnName("Clave Conalab");
+            entity.Property(e => e.ClaveConalbaArm)
+                .HasMaxLength(150)
+                .HasColumnName("Clave CONALBA ARM");
+            entity.Property(e => e.ClaveMuestreo)
+                .HasMaxLength(100)
+                .HasColumnName("Clave Muestreo");
+            entity.Property(e => e.ClaveMuestreoArm)
+                .HasMaxLength(100)
+                .HasColumnName("CLAVE MUESTREO ARM");
+            entity.Property(e => e.ConQcmuestreo).HasColumnName("ConQCMuestreo");
+            entity.Property(e => e.CumpleClaveBrigada)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("CUMPLE CLAVE BRIGADA");
+            entity.Property(e => e.CumpleClaveConalab)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("CUMPLE CLAVE CONALAB");
+            entity.Property(e => e.CumpleClaveMuestreo)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("CUMPLE CLAVE MUESTREO");
+            entity.Property(e => e.CumpleEvidencias)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("CUMPLE EVIDENCIAS");
+            entity.Property(e => e.CumpleFechaRealizacion)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("CUMPLE FECHA REALIZACION");
+            entity.Property(e => e.EvidenciasEsperadas).HasColumnName("Evidencias esperadas");
+            entity.Property(e => e.FechaProgramadaVisita)
+                .HasColumnType("date")
+                .HasColumnName("Fecha Programada Visita");
+            entity.Property(e => e.FechaRealVisita)
+                .HasColumnType("date")
+                .HasColumnName("Fecha Real Visita");
+            entity.Property(e => e.FechaRealizacion)
+                .HasColumnType("date")
+                .HasColumnName("Fecha Realizacion");
+            entity.Property(e => e.FechaReprogramacion).HasColumnType("date");
+            entity.Property(e => e.HoraFinMuestreo).HasColumnName("Hora Fin Muestreo");
+            entity.Property(e => e.HoraIncioMuestreo).HasColumnName("Hora Incio Muestreo");
+            entity.Property(e => e.Laboratorio)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Lat1MuestreoPrograma).HasColumnName("LAT 1 MUESTREO PROGRAMA");
+            entity.Property(e => e.LatSitioResultado)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("LAT SITIO RESULTADO");
+            entity.Property(e => e.LiderBrigadaArm)
+                .HasMaxLength(100)
+                .HasColumnName("LIDER BRIGADA ARM");
+            entity.Property(e => e.LiderBrigadaBase)
+                .HasMaxLength(100)
+                .HasColumnName("LIDER BRIGADA BASE");
+            entity.Property(e => e.Log1MuestreoPrograma).HasColumnName("LOG 1 MUESTREO PROGRAMA");
+            entity.Property(e => e.LongSitioResultado)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("LONG SITIO RESULTADO");
+            entity.Property(e => e.PlacasDeMuestreo)
+                .HasMaxLength(10)
+                .HasColumnName("PLACAS DE MUESTREO");
+            entity.Property(e => e.Sitio).HasMaxLength(250);
+            entity.Property(e => e.TiempoMinimoMuestreo).HasColumnName("Tiempo Minimo Muestreo");
+            entity.Property(e => e.TipoCuerpoAgua)
+                .HasMaxLength(50)
+                .HasColumnName("Tipo Cuerpo Agua");
+            entity.Property(e => e.TipoEventualidad).HasMaxLength(100);
+            entity.Property(e => e.TipoSupervision)
+                .HasMaxLength(30)
+                .HasColumnName("Tipo Supervision");
+            entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
+        });
+
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

@@ -1,8 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Features.Operacion.ValidacionEvidencias.Commands;
+using Application.Features.Operacion.ValidacionEvidencias.Queries;
 using Application.Interfaces.IRepositories;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 using Shared.Utilities.Services;
 
 namespace WebAPI.Controllers.v1.Operacion
@@ -47,7 +49,13 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new CargaARMCommand { Muestreos = registros }));
         }
 
+        [HttpGet]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> ObtenerDatosGenerales() {
 
+            return Ok(await Mediator.Send(new GetValidacionEvidenciasQuery()));
+
+        }
 
 
     }

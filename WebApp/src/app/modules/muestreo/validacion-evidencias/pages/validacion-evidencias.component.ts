@@ -4,6 +4,7 @@ import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from '../../../../shared/services/base.service';
 import { validacionEvidencia } from 'src/app/interfaces/validacionEvidencia.interface';
 import { ValidacionService } from '../services/validacion.service';
+import { EvidenciasService } from '../../evidencias/services/evidencias.service';
 
 
 import { FileService } from 'src/app/shared/services/file.service';
@@ -29,7 +30,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   archivo: any;
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
-  constructor(private validacionService: ValidacionService) {
+  constructor(private validacionService: ValidacionService, evidenciaService: EvidenciasService) {
     super();
   }
 
@@ -211,4 +212,8 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }
   validacion() { }
   limpiarFiltros() { }
+  obtenerDatos() {
+
+  }
+  
 }

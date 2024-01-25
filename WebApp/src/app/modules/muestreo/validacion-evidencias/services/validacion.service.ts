@@ -16,5 +16,9 @@ export class ValidacionService {
     return this.http.post(environment.apiUrl + '/ValidacionEvidencias', formData);
   }
 
+  obtenerDatosaValidar() {
+    return this.http.get(environment.apiUrl + '/ObtenerDatosGenerales');
+  }
+
 
 }
