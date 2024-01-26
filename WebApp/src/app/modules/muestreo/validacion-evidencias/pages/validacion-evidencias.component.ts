@@ -18,7 +18,7 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 })
 export class ValidacionEvidenciasComponent extends BaseService implements OnInit {
 
-  muestreosFiltrados: Array<validacionEvidencia> = [];
+  muestreosFiltrados: Array<vwValidacionEvidencia> = [];
   muestreosaValidr: Array<vwValidacionEvidencia> = [];
   columnasBitacoraMuestreo: Array<Columna> = [];
   columnasCriteriosFotoMuesreo: Array<Columna> = [];
@@ -36,6 +36,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }
 
   ngOnInit(): void {
+    console.log(this.muestreosaValidr);
     this.definirColumnas();
     this.obtenerDatos();
   }
@@ -214,13 +215,14 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }
   validacion() { }
   limpiarFiltros() { }
+  onVerMapaClick(muestreo: string) { }
 
   private obtenerDatos(): void {
     this.validacionService.obtenerDatosaValidar().subscribe({
       next: (response: any) => {
-       
-        this.muestreosaValidr = response.data;
-        console.log(this.muestreosaValidr);
+
+        this.muestreosFiltrados = response.data;
+        console.log(this.muestreosFiltrados);
         
       },
       error: (error) => { },

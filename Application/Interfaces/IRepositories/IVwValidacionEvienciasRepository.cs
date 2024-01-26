@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.EvidenciasMuestreo;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
