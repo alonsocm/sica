@@ -52,49 +52,49 @@
         </th>
         <!--TABLA 1-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnas">
-          {{columna.etiqueta}}    
+          {{columna.etiqueta}}
         </th>
 
         <!--TABLA 2 CRITERIOS BITACORA DE MUESTREO (BM)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #FFF9C4" scope="col" *ngFor="let columna of this.columnasBitacoraMuestreo">
           {{columna.etiqueta}}
-          
+
         </th>
 
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D1F2EB" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuesreo">
-          {{columna.etiqueta}}          
+          {{columna.etiqueta}}
         </th>
 
         <!--TABLA 4 CRITERIOS FOTO DE AFORO (FA)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #F8BBD0" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuestras">
-          {{columna.etiqueta}}          
+          {{columna.etiqueta}}
         </th>
 
         <!--TABLA 5 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#C8E6C9" scope="col" *ngFor="let columna of this.columnasCriteriosFotoAforo">
-          {{columna.etiqueta}}          
+          {{columna.etiqueta}}
         </th>
 
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #BBDEFB" scope="col" *ngFor="let columna of this.columnasFormatoAForo">
-          {{columna.etiqueta}}          
+          {{columna.etiqueta}}
         </th>
 
         <!--TABLA 7 TRACK RUTA (TR)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #B2DFDB" scope="col" *ngFor="let columna of this.columnasTrackRuta">
-          {{columna.etiqueta}}          
+          {{columna.etiqueta}}
         </th>
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#FFE0B2" scope="col" *ngFor="let columna of this.columnasCadenaCustodia">
-          {{columna.etiqueta}}          
+          {{columna.etiqueta}}
         </th>
 
         <!--TABLA 9-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #CFD8DC" scope="col" *ngFor="let columna of this.columnasTabla9">
           {{columna.etiqueta}}
-          
+
         </th>
         <th></th>
       </tr>
@@ -110,49 +110,49 @@
         <td>{{muestreo.claveMuestreo}}</td>
         <td>{{muestreo.sitio}}</td>
         <td>{{muestreo.claveConalab}}</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{muestreo.tipoCuerpoAgua}}</td>
+        <td>{{muestreo.laboratorio}}</td>
+        <td></td>  <!--laboratorio que realizo el muestreo-->
         <td>{{(muestreo.conEventualidades == false)?"NO":"SI"}}</td>
         <td>{{muestreo.fechaProgramadaVisita}}</td>
         <td>{{muestreo.fechaRealVisita}}</td>
         <td>{{muestreo.brigadaProgramaMuestreo}}</td>
         <td>{{(muestreo.conQcmuestreo == false ) ? "NO": "SI"}}</td>
         <td>{{muestreo.tipoSupervision}}</td>
-        <td></td>
+        <td></td> <!--observacion del muestreo-->
         <td>{{muestreo.tipoEventualidad}}</td>
         <td>{{muestreo.fechaReprogramacion}}</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td></td> <!--observacion evidencias conagua-->
+        <td></td> <!--observacion evidencias conagua 2-->
+        <td></td> <!--observacion evidencias conagua 3 -->
         <td>{{muestreo.evidenciasEsperadas}}</td>
-        <td>{{muestreo.cumpleEvidencias}}</td>
-
+        <td>{{muestreo.cumpleEvidencias}}</td> <!--BASE-->
         <!--TABLA 2 CRITERIOS BTACORA DE MUESTREO (BM)-->
 
         <td class="checkBox-center">
           <input id="chkFolio" type="checkbox" [(ngModel)]="muestreo.folioBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td>{{muestreo.fechaRealizacion}}</td>
-        <td>{{muestreo.cumpleFechaRealizacion}}</td>
+        <td>{{muestreo.cumpleFechaRealizacion}}</td> <!--BASE-->
         <td>{{muestreo.horaIncioMuestreo}}</td>
         <td>{{muestreo.horaFinMuestreo}}</td>
         <td>{{muestreo.tiempoMinimoMuestreo}}</td>
-        <td></td>
-        <td></td>
+        <td>{{muestreo.calculo}}</td>
+        <td>{{muestreo.cumpleTiempoMuestreo}}</td> <!--cumple tiempo muestreo--> <!--BASE-->
+
         <td>{{muestreo.claveConalbaArm}}</td>
-        <td>          {{muestreo.cumpleClaveConalab}}        </td>
+        <td>{{muestreo.cumpleClaveConalab}}</td> <!--BASE-->
         <td>{{muestreo.claveMuestreoArm}}</td>
-        <td>          {{muestreo.cumpleClaveMuestreo}}        </td>
+        <td>{{muestreo.cumpleClaveMuestreo}}</td> <!--BASE-->
         <td>{{muestreo.liderBrigadaArm}}</td>
         <td>{{muestreo.liderBrigadaBase}}</td>
         <td class="checkBox-center">
           <input id="chkLiderBrigada" type="checkbox" [(ngModel)]="muestreo.cumpleLiderBrigadaBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td>{{muestreo.claveBrigadaArm}}</td>
         <td>
           {{muestreo.cumpleClaveBrigada}}
-        </td>
+        </td>  <!--BASE-->
         <td>{{muestreo.placasDeMuestreo}}</td>
         <td>{{muestreo.lat1MuestreoPrograma}}</td>
         <td>{{muestreo.log1MuestreoPrograma}}</td>
@@ -161,7 +161,7 @@
         <td>distancia</td>
         <td class="checkBox-center">
           <input id="chkGeocerca" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td>
           <button type="button" class="btn-action btn-secondary-action mr-1"
                   (click)="onVerMapaClick(muestreo.claveMuestreo, muestreo.lstEvidencias)">
@@ -170,87 +170,82 @@
         </td>
         <td class="checkBox-center">
           <input id="chkCalibracion" type="checkbox" [(ngModel)]="muestreo.calibracionVerificacionEquiposBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistroResultados" type="checkbox" [(ngModel)]="muestreo.registroResultadosCampoBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFirmadoCancelado" type="checkbox" [(ngModel)]="muestreo.firmadoyCanceladoBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotografiaGPS" type="checkbox" [(ngModel)]="muestreo.fotografiaGPSPuntoMuestreoBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistrosVisibles" type="checkbox" [(ngModel)]="muestreo.registrosVisiblesBM" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
         <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
         <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
-        <td></td>
-        <td></td>
+        <td></td> <!--FECHA-->
+        <td></td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFM" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkLiderBrigadaFM" type="checkbox" [(ngModel)]="muestreo.liderBrigadaCuerpoAguaFM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotoUnicaFM" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFM" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 4 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
         <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
-        <td></td>
-        <td></td>
+        <td></td> <!--FECHA-->
+        <td></td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFS" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFS" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistrosRecipientesFS" type="checkbox" [(ngModel)]="muestreo.registroRecipientesFS" title="seleccionar">
-        </td>
+        </td>  <!--BASE-->
         <td class="checkBox-center">
           <input id="chkMuestrasPreservadasFS" type="checkbox" [(ngModel)]="muestreo.muestrasPreservadasFS" title="seleccionar">
-        </td>
+        </td>  <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotoUnicaFS" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFS" title="seleccionar">
-        </td>
-
+        </td>  <!--BASE-->
         <!--TABLA 5 FOTO DE AFORO-->
         <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
         <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
-        <td></td>
-        <td></td>
+        <td></td> <!--FECHA-->
+        <td></td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFA" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFA" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkMetodologiaFA" type="checkbox" [(ngModel)]="muestreo.metodologiaFA" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotoUnicaFA" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFA" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <td class="checkBox-center">
           <input id="chkFormatoLlenadoFF" type="checkbox" [(ngModel)]="muestreo.formatoLlenadoCorrectoFF" title="seleccionar">
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        </td> <!--BASE-->
+        <td></td> <!--LATITUD FORMATO DE AFORO-->
+        <td></td> <!--LONGITUD FORMATO DE AFORO-->
+        <td></td> <!--DISTANCIA A PUNTO DE AFORO-->
         <td class="checkBox-center">
           <input id="chkGeocercaFF" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaFF" title="seleccionar">
-        </td>
-        <td></td>
+        </td> <!--BASE-->
+        <td></td>  <!--CAUDAL EN m3/s-->
         <td class="checkBox-center">
           <input id="chkRegistrosLegiblesFF" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesFF" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 7 TRACK RUTA (TR)-->
         <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].placas : ""}}</td>
         <td>
-        </td>
+        </td> <!--CUMPLE PLACAS DE LA UNIDAD CumplePlacasTr-->
         <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].laboratorio : ""}}</td>
         <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].fechaInicio : ""}}</td>
         <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].horaInicio : ""}}</td>
@@ -258,8 +253,8 @@
         <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].horaFinal : ""}}</td>
         <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].nombreArchivo : ""}}</td>
         <td>
-        </td>
-        <td></td>
+        </td> <!--CUMPLE CLAVE CONALABTR cumpleClaveConalabTr-->
+        <td></td> <!--POSICION MAS CERCANA AL PUNTO DE MUESTREO-->
         <td>
           <button type="button" class="btn-action btn-secondary-action mr-1"
                   (click)="onVerMapaClick(muestreo.claveMuestreo, muestreo.lstEvidencias)">
@@ -270,18 +265,17 @@
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <td class="checkBox-center">
           <input id="chkFormatoLlenadoCC" type="checkbox" [(ngModel)]="muestreo.llenadoCorrectoCC" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistrosLegiblesCC" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesCC" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 9-->
         <td class="checkBox-center">
           <input id="chkRechazado" type="checkbox" [(ngModel)]="muestreo.rechazo" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="txtObservaciones" type="text" [(ngModel)]="muestreo.observacionesRechazo" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
 
         <td>
           <button type="button" class="btn-action btn-secondary-action mr-1"

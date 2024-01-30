@@ -194,7 +194,6 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
 
-    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -1829,6 +1828,9 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(2)
                 .IsUnicode(false)
                 .HasColumnName("CUMPLE FECHA REALIZACION");
+            entity.Property(e => e.CumpleTiempoMuestreo)
+                .HasMaxLength(2)
+                .IsUnicode(false);
             entity.Property(e => e.EvidenciasEsperadas).HasColumnName("Evidencias esperadas");
             entity.Property(e => e.FechaProgramadaVisita)
                 .HasColumnType("date")
@@ -1875,8 +1877,6 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
         });
-
-        
         OnModelCreatingPartial(modelBuilder);
     }
 

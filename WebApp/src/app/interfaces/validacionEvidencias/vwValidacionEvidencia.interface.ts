@@ -1,6 +1,8 @@
 
 export interface vwValidacionEvidencia {
-
+  muestreoId: number;
+  calculo: number;
+  cumpleTiempoMuestreo: string;
   claveMuestreo: string;
   sitio: string;
   claveConalab: string;
@@ -64,6 +66,8 @@ export interface vwValidacionEvidencia {
   registrosLegiblesCC: boolean;
   rechazo: boolean;
   observacionesRechazo: boolean;
+  cumplePlacasTr: boolean;
+  cumpleClaveConalabTr: boolean;
 
 
 

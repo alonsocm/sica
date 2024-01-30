@@ -34,6 +34,8 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   archivo: any;
   puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
 
+
+
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(private validacionService: ValidacionService,
     private evidenciaService: EvidenciasService,
@@ -170,7 +172,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     ];
 
     this.columnasTabla9 = [
-      { nombre: '', etiqueta: 'EVIDENCIA DE RECHAZO', orden: 1, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'RECHAZO', orden: 1, filtro: new Filter(), },
       { nombre: '', etiqueta: 'OBSERVACIONES RECHAZO', orden: 2, filtro: new Filter(), },
     ];
 
@@ -289,8 +291,18 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     });
   }
 
-  validar(muestreo: vwValidacionEvidencia) {
+  validar(muestreo: any) {
     console.log(muestreo);
+    let usuarioId = localStorage.getItem('idUsuario');
+    
+   
+    this.validacionService.validarMuestreo(muestreo, usuarioId).subscribe({
+      next: (response: any) => {
+        console.log(response.data);
+      },
+      error: (response: any) => { },
+    });
+    
   }
   
 }

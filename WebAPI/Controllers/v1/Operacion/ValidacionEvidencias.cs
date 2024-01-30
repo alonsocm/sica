@@ -1,7 +1,9 @@
 ﻿using Application.DTOs;
+using Application.DTOs.EvidenciasMuestreo;
 using Application.Features.Operacion.ValidacionEvidencias.Commands;
 using Application.Features.Operacion.ValidacionEvidencias.Queries;
 using Application.Interfaces.IRepositories;
+using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Win32;
@@ -57,12 +59,11 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
-        [HttpPost]
-        [DisableRequestSizeLimit]
-        public async Task<IActionResult> ValidarMuestreo()
+        [HttpPost("validarMuestreo")]
+        public async Task<IActionResult> Post(vwValidacionEvienciasDto muestreo, long usuarioId)
         {
 
-            return Ok(await Mediator.Send(new GetValidacionEvidenciasQuery()));
+            return Ok(await Mediator.Send(new ValidarMuestreoCommand { Muestreos = muestreo, usuarioId = usuarioId }));
 
         }
 

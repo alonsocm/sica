@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.IRepositories
 {
-    public interface IValidacionEvidenciaRepository: IRepository<ValidacionEvidencia>
+    public interface IValidacionEvidenciaRepository : IRepository<ValidacionEvidencia>
     {
-        
-            ValidacionEvidencia ConvertirValidacionEvidencia(vwValidacionEvienciasDto validacionMuestreo);
+        ValidacionEvidencia ConvertirValidacionEvidencia(vwValidacionEvienciasDto validacionMuestreo, long usuarioId);
     }
 }
