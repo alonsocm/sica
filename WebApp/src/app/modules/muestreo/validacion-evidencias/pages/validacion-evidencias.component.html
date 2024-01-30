@@ -42,7 +42,7 @@
         <th style="background-color: #42A5F5; text-align:center" colspan="7"><b>FORMATO DE AFORO</b></th>
         <th style="background-color: #26A69A; text-align:center" colspan="11"><b>TRACK DE RUTA</b></th>
         <th style="background-color: #FFA726; text-align:center" colspan="2"><b>CADENA DE CUSTODIA</b></th>
-        <th style="background-color: #78909C; text-align:center" colspan="2"><b>VALIDACIÓN</b></th>
+        <th style="background-color: #78909C; text-align:center" colspan="3"><b>VALIDACIÓN</b></th>
       </tr>
       <tr>
         <th style="text-align: center; background-color: #D4E6F1" class="checkBox-center">
@@ -52,120 +52,51 @@
         </th>
         <!--TABLA 1-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnas">
-          {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          {{columna.etiqueta}}    
         </th>
 
         <!--TABLA 2 CRITERIOS BITACORA DE MUESTREO (BM)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #FFF9C4" scope="col" *ngFor="let columna of this.columnasBitacoraMuestreo">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          
         </th>
 
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D1F2EB" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuesreo">
-          {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          {{columna.etiqueta}}          
         </th>
 
         <!--TABLA 4 CRITERIOS FOTO DE AFORO (FA)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #F8BBD0" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuestras">
-          {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          {{columna.etiqueta}}          
         </th>
 
         <!--TABLA 5 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#C8E6C9" scope="col" *ngFor="let columna of this.columnasCriteriosFotoAforo">
-          {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          {{columna.etiqueta}}          
         </th>
 
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #BBDEFB" scope="col" *ngFor="let columna of this.columnasFormatoAForo">
-          {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          {{columna.etiqueta}}          
         </th>
 
         <!--TABLA 7 TRACK RUTA (TR)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #B2DFDB" scope="col" *ngFor="let columna of this.columnasTrackRuta">
-          {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          {{columna.etiqueta}}          
         </th>
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#FFE0B2" scope="col" *ngFor="let columna of this.columnasCadenaCustodia">
-          {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          {{columna.etiqueta}}          
         </th>
 
         <!--TABLA 9-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #CFD8DC" scope="col" *ngFor="let columna of this.columnasTabla9">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+          
         </th>
+        <th></th>
       </tr>
 
     </thead>
@@ -182,11 +113,11 @@
         <td></td>
         <td></td>
         <td></td>
-        <td>{{muestreo.conEventualidades}}</td>
+        <td>{{(muestreo.conEventualidades == false)?"NO":"SI"}}</td>
         <td>{{muestreo.fechaProgramadaVisita}}</td>
         <td>{{muestreo.fechaRealVisita}}</td>
         <td>{{muestreo.brigadaProgramaMuestreo}}</td>
-        <td>{{muestreo.conQcmuestreo}}</td>
+        <td>{{(muestreo.conQcmuestreo == false ) ? "NO": "SI"}}</td>
         <td>{{muestreo.tipoSupervision}}</td>
         <td></td>
         <td>{{muestreo.tipoEventualidad}}</td>
@@ -215,7 +146,8 @@
         <td>          {{muestreo.cumpleClaveMuestreo}}        </td>
         <td>{{muestreo.liderBrigadaArm}}</td>
         <td>{{muestreo.liderBrigadaBase}}</td>
-        <td class="checkBox-center">          <input id="chkLiderBrigada" type="checkbox" [(ngModel)]="muestreo.cumpleLiderBrigadaBM" title="seleccionar">
+        <td class="checkBox-center">
+          <input id="chkLiderBrigada" type="checkbox" [(ngModel)]="muestreo.cumpleLiderBrigadaBM" title="seleccionar">
         </td>
         <td>{{muestreo.claveBrigadaArm}}</td>
         <td>
@@ -232,7 +164,7 @@
         </td>
         <td>
           <button type="button" class="btn-action btn-secondary-action mr-1"
-                  (click)="onVerMapaClick(muestreo.claveMuestreo)">
+                  (click)="onVerMapaClick(muestreo.claveMuestreo, muestreo.lstEvidencias)">
             Ver mapa
           </button>
         </td>
@@ -253,8 +185,8 @@
         </td>
 
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
-        <td></td>
-        <td></td>
+        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
         <td></td>
         <td></td>
         <td class="checkBox-center">
@@ -268,8 +200,8 @@
         </td>
 
         <!--TABLA 4 CRITERIOS FOTO DE MUESTRAS (FS)-->
-        <td></td>
-        <td></td>
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
         <td></td>
         <td></td>
         <td class="checkBox-center">
@@ -285,9 +217,9 @@
           <input id="chkFotoUnicaFS" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFS" title="seleccionar">
         </td>
 
-        <!--TABLA 5 CRITERIOS FOTO DE MUESTRAS (FS)-->
-        <td></td>
-        <td></td>
+        <!--TABLA 5 FOTO DE AFORO-->
+        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
         <td></td>
         <td></td>
         <td class="checkBox-center">
@@ -316,19 +248,24 @@
         </td>
 
         <!--TABLA 7 TRACK RUTA (TR)-->
-        <td></td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].placas : ""}}</td>
+        <td>
+        </td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].laboratorio : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].fechaInicio : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].horaInicio : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].fechaFinal : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].horaFinal : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].nombreArchivo : ""}}</td>
         <td>
         </td>
         <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
         <td>
+          <button type="button" class="btn-action btn-secondary-action mr-1"
+                  (click)="onVerMapaClick(muestreo.claveMuestreo, muestreo.lstEvidencias)">
+            Ver mapa
+          </button>
         </td>
-        <td></td>
-        <td></td>
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <td class="checkBox-center">
@@ -344,6 +281,13 @@
         </td>
         <td class="checkBox-center">
           <input id="txtObservaciones" type="text" [(ngModel)]="muestreo.observacionesRechazo" title="seleccionar">
+        </td>
+
+        <td>
+          <button type="button" class="btn-action btn-secondary-action mr-1"
+                  (click)="validar(muestreo)">
+            Validar Muestreo
+          </button>
         </td>
 
       </tr>

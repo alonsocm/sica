@@ -13,10 +13,10 @@ namespace Application.Features.Operacion.ValidacionEvidencias.Commands
 
     public class CargaARMCommandHandler : IRequestHandler<CargaARMCommand, Response<bool>>
     {
-        private readonly IValidacionEvidenciasRepository _repository;
+        private readonly IAvisoRealizacionRepository _repository;
         private readonly IResultado _resultadosRepository;
 
-        public CargaARMCommandHandler(IValidacionEvidenciasRepository repositoryAsync, IResultado resultadosRepository)
+        public CargaARMCommandHandler(IAvisoRealizacionRepository repositoryAsync, IResultado resultadosRepository)
         {
             _repository = repositoryAsync;
             _resultadosRepository = resultadosRepository;

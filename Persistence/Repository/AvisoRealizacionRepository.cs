@@ -5,9 +5,9 @@ using Persistence.Contexts;
 
 namespace Persistence.Repository
 {
-    public class ValidacionEvidenciasRepository : Repository<AvisoRealizacion>, IValidacionEvidenciasRepository
+    public class AvisoRealizacionRepository : Repository<AvisoRealizacion>, IAvisoRealizacionRepository
     {
-        public ValidacionEvidenciasRepository(SicaContext context) : base(context)
+        public AvisoRealizacionRepository(SicaContext context) : base(context)
         {
         }
 

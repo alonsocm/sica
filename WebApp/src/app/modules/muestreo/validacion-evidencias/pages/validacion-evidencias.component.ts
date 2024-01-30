@@ -6,8 +6,11 @@ import { validacionEvidencia } from 'src/app/interfaces/validacionEvidencias/val
 import { ValidacionService } from '../services/validacion.service';
 import { EvidenciasService } from '../../evidencias/services/evidencias.service';
 import { vwValidacionEvidencia } from 'src/app/interfaces/validacionEvidencias/vwValidacionEvidencia.interface';
-
+import { Router } from '@angular/router';
 import { FileService } from 'src/app/shared/services/file.service';
+import { PuntosMuestreo, PuntosMuestreoNombre } from '../../../../shared/enums/puntosMuestreo';
+import { tipoEvidencia } from '../../../../shared/enums/tipoEvidencia';
+import { PuntosEvidenciaMuestreo } from '../../../../interfaces/puntosEvidenciaMuestreo.interface';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 
@@ -29,9 +32,12 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   columnasCadenaCustodia: Array<Columna> = [];
   columnasTabla9: Array<Columna> = [];
   archivo: any;
+  puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
-  constructor(private validacionService: ValidacionService, evidenciaService: EvidenciasService) {
+  constructor(private validacionService: ValidacionService,
+    private evidenciaService: EvidenciasService,
+    private router: Router) {
     super();
   }
 
@@ -215,7 +221,61 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }
   validacion() { }
   limpiarFiltros() { }
-  onVerMapaClick(muestreo: string) { }
+  onVerMapaClick(muestreo: string, datos: any[]) {
+    this.getPuntos_PR_PM(muestreo, datos);
+  }
+
+  getPuntos_PR_PM(claveMuestreo: string, datos: any[]) {
+    localStorage.setItem('claveMuestreoCalculo', claveMuestreo);
+    this.evidenciaService.getPuntosPB_PM(claveMuestreo).subscribe({
+      next: (response: any) => {
+        this.puntosMuestreo = response.data;
+        //let datos = this.informacionEvidencias.filter(
+        //  (x) =>
+        //    x.muestreo == claveMuestreo &&
+        //    this.tiposEvidenciasPuntos.includes(x.tipoEvidenciaMuestreo)
+        //);
+
+        if (datos.length > 0) {
+          for (var i = 0; i < datos.length; i++) {
+            let nombrepunto = '';
+            let puntoMuestreo = '';
+            switch (datos[i].tipoEvidenciaMuestreo) {
+              case tipoEvidencia.FotoCaudal:
+                nombrepunto = PuntosMuestreoNombre.FotodeAforo_FA;
+                puntoMuestreo = PuntosMuestreo.FotodeAforo_FA;
+                break;
+              case tipoEvidencia.FotoMuestra:
+                nombrepunto = PuntosMuestreoNombre.FotodeMuestras_FS;
+                puntoMuestreo = PuntosMuestreo.FotodeMuestras_FS;
+                break;
+              case tipoEvidencia.Track:
+                nombrepunto = PuntosMuestreoNombre.PuntoCercanoalTrack_TR;
+                puntoMuestreo = PuntosMuestreo.PuntoCercanoalTrack_TR;
+                break;
+              case tipoEvidencia.FotoMuestreo:
+                nombrepunto = PuntosMuestreoNombre.FotodeMuestreo_FM;
+                puntoMuestreo = PuntosMuestreo.FotodeMuestreo_FM;
+                break;
+              default:
+            }
+
+            let punto: PuntosEvidenciaMuestreo = {
+              claveMuestreo: claveMuestreo,
+              latitud: Number(datos[i].latitud),
+              longitud: Number(datos[i].longitud),
+              nombrePunto: nombrepunto,
+              punto: puntoMuestreo,
+            };
+            this.puntosMuestreo.push(punto);
+            this.evidenciaService.updateCoordenadas(this.puntosMuestreo);
+            this.router.navigate(['/map-muestreo']);
+          }
+        }
+      },
+      error: (response: any) => { },
+    });
+  }
 
   private obtenerDatos(): void {
     this.validacionService.obtenerDatosaValidar().subscribe({
@@ -227,6 +287,10 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       },
       error: (error) => { },
     });
+  }
+
+  validar(muestreo: vwValidacionEvidencia) {
+    console.log(muestreo);
   }
   
 }

@@ -36,6 +36,7 @@ export interface vwValidacionEvidencia {
   latSitioResultado: string;
   longSitioResultado: string;
   lstPuntosMuestreo: any[];
+  lstEvidencias: any[];
 
 
   folioBM: boolean;

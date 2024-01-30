@@ -57,6 +57,14 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
+        [HttpPost]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> ValidarMuestreo()
+        {
+
+            return Ok(await Mediator.Send(new GetValidacionEvidenciasQuery()));
+
+        }
 
     }
 }

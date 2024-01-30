@@ -77,6 +77,7 @@ namespace Application.DTOs.EvidenciasMuestreo
         public string? LongSitioResultado { get; set; }
 
         public List<PuntosMuestreoDto> lstPuntosMuestreo { get; set; }
+        public List<InformacionEvidenciaDto> lstEvidencias { get; set; }
 
         public vwValidacionEvienciasDto()
         {
@@ -87,6 +88,7 @@ namespace Application.DTOs.EvidenciasMuestreo
             this.Lat1MuestreoPrograma = 0;
             this.Log1MuestreoPrograma = 0;
             this.lstPuntosMuestreo = new List<PuntosMuestreoDto>();
+            this.lstEvidencias = new List<InformacionEvidenciaDto>();
         }
     }
 }
