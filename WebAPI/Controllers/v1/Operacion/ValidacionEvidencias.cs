@@ -77,7 +77,15 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
-        
+        [HttpGet("obtenerResultadosEvidencia")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> obtenerResultadosEvidencia()
+        {
+
+            return Ok(await Mediator.Send(new GetVwValidacionEvidenciaTotalesQuery()));
+
+        }
+
 
     }
 }

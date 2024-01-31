@@ -34,7 +34,6 @@ namespace Application.Features.Operacion.ValidacionEvidencias.Queries
             _evidenciasRepository = evidenciasRepository;
 
         }
-
         public async Task<Response<List<vwValidacionEvienciasDto>>> Handle(GetValidacionEvidenciasQuery request, CancellationToken cancellationToken)
         {
             long[] dato = { 1, 8, 7, 5 };
@@ -42,8 +41,7 @@ namespace Application.Features.Operacion.ValidacionEvidencias.Queries
             var datosDto = _mapper.Map<List<vwValidacionEvienciasDto>>(datos);
             List<InformacionEvidenciaDto> evidencias = _evidenciasRepository.GetInformacionEvidenciasAsync().Result.ToList();
             foreach (var muestreo in datosDto)
-            {
-                //var puntos = _muestreoRepositiry.GetPuntoPR_PMAsync(muestreo.ClaveMuestreo).Result;
+            {                
                 muestreo.lstPuntosMuestreo =_mapper.Map<List<PuntosMuestreoDto>>(_muestreoRepositiry.GetPuntoPR_PMAsync(muestreo.ClaveMuestreo).Result);
                 List<InformacionEvidenciaDto> evidenciasMuestreo = evidencias.Where(x => x.Muestreo == muestreo.ClaveMuestreo && dato.Contains(x.TipoEvidenciaMuestreo)).ToList();
                 if (evidenciasMuestreo.Count > 0) 
@@ -86,16 +84,10 @@ namespace Application.Features.Operacion.ValidacionEvidencias.Queries
                         muestreo.lstPuntosMuestreo.Add(punto);
 
                     }
-                    
-
                 }
-
-
             }
 
             List<vwValidacionEvienciasDto> lstd = datosDto.ToList();
-
-
             return new Response<List<vwValidacionEvienciasDto>>((datos == null) ? new List<vwValidacionEvienciasDto>() : datosDto.ToList());
         }
     }

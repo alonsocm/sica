@@ -111,6 +111,7 @@ namespace Persistence
             services.AddTransient<IAvisoRealizacionRepository, AvisoRealizacionRepository>();
             services.AddTransient<IVwValidacionEvienciasRepository, VwValidacionEvienciasRepository>();
             services.AddTransient<IValidacionEvidenciaRepository, ValidacionEvidenciaRepository>();
+            services.AddTransient<IVwValidacionEvidenciaTotalesRepository, VwValidacionEvidenciaTotalesRepository>();
 
 
             #endregion

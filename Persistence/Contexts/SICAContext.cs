@@ -192,6 +192,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwSitios> VwSitios { get; set; }
 
+    public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
+
     public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1787,6 +1789,20 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<VwValidacionEvidenciaTotales>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_ValidacionEvidenciaTotales");
+
+            entity.Property(e => e.MuestreosAprobados).HasColumnName("muestreosAprobados");
+            entity.Property(e => e.MuestreosRechazados).HasColumnName("muestreosRechazados");
+            entity.Property(e => e.MuestreosTotales).HasColumnName("muestreosTotales");
+            entity.Property(e => e.Nomenclatura)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<VwValidacionEviencias>(entity =>
         {
             entity
@@ -1881,8 +1897,8 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
         });
-
         
+
         OnModelCreatingPartial(modelBuilder);
     }
 

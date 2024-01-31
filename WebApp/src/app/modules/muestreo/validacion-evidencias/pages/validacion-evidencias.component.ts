@@ -11,6 +11,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { PuntosMuestreo, PuntosMuestreoNombre } from '../../../../shared/enums/puntosMuestreo';
 import { tipoEvidencia } from '../../../../shared/enums/tipoEvidencia';
 import { PuntosEvidenciaMuestreo } from '../../../../interfaces/puntosEvidenciaMuestreo.interface';
+import { vwValidacionEvidenciaTotales } from '../../../../interfaces/validacionEvidencias/vwValidacionEvidenciaTotales.interface';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 
@@ -33,21 +34,20 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   columnasTabla9: Array<Columna> = [];
   archivo: any;
   puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
-
-
-
+  ismuestreoModal: boolean = false;
+  resultadosValidacion: Array<vwValidacionEvidenciaTotales> = [];
+  columnasResultadosEvidencia: Array<Columna> = [];
+  total: any;
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(private validacionService: ValidacionService,
     private evidenciaService: EvidenciasService,
     private router: Router) {
     super();
   }
-
   ngOnInit(): void {  
     this.definirColumnas();
     this.obtenerDatos();
   }
-
   definirColumnas() {
     let nombresColumnasTabla1: Array<Columna> = [
       { nombre: 'estatus', etiqueta: 'MUESTREO', orden: 1, filtro: new Filter(), },
@@ -175,15 +175,24 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       { nombre: '', etiqueta: 'OBSERVACIONES RECHAZO', orden: 2, filtro: new Filter(), },
     ];
 
+    this.columnasResultadosEvidencia = [
+      { nombre: '', etiqueta: 'LABORATORIO', orden: 1, filtro: new Filter(), },
+      { nombre: '', etiqueta: '# DE EVIDENCIAS DE CAMPO TOTALES EN EL MÓDULO', orden: 2, filtro: new Filter(), },
+      { nombre: '', etiqueta: '# MUESTREOS APROBADOS', orden: 3, filtro: new Filter(), },
+      { nombre: '', etiqueta: '# MUESTREOS RECHAZADOS', orden: 4, filtro: new Filter(), },
+      { nombre: '', etiqueta: '% DE EVIDENCIAS DE CAMPO ACEPTADAS DEL TOTAL RESERVADO', orden: 5, filtro: new Filter(), },
+      { nombre: '', etiqueta: '% DE EVIDENCIAS DE CAMPO RECHAZADAS DEL TOTAL RESERVADO', orden: 6, filtro: new Filter(), },
+      { nombre: '', etiqueta: '% DE EVIDENCIAS ACEPTADAS POR LABORATORIO', orden: 7, filtro: new Filter(), },
+      { nombre: '', etiqueta: '% DE EVIDENCIAS RECHAZADAS POR LABORATORIO', orden: 8, filtro: new Filter(), },
+    ];
+    
+
 
   }
-
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
 
-  }
-  filtrar() { }
-
+  }  
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
 
@@ -227,7 +236,6 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   onVerMapaClick(muestreo: string, datos: any[]) {
     this.getPuntos_PR_PM(muestreo, datos);
   }
-
   getPuntos_PR_PM(claveMuestreo: string, datos: any[]) {
     localStorage.setItem('claveMuestreoCalculo', claveMuestreo);
     this.evidenciaService.getPuntosPB_PM(claveMuestreo).subscribe({
@@ -279,7 +287,6 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       error: (response: any) => { },
     });
   }
-
   private obtenerDatos(): void {
     this.validacionService.obtenerDatosaValidar().subscribe({
       next: (response: any) => {
@@ -291,7 +298,18 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       error: (error) => { },
     });
   }
+  private obtenerResultadosEvidencia(): void {
+    this.validacionService.obtenerResultadosEvidencia().subscribe({
+      next: (response: any) => {
+        this.resultadosValidacion = response.data;
+        this.total = this.resultadosValidacion.filter(x => x.nomenclatura == 'Total');
+        console.log(this.resultadosValidacion);
+        console.log(this.total);
 
+      },
+      error: (error) => { },
+    });
+  }
   validar(muestreo: any) {
     this.loading = true;
     console.log(muestreo);
@@ -305,16 +323,13 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
           this.mostrarMensaje(
             'Se valido correctamente el muestreo.',
             TIPO_MENSAJE.exito
-          );
-         
-          
+          ); 
         }
       },
       error: (response: any) => { },
     });
     
   }
-
   validarLista() {
     this.muestreosaValidr = this.Seleccionados(this.muestreosFiltrados);
     if (!(this.muestreosaValidr.length > 0)) {
@@ -343,6 +358,12 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       error: (response: any) => { },
     });
 
+  }  
+  enviarResumen() {
+    this.obtenerResultadosEvidencia();
+    this.ismuestreoModal = true;
   }
+  mostrarAprobados() { }
+  mostrarRechazados() { }
   
 }

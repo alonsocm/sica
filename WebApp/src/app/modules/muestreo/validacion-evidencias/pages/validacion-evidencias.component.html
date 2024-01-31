@@ -23,6 +23,11 @@
 
   </div>
   <div class="float-right">
+    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleParametros"
+            (click)="enviarResumen()">
+      &nbsp;Resultados de evidencias
+    </button>
+
     <button class="btn btn-primary mr-1" type="button" (click)="validarLista()">
       <i class="bi bi-check2-circle"></i> Control de validaci&oacute;n
     </button>
@@ -109,7 +114,7 @@
 
         <!--TABLA 1-->
         <td class="checkBox-center">
-        
+
           <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
         </td>
         <td>{{muestreo.claveMuestreo}}</td>
@@ -297,6 +302,61 @@
   </table>
   <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
   </pagination-controls>
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleParametros" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 75%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Resultados
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasResultadosEvidencia">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let resultado of this.resultadosValidacion | paginate: { itemsPerPage:60, currentPage: page } let indice=index">
+                      <td>{{resultado.nomenclatura}}</td>
+                      <td> {{resultado.muestreosTotales}}</td>
+                      <td>{{resultado.muestreosAprobados}}</td>
+                      <td>{{resultado.muestreosRechazados}}</td>
+                      <td> {{resultado.muestreosAprobados*100/this.total[0].muestreosTotales |number : '1.2-2' }} </td>
+                      <td> {{resultado.muestreosRechazados*100/this.total[0].muestreosTotales |number : '1.2-2' }} </td>
+                      <td> {{resultado.muestreosAprobados*100/resultado.muestreosTotales |number : '1.2-2' }} </td>
+                      <td> {{resultado.muestreosRechazados*100/resultado.muestreosTotales |number : '1.2-2' }} </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" id="btnDetalleAprobados" (click)="mostrarAprobados()" class="btn btn-primary"
+                      data-dismiss="modal">
+                <i class="bi bi-send"></i>Detalle de Aprobados
+              </button>
+              <button type="button" id="btnDetalleRechazados" (click)="mostrarRechazados()" class="btn btn-primary"
+                      data-dismiss="modal">
+                <i class="bi bi-send"></i>Detalle de Rechazados
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </div>
 
 

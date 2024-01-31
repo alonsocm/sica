@@ -21,19 +21,17 @@ export class ValidacionService {
     return this.http.get<any>(environment.apiUrl + '/ValidacionEvidencias');
   }
 
+  obtenerResultadosEvidencia() {
+    return this.http.get<any>(environment.apiUrl + '/ValidacionEvidencias/obtenerResultadosEvidencia');
+  }
+
   validarMuestreo(muestreo: any, usuarioId: any): Observable<Object> {
-    //const params = new HttpParams({
-    //  fromObject: { muestreo: muestreo, usuarioId: usuarioId },
-    //});
     return this.http.post(
       environment.apiUrl + '/ValidacionEvidencias/validarMuestreo?usuarioId=' + usuarioId, muestreo
     );
   }
 
-  validarMuestreoLista(muestreo: Array<any>, usuarioId: any): Observable<Object> {
-    //const params = new HttpParams({
-    //  fromObject: { muestreo: muestreo, usuarioId: usuarioId },
-    //});
+  validarMuestreoLista(muestreo: Array<any>, usuarioId: any): Observable<Object> { 
     return this.http.post(
       environment.apiUrl + '/ValidacionEvidencias/validarMuestreoLista?usuarioId=' + usuarioId, muestreo
     );
