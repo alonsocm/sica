@@ -5,6 +5,8 @@ namespace Domain.Entities;
 
 public partial class VwValidacionEviencias
 {
+    public long AvisoRealizacionId { get; set; }
+
     public long MuestreoId { get; set; }
 
     public string ClaveMuestreo { get; set; } = null!;

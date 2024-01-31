@@ -43,8 +43,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     super();
   }
 
-  ngOnInit(): void {
-    console.log(this.muestreosaValidr);
+  ngOnInit(): void {  
     this.definirColumnas();
     this.obtenerDatos();
   }
@@ -179,8 +178,10 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
 
   }
 
-  seleccionar() { }
+  seleccionar(): void {
+    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
 
+  }
   filtrar() { }
 
   cargarArchivo(event: Event) {
@@ -292,17 +293,56 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }
 
   validar(muestreo: any) {
+    this.loading = true;
     console.log(muestreo);
-    let usuarioId = localStorage.getItem('idUsuario');
-    
+    let usuarioId = localStorage.getItem('idUsuario');  
    
     this.validacionService.validarMuestreo(muestreo, usuarioId).subscribe({
       next: (response: any) => {
-        console.log(response.data);
+        if (response.data) {
+          this.loading = false;
+          this.obtenerDatos();
+          this.mostrarMensaje(
+            'Se valido correctamente el muestreo.',
+            TIPO_MENSAJE.exito
+          );
+         
+          
+        }
       },
       error: (response: any) => { },
     });
     
+  }
+
+  validarLista() {
+    this.muestreosaValidr = this.Seleccionados(this.muestreosFiltrados);
+    if (!(this.muestreosaValidr.length > 0)) {
+      this.mostrarMensaje(
+        'Debe seleccionar al menos un monitoreo para validar',
+        TIPO_MENSAJE.alerta
+      );
+      return this.hacerScroll();
+    }
+ 
+    //this.muestreosaValidr = muestreosSeleccionados.map((s) => s.muestreoId);
+    console.log(this.muestreosaValidr);
+    let usuarioId = localStorage.getItem('idUsuario');  
+
+    this.validacionService.validarMuestreoLista(this.muestreosaValidr, usuarioId).subscribe({
+      next: (response: any) => {
+        if (response.data) {
+       
+          this.mostrarMensaje(
+            'El control de validación se realizo correctamente.',
+            TIPO_MENSAJE.exito
+          );
+
+        }
+      },
+      error: (response: any) => { },
+    });
+
   }
   
 }

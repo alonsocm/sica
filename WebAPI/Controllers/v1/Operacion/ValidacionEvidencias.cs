@@ -60,12 +60,24 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("validarMuestreo")]
-        public async Task<IActionResult> Post(vwValidacionEvienciasDto muestreo, long usuarioId)
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromBody] vwValidacionEvienciasDto muestreo, long usuarioId)
         {
 
             return Ok(await Mediator.Send(new ValidarMuestreoCommand { Muestreos = muestreo, usuarioId = usuarioId }));
 
         }
+
+        [HttpPost("validarMuestreoLista")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromBody] List<vwValidacionEvienciasDto> muestreo, long usuarioId)
+        {
+
+            return Ok(await Mediator.Send(new ValidarMuestreoListaCommand { Muestreos = muestreo, usuarioId = usuarioId }));
+
+        }
+
+        
 
     }
 }

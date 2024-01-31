@@ -44,4 +44,6 @@ public partial class AvisoRealizacion
     public virtual TipoSitio TipoSitio { get; set; } = null!;
 
     public virtual TipoSupervision TipoSupervision { get; set; } = null!;
+
+    public virtual ICollection<ValidacionEvidencia> ValidacionEvidencia { get; set; } = new List<ValidacionEvidencia>();
 }

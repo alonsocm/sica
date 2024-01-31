@@ -1544,6 +1544,10 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.RegistrosLegiblesFf).HasColumnName("RegistrosLegiblesFF");
             entity.Property(e => e.RegistrosVisiblesBm).HasColumnName("RegistrosVisiblesBM");
 
+            entity.HasOne(d => d.AvisoRealizacion).WithMany(p => p.ValidacionEvidencia)
+                .HasForeignKey(d => d.AvisoRealizacionId)
+                .HasConstraintName("FK_ValidacionEvidencia_AvisoRealizacion");
+
             entity.HasOne(d => d.Muestreo).WithMany(p => p.ValidacionEvidencia)
                 .HasForeignKey(d => d.MuestreoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -1877,6 +1881,8 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
         });
+
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

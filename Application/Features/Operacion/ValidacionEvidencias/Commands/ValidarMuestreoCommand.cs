@@ -35,8 +35,9 @@ namespace Application.Features.Operacion.ValidacionEvidencias.Commands
         public async Task<Response<bool>> Handle(ValidarMuestreoCommand request, CancellationToken cancellationToken)
         {   
             var muestreos = _repository.ConvertirValidacionEvidencia(request.Muestreos, request.usuarioId);
-            _repository.Insertar(muestreos);
-            return new Response<bool>(true);
+            long Id = 0;
+            Id = _repository.Insertar(muestreos);
+            return new Response<bool>((Id != 0) ?true:false);
         }
 
 

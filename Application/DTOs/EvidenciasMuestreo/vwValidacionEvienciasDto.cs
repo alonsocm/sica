@@ -8,6 +8,7 @@ namespace Application.DTOs.EvidenciasMuestreo
 {
     public class vwValidacionEvienciasDto
     {
+        public long AvisoRealizacionId { get; set; }
         public long muestreoId { get; set; }
         public string? ClaveMuestreo { get; set; } = null!;
 
@@ -117,7 +118,8 @@ namespace Application.DTOs.EvidenciasMuestreo
 
 
         public vwValidacionEvienciasDto()
-        {   
+        {
+            this.AvisoRealizacionId = 0;
             this.ConEventualidades = false;
             this.FechaProgramadaVisita = DateTime.MaxValue;
             this.FechaRealizacion = DateTime.MaxValue;

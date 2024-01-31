@@ -1,5 +1,7 @@
 
 export interface vwValidacionEvidencia {
+  avisoRealizacionId: number;    
+  isChecked: boolean;
   muestreoId: number;
   calculo: number;
   cumpleTiempoMuestreo: string;

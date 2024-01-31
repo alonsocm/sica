@@ -59,8 +59,24 @@ namespace Persistence.Repository
             validacionEvidencia.ObservacionesRechazo = validacionMuestreo.observacionesRechazo;
             validacionEvidencia.PorcentajePago = (!validacionMuestreo.rechazo && !validacionMuestreo.ConEventualidades) ? 100 : 0;
             validacionEvidencia.FechaRegistro = DateTime.Now;
-      
+            validacionEvidencia.UsuarioValidoId = usuarioId;
+            validacionEvidencia.AvisoRealizacionId = validacionMuestreo.AvisoRealizacionId;
+
+
             return validacionEvidencia;
+        }
+
+        public List<ValidacionEvidencia> ConvertirValidacionEvidenciaLista(List<vwValidacionEvienciasDto> validacionMuestreo, long usuarioId)
+        {
+
+            List<ValidacionEvidencia> lstValidacionEvidencia = new List<ValidacionEvidencia> ();
+
+            foreach (var muestreo in validacionMuestreo)
+            {
+                lstValidacionEvidencia.Add(ConvertirValidacionEvidencia(muestreo, usuarioId));
+            }
+            
+            return lstValidacionEvidencia;
         }
 
     }

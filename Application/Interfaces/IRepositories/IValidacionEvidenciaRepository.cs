@@ -12,5 +12,7 @@ namespace Application.Interfaces.IRepositories
     public interface IValidacionEvidenciaRepository : IRepository<ValidacionEvidencia>
     {
         ValidacionEvidencia ConvertirValidacionEvidencia(vwValidacionEvienciasDto validacionMuestreo, long usuarioId);
+
+        List<ValidacionEvidencia> ConvertirValidacionEvidenciaLista(List<vwValidacionEvienciasDto> validacionMuestreo, long usuarioId);
     }
 }

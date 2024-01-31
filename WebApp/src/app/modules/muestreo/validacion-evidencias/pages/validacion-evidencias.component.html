@@ -6,6 +6,10 @@
   <h1 class="row col">Validaci&oacute;n de evidencias</h1>
   <hr class="red">
 </div>
+<div class="message-container">
+  <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+             [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+</div>
 
 <div class="clearfix">
   <div class="float-left">
@@ -19,7 +23,7 @@
 
   </div>
   <div class="float-right">
-    <button class="btn btn-primary mr-1" type="button" (click)="validacion()">
+    <button class="btn btn-primary mr-1" type="button" (click)="validarLista()">
       <i class="bi bi-check2-circle"></i> Control de validaci&oacute;n
     </button>
     <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
@@ -105,7 +109,8 @@
 
         <!--TABLA 1-->
         <td class="checkBox-center">
-          <input type="checkbox" (change)="seleccionar()" title="seleccionar">
+        
+          <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
         </td>
         <td>{{muestreo.claveMuestreo}}</td>
         <td>{{muestreo.sitio}}</td>
