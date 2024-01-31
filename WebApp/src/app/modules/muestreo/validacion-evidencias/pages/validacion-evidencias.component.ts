@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
@@ -22,8 +23,10 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./validacion-evidencias.component.css']
 })
 export class ValidacionEvidenciasComponent extends BaseService implements OnInit {
-
+  registroParam: FormGroup;
+  eventualidadesTotales: Array<vwValidacionEvidenciaRealizada> = [];
   muestreosValidados: Array<vwValidacionEvidenciaRealizada> = [];
+  muestreosRechazados: Array<vwValidacionEvidenciaRealizada> = [];
   muestreosFiltrados: Array<vwValidacionEvidencia> = [];
   muestreosaValidr: Array<vwValidacionEvidencia> = [];
   columnasBitacoraMuestreo: Array<Columna> = [];
@@ -40,12 +43,18 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   resultadosValidacion: Array<vwValidacionEvidenciaTotales> = [];
   columnasResultadosEvidencia: Array<Columna> = [];
   columnasMuestreosAprobados: Array<Columna> = [];
+  columnasMuestreosRechazados: Array<Columna> = [];
+  columnasEventualidades: Array<Columna> = [];
   total: any;
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(private validacionService: ValidacionService,
     private evidenciaService: EvidenciasService,
-    private router: Router) {
+    private router: Router,
+    private fb: FormBuilder) {
     super();
+    this.registroParam = this.fb.group({
+      txtpago: '',
+    });
   }
   ngOnInit(): void {  
     this.definirColumnas();
@@ -203,11 +212,26 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       { nombre: '', etiqueta: 'TIPO DE SUPERVISIÓN', orden: 8, filtro: new Filter(), },
       { nombre: '', etiqueta: 'TIPO DE EVENTUALIDAD', orden: 8, filtro: new Filter(), },
       { nombre: '', etiqueta: 'FECHA DE REPROGRAMACIÓN', orden: 8, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'FECHA DE VALIDACIÓN', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'FECHA DE VALIDACIÓN DE CONAGUA', orden: 8, filtro: new Filter(), },
       { nombre: '', etiqueta: 'PORCENTAJE PAGO', orden: 8, filtro: new Filter(), },
     ];
-
     
+    this.columnasMuestreosRechazados = [
+      { nombre: '', etiqueta: 'MUESTREO', orden: 1, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'SITIO', orden: 2, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'LABORATORIO', orden: 3, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'FECHA DE RECHAZO DE CONAGUA', orden: 4, filtro: new Filter(), }
+      
+    ];  
+    this.columnasEventualidades = [
+      { nombre: '', etiqueta: 'LABORATORIO', orden: 1, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'MUESTREO', orden: 2, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'SITIO', orden: 3, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'CON EVENTUALIDAD', orden: 4, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'OBSERVACIONES', orden: 4, filtro: new Filter(), },
+        { nombre: '', etiqueta: 'PORCENTAJE DE PAGO', orden: 5, filtro: new Filter(), }
+
+    ];
     
 
 
@@ -400,7 +424,28 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     });
 
   }
-  mostrarRechazados() { }
+  mostrarRechazados() {
+    console.log("entra");
+    this.validacionService.obtenerMuestreosValidados(true).subscribe({
+      next: (response: any) => {
+        this.muestreosRechazados = response.data;
+        console.log(this.muestreosValidados);
+
+
+
+      },
+      error: (error) => { },
+    });
+
+  }
   eventualidades() { }
-  
+  extraerRechazados() { }
+  extraerAprobados() { }
+  mostrarEventualidades() {
+    this.eventualidadesTotales = this.muestreosValidados.filter(x => x.conEventualidades == true);
+
+  }
+  actualizarEventualidades() {
+    console.log(this.eventualidadesTotales);
+  }
 }
