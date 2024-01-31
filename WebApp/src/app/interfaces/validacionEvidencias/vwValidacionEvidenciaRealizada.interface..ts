@@ -1,4 +1,5 @@
 export interface vwValidacionEvidenciaRealizada {
+  validacionEvidenciaId: number;
   claveMuestreo: string;
   claveSitio: string;
   tipoCuerpoAgua: string;

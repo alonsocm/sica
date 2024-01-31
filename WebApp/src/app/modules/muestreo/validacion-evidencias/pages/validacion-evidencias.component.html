@@ -418,7 +418,13 @@
           <h4 class="modal-title text-center " id="staticBackdropLabel">
             Detalle de eventualidades
           </h4>
+        </div>      
+        <div *ngIf="this.mostrarMensajeAlerta" class="alert alert-success alert-dismissible">
+          <button type="button" class="close" aria-label="Close" (click)="ocultarmensaje()"><span aria-hidden="true">&times;</span></button>
+          <div> {{this.messageEventualidad}}></div>
         </div>
+
+
         <div class="modal-body">
           <form [formGroup]="registroParam" class="form-horizontal" style="padding-top:15px;">
             <div class="row">

@@ -44,4 +44,10 @@ export class ValidacionService {
     return this.http.get<any>(environment.apiUrl + '/ValidacionEvidencias/obtenerMuestreosAprobados', { params });
   }
 
+  actualizarPorcentaje(muestreos: Array<any>=[]) {
+    return this.http.put(environment.apiUrl + '/ValidacionEvidencias/actualizarPorcentaje', muestreos);
+  }
+
+  
+
 }

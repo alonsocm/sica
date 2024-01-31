@@ -24,16 +24,8 @@ namespace Application.Features.Operacion.ValidacionEvidencias.Commands
 
         public async Task<Response<bool>> Handle(CargaARMCommand request, CancellationToken cancellationToken)
         {
-
-
-
-
-
             var muestreos = _repository.ConvertToMuestreosList(request.Muestreos);
             _repository.InsertarRango(muestreos);
-
-
-            //return new Response<ResultadoCargaMuestreo>(resultadoCarga);
             return new Response<bool>(true);
         }
 

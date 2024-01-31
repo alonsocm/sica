@@ -23,6 +23,8 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./validacion-evidencias.component.css']
 })
 export class ValidacionEvidenciasComponent extends BaseService implements OnInit {
+  messageEventualidad: string = '';
+  mostrarMensajeAlerta: boolean = false;
   registroParam: FormGroup;
   eventualidadesTotales: Array<vwValidacionEvidenciaRealizada> = [];
   muestreosValidados: Array<vwValidacionEvidenciaRealizada> = [];
@@ -447,5 +449,30 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }
   actualizarEventualidades() {
     console.log(this.eventualidadesTotales);
+
+    this.loading = true;  
+ 
+
+    this.validacionService.actualizarPorcentaje(this.eventualidadesTotales).subscribe({
+      next: (response: any) => {
+        if (response.data) {
+          this.loading = false;
+          this.mostrarMensajeAlerta = true;
+          this.messageEventualidad = 'Se guradron los cambios correctamente';
+          //this.mostrarMensaje(
+          //  'Se guradron los cambios correctamente',
+          //  TIPO_MENSAJE.exito
+          //);
+        }
+      },
+      error: (response: any) => { },
+    });
+
+
+
+
+  }
+  ocultarmensaje() {
+    this.mostrarMensajeAlerta = false;   
   }
 }

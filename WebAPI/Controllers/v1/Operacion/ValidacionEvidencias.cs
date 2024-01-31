@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.EvidenciasMuestreo;
+using Application.Features.Operacion.Muestreos.Commands.Actualizar;
+using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.ValidacionEvidencias.Commands;
 using Application.Features.Operacion.ValidacionEvidencias.Queries;
 using Application.Interfaces.IRepositories;
@@ -94,6 +96,15 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetVwValidacionEvidenciaRealizadaQuery{rechazo = rechazo }));
 
         }
+
+        [HttpPut("actualizarPorcentaje")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> actualizarPorcentaje(List<VwValidacionEvidenciaRealizada> muestreos)
+        {
+            return Ok(await Mediator.Send(new UpdatePorcentajeCommand { Muestreos = muestreos }));
+        }
+
+       
 
 
     }
