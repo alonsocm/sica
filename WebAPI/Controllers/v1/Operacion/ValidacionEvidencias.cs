@@ -86,6 +86,15 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
+        [HttpGet("obtenerMuestreosAprobados")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> obtenerMuestreosAprobados([FromForm] bool rechazo)
+        {
+
+            return Ok(await Mediator.Send(new GetVwValidacionEvidenciaRealizadaQuery{rechazo = rechazo }));
+
+        }
+
 
     }
 }

@@ -37,4 +37,11 @@ export class ValidacionService {
     );
   }
 
+  obtenerMuestreosValidados(rechazo: boolean): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: { rechazo: rechazo },
+    });
+    return this.http.get<any>(environment.apiUrl + '/ValidacionEvidencias/obtenerMuestreosAprobados', { params });
+  }
+
 }

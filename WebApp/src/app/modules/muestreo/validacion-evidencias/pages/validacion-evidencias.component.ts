@@ -12,6 +12,7 @@ import { PuntosMuestreo, PuntosMuestreoNombre } from '../../../../shared/enums/p
 import { tipoEvidencia } from '../../../../shared/enums/tipoEvidencia';
 import { PuntosEvidenciaMuestreo } from '../../../../interfaces/puntosEvidenciaMuestreo.interface';
 import { vwValidacionEvidenciaTotales } from '../../../../interfaces/validacionEvidencias/vwValidacionEvidenciaTotales.interface';
+import { vwValidacionEvidenciaRealizada } from '../../../../interfaces/validacionEvidencias/vwValidacionEvidenciaRealizada.interface.';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 
@@ -22,6 +23,7 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 })
 export class ValidacionEvidenciasComponent extends BaseService implements OnInit {
 
+  muestreosValidados: Array<vwValidacionEvidenciaRealizada> = [];
   muestreosFiltrados: Array<vwValidacionEvidencia> = [];
   muestreosaValidr: Array<vwValidacionEvidencia> = [];
   columnasBitacoraMuestreo: Array<Columna> = [];
@@ -37,6 +39,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   ismuestreoModal: boolean = false;
   resultadosValidacion: Array<vwValidacionEvidenciaTotales> = [];
   columnasResultadosEvidencia: Array<Columna> = [];
+  columnasMuestreosAprobados: Array<Columna> = [];
   total: any;
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(private validacionService: ValidacionService,
@@ -185,6 +188,26 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       { nombre: '', etiqueta: '% DE EVIDENCIAS ACEPTADAS POR LABORATORIO', orden: 7, filtro: new Filter(), },
       { nombre: '', etiqueta: '% DE EVIDENCIAS RECHAZADAS POR LABORATORIO', orden: 8, filtro: new Filter(), },
     ];
+
+    this.columnasMuestreosAprobados = [
+      { nombre: '', etiqueta: 'MUESTREO', orden: 1, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'SITIO', orden: 2, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'TIPO CUERPO DE AGUA', orden: 3, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'LABORATORIO', orden: 4, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'LABORATORIO QUE REALIZO EL MUESTREO', orden: 5, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'CON EVENTUALIDADES', orden: 6, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'FECHA PROGRAMA VISITA', orden: 7, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'FECHA REAL VISITA', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'BRIGADA', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'CON QC DE MUESTREO', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'TIPO DE SUPERVISIÓN', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'TIPO DE EVENTUALIDAD', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'FECHA DE REPROGRAMACIÓN', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'FECHA DE VALIDACIÓN', orden: 8, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'PORCENTAJE PAGO', orden: 8, filtro: new Filter(), },
+    ];
+
+    
     
 
 
@@ -363,7 +386,21 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     this.obtenerResultadosEvidencia();
     this.ismuestreoModal = true;
   }
-  mostrarAprobados() { }
+  mostrarAprobados() {
+    console.log("entra");
+    this.validacionService.obtenerMuestreosValidados(false).subscribe({
+      next: (response: any) => {
+        this.muestreosValidados = response.data;
+        console.log(this.muestreosValidados);
+       
+       
+
+      },
+      error: (error) => { },
+    });
+
+  }
   mostrarRechazados() { }
+  eventualidades() { }
   
 }

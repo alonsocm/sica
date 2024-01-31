@@ -337,14 +337,23 @@
 
                   </tbody>
                 </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
               </div>
             </div>
             <div class="modal-footer">
               <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" id="btnDetalleAprobados" (click)="mostrarAprobados()" class="btn btn-primary"
+              <!--<button type="button" id="btnDetalleAprobados" (click)="mostrarAprobados()" class="btn btn-primary"
                       data-dismiss="modal">
                 <i class="bi bi-send"></i>Detalle de Aprobados
+              </button>-->
+
+              <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleAprobados"
+                      (click)="mostrarAprobados()">
+                &nbsp;Detalle de Aprobados
               </button>
+
+
               <button type="button" id="btnDetalleRechazados" (click)="mostrarRechazados()" class="btn btn-primary"
                       data-dismiss="modal">
                 <i class="bi bi-send"></i>Detalle de Rechazados
@@ -355,6 +364,73 @@
       </div>
     </div>
   </div>
+
+
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleAprobados" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 100%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Detalle de Aprobados
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasMuestreosAprobados">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let aprobado of this.muestreosValidados | paginate: { itemsPerPage:30, currentPage: page } let indice=index">
+
+                      <td>{{aprobado.claveMuestreo}}</td>
+                      <td>{{aprobado.claveSitio}}</td>
+                      <td>{{aprobado.tipoCuerpoAgua}}</td>
+                      <td>{{aprobado.laboratorio}}</td>
+                      <td>{{aprobado.laboratorioMuestreo}}</td>
+                      <td>{{aprobado.conEventualidades}}</td>
+                      <td>{{aprobado.fechaProgramada|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.fechaRealVisita|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.brigada}}</td>
+                      <td>{{aprobado.conQcmuestreo}}</td>
+                      <td>{{aprobado.tipoSupervision}}</td>
+                      <td>{{aprobado.tipoEventualidad}}</td>
+                      <td>{{aprobado.fechaReprogramacion|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.fechaValidacion|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.porcentajePago}}</td>
+
+
+
+                    </tr>
+
+                  </tbody>
+                </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" id="btnDetalleAprobados" (click)="eventualidades()" class="btn btn-primary"
+                      data-dismiss="modal">
+                <i class="bi bi-send"></i>Detalle de eventualidades
+              </button>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
 
 </div>
