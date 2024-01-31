@@ -12,7 +12,7 @@
 </div>
 
 <div class="clearfix">
-  <div class="float-left">
+  <div class="float-left" style="padding:15px">
     <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
            title="Seleccionar archivo" #inputExcelMonitoreos>
     <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()"
@@ -22,18 +22,13 @@
     </button>
 
   </div>
-  <div class="float-right">
+  <div class="float-right" style="padding:15px">
     <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleParametros"
             (click)="enviarResumen()">
       &nbsp;Resultados de evidencias
-    </button>
-
+    </button>&nbsp;
     <button class="btn btn-primary mr-1" type="button" (click)="validarLista()">
       <i class="bi bi-check2-circle"></i> Control de validaci&oacute;n
-    </button>
-    <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
-      <i class="bi bi-funnel"></i>
-      Limpiar filtros
     </button>
   </div>
 </div>
@@ -103,7 +98,6 @@
         <!--TABLA 9-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #CFD8DC" scope="col" *ngFor="let columna of this.columnasTabla9">
           {{columna.etiqueta}}
-
         </th>
         <th></th>
       </tr>
@@ -293,11 +287,7 @@
             Validar Muestreo
           </button>
         </td>
-
       </tr>
-      <!--<tr *ngIf="this.muestreosFiltrados.length==0">
-        <td class="td-center" colspan="22">No se encontraron registros</td>
-      </tr>-->
     </tbody>
   </table>
   <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
@@ -343,20 +333,13 @@
             </div>
             <div class="modal-footer">
               <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <!--<button type="button" id="btnDetalleAprobados" (click)="mostrarAprobados()" class="btn btn-primary"
-                      data-dismiss="modal">
-                <i class="bi bi-send"></i>Detalle de Aprobados
-              </button>-->
-
               <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleAprobados"
                       (click)="mostrarAprobados()">
-                &nbsp;Detalle de Aprobados
+                &nbsp;<i class="bi bi-list-check"></i>Detalle de Aprobados
               </button>
-
-
-              <button type="button" id="btnDetalleRechazados" (click)="mostrarRechazados()" class="btn btn-primary"
-                      data-dismiss="modal">
-                <i class="bi bi-send"></i>Detalle de Rechazados
+              <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleRechazados"
+                      (click)="mostrarRechazados()">
+                &nbsp;<i class="bi bi-list"></i>Detalle de Rechazados
               </button>
             </div>
           </form>
@@ -364,7 +347,6 @@
       </div>
     </div>
   </div>
-
 
   <div *ngIf="this.ismuestreoModal == true" class="modal fade"
        id="modalDetalleAprobados" data-bs-backdrop="static" data-toggle="modal">
@@ -389,7 +371,6 @@
                   </thead>
                   <tbody>
                     <tr style="height:auto; text-align:center" *ngFor="let aprobado of this.muestreosValidados | paginate: { itemsPerPage:30, currentPage: page } let indice=index">
-
                       <td>{{aprobado.claveMuestreo}}</td>
                       <td>{{aprobado.claveSitio}}</td>
                       <td>{{aprobado.tipoCuerpoAgua}}</td>
@@ -405,11 +386,7 @@
                       <td>{{aprobado.fechaReprogramacion|date: 'dd/MM/yyyy'}}</td>
                       <td>{{aprobado.fechaValidacion|date: 'dd/MM/yyyy'}}</td>
                       <td>{{aprobado.porcentajePago}}</td>
-
-
-
                     </tr>
-
                   </tbody>
                 </table>
                 <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
@@ -418,9 +395,13 @@
             </div>
             <div class="modal-footer">
               <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" id="btnDetalleAprobados" (click)="eventualidades()" class="btn btn-primary"
-                      data-dismiss="modal">
-                <i class="bi bi-send"></i>Detalle de eventualidades
+              <button class="btn btn-secondary mr-1" type="button" (click)="extraerAprobados()">
+                <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+              </button>
+
+              <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleEventualidades"
+                      (click)="mostrarEventualidades()">
+                &nbsp;<i class="bi bi-list"></i>Detalle de eventualidades
               </button>
 
             </div>
@@ -429,10 +410,108 @@
       </div>
     </div>
   </div>
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleEventualidades" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 60%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Detalle de eventualidades
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="registroParam" class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasEventualidades">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let eventualidad of this.eventualidadesTotales | paginate: { itemsPerPage:30, currentPage: page }">
+                      <td>{{eventualidad.laboratorioMuestreo}}</td>
+                      <td>{{eventualidad.claveMuestreo}}</td>
+                      <td>{{eventualidad.claveSitio}}</td>
+                      <td>SI</td>
+                      <td>ACEPTADA</td>
+                      <td>
+                        <input type="text" [(ngModel)]="eventualidad.porcentajePago" formControlName="txtpago">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+              <button class="btn btn-secondary mr-1" type="button" (click)="extraerRechazados()">
+                <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+              </button>
 
 
+              <button class="btn btn-primary" type="button" (click)="actualizarEventualidades()">
+                <i class="bi bi-box-arrow-down"></i> Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleRechazados" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 60%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Detalle de Rechazados
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasMuestreosRechazados">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let rechazado of this.muestreosRechazados | paginate: { itemsPerPage:30, currentPage: page } let indice=index">
+                      <td>{{rechazado.claveMuestreo}}</td>
+                      <td>{{rechazado.claveSitio}}</td>
+                      <td>{{rechazado.laboratorio}}</td>
+                      <td>{{rechazado.fechaValidacion|date: 'dd/MM/yyyy'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 
+              <button class="btn btn-secondary mr-1" type="button" (click)="extraerRechazados()">
+                <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 
