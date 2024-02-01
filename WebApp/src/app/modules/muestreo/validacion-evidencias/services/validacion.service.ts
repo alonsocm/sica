@@ -48,6 +48,22 @@ export class ValidacionService {
     return this.http.put(environment.apiUrl + '/ValidacionEvidencias/actualizarPorcentaje', muestreos);
   }
 
-  
+  extraerEventualidades(muestreos: Array<any> = []) {
+
+    return this.http.post(environment.apiUrl + '/ValidacionEvidencias/extraerEventualidades', muestreos, { responseType: 'blob' });
+  }
+
+
+  extraerMuestreosAprobados(muestreos: Array<any> = []) {
+
+    return this.http.post(environment.apiUrl + '/ValidacionEvidencias/extraerMuestreosAprobados', muestreos, { responseType: 'blob' });
+  }
+
+  extraerMuestreosRechazados(muestreos: Array<any> = []) {
+
+    return this.http.post(environment.apiUrl + '/ValidacionEvidencias/extraerMuestreosRechazados', muestreos, { responseType: 'blob' });
+  }
+
+
 
 }
