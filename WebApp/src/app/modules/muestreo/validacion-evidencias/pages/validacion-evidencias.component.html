@@ -6,9 +6,13 @@
   <h1 class="row col">Validaci&oacute;n de evidencias</h1>
   <hr class="red">
 </div>
+<div class="message-container">
+  <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
+             [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+</div>
 
 <div class="clearfix">
-  <div class="float-left">
+  <div class="float-left" style="padding:15px">
     <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
            title="Seleccionar archivo" #inputExcelMonitoreos>
     <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()"
@@ -18,13 +22,13 @@
     </button>
 
   </div>
-  <div class="float-right">
-    <button class="btn btn-primary mr-1" type="button" (click)="validacion()">
+  <div class="float-right" style="padding:15px">
+    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleParametros"
+            (click)="enviarResumen()">
+      &nbsp;Resultados de evidencias
+    </button>&nbsp;
+    <button class="btn btn-primary mr-1" type="button" (click)="validarLista()">
       <i class="bi bi-check2-circle"></i> Control de validaci&oacute;n
-    </button>
-    <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
-      <i class="bi bi-funnel"></i>
-      Limpiar filtros
     </button>
   </div>
 </div>
@@ -42,7 +46,7 @@
         <th style="background-color: #42A5F5; text-align:center" colspan="7"><b>FORMATO DE AFORO</b></th>
         <th style="background-color: #26A69A; text-align:center" colspan="11"><b>TRACK DE RUTA</b></th>
         <th style="background-color: #FFA726; text-align:center" colspan="2"><b>CADENA DE CUSTODIA</b></th>
-        <th style="background-color: #78909C; text-align:center" colspan="2"><b>VALIDACIÓN</b></th>
+        <th style="background-color: #78909C; text-align:center" colspan="3"><b>VALIDACIÓN</b></th>
       </tr>
       <tr>
         <th style="text-align: center; background-color: #D4E6F1" class="checkBox-center">
@@ -53,119 +57,49 @@
         <!--TABLA 1-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnas">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
 
         <!--TABLA 2 CRITERIOS BITACORA DE MUESTREO (BM)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #FFF9C4" scope="col" *ngFor="let columna of this.columnasBitacoraMuestreo">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
+
         </th>
 
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D1F2EB" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuesreo">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
 
         <!--TABLA 4 CRITERIOS FOTO DE AFORO (FA)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #F8BBD0" scope="col" *ngFor="let columna of this.columnasCriteriosFotoMuestras">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
 
         <!--TABLA 5 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#C8E6C9" scope="col" *ngFor="let columna of this.columnasCriteriosFotoAforo">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
 
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #BBDEFB" scope="col" *ngFor="let columna of this.columnasFormatoAForo">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
 
         <!--TABLA 7 TRACK RUTA (TR)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #B2DFDB" scope="col" *ngFor="let columna of this.columnasTrackRuta">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color:#FFE0B2" scope="col" *ngFor="let columna of this.columnasCadenaCustodia">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
 
         <!--TABLA 9-->
         <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #CFD8DC" scope="col" *ngFor="let columna of this.columnasTabla9">
           {{columna.etiqueta}}
-          <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                           (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                           (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                           [itemTemplate]="itemTemplate" placeholder="seleccione">
-          </ng-autocomplete>
-          <ng-template #itemTemplate let-item>
-            <a [innerHTML]="item"></a>
-          </ng-template>
         </th>
+        <th></th>
       </tr>
 
     </thead>
@@ -174,53 +108,55 @@
 
         <!--TABLA 1-->
         <td class="checkBox-center">
-          <input type="checkbox" (change)="seleccionar()" title="seleccionar">
+
+          <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
         </td>
         <td>{{muestreo.claveMuestreo}}</td>
         <td>{{muestreo.sitio}}</td>
         <td>{{muestreo.claveConalab}}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>{{muestreo.conEventualidades}}</td>
+        <td>{{muestreo.tipoCuerpoAgua}}</td>
+        <td>{{muestreo.laboratorio}}</td>
+        <td></td>  <!--laboratorio que realizo el muestreo-->
+        <td>{{(muestreo.conEventualidades == false)?"NO":"SI"}}</td>
         <td>{{muestreo.fechaProgramadaVisita}}</td>
         <td>{{muestreo.fechaRealVisita}}</td>
         <td>{{muestreo.brigadaProgramaMuestreo}}</td>
-        <td>{{muestreo.conQcmuestreo}}</td>
+        <td>{{(muestreo.conQcmuestreo == false ) ? "NO": "SI"}}</td>
         <td>{{muestreo.tipoSupervision}}</td>
-        <td></td>
+        <td></td> <!--observacion del muestreo-->
         <td>{{muestreo.tipoEventualidad}}</td>
         <td>{{muestreo.fechaReprogramacion}}</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td></td> <!--observacion evidencias conagua-->
+        <td></td> <!--observacion evidencias conagua 2-->
+        <td></td> <!--observacion evidencias conagua 3 -->
         <td>{{muestreo.evidenciasEsperadas}}</td>
-        <td>{{muestreo.cumpleEvidencias}}</td>
-
+        <td>{{muestreo.cumpleEvidencias}}</td> <!--BASE-->
         <!--TABLA 2 CRITERIOS BTACORA DE MUESTREO (BM)-->
 
         <td class="checkBox-center">
           <input id="chkFolio" type="checkbox" [(ngModel)]="muestreo.folioBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td>{{muestreo.fechaRealizacion}}</td>
-        <td>{{muestreo.cumpleFechaRealizacion}}</td>
+        <td>{{muestreo.cumpleFechaRealizacion}}</td> <!--BASE-->
         <td>{{muestreo.horaIncioMuestreo}}</td>
         <td>{{muestreo.horaFinMuestreo}}</td>
         <td>{{muestreo.tiempoMinimoMuestreo}}</td>
-        <td></td>
-        <td></td>
+        <td>{{muestreo.calculo}}</td>
+        <td>{{muestreo.cumpleTiempoMuestreo}}</td> <!--cumple tiempo muestreo--> <!--BASE-->
+
         <td>{{muestreo.claveConalbaArm}}</td>
-        <td>          {{muestreo.cumpleClaveConalab}}        </td>
+        <td>{{muestreo.cumpleClaveConalab}}</td> <!--BASE-->
         <td>{{muestreo.claveMuestreoArm}}</td>
-        <td>          {{muestreo.cumpleClaveMuestreo}}        </td>
+        <td>{{muestreo.cumpleClaveMuestreo}}</td> <!--BASE-->
         <td>{{muestreo.liderBrigadaArm}}</td>
         <td>{{muestreo.liderBrigadaBase}}</td>
-        <td class="checkBox-center">          <input id="chkLiderBrigada" type="checkbox" [(ngModel)]="muestreo.cumpleLiderBrigadaBM" title="seleccionar">
-        </td>
+        <td class="checkBox-center">
+          <input id="chkLiderBrigada" type="checkbox" [(ngModel)]="muestreo.cumpleLiderBrigadaBM" title="seleccionar">
+        </td> <!--BASE-->
         <td>{{muestreo.claveBrigadaArm}}</td>
         <td>
           {{muestreo.cumpleClaveBrigada}}
-        </td>
+        </td>  <!--BASE-->
         <td>{{muestreo.placasDeMuestreo}}</td>
         <td>{{muestreo.lat1MuestreoPrograma}}</td>
         <td>{{muestreo.log1MuestreoPrograma}}</td>
@@ -229,131 +165,357 @@
         <td>distancia</td>
         <td class="checkBox-center">
           <input id="chkGeocerca" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td>
           <button type="button" class="btn-action btn-secondary-action mr-1"
-                  (click)="onVerMapaClick(muestreo.claveMuestreo)">
+                  (click)="onVerMapaClick(muestreo.claveMuestreo, muestreo.lstEvidencias)">
             Ver mapa
           </button>
         </td>
         <td class="checkBox-center">
           <input id="chkCalibracion" type="checkbox" [(ngModel)]="muestreo.calibracionVerificacionEquiposBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistroResultados" type="checkbox" [(ngModel)]="muestreo.registroResultadosCampoBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFirmadoCancelado" type="checkbox" [(ngModel)]="muestreo.firmadoyCanceladoBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotografiaGPS" type="checkbox" [(ngModel)]="muestreo.fotografiaGPSPuntoMuestreoBM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistrosVisibles" type="checkbox" [(ngModel)]="muestreo.registrosVisiblesBM" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
+        <td></td> <!--FECHA-->
+        <td></td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFM" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkLiderBrigadaFM" type="checkbox" [(ngModel)]="muestreo.liderBrigadaCuerpoAguaFM" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotoUnicaFM" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFM" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 4 CRITERIOS FOTO DE MUESTRAS (FS)-->
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
+        <td></td> <!--FECHA-->
+        <td></td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFS" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFS" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistrosRecipientesFS" type="checkbox" [(ngModel)]="muestreo.registroRecipientesFS" title="seleccionar">
-        </td>
+        </td>  <!--BASE-->
         <td class="checkBox-center">
           <input id="chkMuestrasPreservadasFS" type="checkbox" [(ngModel)]="muestreo.muestrasPreservadasFS" title="seleccionar">
-        </td>
+        </td>  <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotoUnicaFS" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFS" title="seleccionar">
-        </td>
-
-        <!--TABLA 5 CRITERIOS FOTO DE MUESTRAS (FS)-->
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        </td>  <!--BASE-->
+        <!--TABLA 5 FOTO DE AFORO-->
+        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
+        <td></td> <!--FECHA-->
+        <td></td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFA" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFA" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkMetodologiaFA" type="checkbox" [(ngModel)]="muestreo.metodologiaFA" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkFotoUnicaFA" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFA" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <td class="checkBox-center">
           <input id="chkFormatoLlenadoFF" type="checkbox" [(ngModel)]="muestreo.formatoLlenadoCorrectoFF" title="seleccionar">
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
+        </td> <!--BASE-->
+        <td></td> <!--LATITUD FORMATO DE AFORO-->
+        <td></td> <!--LONGITUD FORMATO DE AFORO-->
+        <td></td> <!--DISTANCIA A PUNTO DE AFORO-->
         <td class="checkBox-center">
           <input id="chkGeocercaFF" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaFF" title="seleccionar">
-        </td>
-        <td></td>
+        </td> <!--BASE-->
+        <td></td>  <!--CAUDAL EN m3/s-->
         <td class="checkBox-center">
           <input id="chkRegistrosLegiblesFF" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesFF" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 7 TRACK RUTA (TR)-->
-        <td></td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].placas : ""}}</td>
         <td>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        </td> <!--CUMPLE PLACAS DE LA UNIDAD CumplePlacasTr-->
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].laboratorio : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].fechaInicio : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].horaInicio : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].fechaFinal : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].horaFinal : ""}}</td>
+        <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].nombreArchivo : ""}}</td>
         <td>
+        </td> <!--CUMPLE CLAVE CONALABTR cumpleClaveConalabTr-->
+        <td></td> <!--POSICION MAS CERCANA AL PUNTO DE MUESTREO-->
+        <td>
+          <button type="button" class="btn-action btn-secondary-action mr-1"
+                  (click)="onVerMapaClick(muestreo.claveMuestreo, muestreo.lstEvidencias)">
+            Ver mapa
+          </button>
         </td>
-        <td></td>
-        <td></td>
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <td class="checkBox-center">
           <input id="chkFormatoLlenadoCC" type="checkbox" [(ngModel)]="muestreo.llenadoCorrectoCC" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="chkRegistrosLegiblesCC" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesCC" title="seleccionar">
-        </td>
-
+        </td> <!--BASE-->
         <!--TABLA 9-->
         <td class="checkBox-center">
           <input id="chkRechazado" type="checkbox" [(ngModel)]="muestreo.rechazo" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
         <td class="checkBox-center">
           <input id="txtObservaciones" type="text" [(ngModel)]="muestreo.observacionesRechazo" title="seleccionar">
-        </td>
+        </td> <!--BASE-->
 
+        <td>
+          <button type="button" class="btn-action btn-secondary-action mr-1"
+                  (click)="validar(muestreo)">
+            Validar Muestreo
+          </button>
+        </td>
       </tr>
-      <!--<tr *ngIf="this.muestreosFiltrados.length==0">
-        <td class="td-center" colspan="22">No se encontraron registros</td>
-      </tr>-->
     </tbody>
   </table>
   <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
   </pagination-controls>
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleParametros" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 75%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Resultados
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasResultadosEvidencia">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let resultado of this.resultadosValidacion | paginate: { itemsPerPage:60, currentPage: page } let indice=index">
+                      <td>{{resultado.nomenclatura}}</td>
+                      <td> {{resultado.muestreosTotales}}</td>
+                      <td>{{resultado.muestreosAprobados}}</td>
+                      <td>{{resultado.muestreosRechazados}}</td>
+                      <td> {{resultado.muestreosAprobados*100/this.total[0].muestreosTotales |number : '1.2-2' }} </td>
+                      <td> {{resultado.muestreosRechazados*100/this.total[0].muestreosTotales |number : '1.2-2' }} </td>
+                      <td> {{resultado.muestreosAprobados*100/resultado.muestreosTotales |number : '1.2-2' }} </td>
+                      <td> {{resultado.muestreosRechazados*100/resultado.muestreosTotales |number : '1.2-2' }} </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleAprobados"
+                      (click)="mostrarAprobados()">
+                &nbsp;<i class="bi bi-list-check"></i>Detalle de Aprobados
+              </button>
+              <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleRechazados"
+                      (click)="mostrarRechazados()">
+                &nbsp;<i class="bi bi-list"></i>Detalle de Rechazados
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleAprobados" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 100%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Detalle de Aprobados
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasMuestreosAprobados">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let aprobado of this.muestreosValidados | paginate: { itemsPerPage:30, currentPage: page } let indice=index">
+                      <td>{{aprobado.claveMuestreo}}</td>
+                      <td>{{aprobado.claveSitio}}</td>
+                      <td>{{aprobado.tipoCuerpoAgua}}</td>
+                      <td>{{aprobado.laboratorio}}</td>
+                      <td>{{aprobado.laboratorioMuestreo}}</td>
+                      <td>{{aprobado.conEventualidades}}</td>
+                      <td>{{aprobado.fechaProgramada|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.fechaRealVisita|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.brigada}}</td>
+                      <td>{{aprobado.conQcmuestreo}}</td>
+                      <td>{{aprobado.tipoSupervision}}</td>
+                      <td>{{aprobado.tipoEventualidad}}</td>
+                      <td>{{aprobado.fechaReprogramacion|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.fechaValidacion|date: 'dd/MM/yyyy'}}</td>
+                      <td>{{aprobado.porcentajePago}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button class="btn btn-secondary mr-1" type="button" (click)="extraerAprobados()">
+                <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+              </button>
+
+              <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modalDetalleEventualidades"
+                      (click)="mostrarEventualidades()">
+                &nbsp;<i class="bi bi-list"></i>Detalle de eventualidades
+              </button>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleEventualidades" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 60%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Detalle de eventualidades
+          </h4>
+        </div>      
+        <div *ngIf="this.mostrarMensajeAlerta" class="alert alert-success alert-dismissible">
+          <button type="button" class="close" aria-label="Close" (click)="ocultarmensaje()"><span aria-hidden="true">&times;</span></button>
+          <div> {{this.messageEventualidad}}></div>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="registroParam" class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasEventualidades">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let eventualidad of this.eventualidadesTotales | paginate: { itemsPerPage:30, currentPage: page }">
+                      <td>{{eventualidad.laboratorioMuestreo}}</td>
+                      <td>{{eventualidad.claveMuestreo}}</td>
+                      <td>{{eventualidad.claveSitio}}</td>
+                      <td>SI</td>
+                      <td>ACEPTADA</td>
+                      <td>
+                        <input type="text" [(ngModel)]="eventualidad.porcentajePago" formControlName="txtpago">
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+              <button class="btn btn-secondary mr-1" type="button" (click)="extraerEventualidades()" formControlName="btnDescargaEventualida">
+                <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+              </button>
+
+
+              <button class="btn btn-primary" type="button" (click)="actualizarEventualidades()">
+                <i class="bi bi-box-arrow-down"></i> Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleRechazados" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 60%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            Detalle de Rechazados
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: fit-content; text-align: center; font-size: x-small; background-color: #D4E6F1" scope="col" *ngFor="let columna of this.columnasMuestreosRechazados">
+                        {{columna.etiqueta}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let rechazado of this.muestreosRechazados | paginate: { itemsPerPage:30, currentPage: page } let indice=index">
+                      <td>{{rechazado.claveMuestreo}}</td>
+                      <td>{{rechazado.claveSitio}}</td>
+                      <td>{{rechazado.laboratorio}}</td>
+                      <td>{{rechazado.fechaValidacion|date: 'dd/MM/yyyy'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+                </pagination-controls>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+              <button class="btn btn-secondary mr-1" type="button" (click)="extraerRechazados()">
+                <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 

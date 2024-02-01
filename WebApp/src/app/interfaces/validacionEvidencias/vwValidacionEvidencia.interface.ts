@@ -1,6 +1,10 @@
 
 export interface vwValidacionEvidencia {
-
+  avisoRealizacionId: number;    
+  isChecked: boolean;
+  muestreoId: number;
+  calculo: number;
+  cumpleTiempoMuestreo: string;
   claveMuestreo: string;
   sitio: string;
   claveConalab: string;
@@ -36,6 +40,7 @@ export interface vwValidacionEvidencia {
   latSitioResultado: string;
   longSitioResultado: string;
   lstPuntosMuestreo: any[];
+  lstEvidencias: any[];
 
 
   folioBM: boolean;
@@ -63,6 +68,8 @@ export interface vwValidacionEvidencia {
   registrosLegiblesCC: boolean;
   rechazo: boolean;
   observacionesRechazo: boolean;
+  cumplePlacasTr: boolean;
+  cumpleClaveConalabTr: boolean;
 
 
 

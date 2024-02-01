@@ -192,11 +192,14 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwSitios> VwSitios { get; set; }
 
+    public virtual DbSet<VwValidacionEvidenciaRealizada> VwValidacionEvidenciaRealizada { get; set; }
+
+    public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
+
     public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
 
-    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
+    => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1545,6 +1548,10 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.RegistrosLegiblesFf).HasColumnName("RegistrosLegiblesFF");
             entity.Property(e => e.RegistrosVisiblesBm).HasColumnName("RegistrosVisiblesBM");
 
+            entity.HasOne(d => d.AvisoRealizacion).WithMany(p => p.ValidacionEvidencia)
+                .HasForeignKey(d => d.AvisoRealizacionId)
+                .HasConstraintName("FK_ValidacionEvidencia_AvisoRealizacion");
+
             entity.HasOne(d => d.Muestreo).WithMany(p => p.ValidacionEvidencia)
                 .HasForeignKey(d => d.MuestreoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -1784,6 +1791,45 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
         });
 
+        modelBuilder.Entity<VwValidacionEvidenciaRealizada>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_ValidacionEvidenciaRealizada");
+
+            entity.Property(e => e.Brigada).HasMaxLength(50);
+            entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
+            entity.Property(e => e.ClaveSitio).HasMaxLength(150);
+            entity.Property(e => e.ConQcmuestreo).HasColumnName("ConQCMuestreo");
+            entity.Property(e => e.FechaProgramada).HasColumnType("date");
+            entity.Property(e => e.FechaRealVisita).HasColumnType("date");
+            entity.Property(e => e.FechaReprogramacion).HasColumnType("date");
+            entity.Property(e => e.FechaValidacion).HasColumnType("datetime");
+            entity.Property(e => e.Laboratorio)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.LaboratorioMuestreo)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.TipoCuerpoAgua).HasMaxLength(50);
+            entity.Property(e => e.TipoEventualidad).HasMaxLength(100);
+            entity.Property(e => e.TipoSupervision).HasMaxLength(30);
+        });
+
+        modelBuilder.Entity<VwValidacionEvidenciaTotales>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_ValidacionEvidenciaTotales");
+
+            entity.Property(e => e.MuestreosAprobados).HasColumnName("muestreosAprobados");
+            entity.Property(e => e.MuestreosRechazados).HasColumnName("muestreosRechazados");
+            entity.Property(e => e.MuestreosTotales).HasColumnName("muestreosTotales");
+            entity.Property(e => e.Nomenclatura)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<VwValidacionEviencias>(entity =>
         {
             entity
@@ -1829,6 +1875,9 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(2)
                 .IsUnicode(false)
                 .HasColumnName("CUMPLE FECHA REALIZACION");
+            entity.Property(e => e.CumpleTiempoMuestreo)
+                .HasMaxLength(2)
+                .IsUnicode(false);
             entity.Property(e => e.EvidenciasEsperadas).HasColumnName("Evidencias esperadas");
             entity.Property(e => e.FechaProgramadaVisita)
                 .HasColumnType("date")
@@ -1876,7 +1925,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
         });
 
-        
+
         OnModelCreatingPartial(modelBuilder);
     }
 

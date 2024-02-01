@@ -2,6 +2,7 @@
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Features.Sitios.Commands.CreateSitioCommand;
+using Application.Models;
 using AutoMapper;
 using Domain.Entities;
 
@@ -45,6 +46,9 @@ namespace Application.Mappings
             CreateMap<EvidenciaSupervisionMuestreo, EvidenciaSupervisionDto>();
             CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>();
             CreateMap<VwValidacionEviencias, vwValidacionEvienciasDto>();
+
+            CreateMap<VwValidacionEvidenciaRealizada, EventualidadesMuestreoAprobados> ();
+            CreateMap<VwValidacionEvidenciaRealizada, EvidenciasMuestreosAprobados>();       
 
             #endregion
         }

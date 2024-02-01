@@ -108,8 +108,11 @@ namespace Persistence
             services.AddTransient<IVwDatosGeneralesSupervisionRepository, VwDatosGeneralesSupervisionRepository>();
             services.AddTransient<IVwDirectoresResponsablesRepository, VwDirectoresResponsablesRepository>();
             services.AddTransient<IInformeMensualSupervisionRepository, InformeMensualSupervisionRepository>();
-            services.AddTransient<IValidacionEvidenciasRepository, ValidacionEvidenciasRepository>();
+            services.AddTransient<IAvisoRealizacionRepository, AvisoRealizacionRepository>();
             services.AddTransient<IVwValidacionEvienciasRepository, VwValidacionEvienciasRepository>();
+            services.AddTransient<IValidacionEvidenciaRepository, ValidacionEvidenciaRepository>();
+            services.AddTransient<IVwValidacionEvidenciaTotalesRepository, VwValidacionEvidenciaTotalesRepository>();
+            services.AddTransient<IVwValidacionEvidenciaRealizadaRepository, VwValidacionEvidenciaRealizadaRepository>();
 
 
             #endregion

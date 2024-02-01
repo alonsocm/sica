@@ -5,6 +5,10 @@ namespace Domain.Entities;
 
 public partial class VwValidacionEviencias
 {
+    public long AvisoRealizacionId { get; set; }
+
+    public long MuestreoId { get; set; }
+
     public string ClaveMuestreo { get; set; } = null!;
 
     public string Sitio { get; set; } = null!;
@@ -46,6 +50,10 @@ public partial class VwValidacionEviencias
     public TimeSpan? HoraFinMuestreo { get; set; }
 
     public int? TiempoMinimoMuestreo { get; set; }
+
+    public int? Calculo { get; set; }
+
+    public string CumpleTiempoMuestreo { get; set; } = null!;
 
     public string ClaveConalbaArm { get; set; } = null!;
 

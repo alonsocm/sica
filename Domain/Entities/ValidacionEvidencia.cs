@@ -81,6 +81,10 @@ public partial class ValidacionEvidencia
 
     public long UsuarioValidoId { get; set; }
 
+    public long? AvisoRealizacionId { get; set; }
+
+    public virtual AvisoRealizacion? AvisoRealizacion { get; set; }
+
     public virtual Muestreo Muestreo { get; set; } = null!;
 
     public virtual Usuario UsuarioValido { get; set; } = null!;

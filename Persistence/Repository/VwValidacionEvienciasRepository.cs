@@ -23,17 +23,5 @@ namespace Persistence.Repository
             return _dbContext.VwValidacionEviencias.ToList();
         }
 
-        //public async Task<IEnumerable<vwValidacionEvienciasDto>> ObtenerPuntos(List<VwValidacionEviencias> lstValidaciones)
-        //{
-        //    foreach (var dato in lstValidaciones)
-        //    {
-        //        dato
-        //    }
-        
-        
-        //}
-
-
-
     }
 }
