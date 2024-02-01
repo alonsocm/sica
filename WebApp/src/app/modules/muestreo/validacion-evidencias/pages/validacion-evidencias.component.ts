@@ -245,27 +245,19 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   }  
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
-
     if (this.archivo) {
       this.loading = !this.loading;
-
       this.validacionService.cargarArchivo(this.archivo[0]).subscribe({
-        next: (response: any) => {
-          if (response.data.correcto) {
-            this.loading = false;
+        next: (response: any) => {        
+          this.loading = false;
+          if (response.data == true) {           
             this.mostrarMensaje(
               'Archivo procesado correctamente.',
               TIPO_MENSAJE.exito
             );
             this.resetInputFile(this.inputExcelMonitoreos);
-            //this.consultarMonitoreos();
-          }
-          else {
-            this.loading = false;
-            //this.numeroEntrega = response.data.numeroEntrega;
-            //this.anioOperacion = response.data.anio;
-            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
-          }
+            this.obtenerDatos();
+          }        
         },
         error: (error: any) => {
           this.loading = false;
@@ -280,6 +272,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
         },
       });
     }
+   
   }
   validacion() { }
   limpiarFiltros() { }
@@ -361,12 +354,12 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     this.validacionService.validarMuestreo(muestreo, usuarioId).subscribe({
       next: (response: any) => {
         if (response.data) {
-          this.loading = false;
-          this.obtenerDatos();
+          this.loading = false;          
           this.mostrarMensaje(
             'Se valido correctamente el muestreo.',
             TIPO_MENSAJE.exito
-          ); 
+          );
+          this.obtenerDatos();
         }
       },
       error: (response: any) => { },
@@ -392,7 +385,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
             'El control de validación se realizo correctamente.',
             TIPO_MENSAJE.exito
           );
-
+          this.obtenerDatos();
         }
       },
       error: (response: any) => { },

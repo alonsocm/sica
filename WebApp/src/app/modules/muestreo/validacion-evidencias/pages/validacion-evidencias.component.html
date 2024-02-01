@@ -116,7 +116,7 @@
         <td>{{muestreo.claveConalab}}</td>
         <td>{{muestreo.tipoCuerpoAgua}}</td>
         <td>{{muestreo.laboratorio}}</td>
-        <td></td>  <!--laboratorio que realizo el muestreo-->
+        <td>{{muestreo.laboratorio}}</td> <!--laboratorio que realizo el muestreo CAMBIAR-->
         <td>{{(muestreo.conEventualidades == false)?"NO":"SI"}}</td>
         <td>{{muestreo.fechaProgramadaVisita}}</td>
         <td>{{muestreo.fechaRealVisita}}</td>
@@ -188,10 +188,10 @@
           <input id="chkRegistrosVisibles" type="checkbox" [(ngModel)]="muestreo.registrosVisiblesBM" title="seleccionar">
         </td> <!--BASE-->
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
-        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
-        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
-        <td></td> <!--FECHA-->
-        <td></td> <!--HORA-->
+        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[3].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[3].longitud : ""}}</td>
+        <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'dd/MM/yyyy'}}</td> <!--FECHA-->
+        <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date:'HH:mm:ss'}}</td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFM" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFM" title="seleccionar">
         </td> <!--BASE-->
@@ -202,10 +202,10 @@
           <input id="chkFotoUnicaFM" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFM" title="seleccionar">
         </td> <!--BASE-->
         <!--TABLA 4 CRITERIOS FOTO DE MUESTRAS (FS)-->
-        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
-        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
-        <td></td> <!--FECHA-->
-        <td></td> <!--HORA-->
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[5].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[5].longitud : ""}}</td>
+        <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'dd/MM/yyyy'}}</td> <!--FECHA-->
+        <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'HH:mm:ss'}}</td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFS" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFS" title="seleccionar">
         </td> <!--BASE-->
@@ -219,10 +219,10 @@
           <input id="chkFotoUnicaFS" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFS" title="seleccionar">
         </td>  <!--BASE-->
         <!--TABLA 5 FOTO DE AFORO-->
-        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td>
-        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td>
-        <td></td> <!--FECHA-->
-        <td></td> <!--HORA-->
+        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[2].latitud : ""}}</td>
+        <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[2].longitud : ""}}</td>
+        <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'dd/MM/yyyy'}}</td> <!--FECHA-->
+        <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'HH:mm:ss'}}</td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFA" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFA" title="seleccionar">
         </td> <!--BASE-->
@@ -236,8 +236,8 @@
         <td class="checkBox-center">
           <input id="chkFormatoLlenadoFF" type="checkbox" [(ngModel)]="muestreo.formatoLlenadoCorrectoFF" title="seleccionar">
         </td> <!--BASE-->
-        <td></td> <!--LATITUD FORMATO DE AFORO-->
-        <td></td> <!--LONGITUD FORMATO DE AFORO-->
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td> <!--LATITUD FORMATO DE AFORO-->
+        <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td> <!--LONGITUD FORMATO DE AFORO-->
         <td></td> <!--DISTANCIA A PUNTO DE AFORO-->
         <td class="checkBox-center">
           <input id="chkGeocercaFF" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaFF" title="seleccionar">
