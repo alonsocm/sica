@@ -423,8 +423,6 @@
           <button type="button" class="close" aria-label="Close" (click)="ocultarmensaje()"><span aria-hidden="true">&times;</span></button>
           <div> {{this.messageEventualidad}}></div>
         </div>
-
-
         <div class="modal-body">
           <form [formGroup]="registroParam" class="form-horizontal" style="padding-top:15px;">
             <div class="row">
@@ -457,7 +455,7 @@
             <div class="modal-footer">
               <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 
-              <button class="btn btn-secondary mr-1" type="button" (click)="extraerRechazados()">
+              <button class="btn btn-secondary mr-1" type="button" (click)="extraerEventualidades()" formControlName="btnDescargaEventualida">
                 <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
               </button>
 

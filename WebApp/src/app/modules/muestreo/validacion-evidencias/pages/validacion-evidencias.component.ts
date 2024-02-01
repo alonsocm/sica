@@ -3,7 +3,6 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { BaseService } from '../../../../shared/services/base.service';
-import { validacionEvidencia } from 'src/app/interfaces/validacionEvidencias/validacionEvidencia.interface';
 import { ValidacionService } from '../services/validacion.service';
 import { EvidenciasService } from '../../evidencias/services/evidencias.service';
 import { vwValidacionEvidencia } from 'src/app/interfaces/validacionEvidencias/vwValidacionEvidencia.interface';
@@ -14,6 +13,7 @@ import { tipoEvidencia } from '../../../../shared/enums/tipoEvidencia';
 import { PuntosEvidenciaMuestreo } from '../../../../interfaces/puntosEvidenciaMuestreo.interface';
 import { vwValidacionEvidenciaTotales } from '../../../../interfaces/validacionEvidencias/vwValidacionEvidenciaTotales.interface';
 import { vwValidacionEvidenciaRealizada } from '../../../../interfaces/validacionEvidencias/vwValidacionEvidenciaRealizada.interface.';
+
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 
@@ -56,6 +56,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     super();
     this.registroParam = this.fb.group({
       txtpago: '',
+      btnDescargaEventualida: null
     });
   }
   ngOnInit(): void {  
@@ -339,10 +340,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   private obtenerDatos(): void {
     this.validacionService.obtenerDatosaValidar().subscribe({
       next: (response: any) => {
-
         this.muestreosFiltrados = response.data;
-        console.log(this.muestreosFiltrados);
-        
       },
       error: (error) => { },
     });
@@ -352,16 +350,12 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       next: (response: any) => {
         this.resultadosValidacion = response.data;
         this.total = this.resultadosValidacion.filter(x => x.nomenclatura == 'Total');
-        console.log(this.resultadosValidacion);
-        console.log(this.total);
-
       },
       error: (error) => { },
     });
   }
   validar(muestreo: any) {
-    this.loading = true;
-    console.log(muestreo);
+    this.loading = true;   
     let usuarioId = localStorage.getItem('idUsuario');  
    
     this.validacionService.validarMuestreo(muestreo, usuarioId).subscribe({
@@ -389,10 +383,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       return this.hacerScroll();
     }
  
-    //this.muestreosaValidr = muestreosSeleccionados.map((s) => s.muestreoId);
-    console.log(this.muestreosaValidr);
     let usuarioId = localStorage.getItem('idUsuario');  
-
     this.validacionService.validarMuestreoLista(this.muestreosaValidr, usuarioId).subscribe({
       next: (response: any) => {
         if (response.data) {
@@ -413,46 +404,28 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     this.ismuestreoModal = true;
   }
   mostrarAprobados() {
-    console.log("entra");
     this.validacionService.obtenerMuestreosValidados(false).subscribe({
       next: (response: any) => {
         this.muestreosValidados = response.data;
-        console.log(this.muestreosValidados);
-       
-       
-
       },
       error: (error) => { },
     });
 
   }
-  mostrarRechazados() {
-    console.log("entra");
+  mostrarRechazados() {  
     this.validacionService.obtenerMuestreosValidados(true).subscribe({
       next: (response: any) => {
         this.muestreosRechazados = response.data;
-        console.log(this.muestreosValidados);
-
-
-
       },
       error: (error) => { },
     });
-
   }
-  eventualidades() { }
-  extraerRechazados() { }
-  extraerAprobados() { }
   mostrarEventualidades() {
     this.eventualidadesTotales = this.muestreosValidados.filter(x => x.conEventualidades == true);
 
   }
-  actualizarEventualidades() {
-    console.log(this.eventualidadesTotales);
-
-    this.loading = true;  
- 
-
+  actualizarEventualidades() {  
+    this.loading = true;
     this.validacionService.actualizarPorcentaje(this.eventualidadesTotales).subscribe({
       next: (response: any) => {
         if (response.data) {
@@ -466,13 +439,76 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
         }
       },
       error: (response: any) => { },
-    });
-
-
-
-
+    });    
   }
   ocultarmensaje() {
     this.mostrarMensajeAlerta = false;   
   }
+  extraerEventualidades(): void {
+    if (this.eventualidadesTotales.length == 0) {
+      this.mostrarMensaje('No hay información existente para descargar', 'warning');
+      return this.hacerScroll();
+    }
+
+    this.loading = true;
+   
+    this.validacionService.extraerEventualidades(this.eventualidadesTotales).subscribe({
+      next: (response: any) => {       
+          FileService.download(response, 'EventualidadesMuestreosAprobados.xlsx');
+          this.loading = false;
+        },
+        error: (response: any) => {
+          this.mostrarMensaje(
+            'No fue posible descargar la información',
+            'danger'
+          );
+          this.loading = false;
+          this.hacerScroll();
+        },
+      });
+  }
+  extraerAprobados(): void {
+    if (this.muestreosValidados.length == 0) {
+      this.mostrarMensaje('No hay información existente para descargar', 'warning');
+      return this.hacerScroll();
+    }
+    this.loading = true;
+    this.validacionService.extraerMuestreosAprobados(this.muestreosValidados).subscribe({
+      next: (response: any) => {       
+        FileService.download(response, 'EvidenciasMuestreosAprobados.xlsx');
+        this.loading = false;
+      },
+      error: (response: any) => {
+        this.mostrarMensaje(
+          'No fue posible descargar la información',
+          'danger'
+        );
+        this.loading = false;
+        this.hacerScroll();
+      },
+    });
+  }
+  extraerRechazados(): void {
+    if (this.muestreosRechazados.length == 0) {
+      this.mostrarMensaje('No hay información existente para descargar', 'warning');
+      return this.hacerScroll();
+    }
+    this.loading = true;
+    this.validacionService.extraerMuestreosRechazados(this.muestreosRechazados).subscribe({
+      next: (response: any) => {      
+        FileService.download(response, 'EvidenciasMuestreosRechazados.xlsx');
+        this.loading = false;
+      },
+      error: (response: any) => {
+        this.mostrarMensaje(
+          'No fue posible descargar la información',
+          'danger'
+        );
+        this.loading = false;
+        this.hacerScroll();
+      },
+    });
+  }
+
+
 }
