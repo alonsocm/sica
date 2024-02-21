@@ -8,6 +8,7 @@
         public string Direccion { get; set; }
         public string DistanciaFocal { get; set; }
         public string FechaCreacion { get; set; }
+        public string HoraCreacion { get; set; }
         public string Flash { get; set; }
         public string Iso { get; set; }
         public string Latitud { get; set; }

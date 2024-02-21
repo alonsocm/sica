@@ -118,14 +118,14 @@
         <td>{{muestreo.laboratorio}}</td>
         <td>{{muestreo.laboratorio}}</td> <!--laboratorio que realizo el muestreo CAMBIAR-->
         <td>{{(muestreo.conEventualidades == false)?"NO":"SI"}}</td>
-        <td>{{muestreo.fechaProgramadaVisita}}</td>
-        <td>{{muestreo.fechaRealVisita}}</td>
+        <td>{{muestreo.fechaProgramadaVisita|date: 'dd/MM/yyyy'}}</td>
+        <td>{{muestreo.fechaRealVisita|date: 'dd/MM/yyyy'}}</td>
         <td>{{muestreo.brigadaProgramaMuestreo}}</td>
         <td>{{(muestreo.conQcmuestreo == false ) ? "NO": "SI"}}</td>
         <td>{{muestreo.tipoSupervision}}</td>
         <td></td> <!--observacion del muestreo-->
         <td>{{muestreo.tipoEventualidad}}</td>
-        <td>{{muestreo.fechaReprogramacion}}</td>
+        <td>{{muestreo.fechaReprogramacion|date: 'dd/MM/yyyy'}}</td>
         <td></td> <!--observacion evidencias conagua-->
         <td></td> <!--observacion evidencias conagua 2-->
         <td></td> <!--observacion evidencias conagua 3 -->
@@ -134,9 +134,9 @@
         <!--TABLA 2 CRITERIOS BTACORA DE MUESTREO (BM)-->
 
         <td class="checkBox-center">
-          <input id="chkFolio" type="checkbox" [(ngModel)]="muestreo.folioBM" title="seleccionar">
+          <input id="chkFolio" type="checkbox" style="width:50px" [(ngModel)]="muestreo.folioBM" title="seleccionar">
         </td> <!--BASE-->
-        <td>{{muestreo.fechaRealizacion}}</td>
+        <td>{{muestreo.fechaRealizacion|date: 'dd/MM/yyyy'}}</td>
         <td>{{muestreo.cumpleFechaRealizacion}}</td> <!--BASE-->
         <td>{{muestreo.horaIncioMuestreo}}</td>
         <td>{{muestreo.horaFinMuestreo}}</td>
@@ -162,7 +162,7 @@
         <td>{{muestreo.log1MuestreoPrograma}}</td>
         <td>{{muestreo.latSitioResultado}}</td>
         <td>{{muestreo.longSitioResultado}}</td>
-        <td>distancia</td>
+        <td> </td> <!--poner la distancia-->
         <td class="checkBox-center">
           <input id="chkGeocerca" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaBM" title="seleccionar">
         </td> <!--BASE-->
@@ -190,8 +190,8 @@
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
         <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[3].latitud : ""}}</td>
         <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[3].longitud : ""}}</td>
-        <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'dd/MM/yyyy'}}</td> <!--FECHA-->
-        <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date:'HH:mm:ss'}}</td> <!--HORA-->
+        <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: "" }}  </td>    <!--FECHA-->
+        <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].horaCreacion: ""}} </td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFM" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFM" title="seleccionar">
         </td> <!--BASE-->
@@ -204,8 +204,8 @@
         <!--TABLA 4 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[5].latitud : ""}}</td>
         <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[5].longitud : ""}}</td>
-        <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'dd/MM/yyyy'}}</td> <!--FECHA-->
-        <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'HH:mm:ss'}}</td> <!--HORA-->
+        <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].fechaCreacion:"" }}</td> <!--FECHA-->
+        <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].horaCreacion: ""}}</td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFS" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFS" title="seleccionar">
         </td> <!--BASE-->
@@ -221,8 +221,8 @@
         <!--TABLA 5 FOTO DE AFORO-->
         <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[2].latitud : ""}}</td>
         <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[2].longitud : ""}}</td>
-        <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'dd/MM/yyyy'}}</td> <!--FECHA-->
-        <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""|date: 'HH:mm:ss'}}</td> <!--HORA-->
+        <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""}}</td> <!--FECHA-->
+        <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].horaCreacion: ""}}</td> <!--HORA-->
         <td class="checkBox-center">
           <input id="chkMetadatosFA" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFA" title="seleccionar">
         </td> <!--BASE-->
@@ -418,7 +418,7 @@
           <h4 class="modal-title text-center " id="staticBackdropLabel">
             Detalle de eventualidades
           </h4>
-        </div>      
+        </div>
         <div *ngIf="this.mostrarMensajeAlerta" class="alert alert-success alert-dismissible">
           <button type="button" class="close" aria-label="Close" (click)="ocultarmensaje()"><span aria-hidden="true">&times;</span></button>
           <div> {{this.messageEventualidad}}></div>

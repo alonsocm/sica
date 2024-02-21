@@ -91,7 +91,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     /*let criteriosBitacoraMuestreo: Array<Columna>*/
     this.columnasBitacoraMuestreo
       = [
-      { nombre: 'folio', etiqueta: 'FOLIO', orden: 1, filtro: new Filter(), },
+      { nombre: '', etiqueta: 'FOLIO', orden: 1, filtro: new Filter(), },
       { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 2, filtro: new Filter(), },
       { nombre: '', etiqueta: 'CUMPLE CON FECHA REALIZACIÓN', orden: 3, filtro: new Filter(), },
       { nombre: 'horainio', etiqueta: 'HORA INICIO', orden: 4, filtro: new Filter(), },
@@ -413,8 +413,8 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       error: (error) => { },
     });
   }
-  mostrarEventualidades() {
-    this.eventualidadesTotales = this.muestreosValidados.filter(x => x.conEventualidades == true);
+  mostrarEventualidades() {    
+    this.eventualidadesTotales = this.muestreosValidados.filter(x => x.conEventualidades = true);   
 
   }
   actualizarEventualidades() {  
