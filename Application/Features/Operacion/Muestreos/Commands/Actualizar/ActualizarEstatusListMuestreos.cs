@@ -45,7 +45,9 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
                 foreach (var dato in muestreo)
                 {
                     dato.EstatusId = request.estatusId;
-                    _muestreoRepository.Actualizar(dato);
+                        // Si se envia al estatus 29 "Acumulados de resultados" se actualiza tambien la bandera de ValidacionEvidencias a true
+                        dato.ValidacionEvidencias = (request.estatusId == (int)Application.Enums.EstatusMuestreo.AcumulacionResultados) ? true : false;
+                        _muestreoRepository.Actualizar(dato);
                        
                 }
                     return new Response<bool> { Succeded = true };

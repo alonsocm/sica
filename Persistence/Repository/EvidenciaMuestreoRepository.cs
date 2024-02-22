@@ -57,7 +57,8 @@ namespace Persistence.Repository
                     FechaFinal = x.FechaFin ?? string.Empty,
                     HoraInicio = x.HoraInicio ?? string.Empty,
                     HoraFinal = x.HoraFin ?? string.Empty,
-                    TipoEvidenciaMuestreo = x.TipoEvidenciaMuestreoId
+                    TipoEvidenciaMuestreo = x.TipoEvidenciaMuestreoId,
+                    ValidacionEvidencias = x.Muestreo.ValidacionEvidencias
                 }).ToListAsync();
 
             }

@@ -39,7 +39,8 @@ namespace Application.Features.Operacion.ValidacionEvidencias.Queries
             long[] dato = { 1, 8, 7, 5 };
             var datos = _datosGeneralesValidacionEvidencia.ObtenerDatosGenerales();
             var datosDto = _mapper.Map<List<vwValidacionEvienciasDto>>(datos);
-            List<InformacionEvidenciaDto> evidencias = _evidenciasRepository.GetInformacionEvidenciasAsync().Result.ToList();
+            //Solo se tomaran las evidencias con la bandera ValidacionEvidencias en true de la tabla de Muestreo 
+            List<InformacionEvidenciaDto> evidencias = _evidenciasRepository.GetInformacionEvidenciasAsync().Result.ToList().Where(x => x.ValidacionEvidencias == true).ToList();
             foreach (var muestreo in datosDto)
             {                
                 muestreo.lstPuntosMuestreo =_mapper.Map<List<PuntosMuestreoDto>>(_muestreoRepositiry.GetPuntoPR_PMAsync(muestreo.ClaveMuestreo).Result);

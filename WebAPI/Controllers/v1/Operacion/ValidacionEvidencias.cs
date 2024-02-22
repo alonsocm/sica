@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using WebAPI.Controllers.v1.Catalogos;
 using WebAPI.Shared;
 
+
 namespace WebAPI.Controllers.v1.Operacion
 {
     public class ValidacionEvidencias : BaseApiController
@@ -24,13 +25,15 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IWebHostEnvironment _env;
         private readonly IProgramaAnioRepository _progrepor;
         private readonly IMapper _mapper;
+        private readonly IEmailSenderRepository _email;
 
-        public ValidacionEvidencias(IConfiguration configuration, IWebHostEnvironment env, IProgramaAnioRepository progepo, IMapper mapper)
+        public ValidacionEvidencias(IConfiguration configuration, IWebHostEnvironment env, IProgramaAnioRepository progepo, IMapper mapper, IEmailSenderRepository email)
         {
             _configuration = configuration;
             _env = env;
             _progrepor = progepo;
             _mapper = mapper;
+            _email = email;
         }
 
         [HttpPost]
@@ -97,10 +100,10 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpGet("obtenerMuestreosAprobados")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> obtenerMuestreosAprobados([FromForm] bool rechazo)
+        public async Task<IActionResult> obtenerMuestreosAprobados(bool rechazo)
         {
 
-            return Ok(await Mediator.Send(new GetVwValidacionEvidenciaRealizadaQuery{rechazo = rechazo }));
+            return Ok(await Mediator.Send(new GetVwValidacionEvidenciaRealizadaQuery { rechazo = rechazo }));
 
         }
 
@@ -144,8 +147,8 @@ namespace WebAPI.Controllers.v1.Operacion
                 rechazados.Add(new EvidenciasMuestreosRechazados
                 {
                     ClaveMuestreo = muestreo.ClaveMuestreo,
-                    ClaveSitio= muestreo.ClaveSitio,
-                    Laboratorio = muestreo.LaboratorioMuestreo??string.Empty,
+                    ClaveSitio = muestreo.ClaveSitio,
+                    Laboratorio = muestreo.LaboratorioMuestreo ?? string.Empty,
                     FechaValidacion = muestreo.FechaValidacion.ToString("dd/mm/yyyy"),
                 }
             ));
@@ -155,6 +158,15 @@ namespace WebAPI.Controllers.v1.Operacion
             ExcelService.ExportToExcel(rechazados, fileInfo, true);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
+
+        [HttpPost("envioCorreo")]
+        public IActionResult extraerMuestenvioCorreoreosRechazados(string destinatario,string asunto, string body, List<string> attachmentPaths)
+        {
+            _email.SendEmail(destinatario,asunto,body,attachmentPaths);
+            //new EmailSender().SendEmail(destinatario,asunto,body,attachmentPaths);
+            // EmailSender.SendEmail(destinatario, asunto, body, attachmentPaths);
+            return (Ok(true));
         }
     }
 }

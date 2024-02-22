@@ -41,6 +41,8 @@ public partial class Muestreo
 
     public DateTime? FechaCargaEvidencias { get; set; }
 
+    public bool ValidacionEvidencias { get; set; }
+
     public virtual EstatusMuestreo Estatus { get; set; } = null!;
 
     public virtual EstatusMuestreo? EstatusOcdlNavigation { get; set; }

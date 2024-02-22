@@ -26,5 +26,7 @@
         public string Laboratorio { get; set; }
         public string TipoEvidencia { get; set; }
         public long TipoEvidenciaMuestreo { get; set; }
+
+        public bool ValidacionEvidencias { get; set; }
     }
 }

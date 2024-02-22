@@ -136,7 +136,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
 
-    public virtual DbSet<Sitio> Sitio { get; set; }
+    public virtual DbSet<Sitio> Sitio { get; set; }  
 
     public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; }
 
@@ -162,9 +162,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
-
-    public virtual DbSet<UniversoDeSitios> UniversoDeSitios { get; set; }
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }   
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -197,9 +195,9 @@ public partial class SicaContext : DbContext
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
     public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
-
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
+        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1289,7 +1287,7 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
         });
-
+                
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
             entity.Property(e => e.Descripcion).HasMaxLength(50);
@@ -1424,56 +1422,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion).HasMaxLength(30);
         });
 
-        modelBuilder.Entity<UniversoDeSitios>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("'Universo de sitios$'");
-
-            entity.Property(e => e.Acuífero)
-                .HasMaxLength(255)
-                .HasColumnName("ACUÍFERO");
-            entity.Property(e => e.ClaveAcuífero)
-                .HasMaxLength(255)
-                .HasColumnName("CLAVE ACUÍFERO");
-            entity.Property(e => e.ClaveSitio)
-                .HasMaxLength(255)
-                .HasColumnName("CLAVE SITIO");
-            entity.Property(e => e.ClaveSitio1)
-                .HasMaxLength(255)
-                .HasColumnName("CLAVE SITIO1");
-            entity.Property(e => e.Cuenca)
-                .HasMaxLength(255)
-                .HasColumnName("CUENCA");
-            entity.Property(e => e.CuerpoDeAgua)
-                .HasMaxLength(255)
-                .HasColumnName("CUERPO DE AGUA");
-            entity.Property(e => e.DirecciónLocal)
-                .HasMaxLength(255)
-                .HasColumnName("DIRECCIÓN LOCAL");
-            entity.Property(e => e.Estado)
-                .HasMaxLength(255)
-                .HasColumnName("ESTADO");
-            entity.Property(e => e.Estatussitio).HasMaxLength(255);
-            entity.Property(e => e.F8).HasMaxLength(255);
-            entity.Property(e => e.Latitud).HasColumnName("LATITUD");
-            entity.Property(e => e.Longitud).HasColumnName("LONGITUD");
-            entity.Property(e => e.Municipio)
-                .HasMaxLength(255)
-                .HasColumnName("MUNICIPIO");
-            entity.Property(e => e.NombreDelSitio)
-                .HasMaxLength(255)
-                .HasColumnName("NOMBRE DEL SITIO");
-            entity.Property(e => e.OrganismoCuenca)
-                .HasMaxLength(255)
-                .HasColumnName("ORGANISMO CUENCA");
-            entity.Property(e => e.SubtipoCuerpoAgua)
-                .HasMaxLength(255)
-                .HasColumnName("SUBTIPO CUERPO AGUA");
-            entity.Property(e => e.TipoDeCuerpoDeAgua)
-                .HasMaxLength(255)
-                .HasColumnName("TIPO DE CUERPO DE AGUA");
-        });
+        
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -1924,7 +1873,7 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
         });
-
+       
 
         OnModelCreatingPartial(modelBuilder);
     }
