@@ -42,6 +42,9 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
   archivo: any;
   puntosMuestreo: Array<PuntosEvidenciaMuestreo> = [];
   ismuestreoModal: boolean = false;
+  ismuestreoModalAprobados: boolean = false;
+  ismuestreoModalRechazados: boolean = false;
+  ismuestreoEventualidades: boolean = false;
   resultadosValidacion: Array<vwValidacionEvidenciaTotales> = [];
   columnasResultadosEvidencia: Array<Columna> = [];
   columnasMuestreosAprobados: Array<Columna> = [];
@@ -55,8 +58,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     private fb: FormBuilder) {
     super();
     this.registroParam = this.fb.group({
-      txtpago: '',
-      btnDescargaEventualida: null
+     txtpago: ''  
     });
   }
   ngOnInit(): void {  
@@ -396,7 +398,8 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     this.obtenerResultadosEvidencia();
     this.ismuestreoModal = true;
   }
-  mostrarAprobados() {
+  mostrarAprobados() {    
+    this.ismuestreoModalAprobados = true;
     this.validacionService.obtenerMuestreosValidados(false).subscribe({
       next: (response: any) => {
         this.muestreosValidados = response.data;
@@ -405,7 +408,8 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
     });
 
   }
-  mostrarRechazados() {  
+  mostrarRechazados() {
+    this.ismuestreoModalRechazados = true;
     this.validacionService.obtenerMuestreosValidados(true).subscribe({
       next: (response: any) => {
         this.muestreosRechazados = response.data;
@@ -413,9 +417,16 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
       error: (error) => { },
     });
   }
-  mostrarEventualidades() {    
-    this.eventualidadesTotales = this.muestreosValidados.filter(x => x.conEventualidades = true);   
+  mostrarEventualidades() {
+    this.ismuestreoEventualidades = true;
+    this.validacionService.obtenerMuestreosValidados(false).subscribe({
+      next: (response: any) => {
+        this.muestreosValidados = response.data;
+      },
+      error: (error) => { },
+    });
 
+    this.eventualidadesTotales = this.muestreosValidados.filter(x => x.conEventualidades = true);
   }
   actualizarEventualidades() {  
     this.loading = true;
@@ -424,11 +435,7 @@ export class ValidacionEvidenciasComponent extends BaseService implements OnInit
         if (response.data) {
           this.loading = false;
           this.mostrarMensajeAlerta = true;
-          this.messageEventualidad = 'Se guradron los cambios correctamente';
-          //this.mostrarMensaje(
-          //  'Se guradron los cambios correctamente',
-          //  TIPO_MENSAJE.exito
-          //);
+          this.messageEventualidad = 'Se guardaron los cambios correctamente';
         }
       },
       error: (response: any) => { },
