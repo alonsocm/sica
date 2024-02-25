@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="table-responsive dvTable">
-    <table width="10000px" style="font-size:x-small" class="table-responsive table table-bordered table-hover">
+    <table width="10000px" class="table-responsive table table-bordered table-hover">
       <thead class="thead-light">
         <tr>
           <th *ngFor="let columna of columnas">
@@ -67,8 +67,8 @@
           <td>{{dato.programaAnual}}</td>
           <td>{{dato.idResultadoLaboratorio}}</td>
           <td>{{dato.fechaEntrega}}</td>
-          <td>{{dato.replica}}</td>
-          <td>{{dato.cambioResultado}}</td>
+          <td>{{(dato.replica)?"SI":"NO"}}</td>
+          <td>{{(dato.cambioResultado)?"SI":"NO"}}</td>
         </tr>
         <tr class="td-center">
           <td colspan="27">

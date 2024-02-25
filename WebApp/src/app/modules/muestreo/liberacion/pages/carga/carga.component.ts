@@ -261,17 +261,18 @@ export class CargaComponent extends BaseService implements OnInit {
       return this.hacerScroll();
     }
 
-    let muestreosSinEvidencias = muestreosSeleccionados.filter(
-      (f) => f.estatus !== 'Evidencias cargadas'
-    );
+    //Se comenta ya que la etapa de evidencias cargadas es desde ebaseca
+    //let muestreosSinEvidencias = muestreosSeleccionados.filter(
+    //  (f) => f.estatus !== 'Evidencias cargadas'
+    //);
 
-    if (muestreosSinEvidencias.length > 0) {
-      this.mostrarMensaje(
-        'Solo se pueden enviar a revisión los muestreos con evidencias cargadas.',
-        TIPO_MENSAJE.alerta
-      );
-      return this.hacerScroll();
-    }
+    //if (muestreosSinEvidencias.length > 0) {
+    //  this.mostrarMensaje(
+    //    'Solo se pueden enviar a revisión los muestreos con evidencias cargadas.',
+    //    TIPO_MENSAJE.alerta
+    //  );
+    //  return this.hacerScroll();
+    //}
 
     if (this.fechaLimiteRevision == '') {
       this.mostrarMensaje(

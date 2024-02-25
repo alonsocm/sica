@@ -20,10 +20,12 @@ export class RevisionResultadoService {
 
   getResultadosRevision(usuario: number) {
     return this.http.get<ResumenResultados>(
-      environment.apiUrl +'/Replicas/RevisionRepliFiltro?id=' +
+      environment.apiUrl +'/Replicas/RevisionRepliFiltro?userId=' +
       usuario
     );
   }
+
+
 
   aprovarRechazResultado(aprovacionMuestreo: Array<any> = []){
     return this.http.put(environment.apiUrl + '/Replicas/AutorizarRechaMuestreo', aprovacionMuestreo, { responseType: 'blob' });

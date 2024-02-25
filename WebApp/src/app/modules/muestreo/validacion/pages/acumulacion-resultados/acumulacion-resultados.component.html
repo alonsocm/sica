@@ -23,10 +23,10 @@
     </div>
   </div>
   <div class="table-responsive dvTable">
-    <table width="10000px" style="font-size:x-small" class="table-responsive table table-bordered table-hover">
+    <table width="10000px" class="table-responsive table table-bordered table-hover">
       <thead class="thead-light">
         <tr>
-          <th style="text-align:center" class="checkBox-center">
+          <th class="checkBox-center">
             <label for="chckAll">SELECCIONAR TODOS</label>
             <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
                    (change)="seleccionarAll(this.resultadosFiltradosn);" />
@@ -74,8 +74,8 @@
           <td>{{dato.programaAnual}}</td>
           <td>{{dato.idResultadoLaboratorio}}</td>
           <td>{{dato.fechaEntrega}}</td>
-          <td>{{dato.replica}}</td>
-          <td>{{dato.cambioResultado}}</td>
+          <td>{{(dato.replica) ? "SI": "NO"}}</td>
+          <td>{{(dato.cambioResultado) ? "SI":"NO"}}</td>
         </tr>
         <tr *ngIf="this.resultadosFiltradosn.length==0">
           <td colspan="24">

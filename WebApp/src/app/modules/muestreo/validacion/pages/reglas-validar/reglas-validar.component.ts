@@ -134,7 +134,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         filtro: new Filter(),
       },
     ];
-
     this.validacionService.obtenerMuestreos().subscribe({
       next: (response: any) => {
         this.anios = response.data;
@@ -148,7 +147,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       error: (error) => { },
     });
   }
-
   cargarResultados() {
     if (
       this.entregasSeleccionadas.length == 0 &&

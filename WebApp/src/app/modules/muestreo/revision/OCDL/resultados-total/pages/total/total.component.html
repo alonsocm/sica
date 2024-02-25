@@ -79,7 +79,7 @@
           <td>{{muestreo.tipoCuerpoAguaOriginal}}</td>
           <td>{{muestreo.tipoCuerpoAgua}}</td>
           <td>{{muestreo.observaciones}}</td>
-          <td>{{muestreo.fechaLimiteRevision}}</td>
+          <td>{{muestreo.fechaLimiteRevision|date: 'dd/MM/yyyy'}}</td>
           <td>
             <img (click)="DescargarArch(this.resultadosFiltradosn[indice], 2)" class="icon-evidencia"
               src="./assets/images/site/iconoimagen.png" title="descargar archivo" />

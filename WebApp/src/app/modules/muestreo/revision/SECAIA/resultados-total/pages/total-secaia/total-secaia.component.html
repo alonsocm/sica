@@ -61,7 +61,7 @@
             <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
           </td>
           <td>{{muestreo.noEntregaOCDL}}</td>
-          <td>{{muestreo.fechaLimiteRevision}}</td>
+          <td>{{muestreo.fechaLimiteRevision|date:'dd/MM/yyyy'}}</td>
           <td> {{(muestreo.organismoCuenca)}}</td>
           <td>{{muestreo.nombreSitio}}</td>
           <td>{{muestreo.claveMonitoreo}}</td>

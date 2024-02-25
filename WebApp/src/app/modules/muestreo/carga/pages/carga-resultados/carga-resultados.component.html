@@ -20,7 +20,7 @@
       </button>
       <button style="margin-left:5px" class="btn btn-primary" type="button" (click)="enviarMonitoreos()">
         <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s)
-      </button>
+      </button>  
     </div>
     <div class="float-right">
       <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
@@ -32,16 +32,17 @@
       </button>
     </div>
   </div>
+
   <div class="dvTable">
-    <table width="10000px" style="font-size:x-small" class="table-responsive table table-bordered table-hover">
+    <table width="10000px" class="table-responsive table table-bordered table-hover">
       <thead class="thead-light">
-        <tr>
-          <th style="text-align:center" class="checkBox-center">
+        <tr>    
+          <th class="checkBox-center">
             <label for="chckAll">SELECCIONAR TODOS</label>
             <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
                    (change)="seleccionarAll(this.muestreosFiltrados); getMuestreos();" />
           </th>
-          <th style="width:fit-content; text-align:center; font-size:x-small" scope="col" *ngFor="let columna of this.columnas">
+          <th style="width: fit-content; text-align: center;" scope="col" *ngFor="let columna of this.columnas">
             {{columna.etiqueta}}
             <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
                              (selected)="columna.filtro.selectedValue = $event; filtrar();"
@@ -51,8 +52,7 @@
             <ng-template #itemTemplate let-item>
               <a [innerHTML]="item"></a>
             </ng-template>
-          </th>
-          <th style="width:2000px">OBSERVACIONES</th>
+          </th>         
         </tr>
       </thead>
       <tbody>
@@ -73,16 +73,13 @@
           <td>{{muestreo.subTipoCuerpoAgua}}</td>
           <td>{{muestreo.programaAnual}}</td>
           <td>{{muestreo.laboratorio}}</td>
-
           <td>{{muestreo.laboratorioSubrogado}}</td>
-
           <td>{{muestreo.fechaProgramada}}</td>
           <td>{{muestreo.fechaRealizacion}}</td>
           <td>{{muestreo.horaInicio}}</td>
           <td>{{muestreo.horaFin}}</td>
           <td>{{muestreo.fechaCarga}}</td>
-          <td>{{muestreo.fechaEntrega}}</td>
-          <td style="width:2000px">Observaciones</td>
+          <td>{{muestreo.fechaEntregaMuestreo}}</td>          
         </tr>
         <tr *ngIf="this.muestreosFiltrados.length==0">
           <td class="td-center" colspan="22">No se encontraron registros</td>

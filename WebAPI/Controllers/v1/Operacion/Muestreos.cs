@@ -216,8 +216,8 @@ namespace WebAPI.Controllers.v1.Operacion
                     HoraInicioMuestreo = muestreo.HoraInicio,
                     HoraFinMuestreo = muestreo.HoraFin,
                     FechaCargaSica = muestreo.FechaCarga,
-                    FechaEntrega = muestreo.FechaEntregaMuestreo,
-                    Observaciones = muestreo.Observaciones,
+                    FechaEntrega = muestreo.FechaEntregaMuestreo
+              
                 }
             ));
 

@@ -132,7 +132,7 @@ export class ValidadosSecaiaComponent extends BaseService implements OnInit {
   guardarenvios(): void {
     this.muestreosFiltrados = this.obtenerSeleccionados();
     let muestreosModificar = [...new Set(this.muestreosFiltrados.map(m => m.muestreoId))];
-    let muestreos = { estatusSECAIAId: estatusMuestreo.AprobacionFinal, estatusId: estatusMuestreo.AprobacionFinal, muestreoId: [...new Set(muestreosModificar)] };
+    let muestreos = { estatusSECAIAId: estatusMuestreo.AprobacionFinal, estatusId: estatusMuestreo.AprobacionFinal, muestreoId: [...new Set(muestreosModificar)], IdUsuario: localStorage.getItem('idUsuario'), };
     this.loading = true;
     this.totalService.actualizarResultado(muestreos)
       .subscribe({

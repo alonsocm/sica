@@ -63,7 +63,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.muestreoService.obtenerMuestreos(false).subscribe({
       next: (response: any) => {
         this.muestreos = response.data;        
-        this.muestreosFiltrados = this.muestreos;     
+        this.muestreosFiltrados = this.muestreos;
+        console.log(this.muestreosFiltrados);
         this.establecerValoresFiltrosTabla();
       },
       error: (error) => { },
