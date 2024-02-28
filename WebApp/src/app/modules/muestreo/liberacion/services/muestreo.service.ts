@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Resultado } from '../../../../interfaces/Resultado.interface';
 import { environment } from 'src/environments/environment';
+import { acumuladosMuestreo } from '../../../../interfaces/acumuladosMuestreo.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -107,6 +108,24 @@ export class MuestreoService {
   enviarMuestreoaAcumulados(estatusId: number, muestreos: Array<number>) {
     let datos = { estatusId: estatusId, muestreos: muestreos };
     return this.http.put(environment.apiUrl + '/Muestreos/cambioEstatusMuestreos', datos);
-  }  
+  }
+
+  //Administracion de monitoreos
+  exportarMuestreos(muestreos: Array<Muestreo> = []): Observable<Blob> {
+    return this.http.post(
+      environment.apiUrl + '/Muestreos/ExportarMuestreosAdministracion',
+      muestreos,
+      { responseType: 'blob' }
+    );
+  }
+
+  //Administracion de monitoreos
+  exportarResultados(muestreos: Array<acumuladosMuestreo> = []): Observable<Blob> {
+    return this.http.post(
+      environment.apiUrl + '/Muestreos/ExportarResultadosAdministracion',
+      muestreos,
+      { responseType: 'blob' }
+    );
+  }
 
 }

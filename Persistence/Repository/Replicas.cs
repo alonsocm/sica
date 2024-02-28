@@ -40,12 +40,12 @@ namespace Persistence.Repository
                             ResultadoMuestreoId = result.ResultadoMuestreoId,
                             EstatusResultadoId = result.EstatusId,
                             NoEntrega = result.NumeroEntrega.ToString()??string.Empty,
-                            ClaveUnica = result.ClaveUnica,
+                            ClaveUnica = result.ClaveUnica ?? string.Empty,
                             ClaveSitio = result.ClaveSitio,
                             ClaveMonitoreo = result.ClaveMonitoreo.ToString() ?? string.Empty,
                             NombreSitio = result.NombreSitio,
                             ClaveParametro = result.ClaveParametro,
-                            Laboratorio = result.Laboratorio,
+                            Laboratorio = result.Laboratorio ?? string.Empty,
                             TipoCuerpoAgua = result.TipoCuerpoAgua,
                             TipoCuerpoAguaOriginal = result.TipoCuerpoAguaOriginal,
                             Resultado = result.Resultado,
@@ -55,7 +55,8 @@ namespace Persistence.Repository
                             ObservacionSECAIA = result.ClasificacionObservacion.ToString() ?? string.Empty,
                             ApruebaResultado = result.ApruebaResultado == null ? "" : (result.ApruebaResultado == true ? "SI" : "NO"),
                             ComentariosAprobacionResultados = result.ComentariosAprobacionResultados,
-                            FechaAprobRechazo = result.FechaAprobRechazo==null ? "" : result.FechaAprobRechazo.Date.ToString("dd/MM/yyyy"),
+                            //FechaAprobRechazo = result.FechaAprobRechazo==null ? "" : result.FechaAprobRechazo.Date.ToString("dd/MM/yyyy")
+                               FechaAprobRechazo = result.FechaAprobRechazo.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                             UsuarioRevision = result.NombreUsuario.ToString() ?? string.Empty,
                             estatusResultado = result.Estatus == null ? "" : result.Estatus.ToString() ?? string.Empty
                         }

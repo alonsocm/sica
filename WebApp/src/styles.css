@@ -118,8 +118,19 @@ table thead tr th{
     margin: 1% 0px 1% 0px;
 }
 
-icon-evidencia{
+  .dvTable table {
+    font-size: xx-small;
+    text-align:center;
+  }
+    .dvTable table th {
+      font-size: x-small;
+      text-align:center;
+    }
+
+
+.icon-evidencia{
     width: 60px;
+    height:60px;
 }
 
 /* .dvTable tbody>tr:hover {

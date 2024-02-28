@@ -22,9 +22,11 @@ namespace Persistence.Repository
 
             if (_dbContext.Muestreo.Any(x => (isOCDL) ? (x.EstatusOcdl == estatusId) : (x.EstatusSecaia == estatusId)))
             {
-                var usuarioDl = await _dbContext.Usuario.Include(t => t.DireccionLocal)
-                                                        .Include(t => t.Cuenca)
-                                                        .Where(t => t.Id == userId)
+                //var usuarioDl = await _dbContext.Usuario.Include(t => t.DireccionLocal)
+                //                                        .Include(t => t.Cuenca)
+                //                                        .Where(t => t.Id == userId)
+                //                                        .FirstOrDefaultAsync();
+                var usuarioDl = await _dbContext.Usuario.Where(t => t.Id == userId && (t.CuencaId != null || t.DireccionLocalId != null))
                                                         .FirstOrDefaultAsync();
 
                 resultadosMuestreos = (from rm in _dbContext.ResultadoMuestreo
@@ -33,10 +35,11 @@ namespace Persistence.Repository
                                        from usr in usuario.DefaultIfEmpty()
                                        where
                                              (isOCDL ? (rm.Muestreo.EstatusOcdl == estatusId || rm.Muestreo.EstatusOcdl == estatusVencido)
-                                                     : (rm.Muestreo.EstatusSecaia == estatusId || rm.Muestreo.EstatusSecaia == estatusVencido))
-                                       &&
-                                             (rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usuarioDl.CuencaId ||
-                                              rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usuarioDl.DireccionLocalId)
+                                                    : (rm.Muestreo.EstatusSecaia == estatusId || rm.Muestreo.EstatusSecaia == estatusVencido))
+                                                    
+                                       //&&
+                                       //      (rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usuarioDl.CuencaId ||
+                                       //       rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usuarioDl.DireccionLocalId)
                                        orderby rm.Parametro.ClaveParametro ascending
                                        select new ResultadoMuestreoDto
                                        {
@@ -57,17 +60,17 @@ namespace Persistence.Repository
                                            Laboratorio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
                                            TipoCuerpoAgua = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                            TipoCuerpoAguaOriginal = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                           FechaRevision = rm.Muestreo.FechaRevisionOcdl.ToString() ?? string.Empty,
+                                           FechaRevision = rm.Muestreo.FechaRevisionOcdl.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                            NombreUsuario = isOCDL ? $"{usr.Nombre} {usr.ApellidoPaterno} {usr.ApellidoMaterno}" : $"{rm.Muestreo.UsuarioRevisionSecaia.Nombre} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoPaterno} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoMaterno}",
                                            EstatusResultado = isOCDL ? rm.Muestreo.EstatusOcdlNavigation.Descripcion : rm.Muestreo.EstatusSecaiaNavigation.Descripcion,
                                            TipoAprobacion = rm.Muestreo.TipoAprobacion != null ? rm.Muestreo.TipoAprobacion.Descripcion.ToString() : string.Empty,
                                            EstatusId = rm.Muestreo.EstatusId,
                                            CuerpoTipoSubtipo = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAguaId,
                                            EsCorrectoResultado = (rm.EsCorrectoOcdl == true) ? "SI" : "NO",
-                                           FechaRealizacion = rm.Muestreo.FechaRealVisita.ToString() ?? string.Empty,
+                                           FechaRealizacion = rm.Muestreo.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                            OrganismoCuenca = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Descripcion,
                                            DireccionLocal = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal != null ? rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion : string.Empty,
-                                           FechaLimiteRevision = rm.Muestreo.FechaLimiteRevision.ToString(),
+                                           FechaLimiteRevision = rm.Muestreo.FechaLimiteRevision.Value.ToString("dd/MM/yyyy"),
                                            EstatusOCDL = rm.Muestreo.EstatusOcdl,
                                            EstatusSECAIA = rm.Muestreo.EstatusSecaia
                                        }).ToList();
@@ -113,7 +116,7 @@ namespace Persistence.Repository
                                   MuestreoId = m.Id,
                                   NoEntregaOCDL = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
                                   NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio.ToString(),
-                                  FechaRealizacion = m.FechaRealVisita.ToString(),
+                                  FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                   FechaLimiteRevision = m.FechaLimiteRevision.ToString(),
                                   fechaLimiteRevisionVencidos = m.FechaLimiteRevision,
                                   ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,

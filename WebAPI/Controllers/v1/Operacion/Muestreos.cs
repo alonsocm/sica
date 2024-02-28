@@ -230,5 +230,79 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
+
+
+        [HttpPost("ExportarMuestreosAdministracion")]
+        public IActionResult ExportarMuestreosAdministracion(List<MuestreoDto> muestreos)
+        {
+            List<MuestreosAdministracionExcel> muestreosExcel = new();
+
+            muestreos.ForEach(muestreo =>
+                muestreosExcel.Add(new MuestreosAdministracionExcel
+                {
+                    Estatus = muestreo.Estatus,                   
+                    NumeroEntrega = muestreo.NumeroEntrega,
+                    ClaveSitio = muestreo.ClaveSitio,
+                    Clave5K = string.Empty,
+                    ClaveMonitoreo = muestreo.ClaveMonitoreo,                    
+                    NombreSitio = muestreo.NombreSitio,
+                    Ocdl = muestreo.OCDL,
+                    TipoCuerpoAgua = muestreo.TipoCuerpoAgua,                    
+                    ProgramaAnual = muestreo.ProgramaAnual,
+                    Laboratorio = muestreo.Laboratorio,
+                    LaboratorioSubrogado = muestreo.LaboratorioSubrogado,
+                    FechaProgramada = muestreo.FechaProgramada,
+                    FechaRealizacion = muestreo.FechaRealizacion,                 
+
+                }
+            ));
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("MuestreosAdministracion");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportToExcel(muestreosExcel, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
+
+        [HttpPost("ExportarResultadosAdministracion")]
+        public IActionResult ExportarResultadosAdministracion(List<AcumuladosResultadoDto> muestreos)
+        {
+            List<ResultadosAdministracionExcel> muestreosExcel = new();
+
+            muestreos.ForEach(resultado =>
+                muestreosExcel.Add(new ResultadosAdministracionExcel
+                {
+                    ClaveUnica = resultado.claveUnica,
+                    ClaveMonitoreo = resultado.ClaveMonitoreo, 
+                    ClaveSitio = resultado.ClaveSitio,
+                    NombreSitio = resultado.NombreSitio,                    
+                    TipoSitio = resultado.TipoSitio,
+                    TipoCuerpoAgua = resultado.TipoCuerpoAgua,                   
+                    SubTipoCuerpoAgua  = resultado.SubTipoCuerpoAgua,
+                    FechaRealizacion = resultado.FechaRealizacion,
+                    GrupoParametro = resultado.grupoParametro,
+                    Parametro = resultado.parametro,
+                    UnidadMedida = resultado.unidadMedida ?? string.Empty,
+                    Resultado = resultado.resultado,
+                    NuevoResultadoReplica = resultado.nuevoResultadoReplica,
+                    Replica = resultado.replica.ToString(),
+                    CambioResultado = resultado.cambioResultado.ToString()
+
+
+                }
+            ));
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ResultadosAdministracion");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportToExcel(muestreosExcel, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
     }
 }

@@ -65,7 +65,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     Es_Correcto_SECAIA = datomuestreo.EsCorrectoSECAIA,
                     Observacion_SECAIA = datomuestreo.ObservacionSECAIA,
                     Clasificacion_Observacion = datomuestreo.ClasificacionObservacion,
-                    Aprueba_Resultado = datomuestreo.ApruebaResultado,
+                    Aprueba_Resultado = (datomuestreo.ApruebaResultado == null) ? "NO" : datomuestreo.ApruebaResultado,
                     Comentarios_Aprobacion_Resultados = datomuestreo.ComentariosAprobacionResultados,
                     Usuario = datomuestreo.UsuarioRevision,
                     estatusResultado = datomuestreo.estatusResultado

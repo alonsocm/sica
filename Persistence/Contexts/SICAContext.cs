@@ -136,7 +136,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
 
-    public virtual DbSet<Sitio> Sitio { get; set; }  
+    public virtual DbSet<Sitio> Sitio { get; set; }
 
     public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; }
 
@@ -162,7 +162,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }   
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -195,7 +195,7 @@ public partial class SicaContext : DbContext
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
     public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -1287,7 +1287,7 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
         });
-                
+
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
             entity.Property(e => e.Descripcion).HasMaxLength(50);
@@ -1420,9 +1420,7 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<UnidadMedida>(entity =>
         {
             entity.Property(e => e.Descripcion).HasMaxLength(30);
-        });
-
-        
+        });           
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -1873,7 +1871,7 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
         });
-       
+        
 
         OnModelCreatingPartial(modelBuilder);
     }

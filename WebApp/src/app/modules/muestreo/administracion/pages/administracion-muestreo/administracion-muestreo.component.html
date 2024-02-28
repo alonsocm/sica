@@ -1,272 +1,448 @@
 <router-outlet name="menu"></router-outlet>
-<!--<div *ngIf="loading">
+<div *ngIf="loading">
   <app-loading></app-loading>
-</div>-->
+</div>
 
-<div class="container bootstrap snippets bootdey">
-  <section id="news" class="white-bg padding-top-bottom">
-    <div class="container bootstrap snippets bootdey">
-      <div class="timeline">
-        <div class="date-title">
 
-          <div class="news-content">
-            <div class="date">
-              <p>28</p>
-            </div>
-            <h1 class=".span">Carga ebaseca</h1>
-          </div>
+<div class="container-fluid">
+  <h1 class="row col">Administración de monitoreos</h1>
+  <hr class="red">
 
-        </div>
-        <div class="date-title">
-
-          <div class="news-content">
-            <div class="date">
-              <p>35</p>
-            </div>
-            <h1 class=".span">Validación registro original</h1>
-          </div>
-
-        </div>
-        <div class="row">
-          <div class="col-sm-6 news-item">
+  <div class="container bootstrap snippets bootdey">
+    <section id="news" class="white-bg padding-top-bottom">
+      <div class="container bootstrap snippets bootdey">
+        <div class="timeline">
+          <div class="date-title" style="background-color: #81E279; opacity: 1; ">
             <div class="news-content">
               <div class="date">
                 <p>28</p>
               </div>
-              <h2 class="news-title">Acumulación de resultados</h2>
-              <div class="news-media">
-                <a class="colorbox cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/FFB6C1/000000" alt="">
-                </a>
+              <h1 class=".span" data-toggle="modal" data-target="#modalDetalleMuestreos" (click)="enviarMonitoreos(this.etapaCarga,false)">{{etapaCarga}}</h1>
+              <div style="text-align:right">
+                <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
+              </div>
+            </div>
+          </div>
+          <div class="date-title">
+
+            <div class="news-content">
+              <div class="date">
+                <p>35</p>
+              </div>
+              <h1 class=".span">{{etapaValRegOrig}}</h1>
+              <div style="text-align:right">
+                <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-6 news-item">
+              <div class="news-content">
+                <div class="date">
+                  <p>28</p>
+                </div>
+                <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaAcumulacion,29)">{{etapaAcumulacion}}</h2>
+                <div style="text-align:right">
+                  <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 news-item right">
+              <div class="news-content">
+                <div class="date">
+                  <p>27</p>
+                </div>
+                <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaIniReg,30)">{{etapaIniReg}}</h2>
+                <div style="text-align:right">
+                  <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="col-sm-6 news-item right">
-            <div class="news-content">
-              <div class="date">
-                <p>27</p>
-              </div>
-              <h2 class="news-title">Inicio de reglas</h2>
-              <div class="news-media gallery">
-                <a class="colorbox cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/87CEFA/000000" alt="">
-                </a>
-                <a class="colorbox cboxElement" href="#"></a>
+          <div class="row">
+            <div class="col-sm-6 news-item">
+              <div class="news-content">
+                <div class="date">
+                  <p>26</p>
+                </div>
+                <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaReglas,28)">{{etapaReglas}}</h2>
+                <div style="text-align:right">
+                  <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="row">
-          <div class="col-sm-6 news-item">
-            <div class="news-content">
-              <div class="date">
-                <p>26</p>
-              </div>
-              <h2 class="news-title">Módulo de reglas</h2>
-              <div class="news-media video">
-                <a class="colorbox-video cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/7B68EE/000000" alt="">
-                </a>
-              </div>
-            </div>
-          </div>
+            <div class="col-sm-6 news-item right">
+              <div class="news-content">
+                <div class="date">
+                  <p>25</p>
+                </div>
 
-          <div class="col-sm-6 news-item right">
+                <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaResumen,27)">{{etapaResumen}}</h2>
+                <div style="text-align:right">
+                  <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>25</p>
+                <p>35</p>
               </div>
-              <h2 class="news-title">Resumen validación de reglas</h2>
-              <div class="news-media gallery">
-                <a class="colorbox cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/BA55D3/000000" alt="">
-                </a>
-                <a class="colorbox cboxElement" href="#"></a>
+              <h1 class=".span" data-toggle="modal" data-target="#modalDetalleMuestreos" (click)="enviarMonitoreos(this.etapaLiberacion,true)">{{etapaLiberacion}}</h1>
+              <div style="text-align:right">
+                <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
           </div>
-        </div>
-        <div class="date-title">
-          <div class="news-content">
-            <div class="date">
-              <p>35</p>
-            </div>
-            <h1 class=".span">Liberación de resultados</h1>
-          </div>
-        </div>
-        <div class="date-title">
-          <div class="news-content">
-            <div class="date">
-              <p>35</p>
-            </div>
-            <h1 class=".span">Revisión de resultados</h1>
-          </div>
-        </div>
-        <div class="date-title">
-          <div class="news-content">
-            <div class="date">
-              <p>35</p>
-            </div>
-            <h1 class=".span">Aprobación de resultados</h1>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6 news-item">
+          <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>27</p>
+                <p>35</p>
               </div>
-              <h2 class="news-title">Revisíón de resulados</h2>
-              <div class="news-media video">
-                <a class="colorbox-video cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/DA70D6/000000" alt="">
-                </a>
+              <h1 class=".span">{{etapaRev}}</h1>
+              <div style="text-align:right">
+                <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
           </div>
-          <div class="col-sm-6 news-item right">
+          <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>24</p>
+                <p>35</p>
               </div>
-              <h2 class="news-title">Réplica de resultados</h2>
-              <div class="news-media video">
-                <a class="colorbox-video cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/DA70D6/000000" alt="">
-                </a>
-              </div>
+              <h1 class=".span">{{etapaAprob}}</h1>
             </div>
           </div>
+          <div class="row">
+            <div class="col-sm-6 news-item">
+              <div class="news-content">
+                <div class="date">
+                  <p>27</p>
+                </div>
+                <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaAprobRev,8)">{{etapaAprobRev}}</h2>
+                <div style="text-align:right">
+                  <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAzul.png" />
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 news-item right">
+              <div class="news-content">
+                <div class="date">
+                  <p>24</p>
+                </div>
+                <h2 class="news-title">Réplica de resultados</h2>
+                <div style="text-align:right">
+                  <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
+                </div>
+              </div>
+            </div>
 
-        </div>
-        <div class="row">
-          <div class="col-sm-6 news-item">
-            <div class="news-content">
-              <div class="date">
-                <p>27</p>
-              </div>
-              <h2 class="news-title">Réplica diferente dato</h2>
-              <div class="news-media video">
-                <a class="colorbox-video cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/DA70D6/000000" alt="">
-                </a>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 news-item">
+              <div class="news-content">
+                <div class="date">
+                  <p>27</p>
+                </div>
+                <h2 class="news-title">Réplica diferente dato</h2>
+                <div style="text-align:right">
+                  <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-6 news-item right">
-            <div class="news-content">
-              <div class="date">
-                <p>24</p>
-              </div>
-              <h2 class="news-title">Resumen</h2>
-              <div class="news-media video">
-                <a class="colorbox-video cboxElement" href="#">
-                  <img class="img-responsive" src="https://www.bootdey.com/image/400x400/DA70D6/000000" alt="">
-                </a>
+            <div class="col-sm-6 news-item right">
+              <div class="news-content">
+                <div class="date">
+                  <p>24</p>
+                </div>
+                <h2 class="news-title">Resumen</h2>
               </div>
             </div>
-          </div>
 
-        </div>
-        <div class="date-title">
-          <div class="news-content">
-            <div class="date">
-              <p>28</p>
-            </div>
-            <h1 class=".span">Resultados aprobados</h1>
           </div>
-        </div>
-        <div class="date-title">
-          <div class="news-content">
-            <div class="date">
-              <p>28</p>
+          <div class="date-title">
+            <div class="news-content">
+              <div class="date">
+                <p>28</p>
+              </div>
+              <h1 class=".span">Resultados aprobados</h1>
+              <div style="text-align:right">
+                <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
+              </div>
             </div>
-            <h1 class=".span">Incidencia OC-DL/SECAIA</h1>
           </div>
-        </div>
-        <div class="date-title">
-          <div class="news-content">
-            <div class="date">
-              <p>28</p>
+          <div class="date-title">
+            <div class="news-content">
+              <div class="date">
+                <p>28</p>
+              </div>
+              <h1 class=".span">Replica</h1>
+              <div style="text-align:right">
+                <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
+              </div>
             </div>
-            <h1 class=".span">Laboratorio</h1>
           </div>
-        </div>
-        <div class="date-title">
-          <div class="news-content">
-            <div class="date">
-              <p>28</p>
+          <div class="date-title" style="background-color: #ef856b">
+            <div class="news-content">
+              <div class="date">
+                <p>28</p>
+              </div>
+              <h1 class=".span">Penalización</h1>
+              <div style="text-align:right">
+                <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
+              </div>
             </div>
-            <h1 class=".span">Penalización</h1>
           </div>
         </div>
       </div>
+    </section>
+  </div>
+
+
+  <!--<div class="container-fluid py-5">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="horizontal-timeline">
+          <ul class="list-inline items">
+            <li class="list-inline-item items-list">
+              <div class="px-4">
+                <div class="event-date badge bg-info">2 June</div>
+                <h5 class="pt-2">Event One</h5>
+                <p class="text-muted">
+                  It will be as simple as occidental in fact it will be Occidental Cambridge
+                  friend
+                </p>
+                <div>
+                  <a href="#" class="btn btn-primary btn-sm">Read more</a>
+                </div>
+              </div>
+            </li>
+            <li class="list-inline-item items-list">
+              <div class="px-4">
+                <div class="event-date badge bg-success">5 June</div>
+                <h5 class="pt-2">Event Two</h5>
+                <p class="text-muted">
+                  Everyone realizes why a new common language one could refuse translators.
+                </p>
+                <div>
+                  <a href="#" class="btn btn-primary btn-sm">Read more</a>
+                </div>
+              </div>
+            </li>
+            <li class="list-inline-item items-list">
+              <div class="px-4">
+                <div class="event-date badge bg-danger">7 June</div>
+                <h5 class="pt-2">Event Three</h5>
+                <p class="text-muted">
+                  If several languages coalesce the grammar of the resulting simple and
+                  regular
+                </p>
+                <div>
+                  <a href="#" class="btn btn-primary btn-sm">Read more</a>
+                </div>
+              </div>
+            </li>
+            <li class="list-inline-item items-list">
+              <div class="px-4">
+                <div class="event-date badge bg-warning">8 June</div>
+                <h5 class="pt-2">Event Four</h5>
+                <p class="text-muted">
+                  Languages only differ in their pronunciation and their most common words.
+                </p>
+                <div>
+                  <a href="#" class="btn btn-primary btn-sm">Read more</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-  </section>
-</div>
+  </div>-->
 
 
+  <div *ngIf="this.ismuestreoModal == true" class="modal fade"
+       id="modalDetalleMuestreos" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 75%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            {{etapa}}
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row; dvTable">
+              <div class="table-responsive" style="max-height: 600px;">
+                <table width="10000px" class="table-responsive table table-bordered table-hover">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="checkBox-center">
+                        <label for="chckAll">SELECCIONAR TODOS</label>
+                        <!--<input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                        (change)="seleccionarAll(this.muestreosFiltrados)" />-->
+                        <input type="checkbox" id="chckAll"
+                               (change)="seleccionarAll(this.muestreosFiltrados)" />
+                      </th>
+                      <th *ngFor="let titulo of encabezadosPorMuestreo; let indice=index">
+                        {{titulo}}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="height:auto; text-align:center" *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
+                      <td class="checkBox-center">
+                        <!--<input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">-->
+                        <input type="checkbox" (change)="seleccionar()" title="seleccionar">
+                      </td>
+                      <td>{{muestreo.claveSitio}}</td>
+                      <td>-</td>
+                      <td>{{muestreo.claveMonitoreo}}</td>
+                      <td>{{muestreo.nombreSitio}}</td>
+                      <td>{{muestreo.ocdl}}</td>
+                      <td>{{muestreo.tipoCuerpoAgua}}</td>
+                      <td>{{muestreo.programaAnual}}</td>
+                      <td>{{muestreo.laboratorio}}</td>
+                      <td>{{muestreo.laboratorioSubrogado}}</td>
+                      <td>{{muestreo.fechaProgramada}}</td>
+                      <td>{{muestreo.fechaRealizacion}}</td>
+                      <td>{{muestreo.numeroEntrega}}</td>
+                      <td>{{muestreo.estatus}}</td>
 
-<div class="container-fluid py-5">
-  <div class="row">
-    <div class="col-lg-12">
+                    </tr>
 
-      <div class="horizontal-timeline">
-        <ul class="list-inline items">
-          <li class="list-inline-item items-list">
-            <div class="px-4">
-              <div class="event-date badge bg-info">2 June</div>
-              <h5 class="pt-2">Event One</h5>
-              <p class="text-muted">
-                It will be as simple as occidental in fact it will be Occidental Cambridge
-                friend
-              </p>
-              <div>
-                <a href="#" class="btn btn-primary btn-sm">Read more</a>
+                    <tr *ngIf="this.muestreosFiltrados.length==0">
+                      <td class="td-center" colspan="14">No se encontraron registros</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-          </li>
-          <li class="list-inline-item items-list">
-            <div class="px-4">
-              <div class="event-date badge bg-success">5 June</div>
-              <h5 class="pt-2">Event Two</h5>
-              <p class="text-muted">
-                Everyone realizes why a new common language one could refuse translators.
-              </p>
-              <div>
-                <a href="#" class="btn btn-primary btn-sm">Read more</a>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" id="btnEnvioRevision" class="btn btn-primary" (click)="exportarExcelMuestreos()"
+                      data-dismiss="modal">
+                <i class="bi bi-cloud-download"></i>Descarga
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="this.ismuestreoModalResultados == true" class="modal fade"
+       id="modalDetalleResultados" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 75%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center " id="staticBackdropLabel">
+            {{etapa}}
+          </h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" style="padding-top:15px;">
+            <div class="row; dvTable">
+              <div class="table-responsive" style="max-height: 600px;">
+                <table width="10000px" class="table-responsive table table-bordered table-hover">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="checkBox-center">
+                        <label for="chckAll">SELECCIONAR TODOS</label>
+                        <!--<input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
+                        (change)="seleccionarAll(this.muestreosFiltrados)" />-->
+                        <input type="checkbox" id="chckAll"
+                               (change)="seleccionarAll(this.muestreosFiltrados)" />
+                      </th>
+                      <th *ngFor="let titulo of encabezadosPorResultado; let indice=index">
+                        {{titulo}}
+                      </th>
+                      <th *ngIf="this.isrevisionResultados == true">OBSERVACIÓN OC-DL</th>
+                      <th *ngIf="this.isrevisionResultados == true">OBSERVACIÓN SECAIA</th>
+                      <th *ngIf="this.isrevisionResultados == true">REVISIÓN COMPLETA</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let resultado of this.resultadosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
+                    <tr data-toggle="collapse" href="#ejemplo" style="height:auto; text-align:center">
+                      <td class="checkBox-center">
+                        <!--<input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">-->
+                        <input type="checkbox" (change)="seleccionar()" title="seleccionar">
+                      </td>
+                      <td>{{resultado.claveUnica}}</td>
+                      <td>{{resultado.claveMonitoreo}}</td>
+                      <td>{{resultado.claveSitio}}</td>
+                      <td>{{resultado.nombreSitio}}</td>
+                      <td>{{resultado.fechaRealizacion}}</td>
+                      <td>{{resultado.tipoSitio}}</td>
+                      <td>{{resultado.tipoCuerpoAgua}}</td>
+                      <td>{{resultado.subTipoCuerpoAgua}}</td>
+                      <td>{{resultado.grupoParametro}}</td>
+                      <td>{{resultado.parametro}}</td>
+                      <td>{{resultado.unidadMedida}}</td>
+                      <td>{{resultado.resultado}}</td>
+                      <td>{{resultado.nuevoResultadoReplica}}</td>
+                      <td>{{(resultado.nuevoResultadoReplica != '') ? "SI" : "NO"}}</td>
+                      <td></td>
+
+                      <td *ngIf="this.isrevisionResultados == true && resultado.cambioResultado">
+                        <input type="checkbox" checked="checked" />
+                        <!--<input type="checkbox" [(ngModel)]="resultado.cambioResultado" (change)="seleccionar()" title="seleccionar">-->
+                      </td>
+                      <td *ngIf="this.isrevisionResultados == true && !resultado.cambioResultado">
+                        <input type="checkbox" />
+                        <!--<input type="checkbox" [(ngModel)]="resultado.cambioResultado" (change)="seleccionar()" title="seleccionar">-->
+                      </td>
+
+                      <td *ngIf="this.isrevisionResultados == true">  <input type="checkbox" /></td>
+                      <td *ngIf="this.isrevisionResultados == true">  <input type="checkbox" /></td>
+
+
+                      <!--<br />
+                      <br />
+                      <td colspan="4">
+                        <table class="table mb-0">
+                          <tr>
+                            <td>uno</td>
+                          </tr>
+                          <tr>
+                            <td>uno</td>
+                          </tr>
+                          <tr>
+                            <td>uno</td>
+                          </tr>
+
+                        </table>
+                      </td>-->
+                    </tr>
+                    <tr class="collapse" id="ejemplo" style="width:10000px">
+                      <td colspan="15"></td>
+                    </tr>
+
+                    <tr *ngIf="this.resultadosFiltrados.length==0">
+                      <td class="td-center" colspan="22">No se encontraron registros</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-          </li>
-          <li class="list-inline-item items-list">
-            <div class="px-4">
-              <div class="event-date badge bg-danger">7 June</div>
-              <h5 class="pt-2">Event Three</h5>
-              <p class="text-muted">
-                If several languages coalesce the grammar of the resulting simple and
-                regular
-              </p>
-              <div>
-                <a href="#" class="btn btn-primary btn-sm">Read more</a>
-              </div>
+            <div class="modal-footer">
+              <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" id="btnEnvioRevision" class="btn btn-primary" (click)="exportarExcelResultados()"
+                      data-dismiss="modal">
+                <i class="bi bi-cloud-download"></i>Descarga
+              </button>
             </div>
-          </li>
-          <li class="list-inline-item items-list">
-            <div class="px-4">
-              <div class="event-date badge bg-warning">8 June</div>
-              <h5 class="pt-2">Event Four</h5>
-              <p class="text-muted">
-                Languages only differ in their pronunciation and their most common words.
-              </p>
-              <div>
-                <a href="#" class="btn btn-primary btn-sm">Read more</a>
-              </div>
-            </div>
-          </li>
-        </ul>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+
+
+

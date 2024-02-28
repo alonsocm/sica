@@ -9,7 +9,7 @@ public partial class VwReplicaRevisionResultado
 
     public long ParametroId { get; set; }
 
-    public long UsuarioRevisionId { get; set; }
+    public long? UsuarioRevisionId { get; set; }
 
     public int? NumeroEntrega { get; set; }
 
@@ -19,7 +19,7 @@ public partial class VwReplicaRevisionResultado
 
     public int EstatusMuestreoId { get; set; }
 
-    public string ClaveUnica { get; set; } = null!;
+    public string? ClaveUnica { get; set; }
 
     public string ClaveSitio { get; set; } = null!;
 
@@ -47,13 +47,13 @@ public partial class VwReplicaRevisionResultado
 
     public int? ClasificacionObservacion { get; set; }
 
-    public bool ApruebaResultado { get; set; }
+    public bool? ApruebaResultado { get; set; }
 
-    public string ComentariosAprobacionResultados { get; set; } = null!;
+    public string? ComentariosAprobacionResultados { get; set; }
 
-    public DateTime FechaAprobRechazo { get; set; }
+    public DateTime? FechaAprobRechazo { get; set; }
 
-    public long NombreUsuario { get; set; }
+    public long? NombreUsuario { get; set; }
 
     public int? Estatus { get; set; }
 
