@@ -176,6 +176,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwDirectoresResponsablesOc> VwDirectoresResponsablesOc { get; set; }
 
+    public virtual DbSet<VwEstatusMuestreosAdministracion> VwEstatusMuestreosAdministracion { get; set; }
+
     public virtual DbSet<VwIntervalosTotalesOcDl> VwIntervalosTotalesOcDl { get; set; }
 
     public virtual DbSet<VwLimiteLaboratorio> VwLimiteLaboratorio { get; set; }
@@ -1420,7 +1422,7 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<UnidadMedida>(entity =>
         {
             entity.Property(e => e.Descripcion).HasMaxLength(30);
-        });           
+        });
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -1562,6 +1564,20 @@ public partial class SicaContext : DbContext
                 .HasColumnName("OC");
             entity.Property(e => e.Ocid).HasColumnName("OCId");
             entity.Property(e => e.Puesto).HasMaxLength(224);
+        });
+
+        modelBuilder.Entity<VwEstatusMuestreosAdministracion>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_EstatusMuestreosAdministracion");
+
+            entity.Property(e => e.Etapa)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .HasColumnName("ETAPA");
+            entity.Property(e => e.TotalMuestreo).HasColumnName("TOTAL MUESTREO");
+            entity.Property(e => e.TotalResultados).HasColumnName("TOTAL RESULTADOS");
         });
 
         modelBuilder.Entity<VwIntervalosTotalesOcDl>(entity =>
@@ -1871,7 +1887,7 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
         });
-        
+               
 
         OnModelCreatingPartial(modelBuilder);
     }
