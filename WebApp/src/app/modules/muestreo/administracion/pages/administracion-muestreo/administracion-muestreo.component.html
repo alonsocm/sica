@@ -8,6 +8,12 @@
   <h1 class="row col">Administración de monitoreos</h1>
   <hr class="red">
 
+  <div style="text-align:right">
+    <button type="button" class="btn btn-secondary btn-sm">
+      <i class="bi bi-printer"></i> Imprimir diagrama de flujo
+    </button>
+  </div>
+
   <div class="container bootstrap snippets bootdey">
     <section id="news" class="white-bg padding-top-bottom">
       <div class="container bootstrap snippets bootdey">
@@ -15,10 +21,11 @@
           <div class="date-title" style="background-color: #81E279; opacity: 1; ">
             <div class="news-content">
               <div class="date">
-                <p>28</p>
+                <p>{{this.resultadosAdministracion[13].totalMuestreo}}</p>
               </div>
               <h1 class=".span" data-toggle="modal" data-target="#modalDetalleMuestreos" (click)="enviarMonitoreos(this.etapaCarga,false)">{{etapaCarga}}</h1>
               <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[13].totalResultados}} Resultados</b></p>
                 <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
@@ -27,10 +34,11 @@
 
             <div class="news-content">
               <div class="date">
-                <p>35</p>
+                <p>{{this.resultadosAdministracion[12].totalMuestreo}}</p>
               </div>
               <h1 class=".span">{{etapaValRegOrig}}</h1>
               <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[12].totalResultados}} Resultados</b></p>
                 <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
@@ -40,10 +48,11 @@
             <div class="col-sm-6 news-item">
               <div class="news-content">
                 <div class="date">
-                  <p>28</p>
-                </div>
+                  <p>{{this.resultadosAdministracion[11].totalMuestreo}}</p>                
+                </div>              
                 <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaAcumulacion,29)">{{etapaAcumulacion}}</h2>
                 <div style="text-align:right">
+                  <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[11].totalResultados}} Resultados</b></p>
                   <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
                 </div>
               </div>
@@ -51,10 +60,11 @@
             <div class="col-sm-6 news-item right">
               <div class="news-content">
                 <div class="date">
-                  <p>27</p>
+                  <p>{{this.resultadosAdministracion[4].totalMuestreo}}</p>
                 </div>
                 <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaIniReg,30)">{{etapaIniReg}}</h2>
                 <div style="text-align:right">
+                  <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[4].totalResultados}} Resultados</b></p>
                   <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
                 </div>
               </div>
@@ -65,10 +75,11 @@
             <div class="col-sm-6 news-item">
               <div class="news-content">
                 <div class="date">
-                  <p>26</p>
+                  <p>{{this.resultadosAdministracion[3].totalMuestreo}}</p>
                 </div>
                 <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaReglas,28)">{{etapaReglas}}</h2>
                 <div style="text-align:right">
+                  <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[3].totalResultados}} Resultados</b></p>
                   <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
                 </div>
               </div>
@@ -77,11 +88,12 @@
             <div class="col-sm-6 news-item right">
               <div class="news-content">
                 <div class="date">
-                  <p>25</p>
+                  <p>{{this.resultadosAdministracion[7].totalMuestreo}}</p>
                 </div>
 
                 <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaResumen,27)">{{etapaResumen}}</h2>
                 <div style="text-align:right">
+                  <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[7].totalResultados}} Resultados</b></p>
                   <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
                 </div>
               </div>
@@ -90,10 +102,11 @@
           <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>35</p>
+                <p>{{this.resultadosAdministracion[5].totalMuestreo}}</p>
               </div>
               <h1 class=".span" data-toggle="modal" data-target="#modalDetalleMuestreos" (click)="enviarMonitoreos(this.etapaLiberacion,true)">{{etapaLiberacion}}</h1>
               <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[5].totalResultados}} Resultados</b></p>
                 <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
@@ -101,10 +114,11 @@
           <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>35</p>
+                <p>{{this.resultadosAdministracion[6].totalMuestreo}}</p>
               </div>
               <h1 class=".span">{{etapaRev}}</h1>
               <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[6].totalResultados}} Resultados</b></p>
                 <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
@@ -112,19 +126,23 @@
           <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>35</p>
+                <p>{{this.resultadosAdministracion[9].totalMuestreo}}</p>
               </div>
               <h1 class=".span">{{etapaAprob}}</h1>
+              <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[9].totalResultados}} Resultados</b></p>
+                </div>
+              </div>
             </div>
-          </div>
           <div class="row">
             <div class="col-sm-6 news-item">
               <div class="news-content">
                 <div class="date">
-                  <p>27</p>
+                  <p>{{this.resultadosAdministracion[10].totalMuestreo}}</p>
                 </div>
                 <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaAprobRev,8)">{{etapaAprobRev}}</h2>
                 <div style="text-align:right">
+                  <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[10].totalResultados}} Resultados</b></p>
                   <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAzul.png" />
                 </div>
               </div>
@@ -132,10 +150,11 @@
             <div class="col-sm-6 news-item right">
               <div class="news-content">
                 <div class="date">
-                  <p>24</p>
+                  <p>{{this.resultadosAdministracion[2].totalMuestreo}}</p>
                 </div>
-                <h2 class="news-title">Réplica de resultados</h2>
+                <h2 class="news-title">{{etapaReplicaRes}}</h2>
                 <div style="text-align:right">
+                  <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[2].totalResultados}} Resultados</b></p>
                   <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
                 </div>
               </div>
@@ -146,10 +165,11 @@
             <div class="col-sm-6 news-item">
               <div class="news-content">
                 <div class="date">
-                  <p>27</p>
+                  <p>{{this.resultadosAdministracion[0].totalMuestreo}}</p>
                 </div>
-                <h2 class="news-title">Réplica diferente dato</h2>
+                <h2 class="news-title">{{etapaReplicaDifDato}}</h2>
                 <div style="text-align:right">
+                  <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[0].totalResultados}} Resultados</b></p>
                   <img width="30" height="30" src="../../../../../../assets/images/site/estrellaAmarilla.png" />
                 </div>
               </div>
@@ -157,9 +177,10 @@
             <div class="col-sm-6 news-item right">
               <div class="news-content">
                 <div class="date">
-                  <p>24</p>
+                  <p>{{this.resultadosAdministracion[8].totalMuestreo}}</p>
                 </div>
-                <h2 class="news-title">Resumen</h2>
+                <h2 class="news-title">{{etapaResumenAprob}}</h2>
+                <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[8].totalResultados}} Resultados</b></p>
               </div>
             </div>
 
@@ -167,10 +188,11 @@
           <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>28</p>
+                <p>{{this.resultadosAdministracion[1].totalMuestreo}}</p>
               </div>
               <h1 class=".span">Resultados aprobados</h1>
               <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[1].totalResultados}} Resultados</b></p>
                 <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
@@ -178,10 +200,11 @@
           <div class="date-title">
             <div class="news-content">
               <div class="date">
-                <p>28</p>
+                <p>0</p>
               </div>
               <h1 class=".span">Replica</h1>
               <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>0 Resultados</b></p>
                 <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
@@ -189,10 +212,11 @@
           <div class="date-title" style="background-color: #ef856b">
             <div class="news-content">
               <div class="date">
-                <p>28</p>
+                <p>0</p>
               </div>
               <h1 class=".span">Penalización</h1>
               <div style="text-align:right">
+                <p style="color: #5CC9DF; font-size: large;"><b>0 Resultados</b></p>
                 <img width="30" height="30" src="../../../../../../assets/images/site/estrellaRoja.png" />
               </div>
             </div>
@@ -285,7 +309,7 @@
                       <th class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
                         <!--<input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                        (change)="seleccionarAll(this.muestreosFiltrados)" />-->
+              (change)="seleccionarAll(this.muestreosFiltrados)" />-->
                         <input type="checkbox" id="chckAll"
                                (change)="seleccionarAll(this.muestreosFiltrados)" />
                       </th>
@@ -323,6 +347,8 @@
                 </table>
               </div>
             </div>
+            <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
             <div class="modal-footer">
               <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
               <button type="button" id="btnEnvioRevision" class="btn btn-primary" (click)="exportarExcelMuestreos()"
@@ -354,7 +380,7 @@
                       <th class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
                         <!--<input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                        (change)="seleccionarAll(this.muestreosFiltrados)" />-->
+              (change)="seleccionarAll(this.muestreosFiltrados)" />-->
                         <input type="checkbox" id="chckAll"
                                (change)="seleccionarAll(this.muestreosFiltrados)" />
                       </th>
@@ -367,7 +393,7 @@
                     </tr>
                   </thead>
                   <tbody *ngFor="let resultado of this.resultadosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
-                    <tr data-toggle="collapse" href="#ejemplo" style="height:auto; text-align:center">
+                    <tr style="height:auto; text-align:center">
                       <td class="checkBox-center">
                         <!--<input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">-->
                         <input type="checkbox" (change)="seleccionar()" title="seleccionar">
@@ -402,25 +428,23 @@
 
 
                       <!--<br />
-                      <br />
-                      <td colspan="4">
-                        <table class="table mb-0">
-                          <tr>
-                            <td>uno</td>
-                          </tr>
-                          <tr>
-                            <td>uno</td>
-                          </tr>
-                          <tr>
-                            <td>uno</td>
-                          </tr>
+            <br />
+            <td colspan="4">
+              <table class="table mb-0">
+                <tr>
+                  <td>uno</td>
+                </tr>
+                <tr>
+                  <td>uno</td>
+                </tr>
+                <tr>
+                  <td>uno</td>
+                </tr>
 
-                        </table>
-                      </td>-->
+              </table>
+            </td>-->
                     </tr>
-                    <tr class="collapse" id="ejemplo" style="width:10000px">
-                      <td colspan="15"></td>
-                    </tr>
+                   
 
                     <tr *ngIf="this.resultadosFiltrados.length==0">
                       <td class="td-center" colspan="22">No se encontraron registros</td>
@@ -429,6 +453,8 @@
                 </table>
               </div>
             </div>
+            <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
             <div class="modal-footer">
               <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
               <button type="button" id="btnEnvioRevision" class="btn btn-primary" (click)="exportarExcelResultados()"

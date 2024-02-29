@@ -37,8 +37,13 @@ namespace Application.Features.Muestreos.Queries
             }
             else
             {
+                //Revisar porque se tiene los demas estatus
                 estatus.Add((long)Enums.EstatusMuestreo.NoEnviado);
-                estatus.Add((long)Enums.EstatusMuestreo.EvidenciasCargadas);
+                
+                //se comenta porque ya no es necesario este estatus aqui ya que despues de ser evidencias cargadas deben de pasar por la
+                //validación de reglas
+                //estatus.Add((long)Enums.EstatusMuestreo.EvidenciasCargadas);
+                
                 estatus.Add((long)Enums.EstatusMuestreo.Enviado);
                 estatus.Add((long)Enums.EstatusMuestreo.EnviadoConExtensionFecha);
                 estatus.Add((long)Enums.EstatusMuestreo.Validado);

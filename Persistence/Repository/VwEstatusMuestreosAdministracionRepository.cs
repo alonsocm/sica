@@ -9,17 +9,18 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
-    public class VwEstatusMuestreosAdministracionRepository: Repository<VwEstatusMuestreosAdministracionRepository>, IVwEstatusMuestreosAdministracionRepository
+
+    public class VwEstatusMuestreosAdministracionRepository: Repository<VwEstatusMuestreosAdministracion>, IVwEstatusMuestreosAdministracionRepository
     {
         public VwEstatusMuestreosAdministracionRepository(SicaContext context) : base(context)
         {
 
         }
 
-        public List<VwValidacionEvidenciaTotales> ObtenerResultadosValidacion()
+        public List<VwEstatusMuestreosAdministracion> ObtenerAdminsitracionMuestreos()
         {
 
-            return _dbContext.VwValidacionEvidenciaTotales.ToList();
+            return _dbContext.VwEstatusMuestreosAdministracion.ToList();
         }
     }
 }

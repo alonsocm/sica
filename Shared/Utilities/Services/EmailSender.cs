@@ -1,10 +1,11 @@
 ﻿namespace Shared.Utilities.Services
 {
+    using Application.Interfaces.IRepositories;
     using Microsoft.Extensions.Configuration;
     using System.Net;
     using System.Net.Mail;
 
-    public class EmailSender
+    public class EmailSender: IEmailSenderRepository
     {
         private readonly string smtpHost;
         private readonly int smtpPort;
@@ -50,6 +51,11 @@
                     mailMessage.Attachments.Add(attachment);
                 }
             }
+
+            smtpClient.Credentials = new NetworkCredential("sistemacapa@conagua.gob.mx", "Gifi21");
+            smtpClient.EnableSsl = true;
+
+         
 
             smtpClient.Send(mailMessage);
         }

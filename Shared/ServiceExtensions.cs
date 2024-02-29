@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Interfaces.IRepositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.ActiveDirectory.Services;
@@ -17,6 +18,7 @@ namespace Shared
             services.AddTransient<IArchivoService, ArchivoService>();
             services.AddTransient<IReglaService, ReglaService>();
             services.AddTransient<IMetadataExtractorService, MetadataExtractorService>();
+            services.AddTransient<IEmailSenderRepository, EmailSender>();
         }
     }
 }

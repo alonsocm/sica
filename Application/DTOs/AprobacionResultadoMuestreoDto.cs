@@ -35,7 +35,13 @@ namespace Application.DTOs
         public string? FechaAprobRechazo { get; set; }
         public long? UsuarioRevisionId { get; set; }
         public string? UsuarioRevision { get; set; }        
-        public string estatusResultado { get; set; }  
+        public string estatusResultado { get; set; }
+
+        public AprobacionResultadoMuestreoDto()
+        {
+            this.ClaveUnica = string.Empty;
+        }
+
 
     }
     public class ResultadosconEstatus

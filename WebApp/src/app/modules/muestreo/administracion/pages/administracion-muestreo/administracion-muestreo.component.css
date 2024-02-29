@@ -135,6 +135,8 @@ body {
 
 .news-item {
   padding-bottom: 45px;
+  
+
 }
 
   .news-item.right {
@@ -152,6 +154,8 @@ body {
     box-shadow: -5px 5px 0 rgba(0,0,0,0.08);
     -webkit-transition: all .3s ease-out;
     transition: all .3s ease-out;
+    border-style: dotted;
+    border-color:aqua;
   }
 
   .news-item:hover .news-content {
@@ -220,10 +224,11 @@ body {
 
 .news-content .date {
   position: absolute;
-  width: 80px;
+  width: 150px;
   height: 80px;
   left: 10px;
-  text-align: center;
+  text-align: left;
+  margin-left:10px;
   color: #5CC9DF;
   -webkit-transition: color .3s ease-out;
   transition: color .3s ease-out;
@@ -235,7 +240,7 @@ body {
 
 .news-content .date p {
   margin: 0;
-  font-size: 48px;
+  font-size: 50px;
   font-weight: 600;
   line-height: 48px;
 }
@@ -419,3 +424,10 @@ body {
   padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
   color: var(--bs-card-color);
 }
+
+
+
+
+
+
+

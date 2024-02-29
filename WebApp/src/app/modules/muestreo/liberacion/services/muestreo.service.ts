@@ -128,4 +128,12 @@ export class MuestreoService {
     );
   }
 
+  //Administracion de monitoreos totales 
+
+
+  obtenerTotalesAdministracion() {
+    return this.http.get<any>(environment.apiUrl + '/Muestreos/obtenerTotalesAdministracion');
+  }
+
+
 }

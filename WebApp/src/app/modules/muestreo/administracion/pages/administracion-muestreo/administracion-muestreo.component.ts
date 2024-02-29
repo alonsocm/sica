@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
+import { vwEstatusMuestreosAdministracion } from '../../../../../interfaces/vwEstatusMuestreosAdministracion.interface';
 import { estatusMuestreo } from '../../../../../shared/enums/estatusMuestreo';
 import { BaseService } from '../../../../../shared/services/base.service';
 import { FileService } from '../../../../../shared/services/file.service';
@@ -20,11 +21,16 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
   etapaAcumulacion: string = "Acumulación de resultados";
   etapaIniReg: string = "Inicial de reglas";
   etapaReglas: string = "Módulo de reglas";
-  etapaResumen: string = "Resumen";
+  etapaResumen: string = "Resumen validación registro original";
   etapaLiberacion: string = "Liberación de resultados";
   etapaRev: string = "Revisión de resultados";
   etapaAprob: string = "Aprobación de resultados";
   etapaAprobRev: string = "Revisíón de resulados";
+
+  etapaReplicaRes: string = "Réplica de resultados";
+  etapaReplicaDifDato: string = "Réplica diferente dato";
+  etapaResumenAprob: string = "Resumen aprobación de resultados";
+  etapaResAprobados: string = "Resultados aprobados";
 
   ismuestreoModal: boolean = false;
   ismuestreoModalResultados: boolean = false;
@@ -37,6 +43,8 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
   muestreosseleccionados: Array<Muestreo> = [];
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
   resultadosseleccionados: Array<acumuladosMuestreo> = [];
+
+  resultadosAdministracion: Array<vwEstatusMuestreosAdministracion> = [];
 
   encabezadosPorMuestreo: Array<string> = [
     'CLAVE NOSEC',
@@ -54,8 +62,6 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
     'ESTATUS'
 
   ];
-
-
   encabezadosPorResultado: Array<string> = [
     'CLAVE ÚNICA',
     'CLAVE MUESTREO',
@@ -74,8 +80,6 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
     'CAMBIO DE RESULTADO'
 
   ];
-
-
   constructor(private muestreoService: MuestreoService, private fb: FormBuilder, private validacionService: ValidacionReglasService) {
     super();
     this.registroParam = this.fb.group({});
@@ -83,13 +87,16 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
   }
 
   ngOnInit(): void {
-
+    this.obtenerTotales();
   }
-  enviarMonitoreos(Etapa: string, esLiberacion: boolean) { this.muestreosFiltrados = []; this.etapa = ""; this.consultarMonitoreos(esLiberacion); this.ismuestreoModal = true; this.etapa = Etapa; }
-
-  enviarResultados(Etapa: string, estatus: number) { this.resultadosFiltrados = []; this.cargarDatos(estatus); this.ismuestreoModalResultados = true; this.etapa = Etapa; }
-
-  
+  enviarMonitoreos(Etapamod: string, esLiberacion: boolean) {
+    this.etapa = "";
+    this.etapa = Etapamod;
+    this.muestreosFiltrados = [];
+    this.consultarMonitoreos(esLiberacion);
+    this.ismuestreoModal = true;
+  }
+  enviarResultados(Etapamod: string, estatus: number) { this.etapa = ""; this.etapa = Etapamod; this.resultadosFiltrados = []; this.cargarDatos(estatus); this.ismuestreoModalResultados = true; }
 
   private consultarMonitoreos(esLiberacion: boolean): void {
     this.muestreoService.obtenerMuestreos(esLiberacion).subscribe({
@@ -103,44 +110,24 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
     });
 
   }
-
   cargarDatos(estatus: number) {
 
-    this.isrevisionResultados = (estatus == estatusMuestreo.AprobacionResultado) ? true : false;
-
-    //let estatus = 0;
-    //switch (this.etapa) {
-    //  case this.etapaAcumulacion: estatus = estatusMuestreo.AcumulacionResultados;
-    //    break;
-    //  case this.etapaIniReg: estatus = estatusMuestreo.InicialReglas;
-    //    break;
-    //  case this.etapaReglas: estatus = estatusMuestreo.SeleccionadoParaValidar;
-    //    break;
-    //  case this.etapaResumen: estatus = estatusMuestreo.ValidadoPorReglas;
-    //    break;
-
-    //  default:
-    //    break;
-    //}
+    this.isrevisionResultados = (estatus == estatusMuestreo.AprobacionResultado) ? true : false; 
 
     this.validacionService.getResultadosAcumuladosParametros(estatus).subscribe({
       next: (response: any) => {
         this.resultadosFiltrados = response.data;
-        this.loading = false;
-        console.log(this.resultadosFiltrados);
+        this.loading = false;        
       },
       error: (error) => { this.loading = false; },
     });
 
   }
-
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
 
   }
-
-  exportarExcelMuestreos(): void {
-    console.log("Exportar");
+  exportarExcelMuestreos(): void { 
     if (this.muestreosseleccionados.length == 0 && this.muestreosFiltrados.length == 0) {
       this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
@@ -163,16 +150,14 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
           this.hacerScroll();
         },
       });
+    this.muestreosFiltrados = [];
+    this.muestreosseleccionados = [];
   }
-
-
   exportarExcelResultados(): void {
-    console.log("Exportar resultados");
     if (this.resultadosseleccionados.length == 0 && this.resultadosFiltrados.length == 0) {
       this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
-
     this.loading = true;
     this.resultadosseleccionados = (this.resultadosseleccionados.length == 0) ? this.resultadosFiltrados : this.resultadosseleccionados;
     this.muestreoService.exportarResultados(this.resultadosseleccionados)
@@ -190,8 +175,19 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
           this.hacerScroll();
         },
       });
+    this.resultadosFiltrados = [];
+    this.resultadosseleccionados = [];
+
   }
+  obtenerTotales() {
 
+    this.muestreoService.obtenerTotalesAdministracion().subscribe({
+      next: (response: any) => {
+        this.resultadosAdministracion = response.data;        
+      },
+      error: (error) => { },
+    });
 
+  }
 }
 

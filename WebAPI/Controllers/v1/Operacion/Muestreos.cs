@@ -5,6 +5,7 @@ using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
+using Application.Features.Operacion.ValidacionEvidencias.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
 using Domain.Settings;
@@ -217,7 +218,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     HoraFinMuestreo = muestreo.HoraFin,
                     FechaCargaSica = muestreo.FechaCarga,
                     FechaEntrega = muestreo.FechaEntregaMuestreo
-              
+
                 }
             ));
 
@@ -240,19 +241,19 @@ namespace WebAPI.Controllers.v1.Operacion
             muestreos.ForEach(muestreo =>
                 muestreosExcel.Add(new MuestreosAdministracionExcel
                 {
-                    Estatus = muestreo.Estatus,                   
+                    Estatus = muestreo.Estatus,
                     NumeroEntrega = muestreo.NumeroEntrega,
                     ClaveSitio = muestreo.ClaveSitio,
                     Clave5K = string.Empty,
-                    ClaveMonitoreo = muestreo.ClaveMonitoreo,                    
+                    ClaveMonitoreo = muestreo.ClaveMonitoreo,
                     NombreSitio = muestreo.NombreSitio,
                     Ocdl = muestreo.OCDL,
-                    TipoCuerpoAgua = muestreo.TipoCuerpoAgua,                    
+                    TipoCuerpoAgua = muestreo.TipoCuerpoAgua,
                     ProgramaAnual = muestreo.ProgramaAnual,
                     Laboratorio = muestreo.Laboratorio,
                     LaboratorioSubrogado = muestreo.LaboratorioSubrogado,
                     FechaProgramada = muestreo.FechaProgramada,
-                    FechaRealizacion = muestreo.FechaRealizacion,                 
+                    FechaRealizacion = muestreo.FechaRealizacion,
 
                 }
             ));
@@ -276,12 +277,12 @@ namespace WebAPI.Controllers.v1.Operacion
                 muestreosExcel.Add(new ResultadosAdministracionExcel
                 {
                     ClaveUnica = resultado.claveUnica,
-                    ClaveMonitoreo = resultado.ClaveMonitoreo, 
+                    ClaveMonitoreo = resultado.ClaveMonitoreo,
                     ClaveSitio = resultado.ClaveSitio,
-                    NombreSitio = resultado.NombreSitio,                    
+                    NombreSitio = resultado.NombreSitio,
                     TipoSitio = resultado.TipoSitio,
-                    TipoCuerpoAgua = resultado.TipoCuerpoAgua,                   
-                    SubTipoCuerpoAgua  = resultado.SubTipoCuerpoAgua,
+                    TipoCuerpoAgua = resultado.TipoCuerpoAgua,
+                    SubTipoCuerpoAgua = resultado.SubTipoCuerpoAgua,
                     FechaRealizacion = resultado.FechaRealizacion,
                     GrupoParametro = resultado.grupoParametro,
                     Parametro = resultado.parametro,
@@ -303,6 +304,16 @@ namespace WebAPI.Controllers.v1.Operacion
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
+
+
+        [HttpGet("obtenerTotalesAdministracion")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> obtenerTotalesAdministracion()
+        {
+
+            return Ok(await Mediator.Send(new GetTotalesMuestreosAdministracionQuery()));
+
         }
     }
 }
