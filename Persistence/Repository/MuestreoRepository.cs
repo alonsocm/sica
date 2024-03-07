@@ -397,15 +397,17 @@ namespace Persistence.Repository
                                  where muestreo.ProgramaMuestreoId == informacionMuestreo.ProgramaMuestreoId && idParametros.Contains(resultado.ParametroId)
                                  select resultado).ToListAsync();
 
-
-            puntosMuestreoDto.Add(new PuntosMuestreoDto
+            if (puntoPM.Count > 0)
             {
-                ClaveMuestreo = claveMuestreo,
-                Longitud = Convert.ToDouble(puntoPM.Where(x => x.ParametroId == (long)Application.Enums.IdLatitudLongitudParametro.LongitudSitio).FirstOrDefault().Resultado),
-                Latitud = Convert.ToDouble(puntoPM.Where(x => x.ParametroId == (long)Application.Enums.IdLatitudLongitudParametro.latitusSitio).FirstOrDefault().Resultado),
-                NombrePunto = Application.Enums.PuntosMuestreo.PuntodeMuestreo_PM.ToString(),
-                Punto = Application.Enums.PuntosMuestreo.PuntodeMuestreo_PM.ToString().Split('_')[1]
-            });
+                puntosMuestreoDto.Add(new PuntosMuestreoDto
+                {
+                    ClaveMuestreo = claveMuestreo,
+                    Longitud = Convert.ToDouble(puntoPM.Where(x => x.ParametroId == (long)Application.Enums.IdLatitudLongitudParametro.LongitudSitio).FirstOrDefault().Resultado),
+                    Latitud = Convert.ToDouble(puntoPM.Where(x => x.ParametroId == (long)Application.Enums.IdLatitudLongitudParametro.latitusSitio).FirstOrDefault().Resultado),
+                    NombrePunto = Application.Enums.PuntosMuestreo.PuntodeMuestreo_PM.ToString(),
+                    Punto = Application.Enums.PuntosMuestreo.PuntodeMuestreo_PM.ToString().Split('_')[1]
+                });
+            }
             return puntosMuestreoDto;
 
         }

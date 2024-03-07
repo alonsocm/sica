@@ -22,22 +22,22 @@
                          [searchKeyword]="keywordP"
                          (inputChanged)='onChangeSearch1($event)'
                          (selected)='selectEvent1($event)'
-                         [itemTemplate]="perfil"
+                        [itemTemplate]="perfilTemplate"
                          placeholder="Ingresar Perfil">
         </ng-autocomplete>
       </div>
 
       <ng-template #itemTemplate let-item>
+        <a [innerHTML]="item.nombre"> <input type="checkbox" />   </a>
+      </ng-template>   
+
+      <ng-template #perfilTemplate let-item>
         <a [innerHTML]="item.nombre"></a>
       </ng-template>
 
-      <ng-template #perfil let-items>
-        <a [innerHTML]="items.nombre"></a>
-      </ng-template>
-
       <!--<ng-template #notFoundTemplate let-notFound>
-      <div [innerHTML]="notFound"></div>
-    </ng-template>-->
+    <div [innerHTML]="notFound"></div>
+  </ng-template>-->
     </div>
     <br />
 

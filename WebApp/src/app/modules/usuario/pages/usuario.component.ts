@@ -21,7 +21,7 @@ export class UsuarioComponent implements OnInit {
   registro: FormGroup; 
   errorMessage: any;
   public keyword = "nombre";
-  public keywordP = "nombrePerfil";
+  public keywordP = "nombre";
 
   @Input() respuesta: Respuesta={
     succeded:false,
@@ -66,7 +66,10 @@ export class UsuarioComponent implements OnInit {
     }, error => console.error(error));
 
     this.userService.getPerfiles().subscribe(result => {
+      
       this.perfiles = result.data;
+      console.log("perfil combo");
+      console.log(this.perfiles);
     }, error => console.error(error));
 
     this.userService.getDLocales().subscribe(direcciones => {
