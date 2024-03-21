@@ -37,10 +37,7 @@ namespace Application.DTOs
         public string? UsuarioRevision { get; set; }        
         public string estatusResultado { get; set; }
 
-        public AprobacionResultadoMuestreoDto()
-        {
-            this.ClaveUnica = string.Empty;
-        }
+     
 
 
     }
