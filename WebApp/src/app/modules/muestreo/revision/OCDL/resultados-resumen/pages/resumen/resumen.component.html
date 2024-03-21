@@ -42,7 +42,7 @@
       <tbody>
         <tr *ngFor="let datos of this.resultadosFiltradosn | paginate: {itemsPerPage:NoPage, currentPage:page }">
           <td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="datos.isChecked" (change)="changeSelection()" title="seleccionar">
+            <input type="checkbox" [(ngModel)]="datos.isChecked" (change)="changeSelection()" title="Seleccionar">
           <td>{{datos.noEntregaOCDL == '0' ? '' :
             this.numberService.getOrdinalYear(datos.noEntregaOCDL) }} </td>
           <td>{{datos.claveUnica}}</td>

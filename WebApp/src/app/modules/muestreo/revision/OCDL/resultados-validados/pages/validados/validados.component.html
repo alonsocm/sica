@@ -137,7 +137,7 @@
                   *ngFor="let validados of this.muestreosagrupados| paginate: { itemsPerPage:NoPage, currentPage: page }">
                   <td class="checkBox-center">
                     <input type="checkbox" [(ngModel)]="validados.isCheckedmodal" (change)="seleccionarmodal()"
-                      title="seleccionar">
+                      title="Seleccionar">
                   </td>
                   <td>{{validados.noEntregaOCDL}}</td>
                   <td>{{validados.clavesitio}}</td>

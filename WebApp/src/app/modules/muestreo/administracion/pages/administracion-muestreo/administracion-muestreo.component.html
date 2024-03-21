@@ -14,6 +14,9 @@
     </button>
   </div>
 
+  <canvas #canvas style="border:solid; width:1500px; height:700px;">
+  </canvas>
+
   <div class="container bootstrap snippets bootdey">
     <section id="news" class="white-bg padding-top-bottom">
       <div class="container bootstrap snippets bootdey">
@@ -48,8 +51,8 @@
             <div class="col-sm-6 news-item">
               <div class="news-content">
                 <div class="date">
-                  <p>{{this.resultadosAdministracion[11].totalMuestreo}}</p>                
-                </div>              
+                  <p>{{this.resultadosAdministracion[11].totalMuestreo}}</p>
+                </div>
                 <h2 class="news-title" data-toggle="modal" data-target="#modalDetalleResultados" (click)="enviarResultados(this.etapaAcumulacion,29)">{{etapaAcumulacion}}</h2>
                 <div style="text-align:right">
                   <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[11].totalResultados}} Resultados</b></p>
@@ -131,9 +134,9 @@
               <h1 class=".span">{{etapaAprob}}</h1>
               <div style="text-align:right">
                 <p style="color: #5CC9DF; font-size: large;"><b>{{this.resultadosAdministracion[9].totalResultados}} Resultados</b></p>
-                </div>
               </div>
             </div>
+          </div>
           <div class="row">
             <div class="col-sm-6 news-item">
               <div class="news-content">
@@ -309,7 +312,7 @@
                       <th class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
                         <!--<input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-              (change)="seleccionarAll(this.muestreosFiltrados)" />-->
+                        (change)="seleccionarAll(this.muestreosFiltrados)" />-->
                         <input type="checkbox" id="chckAll"
                                (change)="seleccionarAll(this.muestreosFiltrados)" />
                       </th>
@@ -321,8 +324,8 @@
                   <tbody>
                     <tr style="height:auto; text-align:center" *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
                       <td class="checkBox-center">
-                        <!--<input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">-->
-                        <input type="checkbox" (change)="seleccionar()" title="seleccionar">
+                        <!--<input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="Seleccionar">-->
+                        <input type="checkbox" (change)="seleccionar()" title="Seleccionar">
                       </td>
                       <td>{{muestreo.claveSitio}}</td>
                       <td>-</td>
@@ -380,7 +383,7 @@
                       <th class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
                         <!--<input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-              (change)="seleccionarAll(this.muestreosFiltrados)" />-->
+                        (change)="seleccionarAll(this.muestreosFiltrados)" />-->
                         <input type="checkbox" id="chckAll"
                                (change)="seleccionarAll(this.muestreosFiltrados)" />
                       </th>
@@ -395,8 +398,8 @@
                   <tbody *ngFor="let resultado of this.resultadosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
                     <tr style="height:auto; text-align:center">
                       <td class="checkBox-center">
-                        <!--<input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">-->
-                        <input type="checkbox" (change)="seleccionar()" title="seleccionar">
+                        <!--<input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="Seleccionar">-->
+                        <input type="checkbox" (change)="seleccionar()" title="Seleccionar">
                       </td>
                       <td>{{resultado.claveUnica}}</td>
                       <td>{{resultado.claveMonitoreo}}</td>
@@ -416,11 +419,11 @@
 
                       <td *ngIf="this.isrevisionResultados == true && resultado.cambioResultado">
                         <input type="checkbox" checked="checked" />
-                        <!--<input type="checkbox" [(ngModel)]="resultado.cambioResultado" (change)="seleccionar()" title="seleccionar">-->
+                        <!--<input type="checkbox" [(ngModel)]="resultado.cambioResultado" (change)="seleccionar()" title="Seleccionar">-->
                       </td>
                       <td *ngIf="this.isrevisionResultados == true && !resultado.cambioResultado">
                         <input type="checkbox" />
-                        <!--<input type="checkbox" [(ngModel)]="resultado.cambioResultado" (change)="seleccionar()" title="seleccionar">-->
+                        <!--<input type="checkbox" [(ngModel)]="resultado.cambioResultado" (change)="seleccionar()" title="Seleccionar">-->
                       </td>
 
                       <td *ngIf="this.isrevisionResultados == true">  <input type="checkbox" /></td>
@@ -428,23 +431,23 @@
 
 
                       <!--<br />
-            <br />
-            <td colspan="4">
-              <table class="table mb-0">
-                <tr>
-                  <td>uno</td>
-                </tr>
-                <tr>
-                  <td>uno</td>
-                </tr>
-                <tr>
-                  <td>uno</td>
-                </tr>
+                      <br />
+                      <td colspan="4">
+                        <table class="table mb-0">
+                          <tr>
+                            <td>uno</td>
+                          </tr>
+                          <tr>
+                            <td>uno</td>
+                          </tr>
+                          <tr>
+                            <td>uno</td>
+                          </tr>
 
-              </table>
-            </td>-->
+                        </table>
+                      </td>-->
                     </tr>
-                   
+
 
                     <tr *ngIf="this.resultadosFiltrados.length==0">
                       <td class="td-center" colspan="22">No se encontraron registros</td>

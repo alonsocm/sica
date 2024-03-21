@@ -48,7 +48,7 @@
         <tr style="text-align:center"
             *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
           <td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="dato.isChecked" (change)="seleccionar()" title="seleccionar">
+            <input type="checkbox" [(ngModel)]="dato.isChecked" (change)="seleccionar()" title="Seleccionar">
           </td>
           <td>{{dato.claveUnica}}</td>
           <td>{{dato.claveMonitoreo}}</td>

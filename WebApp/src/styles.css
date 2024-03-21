@@ -133,6 +133,14 @@ table thead tr th{
     height:60px;
 }
 
+.dropdown-item {
+  font-size:xx-small;
+}
+
 /* .dvTable tbody>tr:hover {
     background-color: #DDDDDD;
 } */
+
+
+
+

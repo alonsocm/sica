@@ -1,5 +1,5 @@
 import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
-import { Columna } from 'src/app/interfaces/columna-inferface';
+import { Columna, ColumnaFinal } from 'src/app/interfaces/columna-inferface';
 import { Resultado } from 'src/app/interfaces/Resultado.interface';
 
 @Injectable({
@@ -20,6 +20,11 @@ export class BaseService {
   seleccionarTodosChck: boolean = false;
 
   columnas: Array<Columna> = [];
+  columnasF: Array<ColumnaFinal> = [];
+
+
+
+
   resultadosFiltradosn: Array<any> = [];
 
   resultadosn: Array<any> = [];

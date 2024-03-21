@@ -55,7 +55,7 @@
         <tr
           *ngFor="let muestreo of this.resultadosFiltradosn| paginate: { itemsPerPage:30, currentPage: page, id:'pgPrincipal' }; let indice=index">
           <td class="td-center">
-            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
+            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="Seleccionar">
           </td>
           <td>{{muestreo.noEntregaOCDL}}</td>
           <td>{{muestreo.claveUnica}}</td>

@@ -109,7 +109,7 @@
         <!--TABLA 1-->
         <td class="checkBox-center">
 
-          <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
+          <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="Seleccionar">
         </td>
         <td>{{muestreo.claveMuestreo}}</td>
         <td>{{muestreo.sitio}}</td>
@@ -134,7 +134,7 @@
         <!--TABLA 2 CRITERIOS BTACORA DE MUESTREO (BM)-->
 
         <td class="checkBox-center">
-          <input id="chkFolio" type="checkbox" style="width:50px" [(ngModel)]="muestreo.folioBM" title="seleccionar">
+          <input id="chkFolio" type="checkbox" style="width:50px" [(ngModel)]="muestreo.folioBM" title="Seleccionar">
         </td> <!--BASE-->
         <td>{{muestreo.fechaRealizacion|date: 'dd/MM/yyyy'}}</td>
         <td>{{muestreo.cumpleFechaRealizacion}}</td> <!--BASE-->
@@ -151,7 +151,7 @@
         <td>{{muestreo.liderBrigadaArm}}</td>
         <td>{{muestreo.liderBrigadaBase}}</td>
         <td class="checkBox-center">
-          <input id="chkLiderBrigada" type="checkbox" [(ngModel)]="muestreo.cumpleLiderBrigadaBM" title="seleccionar">
+          <input id="chkLiderBrigada" type="checkbox" [(ngModel)]="muestreo.cumpleLiderBrigadaBM" title="Seleccionar">
         </td> <!--BASE-->
         <td>{{muestreo.claveBrigadaArm}}</td>
         <td>
@@ -164,7 +164,7 @@
         <td>{{muestreo.longSitioResultado}}</td>
         <td> </td> <!--poner la distancia-->
         <td class="checkBox-center">
-          <input id="chkGeocerca" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaBM" title="seleccionar">
+          <input id="chkGeocerca" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaBM" title="Seleccionar">
         </td> <!--BASE-->
         <td>
           <button type="button" class="btn-action btn-secondary-action mr-1"
@@ -173,19 +173,19 @@
           </button>
         </td>
         <td class="checkBox-center">
-          <input id="chkCalibracion" type="checkbox" [(ngModel)]="muestreo.calibracionVerificacionEquiposBM" title="seleccionar">
+          <input id="chkCalibracion" type="checkbox" [(ngModel)]="muestreo.calibracionVerificacionEquiposBM" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkRegistroResultados" type="checkbox" [(ngModel)]="muestreo.registroResultadosCampoBM" title="seleccionar">
+          <input id="chkRegistroResultados" type="checkbox" [(ngModel)]="muestreo.registroResultadosCampoBM" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkFirmadoCancelado" type="checkbox" [(ngModel)]="muestreo.firmadoyCanceladoBM" title="seleccionar">
+          <input id="chkFirmadoCancelado" type="checkbox" [(ngModel)]="muestreo.firmadoyCanceladoBM" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkFotografiaGPS" type="checkbox" [(ngModel)]="muestreo.fotografiaGPSPuntoMuestreoBM" title="seleccionar">
+          <input id="chkFotografiaGPS" type="checkbox" [(ngModel)]="muestreo.fotografiaGPSPuntoMuestreoBM" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkRegistrosVisibles" type="checkbox" [(ngModel)]="muestreo.registrosVisiblesBM" title="seleccionar">
+          <input id="chkRegistrosVisibles" type="checkbox" [(ngModel)]="muestreo.registrosVisiblesBM" title="Seleccionar">
         </td> <!--BASE-->
         <!--TABLA 3 CRITERIOS FOTO DE MUESTREO (FM)-->
         <td>{{ (muestreo.lstPuntosMuestreo[3]!= null) ? muestreo.lstPuntosMuestreo[3].latitud : ""}}</td>
@@ -193,13 +193,13 @@
         <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: "" }}  </td>    <!--FECHA-->
         <td>{{(muestreo.lstEvidencias[1]!= null) ? muestreo.lstEvidencias[1].horaCreacion: ""}} </td> <!--HORA-->
         <td class="checkBox-center">
-          <input id="chkMetadatosFM" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFM" title="seleccionar">
+          <input id="chkMetadatosFM" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFM" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkLiderBrigadaFM" type="checkbox" [(ngModel)]="muestreo.liderBrigadaCuerpoAguaFM" title="seleccionar">
+          <input id="chkLiderBrigadaFM" type="checkbox" [(ngModel)]="muestreo.liderBrigadaCuerpoAguaFM" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkFotoUnicaFM" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFM" title="seleccionar">
+          <input id="chkFotoUnicaFM" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFM" title="Seleccionar">
         </td> <!--BASE-->
         <!--TABLA 4 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[5].latitud : ""}}</td>
@@ -207,16 +207,16 @@
         <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].fechaCreacion:"" }}</td> <!--FECHA-->
         <td>{{(muestreo.lstEvidencias[3]!= null) ? muestreo.lstEvidencias[1].horaCreacion: ""}}</td> <!--HORA-->
         <td class="checkBox-center">
-          <input id="chkMetadatosFS" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFS" title="seleccionar">
+          <input id="chkMetadatosFS" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFS" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkRegistrosRecipientesFS" type="checkbox" [(ngModel)]="muestreo.registroRecipientesFS" title="seleccionar">
+          <input id="chkRegistrosRecipientesFS" type="checkbox" [(ngModel)]="muestreo.registroRecipientesFS" title="Seleccionar">
         </td>  <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkMuestrasPreservadasFS" type="checkbox" [(ngModel)]="muestreo.muestrasPreservadasFS" title="seleccionar">
+          <input id="chkMuestrasPreservadasFS" type="checkbox" [(ngModel)]="muestreo.muestrasPreservadasFS" title="Seleccionar">
         </td>  <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkFotoUnicaFS" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFS" title="seleccionar">
+          <input id="chkFotoUnicaFS" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFS" title="Seleccionar">
         </td>  <!--BASE-->
         <!--TABLA 5 FOTO DE AFORO-->
         <td>{{ (muestreo.lstPuntosMuestreo[2]!= null) ? muestreo.lstPuntosMuestreo[2].latitud : ""}}</td>
@@ -224,27 +224,27 @@
         <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].fechaCreacion: ""}}</td> <!--FECHA-->
         <td>{{(muestreo.lstEvidencias[0]!= null) ? muestreo.lstEvidencias[1].horaCreacion: ""}}</td> <!--HORA-->
         <td class="checkBox-center">
-          <input id="chkMetadatosFA" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFA" title="seleccionar">
+          <input id="chkMetadatosFA" type="checkbox" [(ngModel)]="muestreo.cumpleMetadatosFA" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkMetodologiaFA" type="checkbox" [(ngModel)]="muestreo.metodologiaFA" title="seleccionar">
+          <input id="chkMetodologiaFA" type="checkbox" [(ngModel)]="muestreo.metodologiaFA" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkFotoUnicaFA" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFA" title="seleccionar">
+          <input id="chkFotoUnicaFA" type="checkbox" [(ngModel)]="muestreo.fotoUnicaFA" title="Seleccionar">
         </td> <!--BASE-->
         <!--TABLA 6 CRITERIOS FOTO DE MUESTRAS (FS)-->
         <td class="checkBox-center">
-          <input id="chkFormatoLlenadoFF" type="checkbox" [(ngModel)]="muestreo.formatoLlenadoCorrectoFF" title="seleccionar">
+          <input id="chkFormatoLlenadoFF" type="checkbox" [(ngModel)]="muestreo.formatoLlenadoCorrectoFF" title="Seleccionar">
         </td> <!--BASE-->
         <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].latitud : ""}}</td> <!--LATITUD FORMATO DE AFORO-->
         <td>{{ (muestreo.lstPuntosMuestreo[5]!= null) ? muestreo.lstPuntosMuestreo[0].longitud : ""}}</td> <!--LONGITUD FORMATO DE AFORO-->
         <td></td> <!--DISTANCIA A PUNTO DE AFORO-->
         <td class="checkBox-center">
-          <input id="chkGeocercaFF" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaFF" title="seleccionar">
+          <input id="chkGeocercaFF" type="checkbox" [(ngModel)]="muestreo.cumpleGeocercaFF" title="Seleccionar">
         </td> <!--BASE-->
         <td></td>  <!--CAUDAL EN m3/s-->
         <td class="checkBox-center">
-          <input id="chkRegistrosLegiblesFF" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesFF" title="seleccionar">
+          <input id="chkRegistrosLegiblesFF" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesFF" title="Seleccionar">
         </td> <!--BASE-->
         <!--TABLA 7 TRACK RUTA (TR)-->
         <td>{{(muestreo.lstEvidencias.length > 0) ? muestreo.lstEvidencias[2].placas : ""}}</td>
@@ -268,17 +268,17 @@
 
         <!--TABLA 8 CADENA DE CUSTODIA (CC)-->
         <td class="checkBox-center">
-          <input id="chkFormatoLlenadoCC" type="checkbox" [(ngModel)]="muestreo.llenadoCorrectoCC" title="seleccionar">
+          <input id="chkFormatoLlenadoCC" type="checkbox" [(ngModel)]="muestreo.llenadoCorrectoCC" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="chkRegistrosLegiblesCC" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesCC" title="seleccionar">
+          <input id="chkRegistrosLegiblesCC" type="checkbox" [(ngModel)]="muestreo.registrosLegiblesCC" title="Seleccionar">
         </td> <!--BASE-->
         <!--TABLA 9-->
         <td class="checkBox-center">
-          <input id="chkRechazado" type="checkbox" [(ngModel)]="muestreo.rechazo" title="seleccionar">
+          <input id="chkRechazado" type="checkbox" [(ngModel)]="muestreo.rechazo" title="Seleccionar">
         </td> <!--BASE-->
         <td class="checkBox-center">
-          <input id="txtObservaciones" type="text" [(ngModel)]="muestreo.observacionesRechazo" title="seleccionar">
+          <input id="txtObservaciones" type="text" [(ngModel)]="muestreo.observacionesRechazo" title="Seleccionar">
         </td> <!--BASE-->
 
         <td>
