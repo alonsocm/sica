@@ -2,11 +2,17 @@ import { Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
-import { Filter } from 'src/app/interfaces/filtro.interface';
-import { Columna } from 'src/app/interfaces/columna-inferface';
+import { Filter, FilterFinal } from 'src/app/interfaces/filtro.interface';
+import { Columna, ColumnaFinal } from 'src/app/interfaces/columna-inferface';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { from } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
+
+
+
+
 
 
 @Component({
@@ -23,40 +29,52 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   archivo: any;
   numeroEntrega: string = '';
   anioOperacion: string = '';
+  esTemplate: boolean = true;
+  initialValue: string = ''
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
+  registroParam: FormGroup;
 
-  constructor(private muestreoService: MuestreoService) {
+  constructor(private muestreoService: MuestreoService, private fb: FormBuilder) {
     super();
+    this.registroParam = this.fb.group({
+      checkFiltro: [null],
+      myFormCOntrolName: [null],
+    });
   }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
+    var a = document.getElementById("aprueba");
+    console.log(a);
+  
+   
+  
   }
   definirColumnas() {
-    let nombresColumnas: Array<Columna> = [
-      { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new Filter(), },
-      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new Filter(), },
-      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new Filter(), },
-      { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new Filter(), },
-      { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new Filter(), },
-      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO                                 ', orden: 6, filtro: new Filter(), },
-      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 7, filtro: new Filter(), },
-      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO                                                                                                                                       ', orden: 8, filtro: new Filter(), },
-      { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new Filter(), },
-      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new Filter(), },
-      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new Filter(), },
-      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new Filter(), },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new Filter(), },
-      { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new Filter(), },
-      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new Filter(), },
-      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new Filter(), },
-      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new Filter(), },
-      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new Filter(), },
-      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new Filter(), },
-      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new Filter(), },
+    let nombresColumnas: Array<ColumnaFinal> = [
+      { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal() },
+      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal()  },
+      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal()  },
+      { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal() },
+      { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal()  },
+      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 6, filtro: new FilterFinal()  },
+      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 7, filtro: new FilterFinal()  },
+      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 8, filtro: new FilterFinal()  },
+      { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new FilterFinal()  },
+      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new FilterFinal() },
+      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new FilterFinal()  },
+      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal()  },
+      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal()  },
+      { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new FilterFinal() },
+      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new FilterFinal()  },
+      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new FilterFinal()  },
+      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new FilterFinal() },
+      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new FilterFinal()  },
+      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new FilterFinal()  },
+      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal()  },
     ];
-    this.columnas = nombresColumnas;
+    this.columnasF = nombresColumnas;
   }
 
   private consultarMonitoreos(): void {
@@ -71,10 +89,17 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     });
   }
   private establecerValoresFiltrosTabla() {
-    this.columnas.forEach((f) => {
-      f.filtro.values = [
+    this.columnasF.forEach((f) => {
+      //f.filtro.values = [
+      //  ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
+      //];
+
+      f.filtro.values.push(
         ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
-      ];
+      );
+
+      //f.filtro.values.push("Seleccionar todos");
+      //f.filtro.selectedValue = "Seleccionar todos";
     });
   }
 
@@ -148,7 +173,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   };
   filtrar() {
     this.muestreosFiltrados = this.muestreos;
-    this.columnas.forEach((columna) => {
+    this.columnasF.forEach((columna) => {
       this.muestreosFiltrados = this.muestreosFiltrados.filter((f: any) => {
         return columna.filtro.selectedValue == 'Seleccione'
           ? true
@@ -188,7 +213,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
   limpiarFiltros() {
-    this.columnas.forEach((f) => {
+    this.columnasF.forEach((f) => {
       f.filtro.selectedValue = 'Seleccione';
     });
     this.filtrar();
@@ -200,6 +225,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.getMuestreos();
+  }
+
+  seleccionarFiltro(): void {
+    console.log("aquiii");
+
   }
   getMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
@@ -271,7 +301,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
   enviarMonitoreos(): void {    
     let valor = this.muestreosFiltrados.filter(x => x.estatus == "EvidenciasCargadas");
-    this.resultadosEnviados = this.Seleccionados(valor).map(
+
+    //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
+    //this.resultadosEnviados = this.Seleccionados(valor).map(
+    this.resultadosEnviados = this.Seleccionados(this.muestreosFiltrados).map(
       (m) => {
         return m.muestreoId;
       }
@@ -313,4 +346,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
 
+  onFocused(event: any) {
+    // do something
+  }
+
 }
+
+

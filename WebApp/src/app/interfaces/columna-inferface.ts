@@ -1,4 +1,4 @@
-import { Filter } from "./filtro.interface";
+import { Filter, FilterFinal } from "./filtro.interface";
 
 export interface Columna {
     nombre: string;
@@ -6,7 +6,17 @@ export interface Columna {
     orden: number;
   filtro: Filter;
 
-  
+
 }
 
+
+export interface ColumnaFinal {
+  nombre: string;
+  etiqueta: string;
+  orden: number;
+  filtro: FilterFinal;
+
+
+
+}
 

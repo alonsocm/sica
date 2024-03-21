@@ -2,7 +2,11 @@
 <div *ngIf="loading">
   <app-loading></app-loading>
 </div>
+
+
+
 <div class="container-fluid">
+
   <h1 class="row col">Carga de resultados validados</h1>
   <hr class="red">
   <div class="message-container">
@@ -20,7 +24,7 @@
       </button>
       <button style="margin-left:5px" class="btn btn-primary" type="button" (click)="enviarMonitoreos()">
         <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s)
-      </button>  
+      </button>
     </div>
     <div class="float-right">
       <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
@@ -36,29 +40,71 @@
   <div class="dvTable">
     <table width="10000px" class="table-responsive table table-bordered table-hover">
       <thead class="thead-light">
-        <tr>    
+        <tr>
           <th class="checkBox-center">
             <label for="chckAll">SELECCIONAR TODOS</label>
             <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
                    (change)="seleccionarAll(this.muestreosFiltrados); getMuestreos();" />
           </th>
-          <th style="width: fit-content; text-align: center;" scope="col" *ngFor="let columna of this.columnas">
+          <th style="width:auto; text-align:left;" scope="col" *ngFor="let columna of this.columnasF">
             {{columna.etiqueta}}
-            <ng-autocomplete style="width:5px; height:5px" #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                             (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                             (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                             [itemTemplate]="itemTemplate" placeholder="seleccione">
-            </ng-autocomplete>
-            <ng-template #itemTemplate let-item>
-              <a [innerHTML]="item"></a>
-            </ng-template>
-          </th>         
+
+            <div class="dropdown" style="font-size:xx-small">
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="bi bi-caret-down-fill"></i>
+              </button>
+
+              <form [formGroup]="registroParam">
+                <div class="dropdown-menu" style="width:250px; height:500px">
+                  <a class="dropdown-item"><i class="bi bi-sort-alpha-down"></i> Ordenar de A a Z</a>
+                  <a class="dropdown-item"><i class="bi bi-sort-alpha-down-alt"></i> Ordenar de Z a A</a>
+                  <hr class="dropdown-divider">
+                  <a class="dropdown-item"><i class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>  Eliminar filtro</a>
+                  <a class="dropdown-item">
+                    Filtros de texto
+
+                    <!--<a class="dropdown-item">Es igual a...</a>
+                    <a class="dropdown-item">Comienza por...</a>
+                    <a class="dropdown-item">Termina con...</a>
+                    <a class="dropdown-item">Cntiene...</a>-->
+                  </a>
+
+                  <div class="dropdown-divider"></div>
+                  <br />
+                  <div style="height:300px">
+                    <div>
+                      <ng-autocomplete style="width:auto; height:auto" #filtros [data]="columna.filtro.values"
+                                       [searchKeyword]="this.keyword"
+                                       (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
+                                       [itemTemplate]="itemTemplate"
+                                       [initialValue]="initialValue"
+                                       placeholder="Buscar">
+                      </ng-autocomplete>
+                      <span><i class="bi bi-search"></i></span>
+                      <ng-template #itemTemplate let-item>
+                        <div>
+                          <input type="checkbox" [(ngModel)]="columna.filtro.isCheckedFiltro" formControlName="checkFiltro" (click)="seleccionarFiltro();" title="Seleccionar">
+                          <a style="font-size:xx-small;text-align:left" [innerHTML]="item"></a>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="modal-footer" style="font-size:xx-small">
+                    <button id="btnCancelarFiltro" type="button" class="btn btn-secondary" data-dismiss="dropdown">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="dropdown" (click)="filtrar()">
+                      Aceptar
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr style="height:auto; text-align:center" *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
           <td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="seleccionar">
+            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="Seleccionar">
           </td>
           <td>{{muestreo.estatus}}</td>
           <td>{{(muestreo.evidencias.length > 1) ? "SI":"NO"}} </td>
@@ -79,7 +125,7 @@
           <td>{{muestreo.horaInicio}}</td>
           <td>{{muestreo.horaFin}}</td>
           <td>{{muestreo.fechaCarga}}</td>
-          <td>{{muestreo.fechaEntregaMuestreo}}</td>          
+          <td>{{muestreo.fechaEntregaMuestreo}}</td>
         </tr>
         <tr *ngIf="this.muestreosFiltrados.length==0">
           <td class="td-center" colspan="22">No se encontraron registros</td>
@@ -96,7 +142,7 @@
         <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
       </button>
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
-              data-target="#mdlConfirmacion" title="seleccionar"></button>
+              data-target="#mdlConfirmacion" title="Seleccionar"></button>
     </div>
   </div>
   <hr />
