@@ -24,6 +24,6 @@ export class FilterFinal {
     this.values = ["Seleccionar todos"];
     this.selectedValue = "Seleccione";
     this.seleccionarTodosChckFiltro = true;
-    this.isCheckedFiltro = false;
+    this.isCheckedFiltro = true;
   }
 }

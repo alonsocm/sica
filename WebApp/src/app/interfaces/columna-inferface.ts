@@ -15,6 +15,7 @@ export interface ColumnaFinal {
   etiqueta: string;
   orden: number;
   filtro: FilterFinal;
+  esfiltrado: boolean;
 
 
 
