@@ -4,7 +4,6 @@ using Application.Features.Sitios.Commands.UpdateSitioCommand;
 using Application.Features.Sitios.Queries.GetAllSitios;
 using Application.Features.Sitios.Queries.GetSitioById;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.v1.Catalogos
@@ -21,9 +20,9 @@ namespace WebAPI.Controllers.v1.Catalogos
 
         //GET: api/<controller>
         [HttpGet()]
-        public async Task<IActionResult> Get([FromQuery] GetAllSitiosParameters filter)
+        public async Task<IActionResult> Get([FromQuery] GetAllSitiosQuery filter)
         {
-            return Ok(await Mediator.Send(new GetAllSitiosQuery { Nombre = filter.Nombre ?? string.Empty, Clave = filter.Nombre ?? string.Empty, PageNumber = filter.PageNumber, PageSize = filter.PageSize }));
+            return Ok(await Mediator.Send(new GetAllSitiosQuery { Nombre = filter.Nombre ?? string.Empty, Clave = filter.Clave ?? string.Empty, Page = filter.Page, PageSize = filter.PageSize }));
         }
 
         //POST api/<controller>

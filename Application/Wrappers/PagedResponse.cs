@@ -1,24 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Wrappers
+﻿namespace Application.Wrappers
 {
     public class PagedResponse<T> : Response<T>
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-
         public PagedResponse(T data, int pageNumber, int pageSize)
         {
-            PageNumber=pageNumber;
+            Page=pageNumber;
             PageSize=pageSize;
             Data = data;
             Message = null;
             Succeded = true;
             Errors = null;
+        }
+
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
+        public int TotalRecords { get; set; }
+        public bool HasNextPage => Page * PageSize < TotalRecords;
+        public bool HasPreviousPage => Page > 1;
+
+        public static PagedResponse<List<T>> CreatePagedReponse(List<T> data, int page, int pageSize)
+        {
+            page = page < 1 ? 1 : page;
+            pageSize = pageSize > 30 ? 10 : pageSize;
+            var totalRecords = data.Count;
+            var items = data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var response = new PagedResponse<List<T>>(items, page, pageSize);
+            var totalPages = (double)totalRecords / pageSize;
+            int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+            response.TotalPages = roundedTotalPages;
+            response.TotalRecords = totalRecords;
+
+            return response;
         }
     }
 }

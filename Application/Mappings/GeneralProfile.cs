@@ -17,7 +17,9 @@ namespace Application.Mappings
             #endregion
 
             #region DTOs
-            CreateMap<Sitio, SitioDto>();
+            CreateMap<Sitio, SitioDto>()
+                .ForMember(x => x.Nombre, o => o.MapFrom(src => src.NombreSitio))
+                .ForMember(x => x.Clave, o => o.MapFrom(src => src.ClaveSitio));
             CreateMap<Perfil, PerfilDto>();
             CreateMap<DireccionLocal, DireccionLocalDto>();
             CreateMap<Observaciones, ObservacionesDto>();
@@ -47,8 +49,8 @@ namespace Application.Mappings
             CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>();
             CreateMap<VwValidacionEviencias, vwValidacionEvienciasDto>();
 
-            CreateMap<VwValidacionEvidenciaRealizada, EventualidadesMuestreoAprobados> ();
-            CreateMap<VwValidacionEvidenciaRealizada, EvidenciasMuestreosAprobados>();       
+            CreateMap<VwValidacionEvidenciaRealizada, EventualidadesMuestreoAprobados>();
+            CreateMap<VwValidacionEvidenciaRealizada, EvidenciasMuestreosAprobados>();
 
             #endregion
         }

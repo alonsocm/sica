@@ -5,7 +5,6 @@ using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
-using Application.Features.Operacion.ValidacionEvidencias.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
 using Domain.Settings;
@@ -124,9 +123,9 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] bool esLiberacion)
+        public async Task<IActionResult> Get([FromQuery] bool esLiberacion, int page, int pageSize)
         {
-            return Ok(await Mediator.Send(new GetMuestreos { EsLiberacion = esLiberacion }));
+            return Ok(await Mediator.Send(new GetMuestreos { EsLiberacion = esLiberacion, Page = page, PageSize = pageSize }));
         }
 
         [HttpPut]
