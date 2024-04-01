@@ -7,13 +7,10 @@ import { Columna, ColumnaFinal } from 'src/app/interfaces/columna-inferface';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { from } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { map } from 'leaflet';
+
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
-
-
-
-
-
 
 @Component({
   selector: 'app-carga-resultados',
@@ -23,66 +20,86 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreos: Array<Muestreo> = [];
   muestreosFiltrados: Array<Muestreo> = [];
+  muestreosFiltradosFiltrado: Array<Muestreo> = [];
+  muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
   muestreosseleccionados: Array<Muestreo> = [];
+
   reemplazarResultados: boolean = false;
+  esTemplate: boolean = true;
+  mostrar: boolean = true;
+  cabeceroSeleccionado: boolean = false;
+  esHistorial: boolean = false;
+
   resultadosEnviados: Array<number> = [];
+
+  filtrosfinal: Array<any> = [];
+  filtrosbusqueda: Array<any> = [];
+  filtrosCabeceroFoco: Array<any> = [];
+/*  columnasfiltross: Array<any> = [];*/
+
   archivo: any;
+
   numeroEntrega: string = '';
   anioOperacion: string = '';
-  esTemplate: boolean = true;
   initialValue: string = ''
+
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
+  @ViewChild('thprueba') thprueba: ElementRef = {} as ElementRef;
+  @ViewChild('auto') auto: ElementRef = {} as ElementRef;
+
+
+  /* @ViewChild('btnAceptar') control: any;*/
+  //@ViewChild('btnAceptar') btnAceptar: ElementRef = {} as ElementRef;
+
   registroParam: FormGroup;
+
+  esfilrofoco: string = '';
 
   constructor(private muestreoService: MuestreoService, private fb: FormBuilder) {
     super();
     this.registroParam = this.fb.group({
-      checkFiltro: [null],
-      myFormCOntrolName: [null],
+
+      chkFiltro: new FormControl(),
+      //btnAceptar: [null]
     });
   }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
-    var a = document.getElementById("aprueba");
-    console.log(a);
-  
-   
-  
   }
   definirColumnas() {
     let nombresColumnas: Array<ColumnaFinal> = [
-      { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal() },
-      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal()  },
-      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal()  },
-      { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal() },
-      { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal()  },
-      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 6, filtro: new FilterFinal()  },
-      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 7, filtro: new FilterFinal()  },
-      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 8, filtro: new FilterFinal()  },
-      { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new FilterFinal()  },
-      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new FilterFinal() },
-      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new FilterFinal()  },
-      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal()  },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal()  },
-      { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new FilterFinal() },
-      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new FilterFinal()  },
-      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new FilterFinal()  },
-      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new FilterFinal() },
-      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new FilterFinal()  },
-      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new FilterFinal()  },
-      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal()  },
+      { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 6, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 7, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 8, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda:[] },
+      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda:[] },
+      { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
     ];
     this.columnasF = nombresColumnas;
+    this.filtrosCabeceroFoco = this.columnasF.map((m) => { return m.etiqueta });
   }
 
   private consultarMonitoreos(): void {
     this.muestreoService.obtenerMuestreos(false).subscribe({
       next: (response: any) => {
-        this.muestreos = response.data;        
+        this.muestreos = response.data;
         this.muestreosFiltrados = this.muestreos;
-        console.log(this.muestreosFiltrados);
         this.establecerValoresFiltrosTabla();
       },
       error: (error) => { },
@@ -90,22 +107,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
   private establecerValoresFiltrosTabla() {
     this.columnasF.forEach((f) => {
-      //f.filtro.values = [
-      //  ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
-      //];
-
       f.filtro.values.push(
         ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
       );
-
-      //f.filtro.values.push("Seleccionar todos");
-      //f.filtro.selectedValue = "Seleccionar todos";
     });
   }
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
-
     if (this.archivo) {
       this.loading = !this.loading;
 
@@ -171,16 +180,30 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       },
     });
   };
-  filtrar() {
+  filtrar(columna: ColumnaFinal) {
+    this.muestreosFiltradosFiltradoConcatenado = [];
     this.muestreosFiltrados = this.muestreos;
-    this.columnasF.forEach((columna) => {
-      this.muestreosFiltrados = this.muestreosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
+
+
+    for (var i = 0; i < columna.filtrobusqueda.length; i++) {
+      this.muestreosFiltradosFiltrado = [];
+      this.muestreosFiltradosFiltrado = this.muestreosFiltrados.filter((f: any) => {
+        return f[columna.nombre] == columna.filtrobusqueda[i];
       });
+      if (this.muestreosFiltradosFiltrado.length > 0) {
+        this.muestreosFiltradosFiltradoConcatenado = this.muestreosFiltradosFiltradoConcatenado.concat(this.muestreosFiltradosFiltrado);
+      }
+    }
+
+    this.muestreosFiltrados = this.muestreosFiltradosFiltradoConcatenado;
+    this.columnasF.filter(x => x.nombre == columna.nombre).map(
+      (m) => { return m.esfiltrado = true; });
+
+    this.columnasF.forEach((f) => {
+      f.filtro.values = [];
     });
     this.establecerValoresFiltrosTabla();
+    this.esHistorial = true;
   }
   existeEvidencia(evidencias: Array<any>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
@@ -213,23 +236,16 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
   limpiarFiltros() {
-    this.columnasF.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrar();
-    this.filtros.forEach((element: any) => {
-      element.clear();
-    });
-    document.getElementById('dvMessage')?.click();
+    this.ngOnInit();
+    //this.muestreosFiltrados = this.muestreos;
+    //this.esHistorial = false;
   }
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.getMuestreos();
   }
-
-  seleccionarFiltro(): void {
-    console.log("aquiii");
-
+  seleccionarFiltro(filtros: any): void {
+    this.mostrar = true;
   }
   getMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
@@ -259,7 +275,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.hacerScroll();
         },
       });
-  } 
+  }
   confirmarEliminacion() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
     if (!(muestreosSeleccionados.length > 0)) {
@@ -299,9 +315,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       },
     });
   }
-  enviarMonitoreos(): void {    
+  enviarMonitoreos(): void {
     let valor = this.muestreosFiltrados.filter(x => x.estatus == "EvidenciasCargadas");
-
     //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
     //this.resultadosEnviados = this.Seleccionados(valor).map(
     this.resultadosEnviados = this.Seleccionados(this.muestreosFiltrados).map(
@@ -320,8 +335,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.muestreoService.enviarMuestreoaAcumulados(
       estatusMuestreo.AcumulacionResultados,
-        this.resultadosEnviados
-      )
+      this.resultadosEnviados
+    )
       .subscribe({
         next: (response: any) => {
           this.loading = true;
@@ -345,9 +360,27 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         },
       });
   }
+  onFiltroCabecero(val: any, filtros: any, columna: any) {
+    console.log(columna);
+    let criterioBusqueda = val.target.value;
+    this.filtrosbusqueda = filtros;
+    this.filtrosbusqueda = this.filtrosbusqueda.filter((f) => f.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1);
+    //this.columnasfiltross = this.filtrosbusqueda;
+    columna.filtrobusqueda = this.filtrosbusqueda;
 
-  onFocused(event: any) {
-    // do something
+  }
+  onCabeceroFoco(val: string = '') {
+    this.cabeceroSeleccionado = false;
+    this.esfilrofoco = val.toUpperCase();
+    this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter((f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1);
+  }
+  seleccionCabecero(val: string = '') {
+    this.cabeceroSeleccionado = true;
+    this.esfilrofoco = val.toUpperCase();
+    this.thprueba.nativeElement.focus();
+  }
+  eliminarFiltro(etiqueta: string) {
+
   }
 
 }

@@ -2,9 +2,6 @@
 <div *ngIf="loading">
   <app-loading></app-loading>
 </div>
-
-
-
 <div class="container-fluid">
 
   <h1 class="row col">Carga de resultados validados</h1>
@@ -37,29 +34,58 @@
     </div>
   </div>
 
+  <br />
+  <div class="clearfix">
+    <div class="col-4"></div>
+    <div class="col-4"></div>
+    <div class="col-4" style="padding:0px">
+      <ng-autocomplete [data]="this.filtrosCabeceroFoco"
+                       [searchKeyword]="keyword"
+                       (inputChanged)='onCabeceroFoco($event)'
+                       (inputCleared)="esfilrofoco = ''"
+                       (selected)="seleccionCabecero($event)"
+                       [itemTemplate]="itemCabeceros"
+                       placeholder="Buscar en cabeceros">
+      </ng-autocomplete>
+      <ng-template #itemCabeceros let-item>
+        <a [innerHTML]="item"></a>
+      </ng-template>
+    </div>
+  </div>
+  <br />
+
+  <div *ngIf="esHistorial" class="btn-group; btn-primary" role="group" aria-label="Basic example" style="padding:10px; width:1500px; height:max-content">
+    <label>Historial filtrado</label> <br />
+    <ng-container *ngFor="let historial of this.columnasF">
+      <button *ngIf="historial.esfiltrado" type="button" class="btn btn-success" style="font-size:xx-small;margin-right:5px; margin-top:5px;">{{historial.etiqueta}}<i class="bi bi-x"></i></button>
+    </ng-container>
+  </div>
+
   <div class="dvTable">
     <table width="10000px" class="table-responsive table table-bordered table-hover">
       <thead class="thead-light">
         <tr>
-          <th class="checkBox-center">
+          <th class="checkBox-center" style="text-align:center">
             <label for="chckAll">SELECCIONAR TODOS</label>
             <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
                    (change)="seleccionarAll(this.muestreosFiltrados); getMuestreos();" />
           </th>
-          <th style="width:auto; text-align:left;" scope="col" *ngFor="let columna of this.columnasF">
-            {{columna.etiqueta}}
 
-            <div class="dropdown" style="font-size:xx-small">
-              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="bi bi-caret-down-fill"></i>
+          <th #thprueba [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.etiqueta && !this.cabeceroSeleccionado) || (this.columna.etiqueta.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.etiqueta ) ? 'yellow' : '#E9ECEF') }" scope="col" *ngFor="let columna of this.columnasF">
+            <div class="dropdown;" style="width:max-content">
+              {{columna.etiqueta}}
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" (click)="columna.filtrobusqueda = columna.filtro.values;  this.initialValue = ''">
+                <i *ngIf="!columna.esfiltrado" class="bi bi-caret-down-fill"></i>
+                <i *ngIf="columna.esfiltrado" class="bi bi-funnel-fill"></i>
               </button>
+           
 
-              <form [formGroup]="registroParam">
+             <form [formGroup]="registroParam">
                 <div class="dropdown-menu" style="width:250px; height:500px">
                   <a class="dropdown-item"><i class="bi bi-sort-alpha-down"></i> Ordenar de A a Z</a>
                   <a class="dropdown-item"><i class="bi bi-sort-alpha-down-alt"></i> Ordenar de Z a A</a>
                   <hr class="dropdown-divider">
-                  <a class="dropdown-item"><i class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>  Eliminar filtro</a>
+                  <a onclick="eliminarFiltro(columna.etiqueta);" enabled class="dropdown-item"><i [ngStyle]="{color:(columna.esfiltrado) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>  Eliminar filtro de {{columna.etiqueta}}</a>
                   <a class="dropdown-item">
                     Filtros de texto
 
@@ -70,31 +96,28 @@
                   </a>
 
                   <div class="dropdown-divider"></div>
-                  <br />
-                  <div style="height:300px">
-                    <div>
-                      <ng-autocomplete style="width:auto; height:auto" #filtros [data]="columna.filtro.values"
-                                       [searchKeyword]="this.keyword"
-                                       (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                                       [itemTemplate]="itemTemplate"
-                                       [initialValue]="initialValue"
-                                       placeholder="Buscar">
-                      </ng-autocomplete>
+                  <div style="height:300px; overflow:scroll; padding:5px">
+                    <!--<div>-->
+                    <input class="form-control" placeholder="Buscar en cabeceros" type="text" (input)="onFiltroCabecero($event, columna.filtro.values, columna)"  />
+                  
                       <span><i class="bi bi-search"></i></span>
-                      <ng-template #itemTemplate let-item>
-                        <div>
-                          <input type="checkbox" [(ngModel)]="columna.filtro.isCheckedFiltro" formControlName="checkFiltro" (click)="seleccionarFiltro();" title="Seleccionar">
-                          <a style="font-size:xx-small;text-align:left" [innerHTML]="item"></a>
+                      
+                        <div style="height:min-content" *ngFor="let dato of columna.filtrobusqueda; index as i">
+                          <input id={{i}} formControlName="chkFiltro" [(ngModel)]="columna.filtro.isCheckedFiltro" type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />
+                          <!--<input id={{i}} checked type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />-->
+                          <a style="font-size:xx-small;text-align:left" [innerHTML]="dato"></a>
                         </div>
-                      </ng-template>
-                    </div>
+                                        
+                    <!--</div>-->
                   </div>
-                  <div class="modal-footer" style="font-size:xx-small">
-                    <button id="btnCancelarFiltro" type="button" class="btn btn-secondary" data-dismiss="dropdown">Cancelar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="dropdown" (click)="filtrar()">
+
+                  <div class="modal-footer" style="font-size:xx-small; height:100px">
+                    <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary" data-dismiss="dropdown">Cancelar</button>
+                    <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown" (click)="filtrar(columna)">
                       Aceptar
                     </button>
                   </div>
+
                 </div>
               </form>
             </div>
@@ -113,7 +136,7 @@
           <td>-</td>
           <td style="width:300px">{{muestreo.claveMonitoreo}}</td>
           <td style="width:2000px">{{muestreo.tipoSitio}}</td>
-          <td style="width:2000px; text-justify:auto; text-align:left; margin:auto">{{muestreo.nombreSitio}}</td>
+          <td style="width:500px; text-justify:auto; text-align:left; margin:auto">{{muestreo.nombreSitio}}</td>
           <td>{{muestreo.ocdl}}</td>
           <td style="width:500px">{{muestreo.tipoCuerpoAgua}}</td>
           <td>{{muestreo.subTipoCuerpoAgua}}</td>

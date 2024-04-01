@@ -104,12 +104,13 @@ border-color: #0062cc;
     border-color: #bd2130;
 }
 
-table thead tr th{
-    text-align: left;
-}
+/*table thead tr th{
+    text-align:center;
+    
+}*/
 
-.td-center{
-    text-align: center
+.td-center {
+  text-align: center
 }
 
 .dvTable {
@@ -124,17 +125,26 @@ table thead tr th{
   }
     .dvTable table th {
       font-size: x-small;
-      text-align:center;
+      text-align:left;
+      vertical-align:top;
     }
 
-
-.icon-evidencia{
-    width: 60px;
-    height:60px;
+.table .thead-light th {
+  vertical-align: middle;
 }
 
+  .icon-evidencia {
+    width: 60px;
+    height: 60px;
+  }
+
 .dropdown-item {
-  font-size:xx-small;
+  font-size:xx-small; 
+}
+
+.dropdown {
+  font-size: x-small;
+  text-align: left;
 }
 
 /* .dvTable tbody>tr:hover {
