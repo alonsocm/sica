@@ -16,8 +16,8 @@ export interface ColumnaFinal {
   orden: number;
   filtro: FilterFinal;
   esfiltrado: boolean;
+  filtrobusqueda: any[];
 
-
-
+  
 }
 

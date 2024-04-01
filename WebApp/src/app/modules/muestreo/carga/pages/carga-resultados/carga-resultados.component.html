@@ -74,7 +74,7 @@
           <th #thprueba [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.etiqueta && !this.cabeceroSeleccionado) || (this.columna.etiqueta.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.etiqueta ) ? 'yellow' : '#E9ECEF') }" scope="col" *ngFor="let columna of this.columnasF">
             <div class="dropdown;" style="width:max-content">
               {{columna.etiqueta}}
-              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" (click)="this.columnasfiltross = columna.filtro.values;  this.initialValue = ''">
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" (click)="columna.filtrobusqueda = columna.filtro.values;  this.initialValue = ''">
                 <i *ngIf="!columna.esfiltrado" class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.esfiltrado" class="bi bi-funnel-fill"></i>
               </button>
@@ -98,11 +98,11 @@
                   <div class="dropdown-divider"></div>
                   <div style="height:300px; overflow:scroll; padding:5px">
                     <!--<div>-->
-                    <input class="form-control" placeholder="Buscar en cabeceros" type="text" (input)="onFiltroCabecero($event, columna.filtro.values)"  />
+                    <input class="form-control" placeholder="Buscar en cabeceros" type="text" (input)="onFiltroCabecero($event, columna.filtro.values, columna)"  />
                   
                       <span><i class="bi bi-search"></i></span>
                       
-                        <div style="height:min-content" #columnasfiltross *ngFor="let dato of this.columnasfiltross; index as i">
+                        <div style="height:min-content" *ngFor="let dato of columna.filtrobusqueda; index as i">
                           <input id={{i}} formControlName="chkFiltro" [(ngModel)]="columna.filtro.isCheckedFiltro" type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />
                           <!--<input id={{i}} checked type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />-->
                           <a style="font-size:xx-small;text-align:left" [innerHTML]="dato"></a>
@@ -113,7 +113,7 @@
 
                   <div class="modal-footer" style="font-size:xx-small; height:100px">
                     <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary" data-dismiss="dropdown">Cancelar</button>
-                    <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown" (click)="filtrar(columna.nombre)">
+                    <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown" (click)="filtrar(columna)">
                       Aceptar
                     </button>
                   </div>

@@ -35,13 +35,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   filtrosfinal: Array<any> = [];
   filtrosbusqueda: Array<any> = [];
   filtrosCabeceroFoco: Array<any> = [];
-  columnasfiltross: Array<any> = [];
+/*  columnasfiltross: Array<any> = [];*/
 
   archivo: any;
 
   numeroEntrega: string = '';
   anioOperacion: string = '';
-  initialValue: string = ''  
+  initialValue: string = ''
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   @ViewChild('thprueba') thprueba: ElementRef = {} as ElementRef;
@@ -70,26 +70,26 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
   definirColumnas() {
     let nombresColumnas: Array<ColumnaFinal> = [
-      { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 6, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 7, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 8, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new FilterFinal(), esfiltrado: false },
-      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal(), esfiltrado: false },
+      { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 6, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 7, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 8, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda:[] },
+      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda:[] },
+      { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
     ];
     this.columnasF = nombresColumnas;
     this.filtrosCabeceroFoco = this.columnasF.map((m) => { return m.etiqueta });
@@ -180,13 +180,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       },
     });
   };
-  filtrar(nombreColumna: string) {
+  filtrar(columna: ColumnaFinal) {
     this.muestreosFiltradosFiltradoConcatenado = [];
     this.muestreosFiltrados = this.muestreos;
-    for (var i = 0; i < this.columnasfiltross.length; i++) {
+
+
+    for (var i = 0; i < columna.filtrobusqueda.length; i++) {
       this.muestreosFiltradosFiltrado = [];
       this.muestreosFiltradosFiltrado = this.muestreosFiltrados.filter((f: any) => {
-        return f[nombreColumna] == this.columnasfiltross[i];
+        return f[columna.nombre] == columna.filtrobusqueda[i];
       });
       if (this.muestreosFiltradosFiltrado.length > 0) {
         this.muestreosFiltradosFiltradoConcatenado = this.muestreosFiltradosFiltradoConcatenado.concat(this.muestreosFiltradosFiltrado);
@@ -194,7 +196,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.muestreosFiltrados = this.muestreosFiltradosFiltradoConcatenado;
-    this.columnasF.filter(x => x.nombre == nombreColumna).map(
+    this.columnasF.filter(x => x.nombre == columna.nombre).map(
       (m) => { return m.esfiltrado = true; });
 
     this.columnasF.forEach((f) => {
@@ -358,11 +360,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         },
       });
   }
-  onFiltroCabecero(val: any, filtros: any) {
+  onFiltroCabecero(val: any, filtros: any, columna: any) {
+    console.log(columna);
     let criterioBusqueda = val.target.value;
     this.filtrosbusqueda = filtros;
     this.filtrosbusqueda = this.filtrosbusqueda.filter((f) => f.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1);
-    this.columnasfiltross = this.filtrosbusqueda;
+    //this.columnasfiltross = this.filtrosbusqueda;
+    columna.filtrobusqueda = this.filtrosbusqueda;
+
   }
   onCabeceroFoco(val: string = '') {
     this.cabeceroSeleccionado = false;
