@@ -51,17 +51,17 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   /* @ViewChild('btnAceptar') control: any;*/
   //@ViewChild('btnAceptar') btnAceptar: ElementRef = {} as ElementRef;
 
-  /* registroParam: FormGroup;*/
+  registroParam: FormGroup;
 
   esfilrofoco: string = '';
 
   constructor(private muestreoService: MuestreoService, private fb: FormBuilder) {
     super();
-    //this.registroParam = this.fb.group({
+    this.registroParam = this.fb.group({
 
-    //  chkFiltro: new FormControl(),
-    //  btnAceptar: [null]
-    //});
+      chkFiltro: new FormControl(),
+      //btnAceptar: [null]
+    });
   }
 
   ngOnInit(): void {
@@ -373,6 +373,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.cabeceroSeleccionado = true;
     this.esfilrofoco = val.toUpperCase();
     this.thprueba.nativeElement.focus();
+  }
+  eliminarFiltro(etiqueta: string) {
+
   }
 
 }

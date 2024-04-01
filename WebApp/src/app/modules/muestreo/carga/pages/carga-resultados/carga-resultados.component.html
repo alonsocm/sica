@@ -80,12 +80,12 @@
               </button>
            
 
-              <!--<form [formGroup]="registroParam">-->
+             <form [formGroup]="registroParam">
                 <div class="dropdown-menu" style="width:250px; height:500px">
                   <a class="dropdown-item"><i class="bi bi-sort-alpha-down"></i> Ordenar de A a Z</a>
                   <a class="dropdown-item"><i class="bi bi-sort-alpha-down-alt"></i> Ordenar de Z a A</a>
                   <hr class="dropdown-divider">
-                  <a enabled class="dropdown-item"><i [ngStyle]="{color:(columna.esfiltrado) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>  Eliminar filtro de {{columna.etiqueta}}</a>
+                  <a onclick="eliminarFiltro(columna.etiqueta);" enabled class="dropdown-item"><i [ngStyle]="{color:(columna.esfiltrado) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>  Eliminar filtro de {{columna.etiqueta}}</a>
                   <a class="dropdown-item">
                     Filtros de texto
 
@@ -103,8 +103,8 @@
                       <span><i class="bi bi-search"></i></span>
                       
                         <div style="height:min-content" #columnasfiltross *ngFor="let dato of this.columnasfiltross; index as i">
-                          <!--<input id={{i}} formControlName="chkFiltro" [(ngModel)]="columna.filtro.isCheckedFiltro" type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />-->
-                          <input id={{i}} checked type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />
+                          <input id={{i}} formControlName="chkFiltro" [(ngModel)]="columna.filtro.isCheckedFiltro" type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />
+                          <!--<input id={{i}} checked type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />-->
                           <a style="font-size:xx-small;text-align:left" [innerHTML]="dato"></a>
                         </div>
                                         
@@ -119,7 +119,7 @@
                   </div>
 
                 </div>
-              <!--</form>-->
+              </form>
             </div>
           </th>
         </tr>
