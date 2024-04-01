@@ -34,7 +34,11 @@ export class MuestreoService {
     this.resultadosPrivate.next(resultados);
   }
 
-  cargarArchivo(archivo: File, validado: boolean, reemplazar:boolean=false): Observable<any> {
+  cargarArchivo(
+    archivo: File,
+    validado: boolean,
+    reemplazar: boolean = false
+  ): Observable<any> {
     const formData = new FormData();
     formData.append('archivo', archivo, archivo.name);
     formData.append('validado', validado.toString());
@@ -65,7 +69,24 @@ export class MuestreoService {
 
   obtenerMuestreos(esLiberacion: boolean): Observable<Object> {
     const params = new HttpParams({
-      fromObject: { esLiberacion: esLiberacion },
+      fromObject: {
+        esLiberacion: esLiberacion,
+      },
+    });
+    return this.http.get(environment.apiUrl + '/Muestreos', { params });
+  }
+
+  obtenerMuestreosPaginados(
+    esLiberacion: boolean,
+    page: number,
+    pageSize: number
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        esLiberacion: esLiberacion,
+        page: page,
+        pageSize: pageSize,
+      },
     });
     return this.http.get(environment.apiUrl + '/Muestreos', { params });
   }
@@ -98,7 +119,9 @@ export class MuestreoService {
     return this.http.delete(environment.apiUrl + '/muestreos', options);
   }
 
-  exportarCargaResultadosEbaseca(muestreos: Array<Muestreo> = []): Observable<Blob> {
+  exportarCargaResultadosEbaseca(
+    muestreos: Array<Muestreo> = []
+  ): Observable<Blob> {
     return this.http.post(
       environment.apiUrl + '/Muestreos/ExportarCargaResultadosEbaseca',
       muestreos,
@@ -107,7 +130,10 @@ export class MuestreoService {
   }
   enviarMuestreoaAcumulados(estatusId: number, muestreos: Array<number>) {
     let datos = { estatusId: estatusId, muestreos: muestreos };
-    return this.http.put(environment.apiUrl + '/Muestreos/cambioEstatusMuestreos', datos);
+    return this.http.put(
+      environment.apiUrl + '/Muestreos/cambioEstatusMuestreos',
+      datos
+    );
   }
 
   //Administracion de monitoreos
@@ -120,7 +146,9 @@ export class MuestreoService {
   }
 
   //Administracion de monitoreos
-  exportarResultados(muestreos: Array<acumuladosMuestreo> = []): Observable<Blob> {
+  exportarResultados(
+    muestreos: Array<acumuladosMuestreo> = []
+  ): Observable<Blob> {
     return this.http.post(
       environment.apiUrl + '/Muestreos/ExportarResultadosAdministracion',
       muestreos,
@@ -128,12 +156,11 @@ export class MuestreoService {
     );
   }
 
-  //Administracion de monitoreos totales 
-
+  //Administracion de monitoreos totales
 
   obtenerTotalesAdministracion() {
-    return this.http.get<any>(environment.apiUrl + '/Muestreos/obtenerTotalesAdministracion');
+    return this.http.get<any>(
+      environment.apiUrl + '/Muestreos/obtenerTotalesAdministracion'
+    );
   }
-
-
 }

@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
@@ -35,18 +41,21 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   filtrosfinal: Array<any> = [];
   filtrosbusqueda: Array<any> = [];
   filtrosCabeceroFoco: Array<any> = [];
-/*  columnasfiltross: Array<any> = [];*/
+  /*  columnasfiltross: Array<any> = [];*/
 
   archivo: any;
 
   numeroEntrega: string = '';
   anioOperacion: string = '';
-  initialValue: string = ''
+  initialValue: string = '';
 
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
+  //Paginación
+  totalItems = 0;
+
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
   @ViewChild('thprueba') thprueba: ElementRef = {} as ElementRef;
   @ViewChild('auto') auto: ElementRef = {} as ElementRef;
-
 
   /* @ViewChild('btnAceptar') control: any;*/
   //@ViewChild('btnAceptar') btnAceptar: ElementRef = {} as ElementRef;
@@ -55,10 +64,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   esfilrofoco: string = '';
 
-  constructor(private muestreoService: MuestreoService, private fb: FormBuilder) {
+  constructor(
+    private muestreoService: MuestreoService,
+    private fb: FormBuilder
+  ) {
     super();
     this.registroParam = this.fb.group({
-
       chkFiltro: new FormControl(),
       //btnAceptar: [null]
     });
@@ -81,34 +92,42 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda:[] },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda:[] },
+      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] }
     ];
     this.columnasF = nombresColumnas;
-    this.filtrosCabeceroFoco = this.columnasF.map((m) => { return m.etiqueta });
+    this.filtrosCabeceroFoco = this.columnasF.map((m) => {
+      return m.etiqueta;
+    });
   }
 
-  private consultarMonitoreos(): void {
-    this.muestreoService.obtenerMuestreos(false).subscribe({
-      next: (response: any) => {
-        this.muestreos = response.data;
-        this.muestreosFiltrados = this.muestreos;
-        this.establecerValoresFiltrosTabla();
-      },
-      error: (error) => { },
-    });
+  private consultarMonitoreos(
+    page: number = this.page,
+    pageSize: number = this.NoPage
+  ): void {
+    this.muestreoService
+      .obtenerMuestreosPaginados(false, page, pageSize)
+      .subscribe({
+        next: (response: any) => {
+          this.totalItems = response.totalRecords;
+          this.muestreos = response.data;
+          this.muestreosFiltrados = this.muestreos;
+          this.establecerValoresFiltrosTabla();
+        },
+        error: (error) => {},
+      });
   }
   private establecerValoresFiltrosTabla() {
     this.columnasF.forEach((f) => {
       f.filtro.values.push(
-        ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
+        ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre]))
       );
     });
   }
@@ -118,36 +137,41 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (this.archivo) {
       this.loading = !this.loading;
 
-      this.muestreoService.cargarArchivo(this.archivo[0], false, this.reemplazarResultados).subscribe({
-        next: (response: any) => {
-          if (response.data.correcto) {
+      this.muestreoService
+        .cargarArchivo(this.archivo[0], false, this.reemplazarResultados)
+        .subscribe({
+          next: (response: any) => {
+            if (response.data.correcto) {
+              this.loading = false;
+              this.mostrarMensaje(
+                'Archivo procesado correctamente.',
+                TIPO_MENSAJE.exito
+              );
+              this.resetInputFile(this.inputExcelMonitoreos);
+              this.consultarMonitoreos();
+            } else {
+              this.loading = false;
+              this.numeroEntrega = response.data.numeroEntrega;
+              this.anioOperacion = response.data.anio;
+              document
+                .getElementById('btnMdlConfirmacionActualizacion')
+                ?.click();
+            }
+          },
+          error: (error: any) => {
             this.loading = false;
-            this.mostrarMensaje(
-              'Archivo procesado correctamente.',
-              TIPO_MENSAJE.exito
+            let archivoErrores = this.generarArchivoDeErrores(
+              error.error.Errors
             );
+            this.mostrarMensaje(
+              'Se encontraron errores en el archivo procesado.',
+              TIPO_MENSAJE.error
+            );
+            this.hacerScroll();
+            FileService.download(archivoErrores, 'errores.txt');
             this.resetInputFile(this.inputExcelMonitoreos);
-            this.consultarMonitoreos();
-          }
-          else {
-            this.loading = false;
-            this.numeroEntrega = response.data.numeroEntrega;
-            this.anioOperacion = response.data.anio;
-            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
-          }
-        },
-        error: (error: any) => {
-          this.loading = false;
-          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-          this.mostrarMensaje(
-            'Se encontraron errores en el archivo procesado.',
-            TIPO_MENSAJE.error
-          );
-          this.hacerScroll();
-          FileService.download(archivoErrores, 'errores.txt');
-          this.resetInputFile(this.inputExcelMonitoreos);
-        },
-      });
+          },
+        });
     }
   }
   sustituirResultados() {
@@ -162,8 +186,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           );
           this.resetInputFile(this.inputExcelMonitoreos);
           this.consultarMonitoreos();
-        }
-        else {
+        } else {
           this.loading = false;
         }
       },
@@ -179,25 +202,32 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         this.resetInputFile(this.inputExcelMonitoreos);
       },
     });
-  };
+  }
   filtrar(columna: ColumnaFinal) {
     this.muestreosFiltradosFiltradoConcatenado = [];
     this.muestreosFiltrados = this.muestreos;
 
-
     for (var i = 0; i < columna.filtrobusqueda.length; i++) {
       this.muestreosFiltradosFiltrado = [];
-      this.muestreosFiltradosFiltrado = this.muestreosFiltrados.filter((f: any) => {
-        return f[columna.nombre] == columna.filtrobusqueda[i];
-      });
+      this.muestreosFiltradosFiltrado = this.muestreosFiltrados.filter(
+        (f: any) => {
+          return f[columna.nombre] == columna.filtrobusqueda[i];
+        }
+      );
       if (this.muestreosFiltradosFiltrado.length > 0) {
-        this.muestreosFiltradosFiltradoConcatenado = this.muestreosFiltradosFiltradoConcatenado.concat(this.muestreosFiltradosFiltrado);
+        this.muestreosFiltradosFiltradoConcatenado =
+          this.muestreosFiltradosFiltradoConcatenado.concat(
+            this.muestreosFiltradosFiltrado
+          );
       }
     }
 
     this.muestreosFiltrados = this.muestreosFiltradosFiltradoConcatenado;
-    this.columnasF.filter(x => x.nombre == columna.nombre).map(
-      (m) => { return m.esfiltrado = true; });
+    this.columnasF
+      .filter((x) => x.nombre == columna.nombre)
+      .map((m) => {
+        return (m.esfiltrado = true);
+      });
 
     this.columnasF.forEach((f) => {
       f.filtro.values = [];
@@ -253,14 +283,24 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.muestreosseleccionados = muestreosSeleccionados;
   }
   exportarResultados(): void {
-    if (this.muestreosseleccionados.length == 0 && this.muestreosFiltrados.length == 0) {
-      this.mostrarMensaje('No hay información existente para descargar', 'warning');
+    if (
+      this.muestreosseleccionados.length == 0 &&
+      this.muestreosFiltrados.length == 0
+    ) {
+      this.mostrarMensaje(
+        'No hay información existente para descargar',
+        'warning'
+      );
       return this.hacerScroll();
     }
 
     this.loading = true;
-    this.muestreosseleccionados = (this.muestreosseleccionados.length == 0) ? this.muestreosFiltrados : this.muestreosseleccionados;
-    this.muestreoService.exportarCargaResultadosEbaseca(this.muestreosseleccionados)
+    this.muestreosseleccionados =
+      this.muestreosseleccionados.length == 0
+        ? this.muestreosFiltrados
+        : this.muestreosseleccionados;
+    this.muestreoService
+      .exportarCargaResultadosEbaseca(this.muestreosseleccionados)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'CargaResultadosEbaseca.xlsx');
@@ -316,7 +356,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     });
   }
   enviarMonitoreos(): void {
-    let valor = this.muestreosFiltrados.filter(x => x.estatus == "EvidenciasCargadas");
+    let valor = this.muestreosFiltrados.filter(
+      (x) => x.estatus == 'EvidenciasCargadas'
+    );
     //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
     //this.resultadosEnviados = this.Seleccionados(valor).map(
     this.resultadosEnviados = this.Seleccionados(this.muestreosFiltrados).map(
@@ -333,10 +375,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       );
     }
 
-    this.muestreoService.enviarMuestreoaAcumulados(
-      estatusMuestreo.AcumulacionResultados,
-      this.resultadosEnviados
-    )
+    this.muestreoService
+      .enviarMuestreoaAcumulados(
+        estatusMuestreo.AcumulacionResultados,
+        this.resultadosEnviados
+      )
       .subscribe({
         next: (response: any) => {
           this.loading = true;
@@ -344,7 +387,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.loading = false;
             this.consultarMonitoreos();
             this.mostrarMensaje(
-              'Se enviaron ' + this.resultadosEnviados.length + ' muestreos a la etapa de "Acumulación resultados" correctamente',
+              'Se enviaron ' +
+                this.resultadosEnviados.length +
+                ' muestreos a la etapa de "Acumulación resultados" correctamente',
               'success'
             );
             this.hacerScroll();
@@ -364,25 +409,28 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     console.log(columna);
     let criterioBusqueda = val.target.value;
     this.filtrosbusqueda = filtros;
-    this.filtrosbusqueda = this.filtrosbusqueda.filter((f) => f.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1);
+    this.filtrosbusqueda = this.filtrosbusqueda.filter(
+      (f) => f.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1
+    );
     //this.columnasfiltross = this.filtrosbusqueda;
     columna.filtrobusqueda = this.filtrosbusqueda;
-
   }
   onCabeceroFoco(val: string = '') {
     this.cabeceroSeleccionado = false;
     this.esfilrofoco = val.toUpperCase();
-    this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter((f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1);
+    this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter(
+      (f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1
+    );
   }
   seleccionCabecero(val: string = '') {
     this.cabeceroSeleccionado = true;
     this.esfilrofoco = val.toUpperCase();
     this.thprueba.nativeElement.focus();
   }
-  eliminarFiltro(etiqueta: string) {
+  eliminarFiltro(etiqueta: string) {}
 
+  pageClic(page: any) {
+    this.consultarMonitoreos(page);
+    this.page = page;
   }
-
 }
-
-

@@ -22,9 +22,6 @@ export class BaseService {
   columnas: Array<Columna> = [];
   columnasF: Array<ColumnaFinal> = [];
 
-
-
-
   resultadosFiltradosn: Array<any> = [];
 
   resultadosn: Array<any> = [];

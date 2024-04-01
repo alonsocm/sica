@@ -8,14 +8,13 @@
   <hr class="red">
   <div class="message-container">
     <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-               [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+      [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
   <div class="clearfix">
     <div class="float-left">
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-             title="Seleccionar archivo" #inputExcelMonitoreos>
-      <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()"
-              title="Seleccionar archivo">
+        title="Seleccionar archivo" #inputExcelMonitoreos>
+      <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()" title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
         Seleccionar y procesar archivo...
       </button>
@@ -39,13 +38,9 @@
     <div class="col-4"></div>
     <div class="col-4"></div>
     <div class="col-4" style="padding:0px">
-      <ng-autocomplete [data]="this.filtrosCabeceroFoco"
-                       [searchKeyword]="keyword"
-                       (inputChanged)='onCabeceroFoco($event)'
-                       (inputCleared)="esfilrofoco = ''"
-                       (selected)="seleccionCabecero($event)"
-                       [itemTemplate]="itemCabeceros"
-                       placeholder="Buscar en cabeceros">
+      <ng-autocomplete [data]="this.filtrosCabeceroFoco" [searchKeyword]="keyword"
+        (inputChanged)='onCabeceroFoco($event)' (inputCleared)="esfilrofoco = ''" (selected)="seleccionCabecero($event)"
+        [itemTemplate]="itemCabeceros" placeholder="Buscar en cabeceros">
       </ng-autocomplete>
       <ng-template #itemCabeceros let-item>
         <a [innerHTML]="item"></a>
@@ -54,38 +49,46 @@
   </div>
   <br />
 
-  <div *ngIf="esHistorial" class="btn-group; btn-primary" role="group" aria-label="Basic example" style="padding:10px; width:1500px; height:max-content">
+  <div *ngIf="esHistorial" class="btn-group; btn-primary" role="group" aria-label="Basic example"
+    style="padding:10px; width:1500px; height:max-content">
     <label>Historial filtrado</label> <br />
     <ng-container *ngFor="let historial of this.columnasF">
-      <button *ngIf="historial.esfiltrado" type="button" class="btn btn-success" style="font-size:xx-small;margin-right:5px; margin-top:5px;">{{historial.etiqueta}}<i class="bi bi-x"></i></button>
+      <button *ngIf="historial.esfiltrado" type="button" class="btn btn-success"
+        style="font-size:xx-small;margin-right:5px; margin-top:5px;">{{historial.etiqueta}}<i
+          class="bi bi-x"></i></button>
     </ng-container>
   </div>
 
-  <div class="dvTable">
-    <table width="10000px" class="table-responsive table table-bordered table-hover">
+  <div class="dvTable table-responsive">
+    <table class="table table-bordered table-hover">
       <thead class="thead-light">
         <tr>
           <th class="checkBox-center" style="text-align:center">
             <label for="chckAll">SELECCIONAR TODOS</label>
             <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                   (change)="seleccionarAll(this.muestreosFiltrados); getMuestreos();" />
+              (change)="seleccionarAll(this.muestreosFiltrados); getMuestreos();" />
           </th>
 
-          <th #thprueba [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.etiqueta && !this.cabeceroSeleccionado) || (this.columna.etiqueta.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.etiqueta ) ? 'yellow' : '#E9ECEF') }" scope="col" *ngFor="let columna of this.columnasF">
+          <th #thprueba
+            [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.etiqueta && !this.cabeceroSeleccionado) || (this.columna.etiqueta.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.etiqueta ) ? 'yellow' : '#E9ECEF') }"
+            scope="col" *ngFor="let columna of this.columnasF">
             <div class="dropdown;" style="width:max-content">
               {{columna.etiqueta}}
-              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" (click)="columna.filtrobusqueda = columna.filtro.values;  this.initialValue = ''">
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" (click)="columna.filtrobusqueda = columna.filtro.values;  this.initialValue = ''">
                 <i *ngIf="!columna.esfiltrado" class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.esfiltrado" class="bi bi-funnel-fill"></i>
               </button>
-           
 
-             <form [formGroup]="registroParam">
+
+              <form [formGroup]="registroParam">
                 <div class="dropdown-menu" style="width:250px; height:500px">
                   <a class="dropdown-item"><i class="bi bi-sort-alpha-down"></i> Ordenar de A a Z</a>
                   <a class="dropdown-item"><i class="bi bi-sort-alpha-down-alt"></i> Ordenar de Z a A</a>
                   <hr class="dropdown-divider">
-                  <a onclick="eliminarFiltro(columna.etiqueta);" enabled class="dropdown-item"><i [ngStyle]="{color:(columna.esfiltrado) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>  Eliminar filtro de {{columna.etiqueta}}</a>
+                  <a onclick="eliminarFiltro(columna.etiqueta);" enabled class="dropdown-item"><i
+                      [ngStyle]="{color:(columna.esfiltrado) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i
+                      style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.etiqueta}}</a>
                   <a class="dropdown-item">
                     Filtros de texto
 
@@ -98,22 +101,26 @@
                   <div class="dropdown-divider"></div>
                   <div style="height:300px; overflow:scroll; padding:5px">
                     <!--<div>-->
-                    <input class="form-control" placeholder="Buscar en cabeceros" type="text" (input)="onFiltroCabecero($event, columna.filtro.values, columna)"  />
-                  
-                      <span><i class="bi bi-search"></i></span>
-                      
-                        <div style="height:min-content" *ngFor="let dato of columna.filtrobusqueda; index as i">
-                          <input id={{i}} formControlName="chkFiltro" [(ngModel)]="columna.filtro.isCheckedFiltro" type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />
-                          <!--<input id={{i}} checked type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />-->
-                          <a style="font-size:xx-small;text-align:left" [innerHTML]="dato"></a>
-                        </div>
-                                        
+                    <input class="form-control" placeholder="Buscar en cabeceros" type="text"
+                      (input)="onFiltroCabecero($event, columna.filtro.values, columna)" />
+
+                    <span><i class="bi bi-search"></i></span>
+
+                    <div style="height:min-content" *ngFor="let dato of columna.filtrobusqueda; index as i">
+                      <input id={{i}} formControlName="chkFiltro" [(ngModel)]="columna.filtro.isCheckedFiltro"
+                        type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />
+                      <!--<input id={{i}} checked type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />-->
+                      <a style="font-size:xx-small;text-align:left" [innerHTML]="dato"></a>
+                    </div>
+
                     <!--</div>-->
                   </div>
 
                   <div class="modal-footer" style="font-size:xx-small; height:100px">
-                    <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary" data-dismiss="dropdown">Cancelar</button>
-                    <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown" (click)="filtrar(columna)">
+                    <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
+                      data-dismiss="dropdown">Cancelar</button>
+                    <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
+                      (click)="filtrar(columna)">
                       Aceptar
                     </button>
                   </div>
@@ -125,7 +132,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr style="height:auto; text-align:center" *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:60, currentPage: page }">
+        <tr style="height:auto; text-align:center"
+          *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="checkBox-center">
             <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()" title="Seleccionar">
           </td>
@@ -156,7 +164,7 @@
       </tbody>
     </table>
   </div>
-  <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+  <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
   </pagination-controls>
 
   <div class="row">
@@ -165,7 +173,7 @@
         <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
       </button>
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
-              data-target="#mdlConfirmacion" title="Seleccionar"></button>
+        data-target="#mdlConfirmacion" title="Seleccionar"></button>
     </div>
   </div>
   <hr />
@@ -190,10 +198,11 @@
   </div>
 
   <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
-          data-target="#mdlConfirmacionActualizacion">
+    data-target="#mdlConfirmacionActualizacion">
     Abrir modal
   </button>
-  <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static" data-toggle="modal">
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static"
+    data-toggle="modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -207,8 +216,7 @@
           <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá los valores de los resultados.</p>
         </div>
         <div class="modal-footer">
-          <button id="btnCancelarModal" type="button" class="btn btn-secondary"
-                  data-dismiss="modal">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">
             Cancelar
           </button>
           <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="sustituirResultados()">
