@@ -87,7 +87,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: []},
+      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
@@ -126,7 +126,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.muestreosFiltrados = this.muestreos;
           this.establecerValoresFiltrosTabla();
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
   private establecerValoresFiltrosTabla() {
@@ -134,11 +134,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       f.filtro.values.push(
         ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre]))
       );
-
-    } );
+    });
 
     this.columnasF.forEach((x) => {
-
       this.filtrosValues = [];
       this.filtrosValues = x.filtro.values;
       x.filtro.values = [];
@@ -150,8 +148,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
     });
   }
-
-
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
@@ -228,11 +224,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.muestreosFiltradosFiltradoConcatenado = [];
     this.muestreosFiltrados = this.muestreos;
 
-    for (var i = 0; i < columna.filtrobusqueda.length; i++) {
+    let filtrosSeleccionados = columna.filtrobusqueda.filter(x => x.checked);
+
+    for (var i = 0; i < filtrosSeleccionados.length; i++) {
       this.muestreosFiltradosFiltrado = [];
       this.muestreosFiltradosFiltrado = this.muestreosFiltrados.filter(
         (f: any) => {
-          return f[columna.nombre] == columna.filtrobusqueda[i];
+          return f[columna.nombre] == filtrosSeleccionados[i].valor;
         }
       );
       if (this.muestreosFiltradosFiltrado.length > 0) {
@@ -409,8 +407,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.consultarMonitoreos();
             this.mostrarMensaje(
               'Se enviaron ' +
-                this.resultadosEnviados.length +
-                ' muestreos a la etapa de "Acumulación resultados" correctamente',
+              this.resultadosEnviados.length +
+              ' muestreos a la etapa de "Acumulación resultados" correctamente',
               'success'
             );
             this.hacerScroll();
@@ -429,8 +427,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   onFiltroCabecero(val: any, filtros: any, columna: any) {
     let criterioBusqueda = val.target.value;
     this.filtrosbusqueda = filtros;
-    this.filtrosbusqueda = this.filtrosbusqueda.filter((f) => f.nombre.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1);
-    columna.filtrobusqueda = this.filtrosbusqueda;  
+    this.filtrosbusqueda = this.filtrosbusqueda.filter((f) => f.valor.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1);
+    columna.filtrobusqueda = this.filtrosbusqueda;
 
   }
   onCabeceroFoco(val: string = '') {
@@ -445,7 +443,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.esfilrofoco = val.toUpperCase();
     this.thprueba.nativeElement.focus();
   }
-  eliminarFiltro(etiqueta: string) {}
+  eliminarFiltro(etiqueta: string) { }
 
   pageClic(page: any) {
     this.consultarMonitoreos(page);
