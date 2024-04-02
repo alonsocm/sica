@@ -1,3 +1,5 @@
+import { FiltroBusqueda } from "./columna-inferface";
+
 export class Filter {
   values: string[];
   selectedValue: string;
@@ -14,16 +16,14 @@ export class Filter {
 
 
 export class FilterFinal {
-  values: string[];
-  selectedValue: string;
+  values: FiltroBusqueda[];
   seleccionarTodosChckFiltro: boolean;
-  isCheckedFiltro: boolean;
 
 
   constructor() {
-    this.values = ["Seleccionar todos"];
-    this.selectedValue = "Seleccione";
+  /*  this.values = ["Seleccionar todos"];*/
+    this.values = [];  
     this.seleccionarTodosChckFiltro = true;
-    this.isCheckedFiltro = true;
+   
   }
 }

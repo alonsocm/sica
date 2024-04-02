@@ -1,6 +1,7 @@
 import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
-import { Columna, ColumnaFinal } from 'src/app/interfaces/columna-inferface';
+import { Columna, Column } from 'src/app/interfaces/columna-inferface';
 import { Resultado } from 'src/app/interfaces/Resultado.interface';
+import { FilterFinal } from '../../interfaces/filtro.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class BaseService {
   seleccionarTodosChck: boolean = false;
 
   columnas: Array<Columna> = [];
-  columnasF: Array<ColumnaFinal> = [];
+  columnasF: Array<Column> = [];
 
   resultadosFiltradosn: Array<any> = [];
 
@@ -91,6 +92,28 @@ export class BaseService {
       m.isChecked = this.seleccionarTodosChck ? true : false;
     });
   }
+
+  seleccionarAllFiltro(resultadosFiltrados: any): void {
+    console.log(resultadosFiltrados);
+    //resultadosFiltrados.map((m) => {
+    //  m.isCheckedFiltro = m.seleccionarTodosChckFiltro ? true : false;
+    //});
+
+    /*  resultadosFiltrados.isCheckedFiltro = resultadosFiltrados.seleccionarTodosChckFiltro ? true : false;*/
+
+
+
+    //resultadosFiltrados.map((m) => {
+    //  m.isCheckedFiltro = m.seleccionarTodosChckFiltro ? true : false;
+    //});
+
+  
+  }
+
+
+
+
+
 
   //sustituye a obtenerseleccionados()
   Seleccionados(Seleccionados: Array<any>) {

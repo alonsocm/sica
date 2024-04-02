@@ -93,27 +93,29 @@
                     Filtros de texto
 
                     <!--<a class="dropdown-item">Es igual a...</a>
-                    <a class="dropdown-item">Comienza por...</a>
-                    <a class="dropdown-item">Termina con...</a>
-                    <a class="dropdown-item">Cntiene...</a>-->
+            <a class="dropdown-item">Comienza por...</a>
+            <a class="dropdown-item">Termina con...</a>
+            <a class="dropdown-item">Cntiene...</a>-->
                   </a>
 
                   <div class="dropdown-divider"></div>
                   <div style="height:300px; overflow:scroll; padding:5px">
                     <!--<div>-->
-                    <input class="form-control" placeholder="Buscar en cabeceros" type="text"
-                      (input)="onFiltroCabecero($event, columna.filtro.values, columna)" />
+                    <input class="form-control" placeholder="Buscar en cabeceros" type="text" (input)="onFiltroCabecero($event, columna.filtro.values, columna)" />
 
                     <span><i class="bi bi-search"></i></span>
+                    <br />
+                    <input type="checkbox" id="chckAllFiltro" formControlName="chckAllFiltro" [(ngModel)]="columna.filtro.seleccionarTodosChckFiltro"
+                           (change)="seleccionarAllFiltro(columna);" />
+                    <label style="font-size:x-small" for="chckAllFiltro">Seleccionar todos</label>
 
                     <div style="height:min-content" *ngFor="let dato of columna.filtrobusqueda; index as i">
-                      <input id={{i}} formControlName="chkFiltro" [(ngModel)]="columna.filtro.isCheckedFiltro"
-                        type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />
-                      <!--<input id={{i}} checked type="checkbox" class="check" (click)="seleccionarFiltro(this.filtros);" />-->
-                      <a style="font-size:xx-small;text-align:left" [innerHTML]="dato"></a>
+                      <input type="checkbox" id={{i}} [(ngModel)]="dato.checked" formControlName="chkFiltro" class="check" (change)="seleccionarFiltro()" />
+                                  
+                      
+                      <a style="font-size:xx-small;text-align:left" [innerHTML]="dato.nombre"></a>
                     </div>
-
-                    <!--</div>-->
+                   
                   </div>
 
                   <div class="modal-footer" style="font-size:xx-small; height:100px">

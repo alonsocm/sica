@@ -9,7 +9,7 @@ import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Filter, FilterFinal } from 'src/app/interfaces/filtro.interface';
-import { Columna, ColumnaFinal } from 'src/app/interfaces/columna-inferface';
+import { Columna, Column, FiltroBusqueda } from 'src/app/interfaces/columna-inferface';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { from } from 'rxjs';
@@ -29,6 +29,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreosFiltradosFiltrado: Array<Muestreo> = [];
   muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
   muestreosseleccionados: Array<Muestreo> = [];
+
+
+  filtrosValues: Array<any> = [];
+
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
@@ -71,6 +75,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     super();
     this.registroParam = this.fb.group({
       chkFiltro: new FormControl(),
+      chckAllFiltro: new FormControl(),
       //btnAceptar: [null]
     });
   }
@@ -80,9 +85,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.consultarMonitoreos();
   }
   definirColumnas() {
-    let nombresColumnas: Array<ColumnaFinal> = [
+    let nombresColumnas: Array<Column> = [
       { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
+      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: []},
       { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
       { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
@@ -129,8 +134,24 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       f.filtro.values.push(
         ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre]))
       );
+
+    } );
+
+    this.columnasF.forEach((x) => {
+
+      this.filtrosValues = [];
+      this.filtrosValues = x.filtro.values;
+      x.filtro.values = [];
+
+      this.filtrosValues.forEach((y) => {
+        let valora = new FiltroBusqueda();
+        valora.valor = y;
+        x.filtro.values.push(valora);
+      });
     });
   }
+
+
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
@@ -202,8 +223,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         this.resetInputFile(this.inputExcelMonitoreos);
       },
     });
-  }
-  filtrar(columna: ColumnaFinal) {
+  };
+  filtrar(columna: Column) {
     this.muestreosFiltradosFiltradoConcatenado = [];
     this.muestreosFiltrados = this.muestreos;
 
@@ -274,8 +295,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.getMuestreos();
   }
-  seleccionarFiltro(filtros: any): void {
-    this.mostrar = true;
+  seleccionarFiltro(): void {
+
   }
   getMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
@@ -406,14 +427,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
   onFiltroCabecero(val: any, filtros: any, columna: any) {
-    console.log(columna);
     let criterioBusqueda = val.target.value;
     this.filtrosbusqueda = filtros;
-    this.filtrosbusqueda = this.filtrosbusqueda.filter(
-      (f) => f.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1
-    );
-    //this.columnasfiltross = this.filtrosbusqueda;
-    columna.filtrobusqueda = this.filtrosbusqueda;
+    this.filtrosbusqueda = this.filtrosbusqueda.filter((f) => f.nombre.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1);
+    columna.filtrobusqueda = this.filtrosbusqueda;  
+
   }
   onCabeceroFoco(val: string = '') {
     this.cabeceroSeleccionado = false;
