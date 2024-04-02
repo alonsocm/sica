@@ -64,6 +64,7 @@ namespace Persistence.Repository
             var laboratoriosubrogado = await (from e in _dbContext.ResultadoMuestreo
                                               where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId) && e.LaboratorioSubrogadoId != null
                                               select new { e.LaboratorioSubrogado.Nomenclatura, e.MuestreoId }).Distinct().ToListAsync();
+
             var fechentrega = await (from e in _dbContext.ResultadoMuestreo
                                      where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
                                      select new { e.FechaEntrega, e.MuestreoId }).Distinct().ToListAsync();
@@ -77,12 +78,29 @@ namespace Persistence.Repository
                 {
                     f.LaboratorioSubrogado += laboratorioSubrogado[i] + "/";
                 }
+
                 f.LaboratorioSubrogado = f.LaboratorioSubrogado.TrimEnd('/');
                 f.FechaEntregaMuestreo = Fechaentrega.ToList()[0].ToString("dd/MM/yyyy");
                 f.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == f.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo }).ToList());
             });
 
             return muestreos;
+        }
+
+        public IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data)
+        {
+            IEnumerable<string> valores = null;
+
+            switch (column)
+            {
+                case "CLAVEMONITOREO":
+                    valores = data.Select(s => s.ClaveMonitoreo).Distinct();
+                    break;
+                default:
+                    break;
+            }
+
+            return valores;
         }
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)

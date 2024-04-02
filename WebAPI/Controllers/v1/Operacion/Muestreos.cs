@@ -128,6 +128,12 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetMuestreos { EsLiberacion = esLiberacion, Page = page, PageSize = pageSize }));
         }
 
+        [HttpGet("GetDistinctValuesFromColumn")]
+        public async Task<IActionResult> Get(string column)
+        {
+            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column }));
+        }
+
         [HttpPut]
         public async Task<IActionResult> Put(List<MuestreoRevisionDto> request)
         {
