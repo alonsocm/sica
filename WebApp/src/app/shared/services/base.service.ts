@@ -93,27 +93,12 @@ export class BaseService {
     });
   }
 
-  seleccionarAllFiltro(resultadosFiltrados: any): void {
-    console.log(resultadosFiltrados);
-    //resultadosFiltrados.map((m) => {
-    //  m.isCheckedFiltro = m.seleccionarTodosChckFiltro ? true : false;
-    //});
-
-    /*  resultadosFiltrados.isCheckedFiltro = resultadosFiltrados.seleccionarTodosChckFiltro ? true : false;*/
-
-
-
-    //resultadosFiltrados.map((m) => {
-    //  m.isCheckedFiltro = m.seleccionarTodosChckFiltro ? true : false;
-    //});
-
-  
+  seleccionarAllFiltro(resultadosFiltrados: any): void {  
+    resultadosFiltrados.values.forEach((x: { checked: boolean; }) => {
+      x.checked = resultadosFiltrados.seleccionarTodosChckFiltro ? true : false;
+       
+    });
   }
-
-
-
-
-
 
   //sustituye a obtenerseleccionados()
   Seleccionados(Seleccionados: Array<any>) {

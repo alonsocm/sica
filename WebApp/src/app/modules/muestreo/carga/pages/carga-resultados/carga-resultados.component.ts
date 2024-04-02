@@ -293,8 +293,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.getMuestreos();
   }
-  seleccionarFiltro(): void {
-
+  seleccionarFiltro(columna: any): void {
+    if (columna.seleccionarTodosChckFiltro) columna.seleccionarTodosChckFiltro = false;
   }
   getMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
