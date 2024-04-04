@@ -311,8 +311,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.columns = nombresColumnas;
 
-    console.log(this.columns);
-
     this.filtrosCabeceroFoco = this.columns.map((m) => {
       return m.label;
     });
@@ -329,45 +327,25 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.totalItems = response.totalRecords;
           this.muestreos = response.data;
           this.muestreosFiltrados = this.muestreos;
-          this.establecerValoresFiltrosTabla();
         },
         error: (error) => {},
       });
   }
 
-  private establecerValoresFiltrosTabla() {
-    this.columns.forEach((f) => {
-      this.muestreoService
-        .getDistinctValuesFromColumn('CLAVEMONITOREO')
-        .subscribe({
-          next: (response: any) => {
-            f.data = response.data.map((register: any) => {
-              let item: Item = {
-                value: register,
-                checked: true,
-              };
-              return item;
-            });
-          },
-          error: (error) => {},
+  public establecerValoresFiltrosTabla(column: Column) {
+    this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
+      next: (response: any) => {
+        column.data = response.data.map((register: any) => {
+          let item: Item = {
+            value: register,
+            checked: true,
+          };
+          return item;
         });
-      // f.data?.push(
-      //   ...new Set(this.muestreosFiltrados.map((m: any) => m[f.name]))
-      // );
+        column.filteredData = column.data;
+      },
+      error: (error) => {},
     });
-
-    // this.columnasF.forEach((x) => {
-    //   this.filtrosValues = [];
-    //   this.filtrosValues = x.filtro.values;
-    //   x.filtro.values = [];
-
-    //   this.filtrosValues.forEach((y) => {
-    //     let valora = new FiltroBusqueda();
-    //     valora.valor = y;
-    //     x.filtro.values.push(valora);
-    //   });
-    // });
-    console.log(this.columns);
   }
 
   cargarArchivo(event: Event) {
@@ -474,7 +452,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       f.data = [];
     });
 
-    this.establecerValoresFiltrosTabla();
+    //this.establecerValoresFiltrosTabla();
     this.esHistorial = true;
   }
 
