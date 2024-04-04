@@ -122,7 +122,7 @@
 
                     <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
                       <input type="checkbox" id={{i}} [(ngModel)]="dato.checked" formControlName="chkFiltro"
-                        class="check" (change)="seleccionarFiltro()" />
+                        class="check" (change)="seleccionarFiltro(columna)" />
 
 
                       <a style="font-size:xx-small;text-align:left" [innerHTML]="dato.value"></a>

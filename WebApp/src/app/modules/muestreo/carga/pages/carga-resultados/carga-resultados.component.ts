@@ -8,7 +8,6 @@ import {
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
-import { Filter, FilterFinal } from 'src/app/interfaces/filtro.interface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
@@ -519,7 +518,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.getMuestreos();
   }
-  seleccionarFiltro(): void {}
+  seleccionarFiltro(columna: Column): void {
+    if (columna.selectAll) {
+      columna.selectAll = false;
+    }
+  }
   getMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
     this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
