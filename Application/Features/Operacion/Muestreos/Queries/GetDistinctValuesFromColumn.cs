@@ -21,7 +21,7 @@ namespace Application.Features.Muestreos.Queries
         public async Task<Response<IEnumerable<object>>> Handle(GetDistinctValuesFromColumn request, CancellationToken cancellationToken)
         {
             var muestreos = await _repositoryAsync.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.Cargado });
-            var response = _repositoryAsync.GetDistinctValuesFromColumn("CLAVEMONITOREO", muestreos);
+            var response = _repositoryAsync.GetDistinctValuesFromColumn(request.Column, muestreos);
 
             return new Response<IEnumerable<object>>(response);
         }

@@ -5,6 +5,7 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
+using System.Linq.Expressions;
 
 namespace Persistence.Repository
 {
@@ -89,18 +90,36 @@ namespace Persistence.Repository
 
         public IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data)
         {
-            IEnumerable<string> valores = null;
-
-            switch (column)
-            {
-                case "CLAVEMONITOREO":
-                    valores = data.Select(s => s.ClaveMonitoreo).Distinct();
-                    break;
-                default:
-                    break;
-            }
+            var muestreos = data.AsQueryable();
+            var valores = muestreos.Select(GetProperty(column)).Distinct();
 
             return valores;
+        }
+
+        private static Expression<Func<MuestreoDto, object>> GetProperty(string column)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => muestreo.Estatus,
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega,
+                "clavesitio" => muestreo => muestreo.ClaveSitio,
+                "claveMonitoreo" => muestreo => muestreo.ClaveMonitoreo,
+                "tipositio" => muestreo => muestreo.TipoSitio,
+                "nombresitio" => muestreo => muestreo.NombreSitio,
+                "ocdl" => muestreo => muestreo.OCDL,
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua,
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua,
+                "programaanual" => muestreo => muestreo.ProgramaAnual,
+                "laboratorio" => muestreo => muestreo.Laboratorio,
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado,
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada,
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion,
+                "horainicio" => muestreo => muestreo.HoraInicio,
+                "horafin" => muestreo => muestreo.HoraFin,
+                "fechacarga" => muestreo => muestreo.FechaCarga,
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo,
+                _ => muestreo => muestreo.ClaveMonitoreo
+            };
         }
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)
