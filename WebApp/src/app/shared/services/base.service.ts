@@ -1,5 +1,6 @@
 import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
-import { Columna, Column } from 'src/app/interfaces/columna-inferface';
+import { Columna } from 'src/app/interfaces/columna-inferface';
+import { Column } from 'src/app/interfaces/filter/column';
 import { Resultado } from 'src/app/interfaces/Resultado.interface';
 import { FilterFinal } from '../../interfaces/filtro.interface';
 
@@ -93,10 +94,9 @@ export class BaseService {
     });
   }
 
-  seleccionarAllFiltro(resultadosFiltrados: any): void {  
-    resultadosFiltrados.values.forEach((x: { checked: boolean; }) => {
-      x.checked = resultadosFiltrados.seleccionarTodosChckFiltro ? true : false;
-       
+  seleccionarAllFiltro(columna: Column): void {
+    columna.data.map((m) => {
+      m.checked = columna.selectAll ? true : false;
     });
   }
 

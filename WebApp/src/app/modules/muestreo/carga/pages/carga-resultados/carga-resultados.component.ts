@@ -8,13 +8,13 @@ import {
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
-import { Filter, FilterFinal } from 'src/app/interfaces/filtro.interface';
-import { Columna, Column, FiltroBusqueda } from 'src/app/interfaces/columna-inferface';
+import { Column } from 'src/app/interfaces/filter/column';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { from } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { map } from 'leaflet';
+import { Item } from 'src/app/interfaces/filter/item';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -30,9 +30,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
   muestreosseleccionados: Array<Muestreo> = [];
 
-
   filtrosValues: Array<any> = [];
-
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
@@ -68,6 +66,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   esfilrofoco: string = '';
 
+  columns: Array<Column> = [];
+
   constructor(
     private muestreoService: MuestreoService,
     private fb: FormBuilder
@@ -76,6 +76,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.registroParam = this.fb.group({
       chkFiltro: new FormControl(),
       chckAllFiltro: new FormControl(),
+      iconoAZOrdenado: new FormControl(),
+      iconoZAOrdenado: new FormControl(),
       //btnAceptar: [null]
     });
   }
@@ -84,32 +86,235 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.definirColumnas();
     this.consultarMonitoreos();
   }
+
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
-      { nombre: 'estatus', etiqueta: 'ESTATUS', orden: 1, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'evidencias', etiqueta: 'EVIDENCIAS COMPLETAS', orden: 2, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'numeroEntrega', etiqueta: 'NÚMERO CARGA', orden: 3, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'claveSitio', etiqueta: 'CLAVE NOSEC', orden: 4, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: '', etiqueta: 'CLAVE 5K', orden: 5, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'claveMonitoreo', etiqueta: 'CLAVE MONITOREO', orden: 6, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'tipoSitio', etiqueta: 'TIPO DE SITIO', orden: 7, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'nombreSitio', etiqueta: 'NOMBRE SITIO', orden: 8, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'ocdl', etiqueta: 'OC/DL', orden: 9, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'tipoCuerpoAgua', etiqueta: 'TIPO CUERPO AGUA', orden: 10, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'subTipoCuerpoAgua', etiqueta: 'SUBTIPO CUERPO DE AGUA', orden: 11, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'programaAnual', etiqueta: 'PROGRAMA ANUAL', orden: 12, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'laboratorio', etiqueta: 'LABORATORIO', orden: 13, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'laboratorioSubrogado', etiqueta: 'LABORATORIO SUBROGADO', orden: 14, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'fechaRealizacion', etiqueta: 'FECHA REALIZACIÓN', orden: 16, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'fechaProgramada', etiqueta: 'FECHA PROGRAMACIÓN', orden: 15, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'horaInicio', etiqueta: 'HORA INICIO MUESTREO', orden: 17, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'horaFin', etiqueta: 'HORA FIN MUESTREO', orden: 18, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'fechaCarga', etiqueta: 'FECHA CARGA SICA', orden: 19, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] },
-      { nombre: 'fechaEntrega', etiqueta: 'FECHA ENTREGA', orden: 20, filtro: new FilterFinal(), esfiltrado: false, filtrobusqueda: [] }
+      {
+        name: 'estatus',
+        label: 'ESTATUS',
+        order: 1,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'evidencias',
+        label: 'EVIDENCIAS COMPLETAS',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'numeroEntrega',
+        label: 'NÚMERO CARGA',
+        order: 3,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'claveSitio',
+        label: 'CLAVE NOSEC',
+        order: 4,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: '',
+        label: 'CLAVE 5K',
+        order: 5,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'claveMonitoreo',
+        label: 'CLAVE MONITOREO',
+        order: 6,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'tipoSitio',
+        label: 'TIPO DE SITIO',
+        order: 7,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'nameSitio',
+        label: 'SITIO',
+        order: 8,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'ocdl',
+        label: 'OC/DL',
+        order: 9,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'tipoCuerpoAgua',
+        label: 'TIPO CUERPO AGUA',
+        order: 10,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'subTipoCuerpoAgua',
+        label: 'SUBTIPO CUERPO DE AGUA',
+        order: 11,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'programaAnual',
+        label: 'PROGRAMA ANUAL',
+        order: 12,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'laboratorio',
+        label: 'LABORATORIO',
+        order: 13,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'laboratorioSubrogado',
+        label: 'LABORATORIO SUBROGADO',
+        order: 14,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'fechaRealizacion',
+        label: 'FECHA REALIZACIÓN',
+        order: 16,
+        selectAll: true,
+        filtered: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'fechaProgramada',
+        label: 'FECHA PROGRAMACIÓN',
+        order: 15,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'horaInicio',
+        label: 'HORA INICIO MUESTREO',
+        order: 17,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'horaFin',
+        label: 'HORA FIN MUESTREO',
+        order: 18,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'fechaCarga',
+        label: 'FECHA CARGA SICA',
+        order: 19,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
+      {
+        name: 'fechaEntrega',
+        label: 'FECHA ENTREGA',
+        order: 20,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+      },
     ];
-    this.columnasF = nombresColumnas;
-    this.filtrosCabeceroFoco = this.columnasF.map((m) => {
-      return m.etiqueta;
+
+    this.columns = nombresColumnas;
+
+    console.log(this.columns);
+
+    this.filtrosCabeceroFoco = this.columns.map((m) => {
+      return m.label;
     });
   }
 
@@ -126,27 +331,43 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.muestreosFiltrados = this.muestreos;
           this.establecerValoresFiltrosTabla();
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
+
   private establecerValoresFiltrosTabla() {
-    this.columnasF.forEach((f) => {
-      f.filtro.values.push(
-        ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre]))
-      );
+    this.columns.forEach((f) => {
+      this.muestreoService
+        .getDistinctValuesFromColumn('CLAVEMONITOREO')
+        .subscribe({
+          next: (response: any) => {
+            f.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+          },
+          error: (error) => {},
+        });
+      // f.data?.push(
+      //   ...new Set(this.muestreosFiltrados.map((m: any) => m[f.name]))
+      // );
     });
 
-    this.columnasF.forEach((x) => {
-      this.filtrosValues = [];
-      this.filtrosValues = x.filtro.values;
-      x.filtro.values = [];
+    // this.columnasF.forEach((x) => {
+    //   this.filtrosValues = [];
+    //   this.filtrosValues = x.filtro.values;
+    //   x.filtro.values = [];
 
-      this.filtrosValues.forEach((y) => {
-        let valora = new FiltroBusqueda();
-        valora.valor = y;
-        x.filtro.values.push(valora);
-      });
-    });
+    //   this.filtrosValues.forEach((y) => {
+    //     let valora = new FiltroBusqueda();
+    //     valora.valor = y;
+    //     x.filtro.values.push(valora);
+    //   });
+    // });
+    console.log(this.columns);
   }
 
   cargarArchivo(event: Event) {
@@ -219,20 +440,21 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         this.resetInputFile(this.inputExcelMonitoreos);
       },
     });
-  };
+  }
+
   filtrar(columna: Column) {
     this.muestreosFiltradosFiltradoConcatenado = [];
     this.muestreosFiltrados = this.muestreos;
-
-    let filtrosSeleccionados = columna.filtrobusqueda.filter(x => x.checked);
+    let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
 
     for (var i = 0; i < filtrosSeleccionados.length; i++) {
       this.muestreosFiltradosFiltrado = [];
       this.muestreosFiltradosFiltrado = this.muestreosFiltrados.filter(
         (f: any) => {
-          return f[columna.nombre] == filtrosSeleccionados[i].valor;
+          return f[columna.name] == filtrosSeleccionados[i].value;
         }
       );
+
       if (this.muestreosFiltradosFiltrado.length > 0) {
         this.muestreosFiltradosFiltradoConcatenado =
           this.muestreosFiltradosFiltradoConcatenado.concat(
@@ -242,24 +464,27 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.muestreosFiltrados = this.muestreosFiltradosFiltradoConcatenado;
-    this.columnasF
-      .filter((x) => x.nombre == columna.nombre)
+    this.columns
+      .filter((x) => x.name == columna.name)
       .map((m) => {
-        return (m.esfiltrado = true);
+        return (m.filtered = true);
       });
 
-    this.columnasF.forEach((f) => {
-      f.filtro.values = [];
+    this.columns.forEach((f) => {
+      f.data = [];
     });
+
     this.establecerValoresFiltrosTabla();
     this.esHistorial = true;
   }
+
   existeEvidencia(evidencias: Array<any>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
       return false;
     }
     return evidencias.find((f) => f.sufijo == sufijoEvidencia);
   }
+
   descargarEvidencia(claveMuestreo: string, sufijo: string) {
     this.loading = !this.loading;
     let muestreo = this.muestreosFiltrados.find(
@@ -293,8 +518,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.getMuestreos();
   }
-  seleccionarFiltro(columna: any): void {
-    if (columna.seleccionarTodosChckFiltro) columna.seleccionarTodosChckFiltro = false;
+  seleccionarFiltro(columna: Column): void {
+    if (columna.selectAll) {
+      columna.selectAll = false;
+    }
   }
   getMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
@@ -407,8 +634,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.consultarMonitoreos();
             this.mostrarMensaje(
               'Se enviaron ' +
-              this.resultadosEnviados.length +
-              ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                this.resultadosEnviados.length +
+                ' muestreos a la etapa de "Acumulación resultados" correctamente',
               'success'
             );
             this.hacerScroll();
@@ -424,13 +651,16 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         },
       });
   }
-  onFiltroCabecero(val: any, filtros: any, columna: any) {
-    let criterioBusqueda = val.target.value;
-    this.filtrosbusqueda = filtros;
-    this.filtrosbusqueda = this.filtrosbusqueda.filter((f) => f.valor.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1);
-    columna.filtrobusqueda = this.filtrosbusqueda;
 
+  onFiltroCabecero(val: any, columna: Column) {
+    let criterioBusqueda = val.target.value;
+    columna.filteredData = columna.data;
+    columna.filteredData = columna.filteredData?.filter(
+      (f) =>
+        f.value.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1
+    );
   }
+
   onCabeceroFoco(val: string = '') {
     this.cabeceroSeleccionado = false;
     this.esfilrofoco = val.toUpperCase();
@@ -438,15 +668,34 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       (f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1
     );
   }
+
   seleccionCabecero(val: string = '') {
     this.cabeceroSeleccionado = true;
     this.esfilrofoco = val.toUpperCase();
     this.thprueba.nativeElement.focus();
   }
-  eliminarFiltro(etiqueta: string) { }
+
+  eliminarFiltro(etiqueta: string) {}
 
   pageClic(page: any) {
     this.consultarMonitoreos(page);
     this.page = page;
+  }
+
+  ordenarAZ(columna: Column, tipo: string) {
+    this.muestreosFiltrados.sort(function (a: any, b: any) {
+      if (a[columna.name] > b[columna.name]) {
+        return tipo == 'asc' ? 1 : -1;
+      }
+
+      if (a[columna.name] < b[columna.name]) {
+        return tipo == 'desc' ? -1 : 1;
+      }
+
+      return 0;
+    });
+
+    columna.asc = tipo == 'asc' ? true : false;
+    columna.desc = tipo == 'desc' ? true : false;
   }
 }

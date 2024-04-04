@@ -52,11 +52,9 @@
   <div *ngIf="esHistorial" class="btn-group; btn-primary" role="group" aria-label="Basic example"
        style="padding:10px; width:1500px; height:max-content">
     <label>Historial filtrado</label> <br />
-    <ng-container *ngFor="let historial of this.columnasF">
-      <button *ngIf="historial.esfiltrado" type="button" class="btn btn-success"
-              style="font-size:xx-small;margin-right:5px; margin-top:5px;">
-        {{historial.etiqueta}}<i class="bi bi-x"></i>
-      </button>
+    <ng-container *ngFor="let historial of this.columns">
+      <button *ngIf="historial.filtered" type="button" class="btn btn-success"
+        style="font-size:xx-small;margin-right:5px; margin-top:5px;">{{historial.label}}<i class="bi bi-x"></i></button>
     </ng-container>
   </div>
 
@@ -71,25 +69,36 @@
           </th>
 
           <th #thprueba
-              [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.etiqueta && !this.cabeceroSeleccionado) || (this.columna.etiqueta.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.etiqueta ) ? 'yellow' : '#E9ECEF') }"
-              scope="col" *ngFor="let columna of this.columnasF">
+            [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF') }"
+            scope="col" *ngFor="let columna of this.columns">
             <div class="dropdown;" style="width:max-content">
-              {{columna.etiqueta}}
+              {{columna.label}}
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="false" (click)="columna.filtrobusqueda = columna.filtro.values;  this.initialValue = ''">
-                <i *ngIf="!columna.esfiltrado" class="bi bi-caret-down-fill"></i>
-                <i *ngIf="columna.esfiltrado" class="bi bi-funnel-fill"></i>
+                title="Filtros" aria-expanded="false"
+                (click)="columna.filteredData = columna.data;  this.initialValue = ''">
+                <i *ngIf="!columna.filtered && !columna.asc && !columna.desc" class="bi bi-caret-down-fill"></i>
+                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                <i id="iconoAZOrdenado" formControlName="iconoAZOrdenado" [(ngModel)]="columna.asc" *ngIf="columna.asc"
+                  class="bi bi-arrow-down"></i>
+                <i id="iconoZAOrdenado" formControlName="iconoZAOrdenado" [(ngModel)]="columna.desc"
+                  *ngIf="columna.desc" class=" bi bi-arrow-up"></i>
               </button>
-
-
               <form [formGroup]="registroParam">
                 <div class="dropdown-menu" style="width:250px; height:500px">
-                  <a class="dropdown-item"><i class="bi bi-sort-alpha-down"></i> Ordenar de A a Z</a>
-                  <a class="dropdown-item"><i class="bi bi-sort-alpha-down-alt"></i> Ordenar de Z a A</a>
-                  <hr class="dropdown-divider">
-                  <a onclick="eliminarFiltro(columna.etiqueta);" enabled class="dropdown-item">
-                    <i [ngStyle]="{color:(columna.esfiltrado) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.etiqueta}}
+                  <a class="dropdown-item" (click)="ordenarAZ(columna, 'asc');">
+                    <i [ngStyle]="{'background-color':(columna.asc) ? 'lightgreen' : 'white'}"
+                      class="bi bi-sort-alpha-down"></i>
+                    Ordenar de A a Z
                   </a>
+                  <a class="dropdown-item" (click)="ordenarAZ(columna, 'desc');">
+                    <i [ngStyle]="{'background-color':(columna.desc) ? 'lightgreen' : 'white'}"
+                      class="bi bi-sort-alpha-down-alt"></i>
+                    Ordenar de Z a A
+                  </a>
+                  <hr class="dropdown-divider">
+                  <a onclick="eliminarFiltro(columna.etiqueta);" enabled class="dropdown-item"><i
+                      [ngStyle]="{color:(true) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px"
+                      class="bi bi-x"></i> Eliminar filtro de {{columna.label}}</a>
                   <a class="dropdown-item">
                     Filtros de texto
 
@@ -102,17 +111,21 @@
                   <div class="dropdown-divider"></div>
                   <div style="height:300px; overflow:scroll; padding:5px">
                     <!--<div>-->
-                    <input class="form-control" placeholder="Buscar en cabeceros" type="text" (input)="onFiltroCabecero($event, columna.filtro.values, columna)" />
+                    <input class="form-control" placeholder="buscar" type="text"
+                      (input)="onFiltroCabecero($event, columna)" />
 
                     <span><i class="bi bi-search"></i></span>
                     <br />
-                    <input type="checkbox" id="chckAllFiltro" formControlName="chckAllFiltro" [(ngModel)]="columna.filtro.seleccionarTodosChckFiltro"
-                           (change)="seleccionarAllFiltro(columna.filtro);" />
+                    <input type="checkbox" id="chckAllFiltro" formControlName="chckAllFiltro"
+                      [(ngModel)]="columna.selectAll" (change)="seleccionarAllFiltro(columna);" />
                     <label style="font-size:x-small" for="chckAllFiltro">Seleccionar todos</label>
 
-                    <div style="height:min-content" *ngFor="let dato of columna.filtrobusqueda; index as i">
-                      <input type="checkbox" id={{i}} [(ngModel)]="dato.checked" formControlName="chkFiltro" class="check" (change)="seleccionarFiltro(columna.filtro)" />
-                      <a style="font-size:xx-small;text-align:left" [innerHTML]="dato.valor"></a>
+                    <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
+                      <input type="checkbox" id={{i}} [(ngModel)]="dato.checked" formControlName="chkFiltro"
+                        class="check" (change)="seleccionarFiltro(columna)" />
+
+
+                      <a style="font-size:xx-small;text-align:left" [innerHTML]="dato.value"></a>
                     </div>
 
                   </div>
@@ -127,7 +140,6 @@
                       Aceptar
                     </button>
                   </div>
-
                 </div>
               </form>
             </div>

@@ -91,6 +91,18 @@ export class MuestreoService {
     return this.http.get(environment.apiUrl + '/Muestreos', { params });
   }
 
+  getDistinctValuesFromColumn(column: string): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        column: column,
+      },
+    });
+    return this.http.get(
+      environment.apiUrl + '/Muestreos/GetDistinctValuesFromColumn',
+      { params }
+    );
+  }
+
   enviarMuestreosRevision(muestreos: any): Observable<Object> {
     return this.http.put(environment.apiUrl + '/muestreos', muestreos);
   }
