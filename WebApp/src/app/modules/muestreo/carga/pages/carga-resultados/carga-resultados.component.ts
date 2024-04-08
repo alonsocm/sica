@@ -76,8 +76,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.registroParam = this.fb.group({
       chkFiltro: new FormControl(),
       chckAllFiltro: new FormControl(),
-      iconoAZOrdenado: new FormControl(),
-      iconoZAOrdenado: new FormControl(),
+      aOrdenarAZ: new FormControl(),
+      //iconoAZOrdenado: new FormControl(),
+      //iconoZAOrdenado: new FormControl(),
       //btnAceptar: [null]
     });
   }
@@ -85,6 +86,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
+    
   }
 
   definirColumnas() {
@@ -326,7 +328,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.totalItems = response.totalRecords;
           this.muestreos = response.data;
-          this.muestreosFiltrados = this.muestreos;
+          this.muestreosFiltrados = this.muestreos; 
         },
         error: (error) => {},
       });
@@ -390,6 +392,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         });
     }
   }
+
   sustituirResultados() {
     this.loading = true;
     this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
@@ -487,25 +490,30 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         },
       });
   }
+
   limpiarFiltros() {
     this.ngOnInit();
     //this.muestreosFiltrados = this.muestreos;
     //this.esHistorial = false;
   }
+
   seleccionar(): void {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     this.getMuestreos();
   }
+
   seleccionarFiltro(columna: Column): void {
     if (columna.selectAll) {
       columna.selectAll = false;
     }
   }
+
   getMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
     this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
     this.muestreosseleccionados = muestreosSeleccionados;
   }
+
   exportarResultados(): void {
     if (
       this.muestreosseleccionados.length == 0 &&
@@ -540,6 +548,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         },
       });
   }
+
   confirmarEliminacion() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
     if (!(muestreosSeleccionados.length > 0)) {
@@ -551,6 +560,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
     document.getElementById('btnMdlConfirmacion')?.click();
   }
+
   eliminarMuestreos() {
     let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
     if (!(muestreosSeleccionados.length > 0)) {
@@ -579,6 +589,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       },
     });
   }
+
   enviarMonitoreos(): void {
     let valor = this.muestreosFiltrados.filter(
       (x) => x.estatus == 'EvidenciasCargadas'
@@ -660,16 +671,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  ordenarAZ(columna: Column, tipo: string) {
+  ordenarAZ(columna: Column, tipo: string) {  
     this.muestreosFiltrados.sort(function (a: any, b: any) {
       if (a[columna.name] > b[columna.name]) {
-        return tipo == 'asc' ? 1 : -1;
+        return tipo == "asc" ? 1 : -1;
       }
-
       if (a[columna.name] < b[columna.name]) {
-        return tipo == 'desc' ? -1 : 1;
+        return tipo == "asc" ? -1 : 1;
       }
-
       return 0;
     });
 
