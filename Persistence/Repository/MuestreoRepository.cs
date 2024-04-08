@@ -96,7 +96,7 @@ namespace Persistence.Repository
             return valores;
         }
 
-        private static Expression<Func<MuestreoDto, object>> GetProperty(string column)
+        public Expression<Func<MuestreoDto, object>> GetProperty(string column)
         {
             return column.ToLower() switch
             {
@@ -448,6 +448,59 @@ namespace Persistence.Repository
             }
             return puntosMuestreoDto;
 
+        }
+
+        public Expression<Func<MuestreoDto, bool>> GetExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo == value,
+                "estatus" => muestreo => muestreo.Estatus == value,
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega == value,
+                "clavesitio" => muestreo => muestreo.ClaveSitio == value,
+                "claveMonitoreo" => muestreo => muestreo.ClaveMonitoreo == value,
+                "tipositio" => muestreo => muestreo.TipoSitio == value,
+                "nombresitio" => muestreo => muestreo.NombreSitio == value,
+                "ocdl" => muestreo => muestreo.OCDL == value,
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua == value,
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua == value,
+                "programaanual" => muestreo => muestreo.ProgramaAnual == value,
+                "laboratorio" => muestreo => muestreo.Laboratorio == value,
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado == value,
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada == value,
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion == value,
+                "horainicio" => muestreo => muestreo.HoraInicio == value,
+                "horafin" => muestreo => muestreo.HoraFin == value,
+                "fechacarga" => muestreo => muestreo.FechaCarga == value,
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo == value,
+                _ => muestreo => muestreo.ClaveMonitoreo == ""
+            };
+        }
+
+        public Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, List<string> value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => value.Contains(muestreo.Estatus),
+                "numeroentrega" => muestreo => value.Contains(muestreo.NumeroEntrega),
+                "clavesitio" => muestreo => value.Contains(muestreo.ClaveSitio),
+                "clavemonitoreo" => muestreo => value.Contains(muestreo.ClaveMonitoreo),
+                "tipositio" => muestreo => value.Contains(muestreo.TipoSitio),
+                "nombresitio" => muestreo => value.Contains(muestreo.NombreSitio),
+                "ocdl" => muestreo => value.Contains(muestreo.OCDL),
+                "tipocuerpoagua" => muestreo => value.Contains(muestreo.TipoCuerpoAgua),
+                "subtipocuerpoagua" => muestreo => value.Contains(muestreo.SubTipoCuerpoAgua),
+                "programaanual" => muestreo => value.Contains(muestreo.ProgramaAnual),
+                "laboratorio" => muestreo => value.Contains(muestreo.Laboratorio),
+                "laboratoriosubrogado" => muestreo => value.Contains(muestreo.LaboratorioSubrogado),
+                "fechaprogramada" => muestreo => value.Contains(muestreo.FechaProgramada),
+                "fecharealizacion" => muestreo => value.Contains(muestreo.FechaRealizacion),
+                "horainicio" => muestreo => value.Contains(muestreo.HoraInicio),
+                "horafin" => muestreo => value.Contains(muestreo.HoraFin),
+                "fechacarga" => muestreo => value.Contains(muestreo.FechaCarga),
+                "fechaentregamuestreo" => muestreo => value.Contains(muestreo.FechaEntregaMuestreo),
+                _ => muestreo => muestreo.ClaveMonitoreo == ""
+            };
         }
     }
 }

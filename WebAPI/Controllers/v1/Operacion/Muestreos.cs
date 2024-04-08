@@ -7,6 +7,7 @@ using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
+using Application.Wrappers;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -123,9 +124,16 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] bool esLiberacion, int page, int pageSize)
+        public async Task<IActionResult> Get([FromQuery] bool esLiberacion, int page, int pageSize, string? filter)
         {
-            return Ok(await Mediator.Send(new GetMuestreos { EsLiberacion = esLiberacion, Page = page, PageSize = pageSize }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetMuestreos { EsLiberacion = esLiberacion, Page = page, PageSize = pageSize, Filter = filters }));
         }
 
         [HttpGet("GetDistinctValuesFromColumn")]

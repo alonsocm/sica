@@ -2,6 +2,7 @@
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
+using System.Linq.Expressions;
 
 namespace Application.Features.Muestreos.Queries
 {
@@ -10,6 +11,7 @@ namespace Application.Features.Muestreos.Queries
         public bool EsLiberacion { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
+        public List<Filter> Filter { get; set; }
     }
 
     public class GetMuestreosHandler : IRequestHandler<GetMuestreos, PagedResponse<List<MuestreoDto>>>
@@ -44,8 +46,27 @@ namespace Application.Features.Muestreos.Queries
                 estatus.Add((long)Enums.EstatusMuestreo.Validado);
             }
 
-            var muestreos = await _repositoryAsync.GetResumenMuestreosAsync(estatus);
-            var response = PagedResponse<MuestreoDto>.CreatePagedReponse(muestreos.ToList(), request.Page, request.PageSize);
+            var data = await _repositoryAsync.GetResumenMuestreosAsync(estatus);
+
+            if (request.Filter.Any())
+            {
+                List<Expression<Func<MuestreoDto, bool>>> expressions = new();
+
+                foreach (var filter in request.Filter)
+                {
+                    if (filter.Values.Any())
+                    {
+                        expressions.Add(_repositoryAsync.GetContainsExpression(filter.Column, filter.Values));
+                    }
+                }
+
+                foreach (Expression<Func<MuestreoDto, bool>> filter in expressions)
+                {
+                    data = data.AsQueryable().Where(filter);
+                }
+            }
+
+            var response = PagedResponse<MuestreoDto>.CreatePagedReponse(data.ToList(), request.Page, request.PageSize);
 
             return response;
         }

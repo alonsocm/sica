@@ -2,6 +2,7 @@
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Domain.Entities;
+using System.Linq.Expressions;
 
 namespace Application.Interfaces.IRepositories
 {
@@ -19,5 +20,8 @@ namespace Application.Interfaces.IRepositories
         Task<bool> ExisteSustitucionPrevia(int periodo);
         public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
         IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data);
+        Expression<Func<MuestreoDto, object>> GetProperty(string column);
+        Expression<Func<MuestreoDto, bool>> GetExpression(string column, string value);
+        Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, List<string> value);
     }
 }
