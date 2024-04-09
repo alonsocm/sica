@@ -552,7 +552,7 @@ namespace Persistence.Repository
                 _ => muestreo => muestreo.ClaveMonitoreo == ""
             };
         }
-        public Expression<Func<MuestreoDto, bool>> GetNotEqualExpression(string column, string value)
+        public Expression<Func<MuestreoDto, bool>> GetNotEqualsExpression(string column, string value)
         {
             return column.ToLower() switch
             {

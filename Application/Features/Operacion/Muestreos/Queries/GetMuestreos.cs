@@ -80,7 +80,7 @@ namespace Application.Features.Muestreos.Queries
         {
             return filter.Conditional switch
             {
-                "doesnotequal" => _repositoryAsync.GetNotEqualExpression(filter.Column, filter.Value),
+                "notequals" => _repositoryAsync.GetNotEqualsExpression(filter.Column, filter.Value),
                 "beginswith" => _repositoryAsync.GetBeginsWithExpression(filter.Column, filter.Value),
                 "notbeginswith" => _repositoryAsync.GetNotBeginsWithExpression(filter.Column, filter.Value),
                 "endswith" => _repositoryAsync.GetEndsWithExpression(filter.Column, filter.Value),
