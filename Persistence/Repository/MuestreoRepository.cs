@@ -717,5 +717,52 @@ namespace Persistence.Repository
             };
         }
         #endregion
+
+        #region DateExpression
+        public Expression<Func<MuestreoDto, bool>> GetBeforeExpression(string column, DateTime value)
+        {
+            return column.ToLower() switch
+            {
+                "fechaprogramada" => muestreo => DateTime.Parse(muestreo.FechaProgramada) < value,
+                "fecharealizacion" => muestreo => DateTime.Parse(muestreo.FechaRealizacion) < value,
+                "fechacarga" => muestreo => DateTime.Parse(muestreo.FechaCarga) < value,
+                "fechaentregamuestreo" => muestreo => DateTime.Parse(muestreo.FechaEntregaMuestreo) < value,
+                _ => muestreo => true
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetAfterExpression(string column, DateTime value)
+        {
+            return column.ToLower() switch
+            {
+                "fechaprogramada" => muestreo => DateTime.Parse(muestreo.FechaProgramada) > value,
+                "fecharealizacion" => muestreo => DateTime.Parse(muestreo.FechaRealizacion) > value,
+                "fechacarga" => muestreo => DateTime.Parse(muestreo.FechaCarga) > value,
+                "fechaentregamuestreo" => muestreo => DateTime.Parse(muestreo.FechaEntregaMuestreo) > value,
+                _ => muestreo => true
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetBeforeOrEqualExpression(string column, DateTime value)
+        {
+            return column.ToLower() switch
+            {
+                "fechaprogramada" => muestreo => DateTime.Parse(muestreo.FechaProgramada) <= value,
+                "fecharealizacion" => muestreo => DateTime.Parse(muestreo.FechaRealizacion) <= value,
+                "fechacarga" => muestreo => DateTime.Parse(muestreo.FechaCarga) <= value,
+                "fechaentregamuestreo" => muestreo => DateTime.Parse(muestreo.FechaEntregaMuestreo) <= value,
+                _ => muestreo => true
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetAfterOrEqualExpression(string column, DateTime value)
+        {
+            return column.ToLower() switch
+            {
+                "fechaprogramada" => muestreo => DateTime.Parse(muestreo.FechaProgramada) >= value,
+                "fecharealizacion" => muestreo => DateTime.Parse(muestreo.FechaRealizacion) >= value,
+                "fechacarga" => muestreo => DateTime.Parse(muestreo.FechaCarga) >= value,
+                "fechaentregamuestreo" => muestreo => DateTime.Parse(muestreo.FechaEntregaMuestreo) >= value,
+                _ => muestreo => true
+            };
+        }
+        #endregion
     }
 }

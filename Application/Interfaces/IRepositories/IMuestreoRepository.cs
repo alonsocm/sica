@@ -34,5 +34,9 @@ namespace Application.Interfaces.IRepositories
         public Expression<Func<MuestreoDto, bool>> GetLessThanExpression(string column, int value);
         public Expression<Func<MuestreoDto, bool>> GetGreaterThanOrEqualToExpression(string column, int value);
         public Expression<Func<MuestreoDto, bool>> GetLessThanOrEqualToExpression(string column, int value);
+        public Expression<Func<MuestreoDto, bool>> GetBeforeExpression(string column, DateTime value);
+        public Expression<Func<MuestreoDto, bool>> GetAfterExpression(string column, DateTime value);
+        public Expression<Func<MuestreoDto, bool>> GetBeforeOrEqualExpression(string column, DateTime value);
+        public Expression<Func<MuestreoDto, bool>> GetAfterOrEqualExpression(string column, DateTime value);
     }
 }

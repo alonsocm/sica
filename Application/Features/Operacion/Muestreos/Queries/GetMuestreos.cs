@@ -80,6 +80,7 @@ namespace Application.Features.Muestreos.Queries
         {
             return filter.Conditional switch
             {
+                #region Text
                 "notequals" => _repositoryAsync.GetNotEqualsExpression(filter.Column, filter.Value),
                 "beginswith" => _repositoryAsync.GetBeginsWithExpression(filter.Column, filter.Value),
                 "notbeginswith" => _repositoryAsync.GetNotBeginsWithExpression(filter.Column, filter.Value),
@@ -87,10 +88,19 @@ namespace Application.Features.Muestreos.Queries
                 "notendswith" => _repositoryAsync.GetNotEndsWithExpression(filter.Column, filter.Value),
                 "contains" => _repositoryAsync.GetContainsExpression(filter.Column, filter.Value),
                 "notcontains" => _repositoryAsync.GetNotContainsExpression(filter.Column, filter.Value),
+                #endregion
+                #region Numeric
                 "greaterthan" => _repositoryAsync.GetGreaterThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
                 "lessthan" => _repositoryAsync.GetLessThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
                 "greaterthanorequalto" => _repositoryAsync.GetGreaterThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
                 "lessthanorequalto" => _repositoryAsync.GetLessThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                #endregion
+                #region Date
+                "before" => _repositoryAsync.GetBeforeExpression(filter.Column, DateTime.Parse(filter.Value)),
+                "after" => _repositoryAsync.GetAfterExpression(filter.Column, DateTime.Parse(filter.Value)),
+                "beforeorequal" => _repositoryAsync.GetBeforeOrEqualExpression(filter.Column, DateTime.Parse(filter.Value)),
+                "afterorequal" => _repositoryAsync.GetAfterOrEqualExpression(filter.Column, DateTime.Parse(filter.Value)),
+                #endregion
                 _ => muestreo => true,
             };
         }
