@@ -450,6 +450,7 @@ namespace Persistence.Repository
 
         }
 
+        #region StringExpressions
         public Expression<Func<MuestreoDto, bool>> GetExpression(string column, string value)
         {
             return column.ToLower() switch
@@ -476,7 +477,6 @@ namespace Persistence.Repository
                 _ => muestreo => muestreo.ClaveMonitoreo == ""
             };
         }
-
         public Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, List<string> value)
         {
             return column.ToLower() switch
@@ -677,5 +677,45 @@ namespace Persistence.Repository
                 _ => muestreo => muestreo.ClaveMonitoreo != ""
             };
         }
+        #endregion
+
+        #region NumericExpressions
+        public Expression<Func<MuestreoDto, bool>> GetGreaterThanExpression(string column, int value)
+        {
+            return column.ToLower() switch
+            {
+                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) > value,
+                "programaanual" => muestreo => Convert.ToInt64(muestreo.ProgramaAnual) > value,
+                _ => muestreo => true
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetGreaterThanOrEqualToExpression(string column, int value)
+        {
+            return column.ToLower() switch
+            {
+                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) >= value,
+                "programaanual" => muestreo => Convert.ToInt64(muestreo.ProgramaAnual) >= value,
+                _ => muestreo => true
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetLessThanExpression(string column, int value)
+        {
+            return column.ToLower() switch
+            {
+                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) < value,
+                "programaaAnual" => muestreo => Convert.ToInt64(muestreo.ProgramaAnual) < value,
+                _ => muestreo => true
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetLessThanOrEqualToExpression(string column, int value)
+        {
+            return column.ToLower() switch
+            {
+                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) <= value,
+                "programaanual" => muestreo => Convert.ToInt64(muestreo.ProgramaAnual) <= value,
+                _ => muestreo => true
+            };
+        }
+        #endregion
     }
 }

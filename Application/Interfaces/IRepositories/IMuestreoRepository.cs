@@ -30,5 +30,9 @@ namespace Application.Interfaces.IRepositories
         Expression<Func<MuestreoDto, bool>> GetNotBeginsWithExpression(string column, string value);
         Expression<Func<MuestreoDto, bool>> GetEndsWithExpression(string column, string value);
         Expression<Func<MuestreoDto, bool>> GetNotEndsWithExpression(string column, string value);
+        public Expression<Func<MuestreoDto, bool>> GetGreaterThanExpression(string column, int value);
+        public Expression<Func<MuestreoDto, bool>> GetLessThanExpression(string column, int value);
+        public Expression<Func<MuestreoDto, bool>> GetGreaterThanOrEqualToExpression(string column, int value);
+        public Expression<Func<MuestreoDto, bool>> GetLessThanOrEqualToExpression(string column, int value);
     }
 }

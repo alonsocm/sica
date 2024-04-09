@@ -87,6 +87,10 @@ namespace Application.Features.Muestreos.Queries
                 "notendswith" => _repositoryAsync.GetNotEndsWithExpression(filter.Column, filter.Value),
                 "contains" => _repositoryAsync.GetContainsExpression(filter.Column, filter.Value),
                 "notcontains" => _repositoryAsync.GetNotContainsExpression(filter.Column, filter.Value),
+                "greaterthan" => _repositoryAsync.GetGreaterThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                "lessthan" => _repositoryAsync.GetLessThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                "greaterthanorequalto" => _repositoryAsync.GetGreaterThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                "lessthanorequalto" => _repositoryAsync.GetLessThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
                 _ => muestreo => true,
             };
         }
