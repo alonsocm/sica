@@ -54,21 +54,41 @@ namespace Application.Features.Muestreos.Queries
 
                 foreach (var filter in request.Filter)
                 {
-                    if (filter.Values.Any())
+                    if (!string.IsNullOrEmpty(filter.Conditional))
                     {
-                        expressions.Add(_repositoryAsync.GetContainsExpression(filter.Column, filter.Values));
+                        expressions.Add(GetExpression(filter));
+                    }
+                    else
+                    {
+                        if (filter.Values != null && filter.Values.Any())
+                        {
+                            expressions.Add(_repositoryAsync.GetContainsExpression(filter.Column, filter.Values));
+                        }
                     }
                 }
 
-                foreach (Expression<Func<MuestreoDto, bool>> filter in expressions)
+                foreach (var filter in expressions)
                 {
                     data = data.AsQueryable().Where(filter);
                 }
             }
 
-            var response = PagedResponse<MuestreoDto>.CreatePagedReponse(data.ToList(), request.Page, request.PageSize);
+            return PagedResponse<MuestreoDto>.CreatePagedReponse(data.ToList(), request.Page, request.PageSize);
+        }
 
-            return response;
+        private Expression<Func<MuestreoDto, bool>> GetExpression(Filter filter)
+        {
+            return filter.Conditional switch
+            {
+                "doesnotequal" => _repositoryAsync.GetNotEqualExpression(filter.Column, filter.Value),
+                "beginswith" => _repositoryAsync.GetBeginsWithExpression(filter.Column, filter.Value),
+                "notbeginswith" => _repositoryAsync.GetNotBeginsWithExpression(filter.Column, filter.Value),
+                "endswith" => _repositoryAsync.GetEndsWithExpression(filter.Column, filter.Value),
+                "notendswith" => _repositoryAsync.GetNotEndsWithExpression(filter.Column, filter.Value),
+                "contains" => _repositoryAsync.GetContainsExpression(filter.Column, filter.Value),
+                "notcontains" => _repositoryAsync.GetNotContainsExpression(filter.Column, filter.Value),
+                _ => muestreo => true,
+            };
         }
     }
 }

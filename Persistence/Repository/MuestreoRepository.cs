@@ -502,5 +502,180 @@ namespace Persistence.Repository
                 _ => muestreo => muestreo.ClaveMonitoreo == ""
             };
         }
+        public Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => muestreo.Estatus.Contains(value),
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega.Contains(value),
+                "clavesitio" => muestreo => muestreo.ClaveSitio.Contains(value),
+                "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo.Contains(value),
+                "tipositio" => muestreo => muestreo.TipoSitio.Contains(value),
+                "nombresitio" => muestreo => muestreo.NombreSitio.Contains(value),
+                "ocdl" => muestreo => muestreo.OCDL.Contains(value),
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua.Contains(value),
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua.Contains(value),
+                "programaanual" => muestreo => muestreo.ProgramaAnual.Contains(value),
+                "laboratorio" => muestreo => muestreo.Laboratorio.Contains(value),
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado.Contains(value),
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada.Contains(value),
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion.Contains(value),
+                "horainicio" => muestreo => muestreo.HoraInicio.Contains(value),
+                "horafin" => muestreo => muestreo.HoraFin.Contains(value),
+                "fechacarga" => muestreo => muestreo.FechaCarga.Contains(value),
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo.Contains(value),
+                _ => muestreo => muestreo.ClaveMonitoreo == ""
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetNotContainsExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => !muestreo.Estatus.Contains(value),
+                "numeroentrega" => muestreo => !muestreo.NumeroEntrega.Contains(value),
+                "clavesitio" => muestreo => !muestreo.ClaveSitio.Contains(value),
+                "clavemonitoreo" => muestreo => !muestreo.ClaveMonitoreo.Contains(value),
+                "tipositio" => muestreo => !muestreo.TipoSitio.Contains(value),
+                "nombresitio" => muestreo => !muestreo.NombreSitio.Contains(value),
+                "ocdl" => muestreo => !muestreo.OCDL.Contains(value),
+                "tipocuerpoagua" => muestreo => !muestreo.TipoCuerpoAgua.Contains(value),
+                "subtipocuerpoagua" => muestreo => !muestreo.SubTipoCuerpoAgua.Contains(value),
+                "programaanual" => muestreo => !muestreo.ProgramaAnual.Contains(value),
+                "laboratorio" => muestreo => !muestreo.Laboratorio.Contains(value),
+                "laboratoriosubrogado" => muestreo => !muestreo.LaboratorioSubrogado.Contains(value),
+                "fechaprogramada" => muestreo => !muestreo.FechaProgramada.Contains(value),
+                "fecharealizacion" => muestreo => !muestreo.FechaRealizacion.Contains(value),
+                "horainicio" => muestreo => !muestreo.HoraInicio.Contains(value),
+                "horafin" => muestreo => !muestreo.HoraFin.Contains(value),
+                "fechacarga" => muestreo => !muestreo.FechaCarga.Contains(value),
+                "fechaentregamuestreo" => muestreo => !muestreo.FechaEntregaMuestreo.Contains(value),
+                _ => muestreo => muestreo.ClaveMonitoreo == ""
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetNotEqualExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => muestreo.Estatus != value,
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega != value,
+                "clavesitio" => muestreo => muestreo.ClaveSitio != value,
+                "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo != value,
+                "tipositio" => muestreo => muestreo.TipoSitio != value,
+                "nombresitio" => muestreo => muestreo.NombreSitio != value,
+                "ocdl" => muestreo => muestreo.OCDL != value,
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua != value,
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua != value,
+                "programaanual" => muestreo => muestreo.ProgramaAnual != value,
+                "laboratorio" => muestreo => muestreo.Laboratorio != value,
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado != value,
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada != value,
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion != value,
+                "horainicio" => muestreo => muestreo.HoraInicio != value,
+                "horafin" => muestreo => muestreo.HoraFin != value,
+                "fechacarga" => muestreo => muestreo.FechaCarga != value,
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo != value,
+                _ => muestreo => muestreo.ClaveMonitoreo != ""
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetBeginsWithExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => muestreo.Estatus.StartsWith(value),
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega.StartsWith(value),
+                "clavesitio" => muestreo => muestreo.ClaveSitio.StartsWith(value),
+                "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo.StartsWith(value),
+                "tipositio" => muestreo => muestreo.TipoSitio.StartsWith(value),
+                "nombresitio" => muestreo => muestreo.NombreSitio.StartsWith(value),
+                "ocdl" => muestreo => muestreo.OCDL.StartsWith(value),
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua.StartsWith(value),
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua.StartsWith(value),
+                "programaanual" => muestreo => muestreo.ProgramaAnual.StartsWith(value),
+                "laboratorio" => muestreo => muestreo.Laboratorio.StartsWith(value),
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado.StartsWith(value),
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada.StartsWith(value),
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion.StartsWith(value),
+                "horainicio" => muestreo => muestreo.HoraInicio.StartsWith(value),
+                "horafin" => muestreo => muestreo.HoraFin.StartsWith(value),
+                "fechacarga" => muestreo => muestreo.FechaCarga.StartsWith(value),
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo.StartsWith(value),
+                _ => muestreo => muestreo.ClaveMonitoreo != ""
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetNotBeginsWithExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => !muestreo.Estatus.StartsWith(value),
+                "numeroentrega" => muestreo => !muestreo.NumeroEntrega.StartsWith(value),
+                "clavesitio" => muestreo => !muestreo.ClaveSitio.StartsWith(value),
+                "clavemonitoreo" => muestreo => !muestreo.ClaveMonitoreo.StartsWith(value),
+                "tipositio" => muestreo => !muestreo.TipoSitio.StartsWith(value),
+                "nombresitio" => muestreo => !muestreo.NombreSitio.StartsWith(value),
+                "ocdl" => muestreo => !muestreo.OCDL.StartsWith(value),
+                "tipocuerpoagua" => muestreo => !muestreo.TipoCuerpoAgua.StartsWith(value),
+                "subtipocuerpoagua" => muestreo => !muestreo.SubTipoCuerpoAgua.StartsWith(value),
+                "programaanual" => muestreo => !muestreo.ProgramaAnual.StartsWith(value),
+                "laboratorio" => muestreo => !muestreo.Laboratorio.StartsWith(value),
+                "laboratoriosubrogado" => muestreo => !muestreo.LaboratorioSubrogado.StartsWith(value),
+                "fechaprogramada" => muestreo => !muestreo.FechaProgramada.StartsWith(value),
+                "fecharealizacion" => muestreo => !muestreo.FechaRealizacion.StartsWith(value),
+                "horainicio" => muestreo => !muestreo.HoraInicio.StartsWith(value),
+                "horafin" => muestreo => !muestreo.HoraFin.StartsWith(value),
+                "fechacarga" => muestreo => !muestreo.FechaCarga.StartsWith(value),
+                "fechaentregamuestreo" => muestreo => !muestreo.FechaEntregaMuestreo.StartsWith(value),
+                _ => muestreo => muestreo.ClaveMonitoreo != ""
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetEndsWithExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => muestreo.Estatus.EndsWith(value),
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega.EndsWith(value),
+                "clavesitio" => muestreo => muestreo.ClaveSitio.EndsWith(value),
+                "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo.EndsWith(value),
+                "tipositio" => muestreo => muestreo.TipoSitio.EndsWith(value),
+                "nombresitio" => muestreo => muestreo.NombreSitio.EndsWith(value),
+                "ocdl" => muestreo => muestreo.OCDL.EndsWith(value),
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua.EndsWith(value),
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua.EndsWith(value),
+                "programaanual" => muestreo => muestreo.ProgramaAnual.EndsWith(value),
+                "laboratorio" => muestreo => muestreo.Laboratorio.EndsWith(value),
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado.EndsWith(value),
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada.EndsWith(value),
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion.EndsWith(value),
+                "horainicio" => muestreo => muestreo.HoraInicio.EndsWith(value),
+                "horafin" => muestreo => muestreo.HoraFin.EndsWith(value),
+                "fechacarga" => muestreo => muestreo.FechaCarga.EndsWith(value),
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo.EndsWith(value),
+                _ => muestreo => muestreo.ClaveMonitoreo != ""
+            };
+        }
+        public Expression<Func<MuestreoDto, bool>> GetNotEndsWithExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => !muestreo.Estatus.EndsWith(value),
+                "numeroentrega" => muestreo => !muestreo.NumeroEntrega.EndsWith(value),
+                "clavesitio" => muestreo => !muestreo.ClaveSitio.EndsWith(value),
+                "clavemonitoreo" => muestreo => !muestreo.ClaveMonitoreo.EndsWith(value),
+                "tipositio" => muestreo => !muestreo.TipoSitio.EndsWith(value),
+                "nombresitio" => muestreo => !muestreo.NombreSitio.EndsWith(value),
+                "ocdl" => muestreo => !muestreo.OCDL.EndsWith(value),
+                "tipocuerpoagua" => muestreo => !muestreo.TipoCuerpoAgua.EndsWith(value),
+                "subtipocuerpoagua" => muestreo => !muestreo.SubTipoCuerpoAgua.EndsWith(value),
+                "programaanual" => muestreo => !muestreo.ProgramaAnual.EndsWith(value),
+                "laboratorio" => muestreo => !muestreo.Laboratorio.EndsWith(value),
+                "laboratoriosubrogado" => muestreo => !muestreo.LaboratorioSubrogado.EndsWith(value),
+                "fechaprogramada" => muestreo => !muestreo.FechaProgramada.EndsWith(value),
+                "fecharealizacion" => muestreo => !muestreo.FechaRealizacion.EndsWith(value),
+                "horainicio" => muestreo => !muestreo.HoraInicio.EndsWith(value),
+                "horafin" => muestreo => !muestreo.HoraFin.EndsWith(value),
+                "fechacarga" => muestreo => !muestreo.FechaCarga.EndsWith(value),
+                "fechaentregamuestreo" => muestreo => !muestreo.FechaEntregaMuestreo.EndsWith(value),
+                _ => muestreo => muestreo.ClaveMonitoreo != ""
+            };
+        }
     }
 }

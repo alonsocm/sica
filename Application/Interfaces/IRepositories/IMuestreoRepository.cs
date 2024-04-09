@@ -23,5 +23,12 @@ namespace Application.Interfaces.IRepositories
         Expression<Func<MuestreoDto, object>> GetProperty(string column);
         Expression<Func<MuestreoDto, bool>> GetExpression(string column, string value);
         Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, List<string> value);
+        Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, string value);
+        Expression<Func<MuestreoDto, bool>> GetNotContainsExpression(string column, string value);
+        Expression<Func<MuestreoDto, bool>> GetNotEqualExpression(string column, string value);
+        Expression<Func<MuestreoDto, bool>> GetBeginsWithExpression(string column, string value);
+        Expression<Func<MuestreoDto, bool>> GetNotBeginsWithExpression(string column, string value);
+        Expression<Func<MuestreoDto, bool>> GetEndsWithExpression(string column, string value);
+        Expression<Func<MuestreoDto, bool>> GetNotEndsWithExpression(string column, string value);
     }
 }
