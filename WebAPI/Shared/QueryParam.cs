@@ -25,6 +25,12 @@ namespace WebAPI.Shared
                         column = splitedArgument[0];
                         conditional = splitedArgument[1][..splitedArgument[1].IndexOf('_')];//Con esto obtenemos el condicional. Ejemplo: mayor que, menor que
                         value = splitedArgument[1][(splitedArgument[1].LastIndexOf('_') + 1)..];
+
+                        if (!Filter.IsValidFilter(conditional, value))
+                        {
+                            throw new Exception($"No fue posible procesar el filtro con el condicional: {conditional} con el valor {value}");
+                        }
+
                     }
                     else
                     {
