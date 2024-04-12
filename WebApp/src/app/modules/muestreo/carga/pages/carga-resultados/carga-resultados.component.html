@@ -62,11 +62,11 @@
 
   <div class="alert alert-secondary" role="alert" *ngIf="this.selectAllOption && !this.allSelected">
     Los {{this.NoPage}} registros de esta página están seleccionados. <button type="button"
-      (click)="selectAllPagesClick()" class="btn btn-link">Seleccionar los {{this.totalItems}} registros</button>
+      (click)="onSelectAllPagesClick()" class="btn btn-link">Seleccionar los {{this.totalItems}} registros</button>
   </div>
   <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
     Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
-      (click)="unSelectAllClick()">Anular la seleccion</button>
+      (click)="onUnselectAllClick()">Anular la seleccion</button>
   </div>
   <div class="dvTable table-responsive">
     <table class="table table-bordered table-hover">
@@ -74,7 +74,7 @@
         <tr>
           <th class="checkBox-center" style="text-align:center;">
             <label for="chckAll">SELECCIONAR</label>
-            <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage" (change)="onSelectPage();"
+            <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();"
               title="Selecciona la página actual" />
           </th>
           <th #thprueba
@@ -152,7 +152,7 @@
         <tr style="height:auto; text-align:center"
           *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="selectClick(muestreo)"
+            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
               title="Seleccionar">
           </td>
           <td>{{muestreo.estatus}}</td>

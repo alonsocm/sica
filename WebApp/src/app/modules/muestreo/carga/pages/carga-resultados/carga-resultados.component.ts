@@ -334,7 +334,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.muestreos = response.data;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected() ? false : true;
-          // this.muestreosFiltrados = this.muestreos;
         },
         error: (error) => {},
       });
@@ -681,7 +680,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     columna.desc = tipo == 'desc' ? true : false;
   }
 
-  onSelectPage() {
+  onSelectPageClick() {
     this.muestreos.map((m) => {
       m.isChecked = this.selectedPage;
 
@@ -709,7 +708,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.getSummary();
   }
 
-  selectClick(muestreo: Muestreo) {
+  onSelectClick(muestreo: Muestreo) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
     if (this.allSelected) this.allSelected = false;
@@ -755,11 +754,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     });
   }
 
-  selectAllPagesClick() {
+  onSelectAllPagesClick() {
     this.allSelected = true;
   }
 
-  unSelectAllClick() {
+  onUnselectAllClick() {
     this.allSelected = false;
   }
 
