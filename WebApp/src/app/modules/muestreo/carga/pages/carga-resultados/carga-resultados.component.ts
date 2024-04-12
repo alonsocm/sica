@@ -11,9 +11,7 @@ import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
-import { from } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { map } from 'leaflet';
 import { Item } from 'src/app/interfaces/filter/item';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
@@ -24,11 +22,12 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./carga-resultados.component.css'],
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
-  muestreos: Array<Muestreo> = [];
+  //Variables para los muestros
+  muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API
+  muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando
   muestreosFiltrados: Array<Muestreo> = [];
   muestreosFiltradosFiltrado: Array<Muestreo> = [];
   muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
-  muestreosseleccionados: Array<Muestreo> = [];
 
   filtrosValues: Array<any> = [];
 
@@ -53,6 +52,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   //Paginación
   totalItems = 0;
+
+  //Selección de registros
+  selectAllOption: boolean = false;
+  allSelected: boolean = false;
+  selectedPage: boolean = false;
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
@@ -86,7 +90,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
-    
   }
 
   definirColumnas() {
@@ -326,9 +329,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       .obtenerMuestreosPaginados(false, page, pageSize)
       .subscribe({
         next: (response: any) => {
+          this.selectedPage = false;
           this.totalItems = response.totalRecords;
           this.muestreos = response.data;
-          this.muestreosFiltrados = this.muestreos; 
+          this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
+          this.selectedPage = this.anyUnselected() ? false : true;
+          // this.muestreosFiltrados = this.muestreos;
         },
         error: (error) => {},
       });
@@ -497,26 +503,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     //this.esHistorial = false;
   }
 
-  seleccionar(): void {
-    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
-    this.getMuestreos();
-  }
-
   seleccionarFiltro(columna: Column): void {
     if (columna.selectAll) {
       columna.selectAll = false;
     }
   }
 
-  getMuestreos() {
-    let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
-    this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
-    this.muestreosseleccionados = muestreosSeleccionados;
-  }
-
   exportarResultados(): void {
     if (
-      this.muestreosseleccionados.length == 0 &&
+      this.muestreosSeleccionados.length == 0 &&
       this.muestreosFiltrados.length == 0
     ) {
       this.mostrarMensaje(
@@ -527,12 +522,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.loading = true;
-    this.muestreosseleccionados =
-      this.muestreosseleccionados.length == 0
+    this.muestreosSeleccionados =
+      this.muestreosSeleccionados.length == 0
         ? this.muestreosFiltrados
-        : this.muestreosseleccionados;
+        : this.muestreosSeleccionados;
     this.muestreoService
-      .exportarCargaResultadosEbaseca(this.muestreosseleccionados)
+      .exportarCargaResultadosEbaseca(this.muestreosSeleccionados)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'CargaResultadosEbaseca.xlsx');
@@ -671,18 +666,104 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  ordenarAZ(columna: Column, tipo: string) {  
+  ordenarAZ(columna: Column, tipo: string) {
     this.muestreosFiltrados.sort(function (a: any, b: any) {
       if (a[columna.name] > b[columna.name]) {
-        return tipo == "asc" ? 1 : -1;
+        return tipo == 'asc' ? 1 : -1;
       }
       if (a[columna.name] < b[columna.name]) {
-        return tipo == "asc" ? -1 : 1;
+        return tipo == 'asc' ? -1 : 1;
       }
       return 0;
     });
 
     columna.asc = tipo == 'asc' ? true : false;
     columna.desc = tipo == 'desc' ? true : false;
+  }
+
+  onSelectPage() {
+    this.muestreos.map((m) => {
+      m.isChecked = this.selectedPage;
+
+      //Buscamos el registro en los seleccionados
+      let index = this.muestreosSeleccionados.findIndex(
+        (d) => d.muestreoId === m.muestreoId
+      );
+
+      if (index == -1) {
+        //No existe en seleccionados, lo agremos
+        this.muestreosSeleccionados.push(m);
+      } else if (!this.selectedPage) {
+        //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    });
+
+    if (this.selectAllOption && !this.selectedPage) {
+      this.selectAllOption = false;
+      this.allSelected = false;
+    } else if (!this.selectAllOption && this.selectedPage) {
+      this.selectAllOption = true;
+    }
+
+    this.getSummary();
+  }
+
+  selectClick(muestreo: Muestreo) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (muestreo.isChecked) {
+      this.muestreosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected() ? false : true;
+    } else {
+      let index = this.muestreosSeleccionados.findIndex(
+        (m) => m.muestreoId === muestreo.muestreoId
+      );
+
+      if (index > -1) {
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    }
+
+    this.getSummary();
+  }
+
+  getSelected() {
+    return this.muestreos.filter((f) => f.isChecked);
+  }
+
+  getSummary() {
+    this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
+  }
+
+  getPreviousSelected(
+    muestreos: Array<Muestreo>,
+    muestreosSeleccionados: Array<Muestreo>
+  ) {
+    console.log(this.muestreosSeleccionados);
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.muestreoId === x.muestreoId
+      );
+
+      if (muestreoSeleccionado != undefined) {
+        f.isChecked = true;
+      }
+    });
+  }
+
+  selectAllPagesClick() {
+    this.allSelected = true;
+  }
+
+  unSelectAllClick() {
+    this.allSelected = false;
+  }
+
+  anyUnselected() {
+    return this.muestreos.some((f) => !f.isChecked);
   }
 }
