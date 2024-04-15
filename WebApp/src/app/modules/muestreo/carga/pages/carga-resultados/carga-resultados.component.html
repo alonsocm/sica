@@ -49,12 +49,13 @@
   </div>
   <br />
 
-  <div *ngIf="esHistorial"  class="alert alert-dark" role="group" aria-label="Basic example"
-       style="padding:10px; width:1500px; height:max-content">
+  <div *ngIf="esHistorial" class="alert alert-dark" role="group" aria-label="Basic example"
+    style="padding:10px; width:1500px; height:max-content">
     <label>Historial filtrado</label> <br />
     <ng-container *ngFor="let historial of this.columns">
-      <button *ngIf="historial.filtered" type="button" class="btn btn-success" (click)="eliminarFiltro(historial); historial.filtered=false; this.existeFiltrado = validarExisteFiltrado(); consultarMonitoreos();" 
-              style="font-size:xx-small;margin-right:5px; margin-top:5px;">
+      <button *ngIf="historial.filtered" type="button" class="btn btn-success"
+        (click)="eliminarFiltro(historial); historial.filtered=false; this.existeFiltrado = validarExisteFiltrado(); consultarMonitoreos();"
+        style="font-size:xx-small;margin-right:5px; margin-top:5px;">
         {{historial.label}}<i class="bi bi-x"></i>
       </button>
     </ng-container>
@@ -103,9 +104,10 @@
                     Ordenar de Z a A
                   </a>
                   <hr class="dropdown-divider">
-                  <a (click)="eliminarFiltro(columna); columna.filtered=false; this.existeFiltrado=validarExisteFiltrado(); consultarMonitoreos();"  class="dropdown-item">
-                    <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px"
-                                                                                                                  class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
+                  <a (click)="eliminarFiltro(columna); columna.filtered=false; this.existeFiltrado=validarExisteFiltrado(); consultarMonitoreos();"
+                    class="dropdown-item">
+                    <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i
+                      style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
                   </a>
                   <a class="dropdown-item">
                     Filtros de texto
@@ -117,18 +119,20 @@
                   </a>
 
                   <div class="dropdown-divider"></div>
-                  <div style="height:300px; overflow:scroll; padding:5px">                   
-                    <input #txtBuscador  class="form-control" placeholder="Buscar" type="text"
-                           (input)="onFiltroCabecero($event, columna)" />
+                  <div style="height:300px; overflow:scroll; padding:5px">
+                    <input #txtBuscador class="form-control" placeholder="Buscar" type="text"
+                      (input)="onFiltroCabecero($event, columna)" />
                     <span><i class="bi bi-search"></i></span>
                     <br />
                     <input type="checkbox" id="chckAllFiltro" formControlName="chckAllFiltro"
                       [(ngModel)]="columna.selectAll" (change)="seleccionarAllFiltro(columna);" />
                     <label style="font-size:x-small" for="chckAllFiltro">Seleccionar todos</label>
                     <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
-                      <input type="checkbox" id={{i}} [(ngModel)]="dato.checked" formControlName="chkFiltro"
-                        class="check" (change)="seleccionarFiltro(columna)" />
-                      <a style="font-size:xx-small;text-align:left" [innerHTML]="dato.value"></a>
+                      <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked"
+                        formControlName="chkFiltro" class="check" (change)="seleccionarFiltro(columna)"
+                        id="chkFiltro" />
+                      <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
+                        (click)="$event.stopPropagation()">{{dato.value}}</label>
                     </div>
                   </div>
                   <div class="modal-footer" style="font-size:xx-small; height:100px">
@@ -175,7 +179,7 @@
           <td>{{muestreo.fechaCarga}}</td>
           <td>{{muestreo.fechaEntregaMuestreo}}</td>
         </tr>
-        <tr *ngIf="this.muestreosFiltrados.length==0">
+        <tr *ngIf="this.muestreos.length==0">
           <td class="td-center" colspan="22">No se encontraron registros</td>
         </tr>
       </tbody>

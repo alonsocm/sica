@@ -100,7 +100,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'evidencias',
@@ -112,7 +112,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'numeroEntrega',
@@ -124,7 +124,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'claveSitio',
@@ -136,7 +136,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: '',
@@ -148,7 +148,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'claveMonitoreo',
@@ -160,7 +160,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'tipoSitio',
@@ -172,7 +172,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'nombreSitio',
@@ -184,7 +184,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'ocdl',
@@ -196,7 +196,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'tipoCuerpoAgua',
@@ -208,7 +208,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'subTipoCuerpoAgua',
@@ -220,7 +220,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'programaAnual',
@@ -232,7 +232,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'laboratorio',
@@ -244,7 +244,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'laboratorioSubrogado',
@@ -256,7 +256,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'fechaRealizacion',
@@ -266,7 +266,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         filtered: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'fechaProgramada',
@@ -278,7 +278,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'horaInicio',
@@ -290,7 +290,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'horaFin',
@@ -302,7 +302,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'fechaCarga',
@@ -314,7 +314,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
       {
         name: 'fechaEntregaMuestreo',
@@ -326,7 +326,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: []
+        filteredDataFiltrado: [],
       },
     ];
 
@@ -349,25 +349,23 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.selectedPage = false;
           this.totalItems = response.totalRecords;
           this.muestreos = response.data;
-          this.muestreosFiltrados = this.muestreos; 
+          this.muestreosFiltrados = this.muestreos;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
-
-
   }
 
   validarExisteFiltrado(): boolean {
-    return (this.columns.filter(x => x.filtered == true).length > 0) ? true : false;
+    return this.columns.filter((x) => x.filtered == true).length > 0
+      ? true
+      : false;
   }
-
 
   ngAfterViewInit(): void {
-    console.log("entra en after view");
+    console.log('entra en after view');
   }
 
-
-  public establecerValoresFiltrosTabla(column: Column) {   
+  public establecerValoresFiltrosTabla(column: Column) {
     if (!column.filtered && !this.existeFiltrado) {
       this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
         next: (response: any) => {
@@ -382,11 +380,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           column.filteredData = column.data;
           this.ordenarAscedente(column.filteredData);
         },
-        error: (error) => { },
+        error: (error) => {},
       });
-    }
-
-    else if (!column.filtered && this.existeFiltrado) {
+    } else if (!column.filtered && this.existeFiltrado) {
       column.data = this.muestreosFiltrados.map((m: any) => {
         let item: Item = {
           value: m[column.name],
@@ -396,32 +392,28 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
       column.filteredData = column.data;
       const distinctThings = column.filteredData.filter(
-        (thing, i, arr) => arr.findIndex(t => t.value === thing.value) === i
+        (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
       );
 
       column.filteredData = distinctThings.sort();
       this.ordenarAscedente(column.filteredData);
     }
 
-
     //filtrados
-      column.filteredDataFiltrado = this.muestreosFiltrados.map((m: any) => {
-        let item: Item = {
-          value: m[column.name],
-          checked: true,
-        };
-        return item;
-      });
+    column.filteredDataFiltrado = this.muestreosFiltrados.map((m: any) => {
+      let item: Item = {
+        value: m[column.name],
+        checked: true,
+      };
+      return item;
+    });
     column.filteredDataFiltrado = column.data;
     const distinctThings = column.filteredDataFiltrado.filter(
-      (thing, i, arr) => arr.findIndex(t => t.value === thing.value) === i
+      (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
     );
 
     column.filteredDataFiltrado = distinctThings.sort();
     this.ordenarAscedente(column.filteredDataFiltrado);
-
-
-
   }
 
   cargarArchivo(event: Event) {
@@ -500,18 +492,24 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   filtrar(columna: Column) {
     this.existeFiltrado = true;
     let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-    let opciones = filtrosSeleccionados.map(x => x.value).toString().replaceAll(',', '_');
+    let opciones = filtrosSeleccionados
+      .map((x) => x.value)
+      .toString()
+      .replaceAll(',', '_');
 
     if (this.cadena.indexOf(columna.name) != -1) {
-      this.cadena = (this.cadena.indexOf("%") != -1) ? this.eliminarFiltro(columna) : "";
+      this.cadena =
+        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(columna) : '';
     }
 
-    this.cadena = (this.cadena != '') ? this.cadena + "%" + columna.name + "_" + opciones : columna.name + "_" + opciones;
+    this.cadena =
+      this.cadena != ''
+        ? this.cadena + '%' + columna.name + '_' + opciones
+        : columna.name + '_' + opciones;
     this.consultarMonitoreos();
     columna.filtered = true;
     //this.establecerValoresFiltrosTabla(columna);
     this.esHistorial = true;
-
   }
 
   existeEvidencia(evidencias: Array<any>, sufijoEvidencia: string) {
@@ -552,9 +550,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     //this.esHistorial = false;
   }
 
-  seleccionarFiltro(columna: Column): void {
-
-  }
+  seleccionarFiltro(columna: Column): void {}
 
   exportarResultados(): void {
     if (
@@ -665,8 +661,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.consultarMonitoreos();
             this.mostrarMensaje(
               'Se enviaron ' +
-              this.resultadosEnviados.length +
-              ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                this.resultadosEnviados.length +
+                ' muestreos a la etapa de "Acumulación resultados" correctamente',
               'success'
             );
             this.hacerScroll();
@@ -708,10 +704,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   eliminarFiltro(columna: Column): string {
     let cadenaanterior = this.cadena.split('%');
-    let repetidos = cadenaanterior.filter(x => x.includes(columna.name));
+    let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
-    return this.cadena = cadenaanterior.toString().replaceAll(',', '%');
+    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
   }
 
   pageClic(page: any) {
@@ -731,7 +727,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     });
     columna.asc = tipo == 'asc' ? true : false;
     columna.desc = tipo == 'desc' ? true : false;
-
   }
 
   ordenarAscedente(column: Array<Item>) {
