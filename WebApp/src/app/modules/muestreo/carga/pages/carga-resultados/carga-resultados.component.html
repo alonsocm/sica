@@ -132,7 +132,7 @@
                         formControlName="chkFiltro" class="check" (change)="seleccionarFiltro(columna)"
                         id="chkFiltro" />
                       <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
-                        (click)="$event.stopPropagation()">{{dato.value}}</label>
+                        (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
                     </div>
                   </div>
                   <div class="modal-footer" style="font-size:xx-small; height:100px">
