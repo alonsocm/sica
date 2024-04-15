@@ -10,4 +10,6 @@ export interface Column {
   filtered: boolean;
   asc?: boolean;
   desc?: boolean;
+
+  filteredDataFiltrado: Array<Item>;
 }

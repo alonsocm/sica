@@ -15,6 +15,7 @@ import { from } from 'rxjs';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { map } from 'leaflet';
 import { Item } from 'src/app/interfaces/filter/item';
+import { filter } from 'rxjs';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -24,48 +25,46 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./carga-resultados.component.css'],
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
+
   muestreos: Array<Muestreo> = [];
   muestreosFiltrados: Array<Muestreo> = [];
   muestreosFiltradosFiltrado: Array<Muestreo> = [];
   muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
   muestreosseleccionados: Array<Muestreo> = [];
 
+  filtrosbusqueda: Array<Item> = [];
+
   filtrosValues: Array<any> = [];
+  filtrosfinal: Array<any> = [];
+
+  filtrosCabeceroFoco: Array<any> = [];
+
+  resultadosEnviados: Array<number> = [];
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
   mostrar: boolean = true;
   cabeceroSeleccionado: boolean = false;
   esHistorial: boolean = false;
-
-  resultadosEnviados: Array<number> = [];
-
-  filtrosfinal: Array<any> = [];
-  filtrosbusqueda: Array<any> = [];
-  filtrosCabeceroFoco: Array<any> = [];
-  /*  columnasfiltross: Array<any> = [];*/
+  existeFiltrado: boolean = false;
 
   archivo: any;
 
   numeroEntrega: string = '';
   anioOperacion: string = '';
   initialValue: string = '';
+  cadena: string = '';
 
   //Paginación
   totalItems = 0;
 
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
-    {} as ElementRef;
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   @ViewChild('thprueba') thprueba: ElementRef = {} as ElementRef;
   @ViewChild('auto') auto: ElementRef = {} as ElementRef;
-
-  /* @ViewChild('btnAceptar') control: any;*/
-  //@ViewChild('btnAceptar') btnAceptar: ElementRef = {} as ElementRef;
+  @ViewChild('txtBuscador') txtBuscador: ElementRef = {} as ElementRef;
 
   registroParam: FormGroup;
-
   esfilrofoco: string = '';
-
   columns: Array<Column> = [];
 
   constructor(
@@ -77,16 +76,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       chkFiltro: new FormControl(),
       chckAllFiltro: new FormControl(),
       aOrdenarAZ: new FormControl(),
-      //iconoAZOrdenado: new FormControl(),
-      //iconoZAOrdenado: new FormControl(),
-      //btnAceptar: [null]
     });
   }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
-    
   }
 
   definirColumnas() {
@@ -101,6 +96,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'evidencias',
@@ -112,6 +108,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'numeroEntrega',
@@ -123,6 +120,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'claveSitio',
@@ -134,6 +132,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: '',
@@ -145,6 +144,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'claveMonitoreo',
@@ -156,6 +156,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'tipoSitio',
@@ -167,9 +168,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
-        name: 'nameSitio',
+        name: 'nombreSitio',
         label: 'SITIO',
         order: 8,
         selectAll: true,
@@ -178,6 +180,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'ocdl',
@@ -189,6 +192,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'tipoCuerpoAgua',
@@ -200,6 +204,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'subTipoCuerpoAgua',
@@ -211,6 +216,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'programaAnual',
@@ -222,6 +228,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'laboratorio',
@@ -233,6 +240,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'laboratorioSubrogado',
@@ -244,6 +252,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'fechaRealizacion',
@@ -253,6 +262,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         filtered: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'fechaProgramada',
@@ -264,6 +274,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'horaInicio',
@@ -275,6 +286,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'horaFin',
@@ -286,6 +298,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
         name: 'fechaCarga',
@@ -297,9 +310,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
       {
-        name: 'fechaEntrega',
+        name: 'fechaEntregaMuestreo',
         label: 'FECHA ENTREGA',
         order: 20,
         selectAll: true,
@@ -308,6 +322,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
+        filteredDataFiltrado: []
       },
     ];
 
@@ -318,36 +333,90 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     });
   }
 
-  private consultarMonitoreos(
+  public consultarMonitoreos(
     page: number = this.page,
-    pageSize: number = this.NoPage
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
   ): void {
     this.muestreoService
-      .obtenerMuestreosPaginados(false, page, pageSize)
+      .obtenerMuestreosPaginados(false, page, pageSize, filter)
       .subscribe({
         next: (response: any) => {
           this.totalItems = response.totalRecords;
           this.muestreos = response.data;
-          this.muestreosFiltrados = this.muestreos; 
+          this.muestreosFiltrados = this.muestreos;
         },
-        error: (error) => {},
+        error: (error) => { },
       });
+
+
   }
 
-  public establecerValoresFiltrosTabla(column: Column) {
-    this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
-      next: (response: any) => {
-        column.data = response.data.map((register: any) => {
-          let item: Item = {
-            value: register,
-            checked: true,
-          };
-          return item;
-        });
-        column.filteredData = column.data;
-      },
-      error: (error) => {},
-    });
+  validarExisteFiltrado(): boolean {
+    return (this.columns.filter(x => x.filtered == true).length > 0) ? true : false;
+  }
+
+
+  ngAfterViewInit(): void {
+    console.log("entra en after view");
+  }
+
+
+  public establecerValoresFiltrosTabla(column: Column) {   
+    if (!column.filtered && !this.existeFiltrado) {
+      this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
+        next: (response: any) => {
+          column.data = response.data.map((register: any) => {
+            let item: Item = {
+              value: register,
+              checked: true,
+            };
+            return item;
+          });
+
+          column.filteredData = column.data;
+          this.ordenarAscedente(column.filteredData);
+        },
+        error: (error) => { },
+      });
+    }
+
+    else if (!column.filtered && this.existeFiltrado) {
+      column.data = this.muestreosFiltrados.map((m: any) => {
+        let item: Item = {
+          value: m[column.name],
+          checked: true,
+        };
+        return item;
+      });
+      column.filteredData = column.data;
+      const distinctThings = column.filteredData.filter(
+        (thing, i, arr) => arr.findIndex(t => t.value === thing.value) === i
+      );
+
+      column.filteredData = distinctThings.sort();
+      this.ordenarAscedente(column.filteredData);
+    }
+
+
+    //filtrados
+      column.filteredDataFiltrado = this.muestreosFiltrados.map((m: any) => {
+        let item: Item = {
+          value: m[column.name],
+          checked: true,
+        };
+        return item;
+      });
+    column.filteredDataFiltrado = column.data;
+    const distinctThings = column.filteredDataFiltrado.filter(
+      (thing, i, arr) => arr.findIndex(t => t.value === thing.value) === i
+    );
+
+    column.filteredDataFiltrado = distinctThings.sort();
+    this.ordenarAscedente(column.filteredDataFiltrado);
+
+
+
   }
 
   cargarArchivo(event: Event) {
@@ -424,39 +493,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   filtrar(columna: Column) {
-    this.muestreosFiltradosFiltradoConcatenado = [];
-    this.muestreosFiltrados = this.muestreos;
+    this.existeFiltrado = true;
     let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
+    let opciones = filtrosSeleccionados.map(x => x.value).toString().replaceAll(',', '_');
 
-    for (var i = 0; i < filtrosSeleccionados.length; i++) {
-      this.muestreosFiltradosFiltrado = [];
-      this.muestreosFiltradosFiltrado = this.muestreosFiltrados.filter(
-        (f: any) => {
-          return f[columna.name] == filtrosSeleccionados[i].value;
-        }
-      );
-
-      if (this.muestreosFiltradosFiltrado.length > 0) {
-        this.muestreosFiltradosFiltradoConcatenado =
-          this.muestreosFiltradosFiltradoConcatenado.concat(
-            this.muestreosFiltradosFiltrado
-          );
-      }
+    if (this.cadena.indexOf(columna.name) != -1) {
+      this.cadena = (this.cadena.indexOf("%") != -1) ? this.eliminarFiltro(columna) : "";
     }
 
-    this.muestreosFiltrados = this.muestreosFiltradosFiltradoConcatenado;
-    this.columns
-      .filter((x) => x.name == columna.name)
-      .map((m) => {
-        return (m.filtered = true);
-      });
-
-    this.columns.forEach((f) => {
-      f.data = [];
-    });
-
-    //this.establecerValoresFiltrosTabla();
+    this.cadena = (this.cadena != '') ? this.cadena + "%" + columna.name + "_" + opciones : columna.name + "_" + opciones;
+    this.consultarMonitoreos();
+    columna.filtered = true;
+    //this.establecerValoresFiltrosTabla(columna);
     this.esHistorial = true;
+
   }
 
   existeEvidencia(evidencias: Array<any>, sufijoEvidencia: string) {
@@ -503,9 +553,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   seleccionarFiltro(columna: Column): void {
-    if (columna.selectAll) {
-      columna.selectAll = false;
-    }
+
   }
 
   getMuestreos() {
@@ -623,8 +671,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.consultarMonitoreos();
             this.mostrarMensaje(
               'Se enviaron ' +
-                this.resultadosEnviados.length +
-                ' muestreos a la etapa de "Acumulación resultados" correctamente',
+              this.resultadosEnviados.length +
+              ' muestreos a la etapa de "Acumulación resultados" correctamente',
               'success'
             );
             this.hacerScroll();
@@ -664,14 +712,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.thprueba.nativeElement.focus();
   }
 
-  eliminarFiltro(etiqueta: string) {}
+  eliminarFiltro(columna: Column): string {
+    let cadenaanterior = this.cadena.split('%');
+    let repetidos = cadenaanterior.filter(x => x.includes(columna.name));
+    let indexx = cadenaanterior.indexOf(repetidos.toString());
+    cadenaanterior.splice(indexx, 1);
+    return this.cadena = cadenaanterior.toString().replaceAll(',', '%');
+  }
 
   pageClic(page: any) {
-    this.consultarMonitoreos(page);
+    this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
   }
 
-  ordenarAZ(columna: Column, tipo: string) {  
+  ordenarAZ(columna: Column, tipo: string) {
     this.muestreosFiltrados.sort(function (a: any, b: any) {
       if (a[columna.name] > b[columna.name]) {
         return tipo == "asc" ? 1 : -1;
@@ -681,8 +735,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       }
       return 0;
     });
-
     columna.asc = tipo == 'asc' ? true : false;
     columna.desc = tipo == 'desc' ? true : false;
+
+  }
+
+  ordenarAscedente(column: Array<Item>) {
+    column.sort(function (a: any, b: any) {
+      if (a.value > b.value) {
+        return 1;
+      }
+      if (a.value < b.value) {
+        return -1;
+      }
+      return 0;
+    });
   }
 }

@@ -9,6 +9,7 @@ import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { EvidenciasService } from '../../services/evidencias.service';
+import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 
 @Component({
   selector: 'app-evidencias',
@@ -22,6 +23,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   constructor(
     private evidenciasService: EvidenciasService,
+    private muestreoService: MuestreoService,
     private usuario: AuthService
   ) {
     super();
@@ -30,14 +32,32 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.perfil = this.usuario.getUser().nombrePerfil;
     this.definirColumnas();
-    this.evidenciasService.obtenerMuestreos().subscribe({
-      next: (response: any) => {
-        this.muestreos = response.data;
-        this.muestreosFiltrados = this.muestreos;
-        this.establecerValoresFiltrosTabla();
-      },
-      error: (error) => {},
-    });
+
+    //anterior
+    //this.evidenciasService.obtenerMuestreos().subscribe({
+    //  next: (response: any) => {
+    //    this.muestreos = response.data;
+    //    this.muestreosFiltrados = this.muestreos;
+    //    this.establecerValoresFiltrosTabla();
+    //  },
+    //  error: (error) => {},
+    //});
+
+
+    //Implementación de lo de Alonso
+    this.muestreoService
+      .obtenerMuestreosPaginados(false, this.page, this.NoPage, '')
+      .subscribe({
+        next: (response: any) => {
+          console.log(response);
+          //this.totalItems = response.totalRecords;
+          this.muestreos = response.data;
+          this.muestreosFiltrados = this.muestreos;
+        },
+        error: (error) => { },
+      });
+
+
   }
 
   definirColumnas() {

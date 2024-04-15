@@ -49,11 +49,11 @@
   </div>
   <br />
 
-  <div *ngIf="esHistorial" class="btn-group; btn-primary" role="group" aria-label="Basic example"
+  <div *ngIf="esHistorial"  class="alert alert-dark" role="group" aria-label="Basic example"
        style="padding:10px; width:1500px; height:max-content">
     <label>Historial filtrado</label> <br />
     <ng-container *ngFor="let historial of this.columns">
-      <button *ngIf="historial.filtered" type="button" class="btn btn-success"
+      <button *ngIf="historial.filtered" type="button" class="btn btn-success" (click)="eliminarFiltro(historial); historial.filtered=false; this.existeFiltrado = validarExisteFiltrado(); consultarMonitoreos();" 
               style="font-size:xx-small;margin-right:5px; margin-top:5px;">
         {{historial.label}}<i class="bi bi-x"></i>
       </button>
@@ -77,7 +77,7 @@
               {{columna.label}}
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
                       title="Filtros" aria-expanded="false"
-                      (click)="establecerValoresFiltrosTabla(columna); this.initialValue = ''">
+                      (click)="establecerValoresFiltrosTabla(columna); this.initialValue = '';">
                 <i *ngIf="!columna.filtered && !columna.asc && !columna.desc" class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
                 <i [(ngModel)]="columna.asc" *ngIf="columna.asc"
@@ -97,7 +97,7 @@
                     Ordenar de Z a A
                   </a>
                   <hr class="dropdown-divider">
-                  <a (click)="eliminarFiltro(columna.label);" enabled class="dropdown-item">
+                  <a (click)="eliminarFiltro(columna); columna.filtered=false; this.existeFiltrado=validarExisteFiltrado(); consultarMonitoreos();"  class="dropdown-item">
                     <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px"
                                                                                                                   class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
                   </a>
@@ -111,9 +111,8 @@
                   </a>
 
                   <div class="dropdown-divider"></div>
-                  <div style="height:300px; overflow:scroll; padding:5px">
-                    <!--<div>-->
-                    <input class="form-control" placeholder="buscar" type="text"
+                  <div style="height:300px; overflow:scroll; padding:5px">                   
+                    <input #txtBuscador  class="form-control" placeholder="Buscar" type="text"
                            (input)="onFiltroCabecero($event, columna)" />
                     <span><i class="bi bi-search"></i></span>
                     <br />

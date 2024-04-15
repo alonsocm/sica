@@ -79,13 +79,15 @@ export class MuestreoService {
   obtenerMuestreosPaginados(
     esLiberacion: boolean,
     page: number,
-    pageSize: number
+    pageSize: number,
+    filter:string
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
         esLiberacion: esLiberacion,
         page: page,
         pageSize: pageSize,
+        filter: filter
       },
     });
     return this.http.get(environment.apiUrl + '/Muestreos', { params });
