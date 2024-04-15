@@ -26,7 +26,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //Variables para los muestros
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API
   muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando
-  muestreosFiltrados: Array<Muestreo> = [];
   muestreosFiltradosFiltrado: Array<Muestreo> = [];
   muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
 
@@ -351,7 +350,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.muestreos = response.data;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected() ? false : true;
-          this.muestreosFiltrados = this.muestreos;
         },
         error: (error) => {},
       });
@@ -385,7 +383,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         error: (error) => {},
       });
     } else if (!column.filtered && this.existeFiltrado) {
-      column.data = this.muestreosFiltrados.map((m: any) => {
+      column.data = this.muestreos.map((m: any) => {
         let item: Item = {
           value: m[column.name],
           checked: true,
@@ -402,7 +400,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     //filtrados
-    column.filteredDataFiltrado = this.muestreosFiltrados.map((m: any) => {
+    column.filteredDataFiltrado = this.muestreos.map((m: any) => {
       let item: Item = {
         value: m[column.name],
         checked: true,
@@ -523,7 +521,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   descargarEvidencia(claveMuestreo: string, sufijo: string) {
     this.loading = !this.loading;
-    let muestreo = this.muestreosFiltrados.find(
+    let muestreo = this.muestreosSeleccionados.find(
       (x) => x.claveMonitoreo == claveMuestreo
     );
     let nombreEvidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
@@ -555,10 +553,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   seleccionarFiltro(columna: Column): void {}
 
   exportarResultados(): void {
-    if (
-      this.muestreosSeleccionados.length == 0 &&
-      this.muestreosFiltrados.length == 0
-    ) {
+    if (this.muestreosSeleccionados.length == 0) {
       this.mostrarMensaje(
         'No hay información existente para descargar',
         'warning'
@@ -567,10 +562,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.loading = true;
-    this.muestreosSeleccionados =
-      this.muestreosSeleccionados.length == 0
-        ? this.muestreosFiltrados
-        : this.muestreosSeleccionados;
+
     this.muestreoService
       .exportarCargaResultadosEbaseca(this.muestreosSeleccionados)
       .subscribe({
@@ -590,7 +582,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
+    let muestreosSeleccionados = this.Seleccionados(
+      this.muestreosSeleccionados
+    );
     if (!(muestreosSeleccionados.length > 0)) {
       this.mostrarMensaje(
         'Debe seleccionar al menos un monitoreo para eliminar',
@@ -602,7 +596,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   eliminarMuestreos() {
-    let muestreosSeleccionados = this.Seleccionados(this.muestreosFiltrados);
+    let muestreosSeleccionados = this.Seleccionados(
+      this.muestreosSeleccionados
+    );
     if (!(muestreosSeleccionados.length > 0)) {
       this.mostrarMensaje(
         'Debe seleccionar al menos un monitoreo para eliminar',
@@ -631,16 +627,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   enviarMonitoreos(): void {
-    let valor = this.muestreosFiltrados.filter(
-      (x) => x.estatus == 'EvidenciasCargadas'
-    );
     //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
-    //this.resultadosEnviados = this.Seleccionados(valor).map(
-    this.resultadosEnviados = this.Seleccionados(this.muestreosFiltrados).map(
-      (m) => {
-        return m.muestreoId;
-      }
-    );
+    this.resultadosEnviados = this.muestreosSeleccionados.map((m) => {
+      return m.muestreoId;
+    });
 
     if (this.resultadosEnviados.length == 0) {
       this.hacerScroll();
@@ -718,7 +708,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   ordenarAZ(columna: Column, tipo: string) {
-    this.muestreosFiltrados.sort(function (a: any, b: any) {
+    this.muestreos.sort(function (a: any, b: any) {
       if (a[columna.name] > b[columna.name]) {
         return tipo == 'asc' ? 1 : -1;
       }
