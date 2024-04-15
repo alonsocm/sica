@@ -124,9 +124,11 @@
                       (input)="onFiltroCabecero($event, columna)" />
                     <span><i class="bi bi-search"></i></span>
                     <br />
-                    <input type="checkbox" id="chckAllFiltro" formControlName="chckAllFiltro"
+                    <input type="checkbox" id="chckAllFiltro{{columna.name}}" formControlName="chckAllFiltro"
                       [(ngModel)]="columna.selectAll" (change)="seleccionarAllFiltro(columna);" />
-                    <label style="font-size:x-small" for="chckAllFiltro">Seleccionar todos</label>
+                    <label style="font-size:x-small" (click)="$event.stopPropagation()"
+                      for="chckAllFiltro{{columna.name}}">Seleccionar
+                      todos</label>
                     <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
                       <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked"
                         formControlName="chkFiltro" class="check" (change)="seleccionarFiltro(columna)"
