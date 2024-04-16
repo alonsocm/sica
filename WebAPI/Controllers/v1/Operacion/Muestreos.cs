@@ -196,6 +196,19 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { estatusId = datos.estatusId, muestreos = datos.muestreos }));
         }
 
+        [HttpPut("ActualizaEstatusMuestreos")]
+        public async Task<IActionResult> CambioEstatusMuestreos(UpdateStatusMuestreosDto datos)
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(datos.Filter))
+            {
+                filters = QueryParam.GetFilters(datos.Filter);
+            }
+
+            return Ok(await Mediator.Send(new ActualizarEstatusMuestreos { EstatusId = datos.Status, Filters = filters }));
+        }
+
 
         [HttpGet("obtenerPuntosPorMuestreo")]
         public async Task<IActionResult> obtenerPuntosPorMuestreo(string claveMuestreo)
