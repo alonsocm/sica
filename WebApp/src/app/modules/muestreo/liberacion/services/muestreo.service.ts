@@ -80,14 +80,14 @@ export class MuestreoService {
     esLiberacion: boolean,
     page: number,
     pageSize: number,
-    filter:string
+    filter: string
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
         esLiberacion: esLiberacion,
         page: page,
         pageSize: pageSize,
-        filter: filter
+        filter: filter,
       },
     });
     return this.http.get(environment.apiUrl + '/Muestreos', { params });
@@ -142,10 +142,19 @@ export class MuestreoService {
       { responseType: 'blob' }
     );
   }
+
   enviarMuestreoaAcumulados(estatusId: number, muestreos: Array<number>) {
     let datos = { estatusId: estatusId, muestreos: muestreos };
     return this.http.put(
       environment.apiUrl + '/Muestreos/cambioEstatusMuestreos',
+      datos
+    );
+  }
+
+  enviarTodosMuestreosAcumulados(estatus: number, filter: string) {
+    let datos = { Status: estatus, Filter: filter };
+    return this.http.put(
+      environment.apiUrl + '/Muestreos/ActualizaEstatusMuestreos',
       datos
     );
   }

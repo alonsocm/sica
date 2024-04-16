@@ -627,48 +627,91 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   enviarMonitoreos(): void {
-    //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
-    this.resultadosEnviados = this.muestreosSeleccionados.map((m) => {
-      return m.muestreoId;
-    });
-
-    if (this.resultadosEnviados.length == 0) {
-      this.hacerScroll();
-      return this.mostrarMensaje(
-        'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
-        'danger'
-      );
-    }
-
-    this.muestreoService
-      .enviarMuestreoaAcumulados(
-        estatusMuestreo.AcumulacionResultados,
-        this.resultadosEnviados
-      )
-      .subscribe({
-        next: (response: any) => {
-          this.loading = true;
-          if (response.succeded) {
+    //Si todos los registros están seleccionados, vamos a utlizar otra función, donde pasamos el filtro actual
+    if (this.allSelected) {
+      this.muestreoService
+        .enviarTodosMuestreosAcumulados(
+          estatusMuestreo.AcumulacionResultados,
+          this.cadena
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.loading = true;
+            if (response.succeded) {
+              this.resetValues();
+              this.loading = false;
+              this.consultarMonitoreos();
+              this.mostrarMensaje(
+                'Se enviaron ' +
+                  this.totalItems +
+                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                'success'
+              );
+              this.hacerScroll();
+            }
+          },
+          error: (response: any) => {
             this.loading = false;
-            this.consultarMonitoreos();
             this.mostrarMensaje(
-              'Se enviaron ' +
-                this.resultadosEnviados.length +
-                ' muestreos a la etapa de "Acumulación resultados" correctamente',
-              'success'
+              ' Error al enviar los muestreos a la etapa de "Acumulación resultados"',
+              'danger'
             );
             this.hacerScroll();
-          }
-        },
-        error: (response: any) => {
-          this.loading = false;
-          this.mostrarMensaje(
-            ' Error al enviar los muestreos a la etapa de "Acumulación resultados"',
-            'danger'
-          );
-          this.hacerScroll();
-        },
+          },
+        });
+    } else {
+      //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
+      this.resultadosEnviados = this.muestreosSeleccionados.map((m) => {
+        return m.muestreoId;
       });
+
+      if (this.resultadosEnviados.length == 0) {
+        this.hacerScroll();
+        return this.mostrarMensaje(
+          'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+          'danger'
+        );
+      }
+
+      this.muestreoService
+        .enviarMuestreoaAcumulados(
+          estatusMuestreo.AcumulacionResultados,
+          this.resultadosEnviados
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.loading = true;
+            if (response.succeded) {
+              this.resetValues();
+              this.loading = false;
+              this.consultarMonitoreos();
+              this.mostrarMensaje(
+                'Se enviaron ' +
+                  this.resultadosEnviados.length +
+                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                'success'
+              );
+              this.hacerScroll();
+            }
+          },
+          error: (response: any) => {
+            this.loading = false;
+            this.mostrarMensaje(
+              ' Error al enviar los muestreos a la etapa de "Acumulación resultados"',
+              'danger'
+            );
+            this.hacerScroll();
+          },
+        });
+    }
+  }
+
+  private resetValues() {
+    this.muestreosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+    this.getSummary();
   }
 
   onFiltroCabecero(val: any, columna: Column) {
