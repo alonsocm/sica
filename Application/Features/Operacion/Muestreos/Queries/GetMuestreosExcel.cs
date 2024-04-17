@@ -1,10 +1,8 @@
-﻿using Application.DTOs;
-using Application.Expressions;
+﻿using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
 using MediatR;
-using System.Linq.Expressions;
 
 namespace Application.Features.Muestreos.Queries
 {
@@ -50,23 +48,7 @@ namespace Application.Features.Muestreos.Queries
 
             if (request.Filter.Any())
             {
-                List<Expression<Func<MuestreoDto, bool>>> expressions = new();
-                var muestreoExpression = new MuestreoExpression(_repositoryAsync);
-
-                foreach (var filter in request.Filter)
-                {
-                    if (!string.IsNullOrEmpty(filter.Conditional))
-                    {
-                        expressions.Add(muestreoExpression.GetExpression(filter));
-                    }
-                    else
-                    {
-                        if (filter.Values != null && filter.Values.Any())
-                        {
-                            expressions.Add(_repositoryAsync.GetContainsExpression(filter.Column, filter.Values));
-                        }
-                    }
-                }
+                var expressions = MuestreoExpression.GetExpressionList(request.Filter);
 
                 foreach (var filter in expressions)
                 {

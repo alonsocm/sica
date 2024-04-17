@@ -1,10 +1,8 @@
-﻿using Application.DTOs;
-using Application.Expressions;
+﻿using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using AutoMapper;
 using MediatR;
-using System.Linq.Expressions;
 
 namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
 {
@@ -36,23 +34,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
 
             if (request.Filters.Any())
             {
-                var muestreoExpression = new MuestreoExpression(_muestreoRepository);
-                List<Expression<Func<MuestreoDto, bool>>> expressions = new();
-
-                foreach (var filter in request.Filters)
-                {
-                    if (!string.IsNullOrEmpty(filter.Conditional))
-                    {
-                        expressions.Add(muestreoExpression.GetExpression(filter));
-                    }
-                    else
-                    {
-                        if (filter.Values != null && filter.Values.Any())
-                        {
-                            expressions.Add(_muestreoRepository.GetContainsExpression(filter.Column, filter.Values));
-                        }
-                    }
-                }
+                var expressions = MuestreoExpression.GetExpressionList(request.Filters);
 
                 //Aplicamos cada filtro al total de datos
                 foreach (var filter in expressions)

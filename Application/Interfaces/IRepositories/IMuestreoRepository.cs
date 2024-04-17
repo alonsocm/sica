@@ -2,7 +2,6 @@
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Domain.Entities;
-using System.Linq.Expressions;
 
 namespace Application.Interfaces.IRepositories
 {
@@ -20,23 +19,5 @@ namespace Application.Interfaces.IRepositories
         Task<bool> ExisteSustitucionPrevia(int periodo);
         public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
         IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data);
-        Expression<Func<MuestreoDto, object>> GetProperty(string column);
-        Expression<Func<MuestreoDto, bool>> GetExpression(string column, string value);
-        Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, List<string> value);
-        Expression<Func<MuestreoDto, bool>> GetContainsExpression(string column, string value);
-        Expression<Func<MuestreoDto, bool>> GetNotContainsExpression(string column, string value);
-        Expression<Func<MuestreoDto, bool>> GetNotEqualsExpression(string column, string value);
-        Expression<Func<MuestreoDto, bool>> GetBeginsWithExpression(string column, string value);
-        Expression<Func<MuestreoDto, bool>> GetNotBeginsWithExpression(string column, string value);
-        Expression<Func<MuestreoDto, bool>> GetEndsWithExpression(string column, string value);
-        Expression<Func<MuestreoDto, bool>> GetNotEndsWithExpression(string column, string value);
-        public Expression<Func<MuestreoDto, bool>> GetGreaterThanExpression(string column, int value);
-        public Expression<Func<MuestreoDto, bool>> GetLessThanExpression(string column, int value);
-        public Expression<Func<MuestreoDto, bool>> GetGreaterThanOrEqualToExpression(string column, int value);
-        public Expression<Func<MuestreoDto, bool>> GetLessThanOrEqualToExpression(string column, int value);
-        public Expression<Func<MuestreoDto, bool>> GetBeforeExpression(string column, DateTime value);
-        public Expression<Func<MuestreoDto, bool>> GetAfterExpression(string column, DateTime value);
-        public Expression<Func<MuestreoDto, bool>> GetBeforeOrEqualExpression(string column, DateTime value);
-        public Expression<Func<MuestreoDto, bool>> GetAfterOrEqualExpression(string column, DateTime value);
     }
 }

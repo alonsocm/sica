@@ -1,8 +1,8 @@
 ﻿using Application.DTOs;
+using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using System.Linq.Expressions;
 
 namespace Application.Features.Muestreos.Queries
 {
@@ -50,22 +50,7 @@ namespace Application.Features.Muestreos.Queries
 
             if (request.Filter.Any())
             {
-                List<Expression<Func<MuestreoDto, bool>>> expressions = new();
-
-                foreach (var filter in request.Filter)
-                {
-                    if (!string.IsNullOrEmpty(filter.Conditional))
-                    {
-                        expressions.Add(GetExpression(filter));
-                    }
-                    else
-                    {
-                        if (filter.Values != null && filter.Values.Any())
-                        {
-                            expressions.Add(_repositoryAsync.GetContainsExpression(filter.Column, filter.Values));
-                        }
-                    }
-                }
+                var expressions = MuestreoExpression.GetExpressionList(request.Filter);
 
                 foreach (var filter in expressions)
                 {
@@ -74,35 +59,6 @@ namespace Application.Features.Muestreos.Queries
             }
 
             return PagedResponse<MuestreoDto>.CreatePagedReponse(data.ToList(), request.Page, request.PageSize);
-        }
-
-        private Expression<Func<MuestreoDto, bool>> GetExpression(Filter filter)
-        {
-            return filter.Conditional switch
-            {
-                #region Text
-                "notequals" => _repositoryAsync.GetNotEqualsExpression(filter.Column, filter.Value),
-                "beginswith" => _repositoryAsync.GetBeginsWithExpression(filter.Column, filter.Value),
-                "notbeginswith" => _repositoryAsync.GetNotBeginsWithExpression(filter.Column, filter.Value),
-                "endswith" => _repositoryAsync.GetEndsWithExpression(filter.Column, filter.Value),
-                "notendswith" => _repositoryAsync.GetNotEndsWithExpression(filter.Column, filter.Value),
-                "contains" => _repositoryAsync.GetContainsExpression(filter.Column, filter.Value),
-                "notcontains" => _repositoryAsync.GetNotContainsExpression(filter.Column, filter.Value),
-                #endregion
-                #region Numeric
-                "greaterthan" => _repositoryAsync.GetGreaterThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
-                "lessthan" => _repositoryAsync.GetLessThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
-                "greaterthanorequalto" => _repositoryAsync.GetGreaterThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
-                "lessthanorequalto" => _repositoryAsync.GetLessThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
-                #endregion
-                #region Date
-                "before" => _repositoryAsync.GetBeforeExpression(filter.Column, DateTime.Parse(filter.Value)),
-                "after" => _repositoryAsync.GetAfterExpression(filter.Column, DateTime.Parse(filter.Value)),
-                "beforeorequal" => _repositoryAsync.GetBeforeOrEqualExpression(filter.Column, DateTime.Parse(filter.Value)),
-                "afterorequal" => _repositoryAsync.GetAfterOrEqualExpression(filter.Column, DateTime.Parse(filter.Value)),
-                #endregion
-                _ => muestreo => true,
-            };
         }
     }
 }
