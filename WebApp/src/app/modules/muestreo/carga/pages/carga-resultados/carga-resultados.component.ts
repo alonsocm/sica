@@ -553,9 +553,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   seleccionarFiltro(columna: Column): void {}
 
   exportarResultados(): void {
-    if (this.muestreosSeleccionados.length == 0) {
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.mostrarMensaje(
-        'No hay información existente para descargar',
+        'No hay información seleccionada para descargar',
         'warning'
       );
       return this.hacerScroll();
@@ -563,11 +563,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.loading = true;
 
-    this.muestreoService
-      .exportarCargaResultadosEbaseca(this.muestreosSeleccionados)
-      .subscribe({
+    if (this.allSelected) {
+      this.muestreoService.exportAllEbaseca(false, this.cadena).subscribe({
         next: (response: any) => {
           FileService.download(response, 'CargaResultadosEbaseca.xlsx');
+          this.resetValues();
+          this.unselectMuestreos();
           this.loading = false;
         },
         error: (response: any) => {
@@ -579,6 +580,30 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.hacerScroll();
         },
       });
+    } else {
+      this.muestreoService
+        .exportarCargaResultadosEbaseca(this.muestreosSeleccionados)
+        .subscribe({
+          next: (response: any) => {
+            FileService.download(response, 'CargaResultadosEbaseca.xlsx');
+            this.resetValues();
+            this.unselectMuestreos();
+            this.loading = false;
+          },
+          error: (response: any) => {
+            this.mostrarMensaje(
+              'No fue posible descargar la información',
+              'danger'
+            );
+            this.loading = false;
+            this.hacerScroll();
+          },
+        });
+    }
+  }
+
+  private unselectMuestreos() {
+    this.muestreos.forEach((m) => (m.isChecked = false));
   }
 
   confirmarEliminacion() {

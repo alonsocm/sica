@@ -143,6 +143,16 @@ export class MuestreoService {
     );
   }
 
+  exportAllEbaseca(esLiberacion: boolean, filter: string): Observable<Blob> {
+    return this.http.get(
+      environment.apiUrl +
+        '/Muestreos/ExportarEbasecaExcel?esLiberacion=' +
+        esLiberacion +
+        (filter.length == 0 ? '' : '&filter=' + filter),
+      { responseType: 'blob' }
+    );
+  }
+
   enviarMuestreoaAcumulados(estatusId: number, muestreos: Array<number>) {
     let datos = { estatusId: estatusId, muestreos: muestreos };
     return this.http.put(
