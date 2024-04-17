@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Application.Features.Muestreos.Queries
 {
-    public class GetMuestreos : IRequest<PagedResponse<List<MuestreoDto>>>
+    public class GetMuestreosPaginados : IRequest<PagedResponse<List<MuestreoDto>>>
     {
         public bool EsLiberacion { get; set; }
         public int Page { get; set; }
@@ -14,7 +14,7 @@ namespace Application.Features.Muestreos.Queries
         public List<Filter> Filter { get; set; }
     }
 
-    public class GetMuestreosHandler : IRequestHandler<GetMuestreos, PagedResponse<List<MuestreoDto>>>
+    public class GetMuestreosHandler : IRequestHandler<GetMuestreosPaginados, PagedResponse<List<MuestreoDto>>>
     {
         private readonly IMuestreoRepository _repositoryAsync;
 
@@ -23,7 +23,7 @@ namespace Application.Features.Muestreos.Queries
             _repositoryAsync=repositoryAsync;
         }
 
-        public async Task<PagedResponse<List<MuestreoDto>>> Handle(GetMuestreos request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<List<MuestreoDto>>> Handle(GetMuestreosPaginados request, CancellationToken cancellationToken)
         {
             var estatus = new List<long>();
 

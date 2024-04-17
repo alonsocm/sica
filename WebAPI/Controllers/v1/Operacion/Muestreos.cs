@@ -133,7 +133,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetMuestreos { EsLiberacion = esLiberacion, Page = page, PageSize = pageSize, Filter = filters }));
+            return Ok(await Mediator.Send(new GetMuestreosPaginados { EsLiberacion = esLiberacion, Page = page, PageSize = pageSize, Filter = filters }));
         }
 
         [HttpGet("GetDistinctValuesFromColumn")]
@@ -258,6 +258,27 @@ namespace WebAPI.Controllers.v1.Operacion
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
+        [HttpGet("ExportarEbasecaExcel")]
+        public async Task<IActionResult> Post(bool esLiberacion, string? filter)
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var data = await Mediator.Send(new GetMuestreosExcel() { EsLiberacion=esLiberacion, Filter = filters });
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("CargaResultadosEbaseca");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportToExcel(data, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
 
         [HttpPost("ExportarMuestreosAdministracion")]
         public IActionResult ExportarMuestreosAdministracion(List<MuestreoDto> muestreos)
