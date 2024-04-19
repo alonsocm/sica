@@ -38,12 +38,16 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   resultadosEnviados: Array<number> = [];
 
+  opcionesFiltros: Array<string> = ["Es igual a", "No es igual a", "Es mayor que", "Es mayor o igual a", "Es menor que", "Es menor o igual a", "Comienza por", "No comienza por", "Termina con", "No termina con", "Contiene", "No contiene"];
+
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
   mostrar: boolean = true;
   cabeceroSeleccionado: boolean = false;
   esHistorial: boolean = false;
   existeFiltrado: boolean = false;
+
+  
 
   archivo: any;
 
@@ -54,6 +58,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   //Paginación
   totalItems = 0;
+
+  opctionFiltro: string = '';
+  segundaopctionFiltro: string = '';
 
   //Selección de registros
   selectAllOption: boolean = false;
@@ -366,6 +373,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
+    console.log(this.muestreos);
+
+
     if (!column.filtered && !this.existeFiltrado) {
       this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
         next: (response: any) => {
@@ -862,8 +872,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   getPreviousSelected(
     muestreos: Array<Muestreo>,
     muestreosSeleccionados: Array<Muestreo>
-  ) {
-    console.log(this.muestreosSeleccionados);
+  ) {  
     muestreos.forEach((f) => {
       let muestreoSeleccionado = muestreosSeleccionados.find(
         (x) => f.muestreoId === x.muestreoId
@@ -886,4 +895,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   anyUnselected() {
     return this.muestreos.some((f) => !f.isChecked);
   }
+
+
 }
