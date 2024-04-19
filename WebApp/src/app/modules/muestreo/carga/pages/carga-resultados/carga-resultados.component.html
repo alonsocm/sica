@@ -87,20 +87,24 @@
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
                 title="Filtros" aria-expanded="false"
                 (click)="establecerValoresFiltrosTabla(columna); this.initialValue = ''">
-                <i *ngIf="!columna.filtered && !columna.asc && !columna.desc" class="bi bi-caret-down-fill"></i>
+                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                  class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
-                <i [(ngModel)]="columna.asc" *ngIf="columna.asc" class="bi bi-arrow-down"></i>
-                <i [(ngModel)]="columna.desc" *ngIf="columna.desc" class=" bi bi-arrow-up"></i>
+                <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                  class="bi bi-arrow-down"></i>
+                <i [(ngModel)]="columna.desc"
+                  *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                  class="bi bi-arrow-up"></i>
               </button>
               <form [formGroup]="registroParam">
                 <div class="dropdown-menu" style="width:250px; height:500px">
-                  <a (click)="ordenarAZ(columna, 'asc');" class="dropdown-item">
-                    <i [ngStyle]="{'background-color':(columna.asc) ? 'lightgreen' : 'white'}"
+                  <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
                       class="bi bi-sort-alpha-down"></i>
                     Ordenar de A a Z
                   </a>
-                  <a (click)="ordenarAZ(columna, 'desc');" class="dropdown-item">
-                    <i [ngStyle]="{'background-color':(columna.desc) ? 'lightgreen' : 'white'}"
+                  <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
                       class="bi bi-sort-alpha-down-alt"></i>
                     Ordenar de Z a A
                   </a>

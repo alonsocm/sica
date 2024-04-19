@@ -60,6 +60,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   allSelected: boolean = false;
   selectedPage: boolean = false;
 
+  //variable para almacenar el ordenamiento
+  orderBy: { column: string; type: string } = { column: '', type: '' };
+
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
   @ViewChild('thprueba') thprueba: ElementRef = {} as ElementRef;
@@ -342,12 +345,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     filter: string = this.cadena
   ): void {
     this.muestreoService
-      .obtenerMuestreosPaginados(false, page, pageSize, filter)
+      .obtenerMuestreosPaginados(false, page, pageSize, filter, this.orderBy)
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.totalItems = response.totalRecords;
           this.muestreos = response.data;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected() ? false : true;
         },
@@ -378,7 +382,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           });
 
           column.filteredData = column.data;
-          this.ordenarAscedente(column.filteredData);
+          //this.ordenarAscedente(column.filteredData);
         },
         error: (error) => {},
       });
@@ -396,7 +400,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       );
 
       column.filteredData = distinctThings.sort();
-      this.ordenarAscedente(column.filteredData);
+      //this.ordenarAscedente(column.filteredData);
     }
 
     //filtrados
@@ -413,7 +417,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     );
 
     column.filteredDataFiltrado = distinctThings.sort();
-    this.ordenarAscedente(column.filteredDataFiltrado);
+    //this.ordenarAscedente(column.filteredDataFiltrado);
   }
 
   cargarArchivo(event: Event) {
@@ -775,30 +779,19 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  ordenarAZ(columna: Column, tipo: string) {
-    this.muestreos.sort(function (a: any, b: any) {
-      if (a[columna.name] > b[columna.name]) {
-        return tipo == 'asc' ? 1 : -1;
-      }
-      if (a[columna.name] < b[columna.name]) {
-        return tipo == 'asc' ? -1 : 1;
-      }
-      return 0;
-    });
-    columna.asc = tipo == 'asc' ? true : false;
-    columna.desc = tipo == 'desc' ? true : false;
-  }
-
-  ordenarAscedente(column: Array<Item>) {
-    column.sort(function (a: any, b: any) {
-      if (a.value > b.value) {
-        return 1;
-      }
-      if (a.value < b.value) {
-        return -1;
-      }
-      return 0;
-    });
+  sort(column: string, type: string) {
+    this.orderBy = { column, type };
+    this.muestreoService
+      .obtenerMuestreosPaginados(false, this.page, this.NoPage, this.cadena, {
+        column: column,
+        type: type,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.muestreos = response.data;
+        },
+        error: (error) => {},
+      });
   }
 
   onSelectPageClick() {
