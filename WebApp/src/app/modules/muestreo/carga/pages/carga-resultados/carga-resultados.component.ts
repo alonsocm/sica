@@ -13,7 +13,6 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Item } from 'src/app/interfaces/filter/item';
-import { filter } from 'rxjs';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -761,6 +760,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   seleccionCabecero(val: string = '') {
+    let header = document.getElementById(val) as HTMLElement;
+    header.scrollIntoView({ behavior: 'smooth', block: 'center' });
     this.cabeceroSeleccionado = true;
     this.esfilrofoco = val.toUpperCase();
     this.thprueba.nativeElement.focus();

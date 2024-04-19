@@ -81,7 +81,7 @@
           </th>
           <th #thprueba
             [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF') }"
-            scope="col" *ngFor="let columna of this.columns">
+            scope="col" *ngFor="let columna of this.columns" id="{{columna.label}}">
             <div class="dropdown;" style="width:max-content">
               {{columna.label}}
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
