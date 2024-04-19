@@ -370,5 +370,33 @@ namespace Application.Expressions
             };
         }
         #endregion
+
+        #region OrderBy
+        public static Expression<Func<MuestreoDto, object>> GetOrderByExpression(string column)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => muestreo.Estatus,
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega,
+                "clavesitio" => muestreo => muestreo.ClaveSitio,
+                "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo,
+                "tipositio" => muestreo => muestreo.TipoSitio,
+                "nombresitio" => muestreo => muestreo.NombreSitio,
+                "ocdl" => muestreo => muestreo.OCDL,
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua,
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua,
+                "programaanual" => muestreo => muestreo.ProgramaAnual,
+                "laboratorio" => muestreo => muestreo.Laboratorio,
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado,
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada,
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion,
+                "horainicio" => muestreo => muestreo.HoraInicio,
+                "horafin" => muestreo => muestreo.HoraFin,
+                "fechacarga" => muestreo => muestreo.FechaCarga,
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo,
+                _ => muestreo => muestreo.ClaveMonitoreo
+            };
+        }
+        #endregion
     }
 }

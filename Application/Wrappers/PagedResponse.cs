@@ -24,13 +24,20 @@
             page = page < 1 ? 1 : page;
             pageSize = pageSize > 30 ? 10 : pageSize;
             var totalRecords = data.Count;
-            var items = data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            var response = new PagedResponse<List<T>>(items, page, pageSize);
             var totalPages = (double)totalRecords / pageSize;
             int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+            var items = data;
 
-            response.TotalPages = roundedTotalPages;
-            response.TotalRecords = totalRecords;
+            if (totalRecords > pageSize)
+            {
+                items = data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            }
+
+            var response = new PagedResponse<List<T>>(items, page, pageSize)
+            {
+                TotalPages = roundedTotalPages,
+                TotalRecords = totalRecords
+            };
 
             return response;
         }

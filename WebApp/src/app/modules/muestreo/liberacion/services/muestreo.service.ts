@@ -80,7 +80,8 @@ export class MuestreoService {
     esLiberacion: boolean,
     page: number,
     pageSize: number,
-    filter: string
+    filter: string,
+    order?: { column: string; type: string }
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
@@ -88,6 +89,7 @@ export class MuestreoService {
         page: page,
         pageSize: pageSize,
         filter: filter,
+        order: order != null ? order.column + '_' + order.type : '',
       },
     });
     return this.http.get(environment.apiUrl + '/Muestreos', { params });

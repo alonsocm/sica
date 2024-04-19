@@ -5,8 +5,8 @@
         private static readonly string[] TextFilters = { "notequals", "beginswith", "notbeginswith", "endswith", "notendswith", "contains", "notcontains" };
         private static readonly string[] NumericFilters = { "greaterthan", "lessthan", "greaterthanorequalto", "lessthanorequalto" };
         private static readonly string[] DateFilters = { "before", "after", "beforeorequal", "afterorequal" };
-
-        public string Column { get; set; } = string.Empty;
+        private string _column = string.Empty;
+        public string Column { set { _column = value.ToLower(); } get { return _column; } }
         public string Conditional { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
         public List<string>? Values { get; set; }

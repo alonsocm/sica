@@ -12,6 +12,7 @@ namespace Application.Features.Muestreos.Queries
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
+        public OrderBy? OrderBy { get; set; }
     }
 
     public class GetMuestreosHandler : IRequestHandler<GetMuestreosPaginados, PagedResponse<List<MuestreoDto>>>
@@ -47,6 +48,7 @@ namespace Application.Features.Muestreos.Queries
             }
 
             var data = await _repositoryAsync.GetResumenMuestreosAsync(estatus);
+            data = data.AsQueryable();
 
             if (request.Filter.Any())
             {
@@ -55,6 +57,18 @@ namespace Application.Features.Muestreos.Queries
                 foreach (var filter in expressions)
                 {
                     data = data.AsQueryable().Where(filter);
+                }
+            }
+
+            if (request.OrderBy != null)
+            {
+                if (request.OrderBy.Type == "asc")
+                {
+                    data = data.AsQueryable().OrderBy(MuestreoExpression.GetOrderByExpression(request.OrderBy.Column));
+                }
+                else if (request.OrderBy.Type == "desc")
+                {
+                    data = data.AsQueryable().OrderByDescending(MuestreoExpression.GetOrderByExpression(request.OrderBy.Column));
                 }
             }
 
