@@ -37,7 +37,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   resultadosEnviados: Array<number> = [];
 
-  opcionesFiltros: Array<string> = ["Es igual a", "No es igual a", "Es mayor que", "Es mayor o igual a", "Es menor que", "Es menor o igual a", "Comienza por", "No comienza por", "Termina con", "No termina con", "Contiene", "No contiene"];
+  opcionesFiltros: Array<string> = [
+    'Es igual a',
+    'No es igual a',
+    'Es mayor que',
+    'Es mayor o igual a',
+    'Es menor que',
+    'Es menor o igual a',
+    'Comienza por',
+    'No comienza por',
+    'Termina con',
+    'No termina con',
+    'Contiene',
+    'No contiene',
+  ];
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
@@ -45,8 +58,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   cabeceroSeleccionado: boolean = false;
   esHistorial: boolean = false;
   existeFiltrado: boolean = false;
-
-  
 
   archivo: any;
 
@@ -378,7 +389,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   public establecerValoresFiltrosTabla(column: Column) {
     console.log(this.muestreos);
 
-
     if (!column.filtered && !this.existeFiltrado) {
       this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
         next: (response: any) => {
@@ -391,7 +401,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           });
 
           column.filteredData = column.data;
-          //this.ordenarAscedente(column.filteredData);
+          this.ordenarAscedente(column.filteredData);
         },
         error: (error) => {},
       });
@@ -409,7 +419,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       );
 
       column.filteredData = distinctThings.sort();
-      //this.ordenarAscedente(column.filteredData);
+      this.ordenarAscedente(column.filteredData);
     }
 
     //filtrados
@@ -426,7 +436,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     );
 
     column.filteredDataFiltrado = distinctThings.sort();
-    //this.ordenarAscedente(column.filteredDataFiltrado);
+    this.ordenarAscedente(column.filteredDataFiltrado);
   }
 
   cargarArchivo(event: Event) {
@@ -790,6 +800,18 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
+  ordenarAscedente(column: Array<Item>) {
+    column.sort(function (a: any, b: any) {
+      if (a.value > b.value) {
+        return 1;
+      }
+      if (a.value < b.value) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.muestreoService
@@ -866,7 +888,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   getPreviousSelected(
     muestreos: Array<Muestreo>,
     muestreosSeleccionados: Array<Muestreo>
-  ) {  
+  ) {
     muestreos.forEach((f) => {
       let muestreoSeleccionado = muestreosSeleccionados.find(
         (x) => f.muestreoId === x.muestreoId
@@ -890,5 +912,16 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     return this.muestreos.some((f) => !f.isChecked);
   }
 
+  onSpecialFiltersClick($event: MouseEvent, columnName: string) {
+    let dropDown = document.getElementById(
+      'filters-' + columnName
+    ) as HTMLElement;
 
+    if (dropDown.className === 'd-none') {
+      dropDown.className = 'd-block';
+    } else {
+      dropDown.className = 'd-none';
+    }
+    $event.stopPropagation();
+  }
 }
