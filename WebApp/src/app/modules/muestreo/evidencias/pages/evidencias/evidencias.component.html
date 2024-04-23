@@ -185,41 +185,32 @@
                     <ng-container *ngFor="let sufijo of sufijos;">
                         <td *ngIf="existeEvidencia(muestreo.evidencias, sufijo) else elseBlock">
                             <div [ngSwitch]="sufijo">
-                                <img *ngSwitchCase="'A'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'A'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'C'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'C'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'D'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
+                                <img *ngSwitchCase="'D'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'E'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'E'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'M'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'M'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'O'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'O'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'R'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'R'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'S'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'S'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'V'"
-                                    (click)="this.descargarEvidencia(muestreo.claveMonitoreo, sufijo)" width="60px"
-                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'V'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
+                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
                             </div>
                         </td>

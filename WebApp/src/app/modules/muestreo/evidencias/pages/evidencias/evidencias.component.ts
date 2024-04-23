@@ -410,38 +410,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     });
   }
 
-  seleccionarTodos(): void {
-    this.muestreosSeleccionados.map((m) => {
-      if (this.seleccionarTodosChck) {
-        m.isChecked ? true : (m.isChecked = true);
-      } else {
-        m.isChecked ? (m.isChecked = false) : true;
-      }
-    });
-    this.obtenerSeleccionados();
-  }
-
-  obtenerSeleccionados(): Array<Muestreo> {
-    return this.muestreosSeleccionados.filter((f) => f.isChecked);
-  }
-
-  seleccionar(): void {
-    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
-  }
-
-  // filtrar() {
-  //   this.muestreosFiltrados = this.muestreos;
-  //   this.columnas.forEach((columna) => {
-  //     this.muestreosFiltrados = this.muestreosFiltrados.filter((f: any) => {
-  //       return columna.filtro.selectedValue == 'Seleccione'
-  //         ? true
-  //         : f[columna.nombre] == columna.filtro.selectedValue;
-  //     });
-  //   });
-
-  //   this.establecerValoresFiltrosTabla();
-  // }
-
   existeEvidencia(evidencias: Array<Evidencia>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
       return false;
@@ -451,7 +419,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   descargarEvidencia(claveMuestreo: string, sufijo: string) {
     this.loading = !this.loading;
-    let muestreo = this.muestreosSeleccionados.find(
+    let muestreo = this.muestreos.find(
       (x) => x.claveMonitoreo == claveMuestreo
     );
     let nombreEvidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
@@ -475,11 +443,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   }
 
   descargarEvidencias() {
-    let muestreosSeleccionados = this.obtenerSeleccionados().map((m) => {
-      return m.muestreoId;
-    });
-
-    if (muestreosSeleccionados.length === 0) {
+    if (this.muestreosSeleccionados.length === 0) {
       this.mostrarMensaje(
         'No ha seleccionado ningún monitoreo',
         TipoMensaje.Alerta
@@ -488,24 +452,39 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     }
 
     this.loading = true;
-    this.evidenciasService.descargarArchivos(muestreosSeleccionados).subscribe({
-      next: (response: any) => {
-        console.table(response);
-        this.loading = !this.loading;
-        this.seleccionarTodosChck = false;
-        this.muestreosSeleccionados.map((m) => (m.isChecked = false));
-        FileService.download(response, 'evidencias.zip');
-      },
-      error: (response: any) => {
-        this.loading = !this.loading;
-        this.muestreosSeleccionados.map((m) => (m.isChecked = false));
-        this.mostrarMensaje(
-          'No fue posible descargar la información',
-          TipoMensaje.Error
-        );
-        this.hacerScroll();
-      },
-    });
+    this.evidenciasService
+      .descargarArchivos(this.muestreosSeleccionados.map((m) => m.muestreoId))
+      .subscribe({
+        next: (response: any) => {
+          this.loading = !this.loading;
+          this.seleccionarTodosChck = false;
+          this.muestreosSeleccionados.map((m) => (m.isChecked = false));
+          FileService.download(response, 'evidencias.zip');
+        },
+        error: (response: any) => {
+          this.loading = !this.loading;
+          this.muestreosSeleccionados.map((m) => (m.isChecked = false));
+          this.mostrarMensaje(
+            'No fue posible descargar la información',
+            TipoMensaje.Error
+          );
+          this.hacerScroll();
+        },
+      });
+
+    this.resetValues();
+    this.unselectMuestreos();
+  }
+
+  private resetValues() {
+    this.muestreosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+  }
+
+  private unselectMuestreos() {
+    this.muestreos.forEach((m) => (m.isChecked = false));
   }
 
   cargarEvidencias(event: Event) {
