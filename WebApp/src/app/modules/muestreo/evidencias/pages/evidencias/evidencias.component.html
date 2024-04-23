@@ -29,28 +29,121 @@
             </button>
         </div>
     </div>
+    <div class="alert alert-secondary" role="alert"
+        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+        Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
+            (click)="onSelectAllPagesClick()" class="btn btn-link">
+            Seleccionar los {{this.totalItems}} registros
+        </button>
+    </div>
+    <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
+        Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
+            (click)="onUnselectAllClick()">
+            Anular la seleccion
+        </button>
+    </div>
     <div class="table-responsive dvTable">
         <table class="table table-bordered table-hover">
             <thead class="thead-light">
                 <tr>
-                    <th class="checkBox-center">
-                        <label for="chckAll">SELECCIONAR TODOS</label>
-                        <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                            (change)="seleccionarTodos()" />
+                    <th class="checkBox-center" style="text-align:center;">
+                        <label for="chckAll">SELECCIONAR</label>
+                        <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
+                            (change)="onSelectPageClick();" title="Selecciona la página actual" />
                     </th>
-                    <ng-container *ngFor="let columna of this.columnas">
-                        <th *ngIf="mostrarColumna(columna.etiqueta)">
-                            {{columna.etiqueta}}
-                            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                                (selected)="columna.filtro.selectedValue = $event; filtrar();"
-                                (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrar()"
-                                [itemTemplate]="itemTemplate" placeholder="seleccione">
-                            </ng-autocomplete>
-                            <ng-template #itemTemplate let-item>
-                                <a [innerHTML]="item"></a>
-                            </ng-template>
-                        </th>
-                    </ng-container>
+                    <th #thprueba
+                        [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF') }"
+                        scope="col" *ngFor="let columna of this.columns" id="{{columna.label}}">
+                        <div class="dropdown;" style="width:max-content">
+                            {{columna.label}}
+                            <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown"
+                                aria-haspopup="true" title="Filtros" aria-expanded="false"
+                                (click)="establecerValoresFiltrosTabla(columna); this.initialValue = ''">
+                                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                                    class="bi bi-caret-down-fill"></i>
+                                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                                <i [(ngModel)]="columna.asc"
+                                    *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                                    class="bi bi-arrow-down"></i>
+                                <i [(ngModel)]="columna.desc"
+                                    *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                                    class="bi bi-arrow-up"></i>
+                            </button>
+                            <!-- <form [formGroup]="registroParam"> -->
+                            <div class="dropdown-menu" style="width:250px;">
+                                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
+                                        class="bi bi-sort-alpha-down"></i>
+                                    Ordenar de A a Z
+                                </a>
+                                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
+                                        class="bi bi-sort-alpha-down-alt"></i>
+                                    Ordenar de Z a A
+                                </a>
+                                <hr class="dropdown-divider">
+                                <a (click)="eliminarFiltro(columna); columna.filtered=false; this.existeFiltrado=validarExisteFiltrado(); consultarMonitoreos();"
+                                    class="dropdown-item">
+                                    <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}"
+                                        class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>
+                                    Eliminar filtro de {{columna.label}}
+                                </a>
+                                <a class="dropdown-item" (click)="onSpecialFiltersClick($event, columna.name)">
+                                    Filtros de texto
+                                </a>
+                                <div id="filters-{{columna.name}}" class="d-none">
+                                    <a (click)="this.opctionFiltro = 'Es igual a'" class="dropdown-item"
+                                        data-toggle="modal" data-target="#mdlFiltro">Es igual a ...</a>
+                                    <a (click)="this.opctionFiltro = 'No es igual a'" class="dropdown-item">No es
+                                        igual a ...</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a (click)="this.opctionFiltro = 'Comienza por'" class="dropdown-item">Comienza
+                                        por ...</a>
+                                    <a (click)="this.opctionFiltro = 'Termina con'" class="dropdown-item">Termina
+                                        con ...</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a (click)="this.opctionFiltro = 'Contiene'" class="dropdown-item">Contiene
+                                        ...</a>
+                                    <a (click)="this.opctionFiltro = 'No contiene'" class="dropdown-item">No
+                                        contiene ...</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item">Filtro personalizado ...</a>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div style="height:300px; overflow:scroll; padding:5px">
+                                    <input #txtBuscador class="form-control" placeholder="Buscar" type="text"
+                                        (input)="onFiltroCabecero($event, columna)" />
+                                    <span><i class="bi bi-search"></i></span>
+                                    <br />
+                                    <input type="checkbox" id="chckAllFiltro{{columna.name}}"
+                                        [(ngModel)]="columna.selectAll" (change)="seleccionarAllFiltro(columna);" />
+                                    <label style="font-size:x-small" (click)="$event.stopPropagation()"
+                                        for="chckAllFiltro{{columna.name}}">
+                                        Seleccionar
+                                        todos
+                                    </label>
+                                    <div style="height:min-content"
+                                        *ngFor="let dato of columna.filteredData; index as i">
+                                        <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked"
+                                            class="check" (change)="seleccionarFiltro(columna)" id="chkFiltro" />
+                                        <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
+                                            (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="font-size:xx-small; height:100px">
+                                    <button id="btnCancelarFiltro" type="button" style="font-size:xx-small"
+                                        class="btn btn-secondary" data-dismiss="dropdown">
+                                        Cancelar
+                                    </button>
+                                    <button type="button" class="btn btn-primary" style="font-size:xx-small"
+                                        data-dismiss="dropdown" (click)="filtrar(columna)">
+                                        Aceptar
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- </form> -->
+                        </div>
+                    </th>
                     <th>FOTO CAUDAL</th>
                     <th>MÁSCARA DE CAMPO</th>
                     <th>CADENA CUSTODIA</th>
@@ -63,9 +156,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let muestreo of this.muestreosFiltrados | paginate: { itemsPerPage:30, currentPage: page }">
+                <tr
+                    *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
                     <td class="checkBox-center">
-                        <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="seleccionar()"
+                        <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
                             title="Seleccionar">
                     </td>
                     <td *ngIf="mostrarCampo()">{{muestreo.numeroEntrega}}</td>
@@ -138,7 +232,7 @@
         </table>
     </div>
     <div class="row-group">
-        <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+        <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
         </pagination-controls>
     </div>
 </div>
