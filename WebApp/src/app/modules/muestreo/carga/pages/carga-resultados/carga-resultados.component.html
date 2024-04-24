@@ -120,11 +120,11 @@
                   </a>
 
 
-                  <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
                     {{leyendaFiltrosEspeciales}}
                   </a>
 
-                  <div id="dvddd" class="dropdown-menu">
+                  <div id="filters-{{columna.name}}" class="d-none">
                     <a *ngFor="let nombre of this.opcionesFiltros; let indice=index" (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal" data-target="#mdlFiltro">
                       {{nombre}} ...
                       <div *ngIf="this.indicesopcionesFiltros.includes(indice)"  class="dropdown-divider"></div>

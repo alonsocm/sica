@@ -1155,7 +1155,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
    
   }
 
-
+  onSpecialFiltersClick($event: MouseEvent, columnName: string) {
+    let dropDown = document.getElementById(
+      'filters-' + columnName
+    ) as HTMLElement;
     if (dropDown.className === 'd-none') {
       dropDown.className = 'd-block';
     } else {
