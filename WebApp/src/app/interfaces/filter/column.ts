@@ -10,6 +10,17 @@ export interface Column {
   filtered: boolean;
   asc?: boolean;
   desc?: boolean;
+  datype: string;
+
+
+  datosSeleccionados?: string;
+  opctionFiltro?: string;
+  segundaopctionFiltro?: string;
+  filtroEspecial?: string;
+  segundofiltroEspecial?: string;
+  
+
+
 
   filteredDataFiltrado: Array<Item>;
 }

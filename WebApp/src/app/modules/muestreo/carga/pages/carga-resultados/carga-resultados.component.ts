@@ -14,6 +14,8 @@ import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Item } from 'src/app/interfaces/filter/item';
 
+import { filtrosEspeciales, filtrosEspecialesFecha, filtrosEspecialesNumeral, mustreoExpression } from 'src/app/shared/enums/filtrosEspeciales';
+
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 @Component({
@@ -28,7 +30,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreosFiltradosFiltrado: Array<Muestreo> = [];
   muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
 
-  filtrosbusqueda: Array<Item> = [];
+  filtrosModal: Array<Item> = [];
 
   filtrosValues: Array<any> = [];
   filtrosfinal: Array<any> = [];
@@ -37,7 +39,24 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   resultadosEnviados: Array<number> = [];
 
-  opcionesFiltros: Array<string> = ["Es igual a", "No es igual a", "Es mayor que", "Es mayor o igual a", "Es menor que", "Es menor o igual a", "Comienza por", "No comienza por", "Termina con", "No termina con", "Contiene", "No contiene"];
+  filtradoEspecial: filtrosEspeciales = new filtrosEspeciales;
+  filtradoEspecialNumeral: filtrosEspecialesNumeral = new filtrosEspecialesNumeral;
+  filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha;
+
+  mustreoExpression: mustreoExpression = new mustreoExpression;
+
+  //opcionesFiltros: Array<string> = ["Es igual a", "No es igual a", "Es mayor que", "Es mayor o igual a", "Es menor que", "Es menor o igual a", "Comienza por", "No comienza por", "Termina con", "No termina con", "Contiene", "No contiene"];
+
+  opcionesFiltros: Array<string> = [];
+  opcionesFiltrosModal: Array<string> = [];
+
+
+  leyendaFiltrosEspeciales: string = '';
+  indicesopcionesFiltros: Array<number> = [];
+
+
+
+
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
@@ -58,8 +77,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //Paginación
   totalItems = 0;
 
-  opctionFiltro: string = '';
-  segundaopctionFiltro: string = '';
+
+
+
+  opcionColumnaFiltro: string = '';
 
   //Selección de registros
   selectAllOption: boolean = false;
@@ -79,6 +100,26 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   esfilrofoco: string = '';
   columns: Array<Column> = [];
 
+  columnaFiltroEspecial: Column = {    
+    name: 'estatus',
+    label: 'ESTATUS',
+    order: 1,
+    selectAll: true,
+    filtered: false,
+    asc: false,
+    desc: false,
+    data: [],
+    filteredData: [],
+    filteredDataFiltrado: [],
+    datype: 'string',
+    opctionFiltro:'',
+    segundaopctionFiltro:'',
+    filtroEspecial:'',
+    segundofiltroEspecial: ''
+   
+  };  
+
+
   constructor(
     private muestreoService: MuestreoService,
     private fb: FormBuilder
@@ -89,11 +130,17 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       chckAllFiltro: new FormControl(),
       aOrdenarAZ: new FormControl(),
     });
+
+
+    
+
+
   }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
+    console.log(this.columns);
   }
 
   definirColumnas() {
@@ -109,6 +156,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
+
       },
       {
         name: 'evidencias',
@@ -121,6 +173,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'numeroEntrega',
@@ -133,6 +189,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'number',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'claveSitio',
@@ -145,6 +205,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: '',
@@ -157,6 +221,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'claveMonitoreo',
@@ -169,6 +237,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'tipoSitio',
@@ -181,6 +253,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'nombreSitio',
@@ -193,6 +269,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'ocdl',
@@ -205,6 +285,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'tipoCuerpoAgua',
@@ -217,6 +301,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'subTipoCuerpoAgua',
@@ -229,6 +317,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'programaAnual',
@@ -241,6 +333,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'laboratorio',
@@ -253,6 +349,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'laboratorioSubrogado',
@@ -265,6 +365,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'fechaRealizacion',
@@ -275,6 +379,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'date',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'fechaProgramada',
@@ -287,6 +395,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'date',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'horaInicio',
@@ -299,6 +411,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'horaFin',
@@ -311,6 +427,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'string',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'fechaCarga',
@@ -323,6 +443,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'date',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
       {
         name: 'fechaEntregaMuestreo',
@@ -330,11 +454,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         order: 20,
         selectAll: true,
         filtered: false,
-        asc: false,
         desc: false,
+        asc: false,
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
+        datype: 'date',
+        filtroEspecial: '',
+        segundofiltroEspecial: '',
+        datosSeleccionados: ''
       },
     ];
 
@@ -376,8 +504,19 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
-    console.log(this.muestreos);
 
+    //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    switch (column.datype) {
+
+      case "string": this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de texto"; this.indicesopcionesFiltros = [1, 3, 5]; break;
+      case "number": this.opcionesFiltros = Object.entries(this.filtradoEspecialNumeral).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de número"; this.indicesopcionesFiltros = [1,6]; break;
+      case "date": this.opcionesFiltros = Object.entries(this.filtradoEspecialFecha).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de fecha"; this.indicesopcionesFiltros = [0,5]; break;
+      default: this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de texto";  break;
+
+
+       // this.opcionesFiltros.splice
+    }
 
     if (!column.filtered && !this.existeFiltrado) {
       this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
@@ -505,10 +644,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   filtrar(columna: Column) {
     this.existeFiltrado = true;
     let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-    let opciones = filtrosSeleccionados
-      .map((x) => x.value)
-      .toString()
-      .replaceAll(',', '_');
+    columna.datosSeleccionados = filtrosSeleccionados.map((x) => x.value).toString();
+
+    //let opciones = filtrosSeleccionados
+    //  .map((x) => x.value)
+    //  .toString()
+    //  .replaceAll(',', '_');
+
+    
 
     if (this.cadena.indexOf(columna.name) != -1) {
       this.cadena =
@@ -517,13 +660,94 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.cadena =
       this.cadena != ''
-        ? this.cadena + '%' + columna.name + '_' + opciones
-        : columna.name + '_' + opciones;
+        ? this.cadena + '%' + columna.name + '_' + columna.datosSeleccionados.replace(',', '_')
+        : columna.name + '_' + columna.datosSeleccionados.replace(',', '_');
     this.consultarMonitoreos();
-    columna.filtered = true;
-    //this.establecerValoresFiltrosTabla(columna);
+    columna.filtered = true;  
     this.esHistorial = true;
   }
+
+  filtroEspecial() {   
+  
+    if (this.cadena.indexOf(this.columnaFiltroEspecial.name) != -1) {
+      this.cadena =
+        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(this.columnaFiltroEspecial) : '';
+    }
+
+    let opcionFiltrar;
+    switch (this.columnaFiltroEspecial.opctionFiltro) {
+
+      case this.filtradoEspecial.beginswith: opcionFiltrar = this.mustreoExpression.beginswith; break;
+      case this.filtradoEspecial.contains: opcionFiltrar = this.mustreoExpression.contains; break;
+      case this.filtradoEspecial.endswith: opcionFiltrar = this.mustreoExpression.endswith; break;
+      case this.filtradoEspecial.equals: opcionFiltrar = this.mustreoExpression.equals; break;
+      case this.filtradoEspecial.notcontains: opcionFiltrar = this.mustreoExpression.notcontains; break;
+      case this.filtradoEspecial.notequals: opcionFiltrar = this.mustreoExpression.notequals; break;
+
+      case this.filtradoEspecialNumeral.greaterthan: opcionFiltrar = this.mustreoExpression.greaterthan; break;
+      case this.filtradoEspecialNumeral.greaterthanorequalto: opcionFiltrar = this.mustreoExpression.greaterthanorequalto; break;
+      case this.filtradoEspecialNumeral.lessthan: opcionFiltrar = this.mustreoExpression.lessthan; break;
+      case this.filtradoEspecialNumeral.lessthanorequalto: opcionFiltrar = this.mustreoExpression.lessthanorequalto; break;
+
+      case this.filtradoEspecialFecha.before: opcionFiltrar = this.mustreoExpression.before; break;
+      case this.filtradoEspecialFecha.after: opcionFiltrar = this.mustreoExpression.after; break;
+      case this.filtradoEspecialFecha.beforeorequal: opcionFiltrar = this.mustreoExpression.beforeorequal; break;
+      case this.filtradoEspecialFecha.afterorequal: opcionFiltrar = this.mustreoExpression.afterorequal; break;
+      //case this.filtradoEspecial.personalizado: opcionFiltrar = this.mustreoExpression.notequals; break;
+      default: break;
+    }
+
+
+    //claveMonitoreo_*contains_valor
+      let cadenaEspecial = this.columnaFiltroEspecial.name + '_*' + opcionFiltrar + '_' + this.columnaFiltroEspecial.filtroEspecial;
+    this.cadena = this.cadena != '' ? this.cadena.concat("%" + cadenaEspecial) : cadenaEspecial;
+
+
+    //Si existe un segundo filtro
+    if (this.columnaFiltroEspecial.segundofiltroEspecial != '') {
+
+    }
+    
+  
+
+    this.consultarMonitoreos();
+    this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true });    
+    this.esHistorial = true;
+    this.columnaFiltroEspecial.opctionFiltro = '';
+    this.columnaFiltroEspecial.filtroEspecial = '';
+  }
+
+  obtenerFiltroEspecial(valor: string): string {
+    let opcionFiltrar;
+    switch (valor) {      
+      case this.filtradoEspecial.beginswith: opcionFiltrar = this.mustreoExpression.beginswith; break;
+      case this.filtradoEspecial.contains: opcionFiltrar = this.mustreoExpression.contains; break;
+      case this.filtradoEspecial.endswith: opcionFiltrar = this.mustreoExpression.endswith; break;
+      case this.filtradoEspecial.equals: opcionFiltrar = this.mustreoExpression.equals; break;
+      case this.filtradoEspecial.notcontains: opcionFiltrar = this.mustreoExpression.notcontains; break;
+      case this.filtradoEspecial.notequals: opcionFiltrar = this.mustreoExpression.notequals; break;
+
+      case this.filtradoEspecialNumeral.greaterthan: opcionFiltrar = this.mustreoExpression.greaterthan; break;
+      case this.filtradoEspecialNumeral.greaterthanorequalto: opcionFiltrar = this.mustreoExpression.greaterthanorequalto; break;
+      case this.filtradoEspecialNumeral.lessthan: opcionFiltrar = this.mustreoExpression.lessthan; break;
+      case this.filtradoEspecialNumeral.lessthanorequalto: opcionFiltrar = this.mustreoExpression.lessthanorequalto; break;
+
+      case this.filtradoEspecialFecha.before: opcionFiltrar = this.mustreoExpression.before; break;
+      case this.filtradoEspecialFecha.after: opcionFiltrar = this.mustreoExpression.after; break;
+      case this.filtradoEspecialFecha.beforeorequal: opcionFiltrar = this.mustreoExpression.beforeorequal; break;
+      case this.filtradoEspecialFecha.afterorequal: opcionFiltrar = this.mustreoExpression.afterorequal; break;
+      //case this.filtradoEspecial.personalizado: opcionFiltrar = this.mustreoExpression.notequals; break;
+      default: break;
+    }
+
+    return '';
+
+
+
+  }
+
+
+
 
   existeEvidencia(evidencias: Array<any>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
@@ -752,6 +976,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.getSummary();
   }
 
+  //SI SE OCUPA
   onFiltroCabecero(val: any, columna: Column) {
     let criterioBusqueda = val.target.value;
     columna.filteredData = columna.data;
@@ -761,6 +986,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     );
   }
 
+  //SI SE OCUPA
   onCabeceroFoco(val: string = '') {
     this.cabeceroSeleccionado = false;
     this.esfilrofoco = val.toUpperCase();
@@ -769,6 +995,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     );
   }
 
+  //SI SE OCUPA
   seleccionCabecero(val: string = '') {
     let header = document.getElementById(val) as HTMLElement;
     header.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -888,6 +1115,34 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   anyUnselected() {
     return this.muestreos.some((f) => !f.isChecked);
+  }
+
+  mostrarModalFiltro(opcion: string, columna: Column) {
+    columna.opctionFiltro = (opcion == this.filtradoEspecial.personalizado) ? this.filtradoEspecial.equals : opcion;
+
+    switch (opcion) {
+
+      case this.filtradoEspecial.personalizado: columna.opctionFiltro = this.filtradoEspecial.equals; break;
+      case this.filtradoEspecialNumeral.between:
+        columna.opctionFiltro = (columna.datype == "number") ? this.filtradoEspecialNumeral.greaterthanorequalto : this.filtradoEspecialFecha.beforeorequal;
+        columna.segundaopctionFiltro = (columna.datype == "number") ? this.filtradoEspecialNumeral.lessthanorequalto : this.filtradoEspecialFecha.afterorequal;
+
+        break;
+
+      default: columna.opctionFiltro = opcion; columna.segundaopctionFiltro = '';
+      break;
+    }
+
+
+
+
+    this.columnaFiltroEspecial = columna;
+
+
+    this.opcionesFiltrosModal = this.opcionesFiltros;
+    (columna.datype == "string") ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1) : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
+
+   
   }
 
 

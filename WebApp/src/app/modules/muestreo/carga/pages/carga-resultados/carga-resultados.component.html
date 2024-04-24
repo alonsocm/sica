@@ -61,19 +61,6 @@
     </ng-container>
   </div>
 
-
-
-  <div class="btn-group">
-    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-      Ejemplo de menú alineado a la derecha
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end">
-      <li><button class="dropdown-item" type="button">Acción</button></li>
-      <li><button class="dropdown-item" type="button">Otra acción</button></li>
-      <li><button class="dropdown-item" type="button">Algo más aqui</button></li>
-    </ul>
-  </div>
-
   <div class="alert alert-secondary" role="alert"
        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
     Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
@@ -88,9 +75,6 @@
     </button>
   </div>
 
-
-
-
   <div class="dvTable table-responsive">
     <table class="table table-bordered table-hover">
       <thead class="thead-light">
@@ -101,32 +85,32 @@
                    title="Selecciona la página actual" />
           </th>
           <th #thprueba
-            [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF') }"
-            scope="col" *ngFor="let columna of this.columns" id="{{columna.label}}">
+              [ngStyle]="{ backgroundColor: (esfilrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfilrofoco) != -1 && this.esfilrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfilrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF') }"
+              scope="col" *ngFor="let columna of this.columns" id="{{columna.label}}">
             <div class="dropdown;" style="width:max-content">
               {{columna.label}}
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
-                title="Filtros" aria-expanded="false"
-                (click)="establecerValoresFiltrosTabla(columna); this.initialValue = ''">
+                      title="Filtros" aria-expanded="false"
+                      (click)="establecerValoresFiltrosTabla(columna); this.initialValue = ''">
                 <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
-                  class="bi bi-caret-down-fill"></i>
+                   class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
                 <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
-                  class="bi bi-arrow-down"></i>
+                   class="bi bi-arrow-down"></i>
                 <i [(ngModel)]="columna.desc"
-                  *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
-                  class="bi bi-arrow-up"></i>
+                   *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                   class="bi bi-arrow-up"></i>
               </button>
               <form [formGroup]="registroParam">
                 <div class="dropdown-menu" style="width:250px; height:500px">
                   <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
                     <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
-                      class="bi bi-sort-alpha-down"></i>
+                       class="bi bi-sort-alpha-down"></i>
                     Ordenar de A a Z
                   </a>
                   <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
                     <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
-                      class="bi bi-sort-alpha-down-alt"></i>
+                       class="bi bi-sort-alpha-down-alt"></i>
                     Ordenar de Z a A
                   </a>
                   <hr class="dropdown-divider">
@@ -136,36 +120,18 @@
                   </a>
 
 
-
-
                   <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    Filtros de texto
-
-                    <!--<a class="dropdown-item">Es igual a...</a>
-    <a class="dropdown-item">Comienza por...</a>
-    <a class="dropdown-item">Termina con...</a>
-    <a class="dropdown-item">Cntiene...</a>-->
+                    {{leyendaFiltrosEspeciales}}
                   </a>
 
-
-
-
                   <div id="dvddd" class="dropdown-menu">
-                    <a (click)="this.opctionFiltro = 'Es igual a'" class="dropdown-item"  data-toggle="modal" data-target="#mdlFiltro">Es igual a ...</a>
-                    <a (click)="this.opctionFiltro = 'No es igual a'" class="dropdown-item">No es igual a ...</a>
-                    <div class="dropdown-divider"></div>
-                    <a (click)="this.opctionFiltro = 'Comienza por'" class="dropdown-item">Comienza por ...</a>
-                    <a (click)="this.opctionFiltro = 'Termina con'" class="dropdown-item">Termina con ...</a>
-                    <div class="dropdown-divider"></div>
-                    <a (click)="this.opctionFiltro = 'Contiene'" class="dropdown-item">Contiene ...</a>
-                    <a (click)="this.opctionFiltro = 'No contiene'" class="dropdown-item">No contiene ...</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item">Filtro personalizado ...</a>
+                    <a *ngFor="let nombre of this.opcionesFiltros; let indice=index" (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal" data-target="#mdlFiltro">
+                      {{nombre}} ...
+                      <div *ngIf="this.indicesopcionesFiltros.includes(indice)"  class="dropdown-divider"></div>
+                    </a>
                   </div>
 
                   <div class="dropdown-divider"></div>
-
-
                   <div style="height:300px; overflow:scroll; padding:5px">
                     <input #txtBuscador class="form-control" placeholder="Buscar" type="text"
                            (input)="onFiltroCabecero($event, columna)" />
@@ -199,14 +165,6 @@
                 </div>
               </form>
             </div>
-
-
-
-
-
-
-
-
           </th>
         </tr>
       </thead>
@@ -268,43 +226,52 @@
         </div>
         <div class="modal-body">
           <p>Mostrar las filas en las cuales:</p>
+          <p>    {{this.columnaFiltroEspecial.label}}   </p>
+          <hr class="red">
           <table>
             <tr>
               <td style="padding:5px;">
-                <select class="form-control" [(ngModel)]="opctionFiltro" name="tipoFiltro">
+                <select class="form-control" [(ngModel)]="columnaFiltroEspecial.opctionFiltro" name="tipoFiltro">
                   <option [ngValue]="null" selected>--Seleccione--</option>
-                 
-                  <option *ngFor="let nombre of opcionesFiltros" [ngValue]="nombre">
+                  <option *ngFor="let nombre of opcionesFiltrosModal" [ngValue]="nombre">
                     {{nombre}}
                   </option>
                 </select>
               </td>
               <td style="width:200px">
-                <select class="form-control">
-                  <option [ngValue]="0" selected>--Seleccione--</option>
+                <select style="font-size:x-small" class="form-control" [(ngModel)]="columnaFiltroEspecial.filtroEspecial">
+                  <input type="text" placeholder="" class="form-control">
+                  <option [ngValue]="0" selected></option>
+                  <option *ngFor="let nombre of columnaFiltroEspecial.filteredData" [ngValue]="nombre.value">
+                    {{nombre.value}}
+                  </option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td>
-                <input style="padding:5px;" type="radio"/> <label>Y</label>
-                <input type="radio"/> <label>O</label>
+              <td style="text-align:center">
+                <input type="radio" checked="true" /> <label style="padding:5px; margin-right:20px">Y</label>
+                <input type="radio" /> <label style="padding:5px">O</label>
               </td>
             </tr>
 
             <tr>
               <td style="padding:5px;">
-                <select class="form-control" [(ngModel)]="segundaopctionFiltro" name="tipoFiltro2">
+                <select class="form-control" [(ngModel)]="columnaFiltroEspecial.segundaopctionFiltro" name="tipoFiltro2">
                   <option [ngValue]="0" selected>--Seleccione--</option>
-
-                  <option *ngFor="let nombre of opcionesFiltros" [ngValue]="nombre">
+                  <option *ngFor="let nombre of opcionesFiltrosModal" [ngValue]="nombre">
                     {{nombre}}
                   </option>
                 </select>
               </td>
               <td style="width:200px">
-                <select class="form-control">
-                  <option [ngValue]="0" selected>--Seleccione--</option>
+
+                <select style="font-size:x-small" class="form-control" [(ngModel)]="columnaFiltroEspecial.segundofiltroEspecial">
+                  <input type="text" placeholder="" class="form-control">
+                  <option [ngValue]="0" selected></option>
+                  <option *ngFor="let nombre of columnaFiltroEspecial.filteredData" [ngValue]="nombre.value">
+                    {{nombre.value}}
+                  </option>
                 </select>
               </td>
             </tr>
@@ -314,19 +281,13 @@
         </div>
         <div class="modal-footer">
           <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="filtroEspecial();">
             Aceptar
           </button>
         </div>
       </div>
     </div>
   </div>
-
-
-
-
-
-
 
   <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog">
