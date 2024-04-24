@@ -65,8 +65,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   esHistorial: boolean = false;
   existeFiltrado: boolean = false;
 
-  
-
   archivo: any;
 
   numeroEntrega: string = '';
@@ -530,7 +528,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           });
 
           column.filteredData = column.data;
-          //this.ordenarAscedente(column.filteredData);
+          this.ordenarAscedente(column.filteredData);
         },
         error: (error) => {},
       });
@@ -548,7 +546,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       );
 
       column.filteredData = distinctThings.sort();
-      //this.ordenarAscedente(column.filteredData);
+      this.ordenarAscedente(column.filteredData);
     }
 
     //filtrados
@@ -565,7 +563,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     );
 
     column.filteredDataFiltrado = distinctThings.sort();
-    //this.ordenarAscedente(column.filteredDataFiltrado);
+    this.ordenarAscedente(column.filteredDataFiltrado);
   }
 
   cargarArchivo(event: Event) {
@@ -1017,6 +1015,18 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
+  ordenarAscedente(column: Array<Item>) {
+    column.sort(function (a: any, b: any) {
+      if (a.value > b.value) {
+        return 1;
+      }
+      if (a.value < b.value) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.muestreoService
@@ -1093,7 +1103,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   getPreviousSelected(
     muestreos: Array<Muestreo>,
     muestreosSeleccionados: Array<Muestreo>
-  ) {  
+  ) {
     muestreos.forEach((f) => {
       let muestreoSeleccionado = muestreosSeleccionados.find(
         (x) => f.muestreoId === x.muestreoId
@@ -1146,4 +1156,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
 
+    if (dropDown.className === 'd-none') {
+      dropDown.className = 'd-block';
+    } else {
+      dropDown.className = 'd-none';
+    }
+    $event.stopPropagation();
+  }
 }

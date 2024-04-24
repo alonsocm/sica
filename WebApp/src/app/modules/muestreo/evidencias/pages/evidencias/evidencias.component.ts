@@ -10,6 +10,10 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { EvidenciasService } from '../../services/evidencias.service';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
+import { Column } from 'src/app/interfaces/filter/column';
+import { Item } from 'src/app/interfaces/filter/item';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-evidencias',
@@ -18,15 +22,42 @@ import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 })
 export class EvidenciasComponent extends BaseService implements OnInit {
   muestreos: Array<Muestreo> = [];
-  muestreosFiltrados: Array<Muestreo> = [];
+  muestreosSeleccionados: Array<Muestreo> = [];
   perfil: string = '';
+
+  registroParam: FormGroup;
+
+  initialValue: string = '';
+  esfilrofoco: string = '';
+  opctionFiltro: string = '';
+  existeFiltrado: boolean = false;
+  cadena: string = '';
+  esHistorial: boolean = false;
+  columns: Array<Column> = [];
+
+  cabeceroSeleccionado: boolean = false;
+
+  //Selección de registros
+  selectAllOption: boolean = false;
+  allSelected: boolean = false;
+  selectedPage: boolean = false;
+  orderBy: { column: string; type: string } = { column: '', type: '' };
+
+  //Paginación
+  totalItems = 0;
 
   constructor(
     private evidenciasService: EvidenciasService,
     private muestreoService: MuestreoService,
-    private usuario: AuthService
+    private usuario: AuthService,
+    private fb: FormBuilder
   ) {
     super();
+    this.registroParam = this.fb.group({
+      chkFiltro: new FormControl(),
+      chckAllFiltro: new FormControl(),
+      aOrdenarAZ: new FormControl(),
+    });
   }
 
   ngOnInit(): void {
@@ -43,186 +74,340 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     //  error: (error) => {},
     //});
 
-
     //Implementación de lo de Alonso
+    this.consultarMonitoreos();
+  }
+
+  public consultarMonitoreos(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ) {
     this.muestreoService
-      .obtenerMuestreosPaginados(false, this.page, this.NoPage, '')
+      .obtenerMuestreosPaginados(false, page, pageSize, filter, this.orderBy)
       .subscribe({
         next: (response: any) => {
-          console.log(response);
-          //this.totalItems = response.totalRecords;
+          this.selectedPage = false;
           this.muestreos = response.data;
-          this.muestreosFiltrados = this.muestreos;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
+          this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
+          this.selectedPage = this.anyUnselected() ? false : true;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
-
-
   }
 
   definirColumnas() {
-    let nombresColumnas: Array<Columna> = [
+    let nombresColumnas: Array<Column> = [
       {
-        nombre: 'noEntrega',
-        etiqueta: 'N° ENTREGA',
-        orden: 1,
-        filtro: new Filter(),
+        name: 'noEntrega',
+        label: 'N° ENTREGA',
+        order: 1,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'claveSitioOriginal',
-        etiqueta: 'CLAVE SITIO ORIGINAL',
-        orden: 2,
-        filtro: new Filter(),
+        name: 'claveSitioOriginal',
+        label: 'CLAVE SITIO ORIGINAL',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'claveSitio',
-        etiqueta: 'CLAVE SITIO',
-        orden: 3,
-        filtro: new Filter(),
+        name: 'claveSitio',
+        label: 'CLAVE SITIO',
+        order: 3,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'claveMonitoreo',
-        etiqueta: 'CLAVE MONITOREO',
-        orden: 4,
-        filtro: new Filter(),
+        name: 'claveMonitoreo',
+        label: 'CLAVE MONITOREO',
+        order: 4,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'nombreSitio',
-        etiqueta: 'NOMBRE SITIO',
-        orden: 5,
-        filtro: new Filter(),
-      },
-      { nombre: 'ocdl', 
-        etiqueta: 'OC/DL', 
-        orden: 6, 
-        filtro: new Filter() },
-      {
-        nombre: 'cuerpoAgua',
-        etiqueta: 'CUERPO DE AGUA',
-        orden: 7,
-        filtro: new Filter(),
+        name: 'nombreSitio',
+        label: 'NOMBRE SITIO',
+        order: 5,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'tipoCuerpoAguaOriginal',
-        etiqueta: 'TIPO CUERPO AGUA ORIGINAL',
-        orden: 8,
-        filtro: new Filter(),
+        name: 'ocdl',
+        label: 'OC/DL',
+        order: 6,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'tipoCuerpoAgua',
-        etiqueta: 'TIPO CUERPO AGUA',
-        orden: 9,
-        filtro: new Filter(),
+        name: 'cuerpoAgua',
+        label: 'CUERPO DE AGUA',
+        order: 7,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'tipoSitio',
-        etiqueta: 'TIPO SITIO',
-        orden: 10,
-        filtro: new Filter(),
+        name: 'tipoCuerpoAguaOriginal',
+        label: 'TIPO CUERPO AGUA ORIGINAL',
+        order: 8,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'laboratorio',
-        etiqueta: 'LABORATORIO',
-        orden: 11,
-        filtro: new Filter(),
+        name: 'tipoCuerpoAgua',
+        label: 'TIPO CUERPO AGUA',
+        order: 9,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'laboratorioSubrogado',
-        etiqueta: 'LABORATORIO SUBROGADO',
-        orden: 12,
-        filtro: new Filter(),
+        name: 'tipoSitio',
+        label: 'TIPO SITIO',
+        order: 10,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'fechaProgramada',
-        etiqueta: 'FECHA PROGRAMACIÓN',
-        orden: 13,
-        filtro: new Filter(),
+        name: 'laboratorio',
+        label: 'LABORATORIO',
+        order: 11,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'fechaRealizacion',
-        etiqueta: 'FECHA REALIZACIÓN',
-        orden: 14,
-        filtro: new Filter(),
+        name: 'laboratorioSubrogado',
+        label: 'LABORATORIO SUBROGADO',
+        order: 12,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'programaAnual',
-        etiqueta: 'AÑO',
-        orden: 15,
-        filtro: new Filter(),
+        name: 'fechaProgramada',
+        label: 'FECHA PROGRAMACIÓN',
+        order: 13,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'horaInicio',
-        etiqueta: 'HORA INICIO MUESTREO',
-        orden: 16,
-        filtro: new Filter(),
+        name: 'fechaRealizacion',
+        label: 'FECHA REALIZACIÓN',
+        order: 14,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'horaFin',
-        etiqueta: 'HORA FIN MUESTREO',
-        orden: 17,
-        filtro: new Filter(),
+        name: 'programaAnual',
+        label: 'AÑO',
+        order: 15,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'observaciones',
-        etiqueta: 'OBSERVACIONES',
-        orden: 18,
-        filtro: new Filter(),
+        name: 'horaInicio',
+        label: 'HORA INICIO MUESTREO',
+        order: 16,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'fechaCargaEvidencias',
-        etiqueta: 'FECHA CARGA EVIDENCIAS A SICA',
-        orden: 19,
-        filtro: new Filter(),
+        name: 'horaFin',
+        label: 'HORA FIN MUESTREO',
+        order: 17,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
       {
-        nombre: 'numeroCargaEvidencias',
-        etiqueta: 'NÚMERO DE CARGA DE EVIDENCIAS',
-        orden: 20,
-        filtro: new Filter(),
+        name: 'observaciones',
+        label: 'OBSERVACIONES',
+        order: 18,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
+      },
+      {
+        name: 'fechaCargaEvidencias',
+        label: 'FECHA CARGA EVIDENCIAS A SICA',
+        order: 19,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
+      },
+      {
+        name: 'numeroCargaEvidencias',
+        label: 'NÚMERO DE CARGA DE EVIDENCIAS',
+        order: 20,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        filteredDataFiltrado: [],
       },
     ];
 
-    this.columnas = nombresColumnas;
+    this.columns = nombresColumnas;
   }
 
-  private establecerValoresFiltrosTabla() {
-    this.columnas.forEach((f) => {
-      f.filtro.values = [
-        ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
-      ];
-    });
-  }
+  public establecerValoresFiltrosTabla(column: Column) {
+    console.log(this.muestreos);
 
-  seleccionarTodos(): void {
-    this.muestreosFiltrados.map((m) => {
-      if (this.seleccionarTodosChck) {
-        m.isChecked ? true : (m.isChecked = true);
-      } else {
-        m.isChecked ? (m.isChecked = false) : true;
-      }
-    });
-    this.obtenerSeleccionados();
-  }
+    if (!column.filtered && !this.existeFiltrado) {
+      this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
+        next: (response: any) => {
+          column.data = response.data.map((register: any) => {
+            let item: Item = {
+              value: register,
+              checked: true,
+            };
+            return item;
+          });
 
-  obtenerSeleccionados(): Array<Muestreo> {
-    return this.muestreosFiltrados.filter((f) => f.isChecked);
-  }
-
-  seleccionar(): void {
-    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
-  }
-
-  filtrar() {
-    this.muestreosFiltrados = this.muestreos;
-    this.columnas.forEach((columna) => {
-      this.muestreosFiltrados = this.muestreosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
+          column.filteredData = column.data;
+          this.ordenarAscedente(column.filteredData);
+        },
+        error: (error) => {},
       });
-    });
+    } else if (!column.filtered && this.existeFiltrado) {
+      column.data = this.muestreos.map((m: any) => {
+        let item: Item = {
+          value: m[column.name],
+          checked: true,
+        };
+        return item;
+      });
+      column.filteredData = column.data;
+      const distinctThings = column.filteredData.filter(
+        (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
+      );
 
-    this.establecerValoresFiltrosTabla();
+      column.filteredData = distinctThings.sort();
+      this.ordenarAscedente(column.filteredData);
+    }
+
+    //filtrados
+    column.filteredDataFiltrado = this.muestreos.map((m: any) => {
+      let item: Item = {
+        value: m[column.name],
+        checked: true,
+      };
+      return item;
+    });
+    column.filteredDataFiltrado = column.data;
+    const distinctThings = column.filteredDataFiltrado.filter(
+      (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
+    );
+
+    column.filteredDataFiltrado = distinctThings.sort();
+    this.ordenarAscedente(column.filteredDataFiltrado);
+  }
+
+  ordenarAscedente(column: Array<Item>) {
+    column.sort(function (a: any, b: any) {
+      if (a.value > b.value) {
+        return 1;
+      }
+      if (a.value < b.value) {
+        return -1;
+      }
+      return 0;
+    });
   }
 
   existeEvidencia(evidencias: Array<Evidencia>, sufijoEvidencia: string) {
@@ -234,7 +419,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   descargarEvidencia(claveMuestreo: string, sufijo: string) {
     this.loading = !this.loading;
-    let muestreo = this.muestreosFiltrados.find(
+    let muestreo = this.muestreos.find(
       (x) => x.claveMonitoreo == claveMuestreo
     );
     let nombreEvidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
@@ -258,11 +443,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   }
 
   descargarEvidencias() {
-    let muestreosSeleccionados = this.obtenerSeleccionados().map((m) => {
-      return m.muestreoId;
-    });
-
-    if (muestreosSeleccionados.length === 0) {
+    if (this.muestreosSeleccionados.length === 0) {
       this.mostrarMensaje(
         'No ha seleccionado ningún monitoreo',
         TipoMensaje.Alerta
@@ -271,24 +452,39 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     }
 
     this.loading = true;
-    this.evidenciasService.descargarArchivos(muestreosSeleccionados).subscribe({
-      next: (response: any) => {
-        console.table(response);
-        this.loading = !this.loading;
-        this.seleccionarTodosChck = false;
-        this.muestreosFiltrados.map((m) => (m.isChecked = false));
-        FileService.download(response, 'evidencias.zip');
-      },
-      error: (response: any) => {
-        this.loading = !this.loading;
-        this.muestreosFiltrados.map((m) => (m.isChecked = false));
-        this.mostrarMensaje(
-          'No fue posible descargar la información',
-          TipoMensaje.Error
-        );
-        this.hacerScroll();
-      },
-    });
+    this.evidenciasService
+      .descargarArchivos(this.muestreosSeleccionados.map((m) => m.muestreoId))
+      .subscribe({
+        next: (response: any) => {
+          this.loading = !this.loading;
+          this.seleccionarTodosChck = false;
+          this.muestreosSeleccionados.map((m) => (m.isChecked = false));
+          FileService.download(response, 'evidencias.zip');
+        },
+        error: (response: any) => {
+          this.loading = !this.loading;
+          this.muestreosSeleccionados.map((m) => (m.isChecked = false));
+          this.mostrarMensaje(
+            'No fue posible descargar la información',
+            TipoMensaje.Error
+          );
+          this.hacerScroll();
+        },
+      });
+
+    this.resetValues();
+    this.unselectMuestreos();
+  }
+
+  private resetValues() {
+    this.muestreosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+  }
+
+  private unselectMuestreos() {
+    this.muestreos.forEach((m) => (m.isChecked = false));
   }
 
   cargarEvidencias(event: Event) {
@@ -333,14 +529,14 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   }
 
   limpiarFiltros() {
-    this.columnas.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrar();
-    this.filtros.forEach((element: any) => {
-      element.clear();
-    });
-    document.getElementById('dvMessage')?.click();
+    // this.columnas.forEach((f) => {
+    //   f.filtro.selectedValue = 'Seleccione';
+    // });
+    // this.filtrar();
+    // this.filtros.forEach((element: any) => {
+    //   element.clear();
+    // });
+    // document.getElementById('dvMessage')?.click();
   }
 
   mostrarColumna(nombreColumna: string): boolean {
@@ -362,5 +558,167 @@ export class EvidenciasComponent extends BaseService implements OnInit {
       this.perfil ===
         (Perfil.ADMINISTRADOR || Perfil.SECAIA1 || Perfil.SECAIA2) ?? true
     );
+  }
+
+  onFiltroCabecero(val: any, columna: Column) {
+    let criterioBusqueda = val.target.value;
+    columna.filteredData = columna.data;
+    columna.filteredData = columna.filteredData?.filter(
+      (f) =>
+        f.value.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1
+    );
+  }
+
+  seleccionarFiltro(columna: Column): void {}
+
+  filtrar(columna: Column) {
+    this.existeFiltrado = true;
+    let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
+    let opciones = filtrosSeleccionados
+      .map((x) => x.value)
+      .toString()
+      .replaceAll(',', '_');
+
+    if (this.cadena.indexOf(columna.name) != -1) {
+      this.cadena =
+        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(columna) : '';
+    }
+
+    this.cadena =
+      this.cadena != ''
+        ? this.cadena + '%' + columna.name + '_' + opciones
+        : columna.name + '_' + opciones;
+    this.consultarMonitoreos();
+    columna.filtered = true;
+    //this.establecerValoresFiltrosTabla(columna);
+    this.esHistorial = true;
+  }
+
+  validarExisteFiltrado(): boolean {
+    return this.columns.filter((x) => x.filtered == true).length > 0
+      ? true
+      : false;
+  }
+
+  eliminarFiltro(columna: Column): string {
+    let cadenaanterior = this.cadena.split('%');
+    let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
+    let indexx = cadenaanterior.indexOf(repetidos.toString());
+    cadenaanterior.splice(indexx, 1);
+    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
+  }
+
+  onSpecialFiltersClick($event: MouseEvent, columnName: string) {
+    let dropDown = document.getElementById(
+      'filters-' + columnName
+    ) as HTMLElement;
+
+    if (dropDown.className === 'd-none') {
+      dropDown.className = 'd-block';
+    } else {
+      dropDown.className = 'd-none';
+    }
+    $event.stopPropagation();
+  }
+
+  onSelectPageClick() {
+    this.muestreos.map((m) => {
+      m.isChecked = this.selectedPage;
+
+      //Buscamos el registro en los seleccionados
+      let index = this.muestreosSeleccionados.findIndex(
+        (d) => d.muestreoId === m.muestreoId
+      );
+
+      if (index == -1) {
+        //No existe en seleccionados, lo agremos
+        this.muestreosSeleccionados.push(m);
+      } else if (!this.selectedPage) {
+        //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    });
+
+    if (this.selectAllOption && !this.selectedPage) {
+      this.selectAllOption = false;
+      this.allSelected = false;
+    } else if (!this.selectAllOption && this.selectedPage) {
+      this.selectAllOption = true;
+    }
+
+    this.getSummary();
+  }
+
+  sort(column: string, type: string) {
+    this.orderBy = { column, type };
+    this.muestreoService
+      .obtenerMuestreosPaginados(false, this.page, this.NoPage, this.cadena, {
+        column: column,
+        type: type,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.muestreos = response.data;
+        },
+        error: (error) => {},
+      });
+  }
+
+  getSummary() {
+    this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
+  }
+
+  anyUnselected() {
+    return this.muestreos.some((f) => !f.isChecked);
+  }
+
+  getPreviousSelected(
+    muestreos: Array<Muestreo>,
+    muestreosSeleccionados: Array<Muestreo>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.muestreoId === x.muestreoId
+      );
+
+      if (muestreoSeleccionado != undefined) {
+        f.isChecked = true;
+      }
+    });
+  }
+
+  onSelectClick(muestreo: Muestreo) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (muestreo.isChecked) {
+      this.muestreosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected() ? false : true;
+    } else {
+      let index = this.muestreosSeleccionados.findIndex(
+        (m) => m.muestreoId === muestreo.muestreoId
+      );
+
+      if (index > -1) {
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    }
+
+    this.getSummary();
+  }
+
+  pageClic(page: any) {
+    this.consultarMonitoreos(page, this.NoPage, this.cadena);
+    this.page = page;
+  }
+
+  onSelectAllPagesClick() {
+    this.allSelected = true;
+  }
+
+  onUnselectAllClick() {
+    this.allSelected = false;
   }
 }
