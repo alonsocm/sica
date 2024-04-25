@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.v1
@@ -10,5 +9,7 @@ namespace WebAPI.Controllers.v1
     {
         private IMediator? _mediator;
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        protected const int Page = 1;
+        protected const int PageSize = 30;
     }
 }

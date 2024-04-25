@@ -511,17 +511,17 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new ActualizarParametroCommand { Parametros = request }));
         }
 
-        [HttpGet("ResultadosMuestreoParametrosTemp")]
-        public async Task<IActionResult> GetMuestreoParametrosTemp(int UserId, int CuerpAId, int EstausId, int anio)
+        [HttpGet("ParametrosMuestreo")]
+        public async Task<IActionResult> Get(int usuario, int tipoCuerpoAgua, int estatus, int anio, int page = Page, int pageSize = PageSize)
         {
             return Ok(await Mediator.Send(new GetResultadosParametros
             {
-                UserId = UserId,
-                CuerpoAgua = CuerpAId,
-                Estatus = EstausId,
+                UserId = usuario,
+                CuerpoAgua = tipoCuerpoAgua,
+                Estatus = estatus,
                 Anio = anio,
-                Page = 1,
-                PageSize = 30
+                Page = page,
+                PageSize = pageSize
             }));
         }
 
