@@ -12,6 +12,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { TipoHomologado } from 'src/app/interfaces/catalogos/tipo-homologado';
 import { AuthService } from '../../../login/services/auth.service';
 import { Perfil } from '../../../../shared/enums/perfil';
+import { Muestreo } from '../models/muestreo';
 
 @Component({
   selector: 'app-formato-resultado',
@@ -19,14 +20,14 @@ import { Perfil } from '../../../../shared/enums/perfil';
   styleUrls: ['./formato-resultado.component.css'],
 })
 export class FormatoResultadoComponent extends BaseService implements OnInit {
-  resultados: Array<Resultado> = [];
-  resultadosFiltrados: Array<Resultado> = [];
+  muestreos: Array<Muestreo> = [];
+  muestreosSeleccionados: Array<Resultado> = [];
   resultadosFinal: Array<Resultado> = [];
   cuerpoAgua: Array<TipoHomologado> = [];
   perfil: string = '';
   parametrosTotales: any[] = [];
   parametros: Array<Columna> = [];
-  opctionCuerpo: number = 0;
+  tipoCuerpoAgua: number = -1;
   paramTotalOrdenados: Array<any> = [];
   camposDescarga: Array<ResultadoDescarga> = [];
   esAdmin: boolean = false;
@@ -140,17 +141,19 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     return mostrar;
   }
 
-  consultarMonitoreos(tipoCuerpo: number) {
+  consultarMuestreos(tipoCuerpo: number, page: number) {
     this.loading = !this.loading;
-    this.formatoService.getMuestreosParametros(tipoCuerpo).subscribe({
-      next: (response: any) => {
-        this.loading = false;
-        this.resultados = response.data;
-        this.resultadosFiltrados = this.resultados;
-        this.establecerValoresFiltrosTabla();
-      },
-      error: (error) => {},
-    });
+    this.formatoService
+      .getMuestreosParametros(tipoCuerpo, page, this.pageSize)
+      .subscribe({
+        next: (response: any) => {
+          this.totalItems = response.totalRecords;
+          this.loading = false;
+          this.muestreos = response.data;
+          this.establecerValoresFiltrosTabla();
+        },
+        error: (error) => {},
+      });
   }
 
   consultaCuerpoAgua() {
@@ -163,29 +166,27 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   FiltrarCuerpoAgua() {
-    if (this.opctionCuerpo == 0) {
-      this.resultadosFiltrados = [];
-    } else if (this.opctionCuerpo == null) {
-      this.consultarMonitoreos(0);
+    if (this.tipoCuerpoAgua == -1) {
+      this.muestreos = [];
     } else {
-      this.consultarMonitoreos(this.opctionCuerpo);
+      this.consultarMuestreos(this.tipoCuerpoAgua, this.page);
     }
   }
 
   establecerValoresFiltrosTabla() {
     this.columnas.forEach((f) => {
       f.filtro.values = [
-        ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
+        ...new Set(this.muestreos.map((m: any) => m[f.nombre])),
       ];
     });
   }
 
   exportarResultados(): void {
-    console.log(this.resultadosFiltrados);
+    console.log(this.muestreosSeleccionados);
     let muestreosSeleccionados = this.obtenerSeleccionadosDescarga();
     if (
       muestreosSeleccionados.length === 0 &&
-      this.resultadosFiltrados.length == 0
+      this.muestreosSeleccionados.length == 0
     ) {
       this.mostrarMensaje('Debe seleccionar al menos un monitoreo', 'warning');
       return this.hacerScroll();
@@ -195,7 +196,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       .exportarResultadosExcel(muestreosSeleccionados, this.esAdmin)
       .subscribe({
         next: (response: any) => {
-          this.resultadosFiltrados = this.resultadosFiltrados.map((m) => {
+          this.muestreosSeleccionados = this.muestreosSeleccionados.map((m) => {
             m.isChecked = false;
             return m;
           });
@@ -214,8 +215,8 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   obtenerSeleccionadosDescarga(): Array<any> {
-    var selec = this.resultadosFiltrados.filter((f) => f.isChecked);
-    selec = selec.length == 0 ? this.resultadosFiltrados : selec;
+    var selec = this.muestreosSeleccionados.filter((f) => f.isChecked);
+    selec = selec.length == 0 ? this.muestreosSeleccionados : selec;
     this.camposDescarga = [];
     if (selec.length > 0) {
       for (var i = 0; i < selec.length; i++) {
@@ -240,17 +241,17 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   filtrar(): void {
-    this.loading = !this.loading;
-    this.resultadosFiltrados = this.resultados;
-    this.columnas.forEach((columna) => {
-      this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
-      });
-    });
-    this.loading = false;
-    this.establecerValoresFiltrosTabla();
+    // this.loading = !this.loading;
+    // this.resultadosFiltrados = this.resultados;
+    // this.columnas.forEach((columna) => {
+    //   this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
+    //     return columna.filtro.selectedValue == 'Seleccione'
+    //       ? true
+    //       : f[columna.nombre] == columna.filtro.selectedValue;
+    //   });
+    // });
+    // this.loading = false;
+    // this.establecerValoresFiltrosTabla();
   }
 
   limpiarFiltros() {
@@ -290,5 +291,10 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     }
 
     return parametros[index].resultado;
+  }
+
+  onPageClick(page: any) {
+    this.page = page;
+    this.consultarMuestreos(this.tipoCuerpoAgua, page);
   }
 }

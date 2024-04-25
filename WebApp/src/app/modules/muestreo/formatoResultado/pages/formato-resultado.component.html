@@ -12,10 +12,10 @@
     <div class="clearfix">
         <div class="float-left">
             <label for="tipoCuerpoAgua">Tipo de Cuerpo de Agua Original:</label>
-            <select class="form-control" [(ngModel)]="opctionCuerpo" (change)="FiltrarCuerpoAgua()"
+            <select class="form-control" [(ngModel)]="tipoCuerpoAgua" (change)="FiltrarCuerpoAgua()"
                 name="tipoCuerpoAgua" title="Seleccione el tipo cuerpo de agua">
-                <option [ngValue]="0" selected>--Seleccione--</option>
-                <option [ngValue]="null">Todos</option>
+                <option [ngValue]="-1" selected>--Seleccione--</option>
+                <option [ngValue]="0">Todos</option>
                 <option *ngFor="let nombre of cuerpoAgua" [ngValue]="nombre.id">
                     {{nombre.descripcion}}
                 </option>
@@ -40,7 +40,7 @@
                     <th style="text-align:center" class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
                         <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                            (change)="seleccionarAll(this.resultadosFiltrados)" />
+                            (change)="seleccionarAll(this.muestreos)" />
                     </th>
                     <ng-container *ngFor="let columna of this.columnas">
                         <th *ngIf="mostrarColumna(columna.etiqueta)">
@@ -51,9 +51,9 @@
             </thead>
             <tbody>
                 <tr
-                    *ngFor="let muestreo of this.resultadosFiltrados| paginate: { itemsPerPage:30, currentPage: page }; let indice=index">
+                    *ngFor="let muestreo of this.muestreos| paginate: { itemsPerPage:pageSize, currentPage: page, totalItems: totalItems }; let indice=index">
                     <td style="text-align:center" class="checkBox-center">
-                        <input type="checkbox" (change)="seleccionarn();" [(ngModel)]="muestreo.isChecked"
+                        <input type="checkbox" (change)="seleccionarn();" [(ngModel)]="muestreo.selected"
                             title="Seleccionar">
                     </td>
                     <td *ngIf="perfil == 'ADMINISTRADOR' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
@@ -71,12 +71,12 @@
                         <td>{{getValueParam(parametro.claveParametro, muestreo.parametros)}}</td>
                     </ng-container>
                 </tr>
-                <tr *ngIf="this.resultadosFiltrados.length==0">
+                <tr *ngIf="this.muestreos.length==0">
                     <td class="td-center" colspan="650">No se encontraron registros</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
+    <pagination-controls (pageChange)="onPageClick($event)" previousLabel="Anterior" nextLabel="Siguiente">
     </pagination-controls>
 </div>

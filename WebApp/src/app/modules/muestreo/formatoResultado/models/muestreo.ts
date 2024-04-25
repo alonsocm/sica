@@ -1,0 +1,15 @@
+import { Parametro } from './parametro';
+import { Register } from './register';
+
+export interface Muestreo extends Register {
+  claveSitioOriginal: string;
+  claveSitio: string;
+  claveMonitoreo: string;
+  fechaRealizacion: string;
+  laboratorio: string;
+  noEntregaOCDL: string;
+  tipoCuerpoAgua: string;
+  tipoHomologado: string;
+  tipoSitio: string;
+  parametros: Array<Parametro>;
+}

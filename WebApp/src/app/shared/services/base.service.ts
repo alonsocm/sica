@@ -10,6 +10,8 @@ import { FilterFinal } from '../../interfaces/filtro.interface';
 export class BaseService {
   public page: number = 1;
   public NoPage: number = 30;
+  public pageSize: number = 30;
+  public totalItems: number = 0;
 
   noRegistro: string = 'No se encontraron registros';
   filtroResumen: string = 'Seleccionar filtro';

@@ -43,9 +43,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   selectedPage: boolean = false;
   orderBy: { column: string; type: string } = { column: '', type: '' };
 
-  //Paginación
-  totalItems = 0;
-
   constructor(
     private evidenciasService: EvidenciasService,
     private muestreoService: MuestreoService,
@@ -112,7 +109,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         filteredData: [],
         filteredDataFiltrado: [],
         datype: '',
-
       },
       {
         name: 'claveSitioOriginal',

@@ -14,7 +14,12 @@ import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Item } from 'src/app/interfaces/filter/item';
 
-import { filtrosEspeciales, filtrosEspecialesFecha, filtrosEspecialesNumeral, mustreoExpression } from 'src/app/shared/enums/filtrosEspeciales';
+import {
+  filtrosEspeciales,
+  filtrosEspecialesFecha,
+  filtrosEspecialesNumeral,
+  mustreoExpression,
+} from 'src/app/shared/enums/filtrosEspeciales';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -39,24 +44,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   resultadosEnviados: Array<number> = [];
 
-  filtradoEspecial: filtrosEspeciales = new filtrosEspeciales;
-  filtradoEspecialNumeral: filtrosEspecialesNumeral = new filtrosEspecialesNumeral;
-  filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha;
+  filtradoEspecial: filtrosEspeciales = new filtrosEspeciales();
+  filtradoEspecialNumeral: filtrosEspecialesNumeral =
+    new filtrosEspecialesNumeral();
+  filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha();
 
-  mustreoExpression: mustreoExpression = new mustreoExpression;
+  mustreoExpression: mustreoExpression = new mustreoExpression();
 
   //opcionesFiltros: Array<string> = ["Es igual a", "No es igual a", "Es mayor que", "Es mayor o igual a", "Es menor que", "Es menor o igual a", "Comienza por", "No comienza por", "Termina con", "No termina con", "Contiene", "No contiene"];
 
   opcionesFiltros: Array<string> = [];
   opcionesFiltrosModal: Array<string> = [];
 
-
   leyendaFiltrosEspeciales: string = '';
   indicesopcionesFiltros: Array<number> = [];
-
-
-
-
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
@@ -71,12 +72,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   anioOperacion: string = '';
   initialValue: string = '';
   cadena: string = '';
-
-  //Paginación
-  totalItems = 0;
-
-
-
 
   opcionColumnaFiltro: string = '';
 
@@ -98,7 +93,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   esfilrofoco: string = '';
   columns: Array<Column> = [];
 
-  columnaFiltroEspecial: Column = {    
+  columnaFiltroEspecial: Column = {
     name: 'estatus',
     label: 'ESTATUS',
     order: 1,
@@ -110,13 +105,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     filteredData: [],
     filteredDataFiltrado: [],
     datype: 'string',
-    opctionFiltro:'',
-    segundaopctionFiltro:'',
-    filtroEspecial:'',
-    segundofiltroEspecial: ''
-   
-  };  
-
+    opctionFiltro: '',
+    segundaopctionFiltro: '',
+    filtroEspecial: '',
+    segundofiltroEspecial: '',
+  };
 
   constructor(
     private muestreoService: MuestreoService,
@@ -128,11 +121,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       chckAllFiltro: new FormControl(),
       aOrdenarAZ: new FormControl(),
     });
-
-
-    
-
-
   }
 
   ngOnInit(): void {
@@ -157,8 +145,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
-
+        datosSeleccionados: '',
       },
       {
         name: 'evidencias',
@@ -174,7 +161,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'numeroEntrega',
@@ -190,7 +177,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'number',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'claveSitio',
@@ -206,7 +193,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: '',
@@ -222,7 +209,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'claveMonitoreo',
@@ -238,7 +225,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'tipoSitio',
@@ -254,7 +241,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'nombreSitio',
@@ -270,7 +257,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'ocdl',
@@ -286,7 +273,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'tipoCuerpoAgua',
@@ -302,7 +289,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'subTipoCuerpoAgua',
@@ -318,7 +305,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'programaAnual',
@@ -334,7 +321,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'laboratorio',
@@ -350,7 +337,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'laboratorioSubrogado',
@@ -366,7 +353,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'fechaRealizacion',
@@ -380,7 +367,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'fechaProgramada',
@@ -396,7 +383,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'horaInicio',
@@ -412,7 +399,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'horaFin',
@@ -428,7 +415,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'fechaCarga',
@@ -444,7 +431,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
       {
         name: 'fechaEntregaMuestreo',
@@ -460,7 +447,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',
-        datosSeleccionados: ''
+        datosSeleccionados: '',
       },
     ];
 
@@ -502,18 +489,38 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
-
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
 
     switch (column.datype) {
+      case 'string':
+        this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de texto';
+        this.indicesopcionesFiltros = [1, 3, 5];
+        break;
+      case 'number':
+        this.opcionesFiltros = Object.entries(this.filtradoEspecialNumeral).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de número';
+        this.indicesopcionesFiltros = [1, 6];
+        break;
+      case 'date':
+        this.opcionesFiltros = Object.entries(this.filtradoEspecialFecha).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de fecha';
+        this.indicesopcionesFiltros = [0, 5];
+        break;
+      default:
+        this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de texto';
+        break;
 
-      case "string": this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de texto"; this.indicesopcionesFiltros = [1, 3, 5]; break;
-      case "number": this.opcionesFiltros = Object.entries(this.filtradoEspecialNumeral).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de número"; this.indicesopcionesFiltros = [1,6]; break;
-      case "date": this.opcionesFiltros = Object.entries(this.filtradoEspecialFecha).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de fecha"; this.indicesopcionesFiltros = [0,5]; break;
-      default: this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de texto";  break;
-
-
-       // this.opcionesFiltros.splice
+      // this.opcionesFiltros.splice
     }
 
     if (!column.filtered && !this.existeFiltrado) {
@@ -642,14 +649,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   filtrar(columna: Column) {
     this.existeFiltrado = true;
     let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-    columna.datosSeleccionados = filtrosSeleccionados.map((x) => x.value).toString();
+    columna.datosSeleccionados = filtrosSeleccionados
+      .map((x) => x.value)
+      .toString();
 
     //let opciones = filtrosSeleccionados
     //  .map((x) => x.value)
     //  .toString()
     //  .replaceAll(',', '_');
-
-    
 
     if (this.cadena.indexOf(columna.name) != -1) {
       this.cadena =
@@ -658,58 +665,98 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.cadena =
       this.cadena != ''
-        ? this.cadena + '%' + columna.name + '_' + columna.datosSeleccionados.replace(',', '_')
+        ? this.cadena +
+          '%' +
+          columna.name +
+          '_' +
+          columna.datosSeleccionados.replace(',', '_')
         : columna.name + '_' + columna.datosSeleccionados.replace(',', '_');
     this.consultarMonitoreos();
-    columna.filtered = true;  
+    columna.filtered = true;
     this.esHistorial = true;
   }
 
-  filtroEspecial() {   
-  
+  filtroEspecial() {
     if (this.cadena.indexOf(this.columnaFiltroEspecial.name) != -1) {
       this.cadena =
-        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(this.columnaFiltroEspecial) : '';
+        this.cadena.indexOf('%') != -1
+          ? this.eliminarFiltro(this.columnaFiltroEspecial)
+          : '';
     }
 
     let opcionFiltrar;
     switch (this.columnaFiltroEspecial.opctionFiltro) {
+      case this.filtradoEspecial.beginswith:
+        opcionFiltrar = this.mustreoExpression.beginswith;
+        break;
+      case this.filtradoEspecial.contains:
+        opcionFiltrar = this.mustreoExpression.contains;
+        break;
+      case this.filtradoEspecial.endswith:
+        opcionFiltrar = this.mustreoExpression.endswith;
+        break;
+      case this.filtradoEspecial.equals:
+        opcionFiltrar = this.mustreoExpression.equals;
+        break;
+      case this.filtradoEspecial.notcontains:
+        opcionFiltrar = this.mustreoExpression.notcontains;
+        break;
+      case this.filtradoEspecial.notequals:
+        opcionFiltrar = this.mustreoExpression.notequals;
+        break;
 
-      case this.filtradoEspecial.beginswith: opcionFiltrar = this.mustreoExpression.beginswith; break;
-      case this.filtradoEspecial.contains: opcionFiltrar = this.mustreoExpression.contains; break;
-      case this.filtradoEspecial.endswith: opcionFiltrar = this.mustreoExpression.endswith; break;
-      case this.filtradoEspecial.equals: opcionFiltrar = this.mustreoExpression.equals; break;
-      case this.filtradoEspecial.notcontains: opcionFiltrar = this.mustreoExpression.notcontains; break;
-      case this.filtradoEspecial.notequals: opcionFiltrar = this.mustreoExpression.notequals; break;
+      case this.filtradoEspecialNumeral.greaterthan:
+        opcionFiltrar = this.mustreoExpression.greaterthan;
+        break;
+      case this.filtradoEspecialNumeral.greaterthanorequalto:
+        opcionFiltrar = this.mustreoExpression.greaterthanorequalto;
+        break;
+      case this.filtradoEspecialNumeral.lessthan:
+        opcionFiltrar = this.mustreoExpression.lessthan;
+        break;
+      case this.filtradoEspecialNumeral.lessthanorequalto:
+        opcionFiltrar = this.mustreoExpression.lessthanorequalto;
+        break;
 
-      case this.filtradoEspecialNumeral.greaterthan: opcionFiltrar = this.mustreoExpression.greaterthan; break;
-      case this.filtradoEspecialNumeral.greaterthanorequalto: opcionFiltrar = this.mustreoExpression.greaterthanorequalto; break;
-      case this.filtradoEspecialNumeral.lessthan: opcionFiltrar = this.mustreoExpression.lessthan; break;
-      case this.filtradoEspecialNumeral.lessthanorequalto: opcionFiltrar = this.mustreoExpression.lessthanorequalto; break;
-
-      case this.filtradoEspecialFecha.before: opcionFiltrar = this.mustreoExpression.before; break;
-      case this.filtradoEspecialFecha.after: opcionFiltrar = this.mustreoExpression.after; break;
-      case this.filtradoEspecialFecha.beforeorequal: opcionFiltrar = this.mustreoExpression.beforeorequal; break;
-      case this.filtradoEspecialFecha.afterorequal: opcionFiltrar = this.mustreoExpression.afterorequal; break;
+      case this.filtradoEspecialFecha.before:
+        opcionFiltrar = this.mustreoExpression.before;
+        break;
+      case this.filtradoEspecialFecha.after:
+        opcionFiltrar = this.mustreoExpression.after;
+        break;
+      case this.filtradoEspecialFecha.beforeorequal:
+        opcionFiltrar = this.mustreoExpression.beforeorequal;
+        break;
+      case this.filtradoEspecialFecha.afterorequal:
+        opcionFiltrar = this.mustreoExpression.afterorequal;
+        break;
       //case this.filtradoEspecial.personalizado: opcionFiltrar = this.mustreoExpression.notequals; break;
-      default: break;
+      default:
+        break;
     }
 
-
     //claveMonitoreo_*contains_valor
-      let cadenaEspecial = this.columnaFiltroEspecial.name + '_*' + opcionFiltrar + '_' + this.columnaFiltroEspecial.filtroEspecial;
-    this.cadena = this.cadena != '' ? this.cadena.concat("%" + cadenaEspecial) : cadenaEspecial;
-
+    let cadenaEspecial =
+      this.columnaFiltroEspecial.name +
+      '_*' +
+      opcionFiltrar +
+      '_' +
+      this.columnaFiltroEspecial.filtroEspecial;
+    this.cadena =
+      this.cadena != ''
+        ? this.cadena.concat('%' + cadenaEspecial)
+        : cadenaEspecial;
 
     //Si existe un segundo filtro
     if (this.columnaFiltroEspecial.segundofiltroEspecial != '') {
-
     }
-    
-  
 
     this.consultarMonitoreos();
-    this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true });    
+    this.columns
+      .filter((x) => x.name == this.columnaFiltroEspecial.name)
+      .map((m) => {
+        m.filtered = true;
+      });
     this.esHistorial = true;
     this.columnaFiltroEspecial.opctionFiltro = '';
     this.columnaFiltroEspecial.filtroEspecial = '';
@@ -717,35 +764,58 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   obtenerFiltroEspecial(valor: string): string {
     let opcionFiltrar;
-    switch (valor) {      
-      case this.filtradoEspecial.beginswith: opcionFiltrar = this.mustreoExpression.beginswith; break;
-      case this.filtradoEspecial.contains: opcionFiltrar = this.mustreoExpression.contains; break;
-      case this.filtradoEspecial.endswith: opcionFiltrar = this.mustreoExpression.endswith; break;
-      case this.filtradoEspecial.equals: opcionFiltrar = this.mustreoExpression.equals; break;
-      case this.filtradoEspecial.notcontains: opcionFiltrar = this.mustreoExpression.notcontains; break;
-      case this.filtradoEspecial.notequals: opcionFiltrar = this.mustreoExpression.notequals; break;
+    switch (valor) {
+      case this.filtradoEspecial.beginswith:
+        opcionFiltrar = this.mustreoExpression.beginswith;
+        break;
+      case this.filtradoEspecial.contains:
+        opcionFiltrar = this.mustreoExpression.contains;
+        break;
+      case this.filtradoEspecial.endswith:
+        opcionFiltrar = this.mustreoExpression.endswith;
+        break;
+      case this.filtradoEspecial.equals:
+        opcionFiltrar = this.mustreoExpression.equals;
+        break;
+      case this.filtradoEspecial.notcontains:
+        opcionFiltrar = this.mustreoExpression.notcontains;
+        break;
+      case this.filtradoEspecial.notequals:
+        opcionFiltrar = this.mustreoExpression.notequals;
+        break;
 
-      case this.filtradoEspecialNumeral.greaterthan: opcionFiltrar = this.mustreoExpression.greaterthan; break;
-      case this.filtradoEspecialNumeral.greaterthanorequalto: opcionFiltrar = this.mustreoExpression.greaterthanorequalto; break;
-      case this.filtradoEspecialNumeral.lessthan: opcionFiltrar = this.mustreoExpression.lessthan; break;
-      case this.filtradoEspecialNumeral.lessthanorequalto: opcionFiltrar = this.mustreoExpression.lessthanorequalto; break;
+      case this.filtradoEspecialNumeral.greaterthan:
+        opcionFiltrar = this.mustreoExpression.greaterthan;
+        break;
+      case this.filtradoEspecialNumeral.greaterthanorequalto:
+        opcionFiltrar = this.mustreoExpression.greaterthanorequalto;
+        break;
+      case this.filtradoEspecialNumeral.lessthan:
+        opcionFiltrar = this.mustreoExpression.lessthan;
+        break;
+      case this.filtradoEspecialNumeral.lessthanorequalto:
+        opcionFiltrar = this.mustreoExpression.lessthanorequalto;
+        break;
 
-      case this.filtradoEspecialFecha.before: opcionFiltrar = this.mustreoExpression.before; break;
-      case this.filtradoEspecialFecha.after: opcionFiltrar = this.mustreoExpression.after; break;
-      case this.filtradoEspecialFecha.beforeorequal: opcionFiltrar = this.mustreoExpression.beforeorequal; break;
-      case this.filtradoEspecialFecha.afterorequal: opcionFiltrar = this.mustreoExpression.afterorequal; break;
+      case this.filtradoEspecialFecha.before:
+        opcionFiltrar = this.mustreoExpression.before;
+        break;
+      case this.filtradoEspecialFecha.after:
+        opcionFiltrar = this.mustreoExpression.after;
+        break;
+      case this.filtradoEspecialFecha.beforeorequal:
+        opcionFiltrar = this.mustreoExpression.beforeorequal;
+        break;
+      case this.filtradoEspecialFecha.afterorequal:
+        opcionFiltrar = this.mustreoExpression.afterorequal;
+        break;
       //case this.filtradoEspecial.personalizado: opcionFiltrar = this.mustreoExpression.notequals; break;
-      default: break;
+      default:
+        break;
     }
 
     return '';
-
-
-
   }
-
-
-
 
   existeEvidencia(evidencias: Array<any>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
@@ -1128,31 +1198,39 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   mostrarModalFiltro(opcion: string, columna: Column) {
-    columna.opctionFiltro = (opcion == this.filtradoEspecial.personalizado) ? this.filtradoEspecial.equals : opcion;
+    columna.opctionFiltro =
+      opcion == this.filtradoEspecial.personalizado
+        ? this.filtradoEspecial.equals
+        : opcion;
 
     switch (opcion) {
-
-      case this.filtradoEspecial.personalizado: columna.opctionFiltro = this.filtradoEspecial.equals; break;
+      case this.filtradoEspecial.personalizado:
+        columna.opctionFiltro = this.filtradoEspecial.equals;
+        break;
       case this.filtradoEspecialNumeral.between:
-        columna.opctionFiltro = (columna.datype == "number") ? this.filtradoEspecialNumeral.greaterthanorequalto : this.filtradoEspecialFecha.beforeorequal;
-        columna.segundaopctionFiltro = (columna.datype == "number") ? this.filtradoEspecialNumeral.lessthanorequalto : this.filtradoEspecialFecha.afterorequal;
+        columna.opctionFiltro =
+          columna.datype == 'number'
+            ? this.filtradoEspecialNumeral.greaterthanorequalto
+            : this.filtradoEspecialFecha.beforeorequal;
+        columna.segundaopctionFiltro =
+          columna.datype == 'number'
+            ? this.filtradoEspecialNumeral.lessthanorequalto
+            : this.filtradoEspecialFecha.afterorequal;
 
         break;
 
-      default: columna.opctionFiltro = opcion; columna.segundaopctionFiltro = '';
-      break;
+      default:
+        columna.opctionFiltro = opcion;
+        columna.segundaopctionFiltro = '';
+        break;
     }
-
-
-
 
     this.columnaFiltroEspecial = columna;
 
-
     this.opcionesFiltrosModal = this.opcionesFiltros;
-    (columna.datype == "string") ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1) : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
-
-   
+    columna.datype == 'string'
+      ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1)
+      : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
   }
 
   onSpecialFiltersClick($event: MouseEvent, columnName: string) {
