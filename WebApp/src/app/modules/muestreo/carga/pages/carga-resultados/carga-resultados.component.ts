@@ -27,78 +27,53 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //Variables para los muestros
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API
   muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando
-  muestreosFiltradosFiltrado: Array<Muestreo> = [];
-  muestreosFiltradosFiltradoConcatenado: Array<Muestreo> = [];
 
   filtrosModal: Array<Item> = [];
-
-  filtrosValues: Array<any> = [];
-  filtrosfinal: Array<any> = [];
-
-  filtrosCabeceroFoco: Array<any> = [];
+  filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
 
   resultadosEnviados: Array<number> = [];
+  indicesopcionesFiltros: Array<number> = []; //Indices para indicar en que posicion se pone linea divisora
+  opcionesFiltros: Array<string> = []; //Arreglo para submenu de filtro especial conforme al tipo de la columna string/number/date
+  opcionesFiltrosModal: Array<string> = []; //Arreglo para combo en modal autofiltro personalizado conforme al tipo de la columna string/number/date
+  columns: Array<Column> = [];
 
   filtradoEspecial: filtrosEspeciales = new filtrosEspeciales;
   filtradoEspecialNumeral: filtrosEspecialesNumeral = new filtrosEspecialesNumeral;
   filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha;
-
   mustreoExpression: mustreoExpression = new mustreoExpression;
+  
 
-  //opcionesFiltros: Array<string> = ["Es igual a", "No es igual a", "Es mayor que", "Es mayor o igual a", "Es menor que", "Es menor o igual a", "Comienza por", "No comienza por", "Termina con", "No termina con", "Contiene", "No contiene"];
-
-  opcionesFiltros: Array<string> = [];
-  opcionesFiltrosModal: Array<string> = [];
-
-
-  leyendaFiltrosEspeciales: string = '';
-  indicesopcionesFiltros: Array<number> = [];
-
-
-
-
-
-  reemplazarResultados: boolean = false;
-  esTemplate: boolean = true;
-  mostrar: boolean = true;
-  cabeceroSeleccionado: boolean = false;
-  esHistorial: boolean = false;
-  existeFiltrado: boolean = false;
-
-  archivo: any;
-
+  opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
+  leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
   numeroEntrega: string = '';
   anioOperacion: string = '';
   initialValue: string = '';
   cadena: string = '';
-
-  //Paginación
-  totalItems = 0;
+  esfiltrofoco: string = '';
 
 
-
-
-  opcionColumnaFiltro: string = '';
-
+  reemplazarResultados: boolean = false;
+  esTemplate: boolean = true;
+  mostrar:    boolean = true;
+  cabeceroSeleccionado: boolean = false;
+  esHistorial: boolean = false;
+  existeFiltrado: boolean = false;
   //Selección de registros
   selectAllOption: boolean = false;
   allSelected: boolean = false;
   selectedPage: boolean = false;
 
+  archivo: any; 
+
+  //Paginación
+  totalItems = 0;
   //variable para almacenar el ordenamiento
   orderBy: { column: string; type: string } = { column: '', type: '' };
 
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
-    {} as ElementRef;
-  @ViewChild('thprueba') thprueba: ElementRef = {} as ElementRef;
-  @ViewChild('auto') auto: ElementRef = {} as ElementRef;
-  @ViewChild('txtBuscador') txtBuscador: ElementRef = {} as ElementRef;
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
 
   registroParam: FormGroup;
-  esfilrofoco: string = '';
-  columns: Array<Column> = [];
-
-  columnaFiltroEspecial: Column = {    
+  columnaFiltroEspecial: Column = {
     name: 'estatus',
     label: 'ESTATUS',
     order: 1,
@@ -110,13 +85,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     filteredData: [],
     filteredDataFiltrado: [],
     datype: 'string',
-    opctionFiltro:'',
-    segundaopctionFiltro:'',
-    filtroEspecial:'',
+    opctionFiltro: '',
+    segundaopctionFiltro: '',
+    filtroEspecial: '',
     segundofiltroEspecial: ''
-   
-  };  
-
+  };
 
   constructor(
     private muestreoService: MuestreoService,
@@ -125,20 +98,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     super();
     this.registroParam = this.fb.group({
       chkFiltro: new FormControl(),
-      chckAllFiltro: new FormControl(),
-      aOrdenarAZ: new FormControl(),
+      chckAllFiltro: new FormControl(),     
     });
-
-
-    
-
-
   }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
-    console.log(this.columns);
   }
 
   definirColumnas() {
@@ -487,7 +453,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected() ? false : true;
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
 
@@ -497,10 +463,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       : false;
   }
 
-  ngAfterViewInit(): void {
-    console.log('entra en after view');
-  }
-
   public establecerValoresFiltrosTabla(column: Column) {
 
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
@@ -508,12 +470,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     switch (column.datype) {
 
       case "string": this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de texto"; this.indicesopcionesFiltros = [1, 3, 5]; break;
-      case "number": this.opcionesFiltros = Object.entries(this.filtradoEspecialNumeral).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de número"; this.indicesopcionesFiltros = [1,6]; break;
-      case "date": this.opcionesFiltros = Object.entries(this.filtradoEspecialFecha).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de fecha"; this.indicesopcionesFiltros = [0,5]; break;
-      default: this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de texto";  break;
-
-
-       // this.opcionesFiltros.splice
+      case "number": this.opcionesFiltros = Object.entries(this.filtradoEspecialNumeral).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de número"; this.indicesopcionesFiltros = [1, 6]; break;
+      case "date": this.opcionesFiltros = Object.entries(this.filtradoEspecialFecha).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de fecha"; this.indicesopcionesFiltros = [0, 5]; break;
+      default: this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(i => i[1]); this.leyendaFiltrosEspeciales = "Filtros de texto"; break;
     }
 
     if (!column.filtered && !this.existeFiltrado) {
@@ -530,7 +489,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           column.filteredData = column.data;
           this.ordenarAscedente(column.filteredData);
         },
-        error: (error) => {},
+        error: (error) => { },
       });
     } else if (!column.filtered && this.existeFiltrado) {
       column.data = this.muestreos.map((m: any) => {
@@ -639,113 +598,72 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     });
   }
 
-  filtrar(columna: Column) {
+  filtrar(columna: Column, isFiltroEspecial: boolean) {
+
+
+
     this.existeFiltrado = true;
-    let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-    columna.datosSeleccionados = filtrosSeleccionados.map((x) => x.value).toString();
-
-    //let opciones = filtrosSeleccionados
-    //  .map((x) => x.value)
-    //  .toString()
-    //  .replaceAll(',', '_');
-
-    
-
-    if (this.cadena.indexOf(columna.name) != -1) {
-      this.cadena =
-        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(columna) : '';
-    }
-
-    this.cadena =
-      this.cadena != ''
-        ? this.cadena + '%' + columna.name + '_' + columna.datosSeleccionados.replace(',', '_')
-        : columna.name + '_' + columna.datosSeleccionados.replace(',', '_');
+    this.cadena = (!isFiltroEspecial) ? this.obtenerCadena(columna, false) : this.obtenerCadena(this.columnaFiltroEspecial, true);
     this.consultarMonitoreos();
-    columna.filtered = true;  
+    (!isFiltroEspecial) ? columna.filtered = true : this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true });
     this.esHistorial = true;
-  }
 
-  filtroEspecial() {   
-  
-    if (this.cadena.indexOf(this.columnaFiltroEspecial.name) != -1) {
-      this.cadena =
-        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(this.columnaFiltroEspecial) : '';
-    }
-
-    let opcionFiltrar;
-    switch (this.columnaFiltroEspecial.opctionFiltro) {
-
-      case this.filtradoEspecial.beginswith: opcionFiltrar = this.mustreoExpression.beginswith; break;
-      case this.filtradoEspecial.contains: opcionFiltrar = this.mustreoExpression.contains; break;
-      case this.filtradoEspecial.endswith: opcionFiltrar = this.mustreoExpression.endswith; break;
-      case this.filtradoEspecial.equals: opcionFiltrar = this.mustreoExpression.equals; break;
-      case this.filtradoEspecial.notcontains: opcionFiltrar = this.mustreoExpression.notcontains; break;
-      case this.filtradoEspecial.notequals: opcionFiltrar = this.mustreoExpression.notequals; break;
-
-      case this.filtradoEspecialNumeral.greaterthan: opcionFiltrar = this.mustreoExpression.greaterthan; break;
-      case this.filtradoEspecialNumeral.greaterthanorequalto: opcionFiltrar = this.mustreoExpression.greaterthanorequalto; break;
-      case this.filtradoEspecialNumeral.lessthan: opcionFiltrar = this.mustreoExpression.lessthan; break;
-      case this.filtradoEspecialNumeral.lessthanorequalto: opcionFiltrar = this.mustreoExpression.lessthanorequalto; break;
-
-      case this.filtradoEspecialFecha.before: opcionFiltrar = this.mustreoExpression.before; break;
-      case this.filtradoEspecialFecha.after: opcionFiltrar = this.mustreoExpression.after; break;
-      case this.filtradoEspecialFecha.beforeorequal: opcionFiltrar = this.mustreoExpression.beforeorequal; break;
-      case this.filtradoEspecialFecha.afterorequal: opcionFiltrar = this.mustreoExpression.afterorequal; break;
-      //case this.filtradoEspecial.personalizado: opcionFiltrar = this.mustreoExpression.notequals; break;
-      default: break;
-    }
-
-
-    //claveMonitoreo_*contains_valor
-      let cadenaEspecial = this.columnaFiltroEspecial.name + '_*' + opcionFiltrar + '_' + this.columnaFiltroEspecial.filtroEspecial;
-    this.cadena = this.cadena != '' ? this.cadena.concat("%" + cadenaEspecial) : cadenaEspecial;
-
-
-    //Si existe un segundo filtro
-    if (this.columnaFiltroEspecial.segundofiltroEspecial != '') {
-
-    }
-    
-  
-
-    this.consultarMonitoreos();
-    this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true });    
-    this.esHistorial = true;
     this.columnaFiltroEspecial.opctionFiltro = '';
     this.columnaFiltroEspecial.filtroEspecial = '';
   }
 
-  obtenerFiltroEspecial(valor: string): string {
-    let opcionFiltrar;
-    switch (valor) {      
-      case this.filtradoEspecial.beginswith: opcionFiltrar = this.mustreoExpression.beginswith; break;
-      case this.filtradoEspecial.contains: opcionFiltrar = this.mustreoExpression.contains; break;
-      case this.filtradoEspecial.endswith: opcionFiltrar = this.mustreoExpression.endswith; break;
-      case this.filtradoEspecial.equals: opcionFiltrar = this.mustreoExpression.equals; break;
-      case this.filtradoEspecial.notcontains: opcionFiltrar = this.mustreoExpression.notcontains; break;
-      case this.filtradoEspecial.notequals: opcionFiltrar = this.mustreoExpression.notequals; break;
+  obtenerFiltroEspecial(valor: string | undefined): string {
 
-      case this.filtradoEspecialNumeral.greaterthan: opcionFiltrar = this.mustreoExpression.greaterthan; break;
-      case this.filtradoEspecialNumeral.greaterthanorequalto: opcionFiltrar = this.mustreoExpression.greaterthanorequalto; break;
-      case this.filtradoEspecialNumeral.lessthan: opcionFiltrar = this.mustreoExpression.lessthan; break;
-      case this.filtradoEspecialNumeral.lessthanorequalto: opcionFiltrar = this.mustreoExpression.lessthanorequalto; break;
+    switch (valor) {
+      case this.filtradoEspecial.beginswith: this.opcionFiltrar = this.mustreoExpression.beginswith; break;
+      case this.filtradoEspecial.endswith: this.opcionFiltrar = this.mustreoExpression.endswith; break;
+      case this.filtradoEspecial.contains: this.opcionFiltrar = this.mustreoExpression.contains; break;
+      case this.filtradoEspecial.equals: this.opcionFiltrar = this.mustreoExpression.equals; break;
+      case this.filtradoEspecial.notcontains: this.opcionFiltrar = this.mustreoExpression.notcontains; break;
+      case this.filtradoEspecial.notequals: this.opcionFiltrar = this.mustreoExpression.notequals; break;
 
-      case this.filtradoEspecialFecha.before: opcionFiltrar = this.mustreoExpression.before; break;
-      case this.filtradoEspecialFecha.after: opcionFiltrar = this.mustreoExpression.after; break;
-      case this.filtradoEspecialFecha.beforeorequal: opcionFiltrar = this.mustreoExpression.beforeorequal; break;
-      case this.filtradoEspecialFecha.afterorequal: opcionFiltrar = this.mustreoExpression.afterorequal; break;
-      //case this.filtradoEspecial.personalizado: opcionFiltrar = this.mustreoExpression.notequals; break;
+      case this.filtradoEspecialNumeral.greaterthan: this.opcionFiltrar = this.mustreoExpression.greaterthan; break;
+      case this.filtradoEspecialNumeral.greaterthanorequalto: this.opcionFiltrar = this.mustreoExpression.greaterthanorequalto; break;
+      case this.filtradoEspecialNumeral.lessthan: this.opcionFiltrar = this.mustreoExpression.lessthan; break;
+      case this.filtradoEspecialNumeral.lessthanorequalto: this.opcionFiltrar = this.mustreoExpression.lessthanorequalto; break;
+
+      case this.filtradoEspecialFecha.before: this.opcionFiltrar = this.mustreoExpression.before; break;
+      case this.filtradoEspecialFecha.after: this.opcionFiltrar = this.mustreoExpression.after; break;
+      case this.filtradoEspecialFecha.beforeorequal: this.opcionFiltrar = this.mustreoExpression.beforeorequal; break;
+      case this.filtradoEspecialFecha.afterorequal: this.opcionFiltrar = this.mustreoExpression.afterorequal; break;
+
       default: break;
-    }
-
-    return '';
-
-
-
+    }    return this.opcionFiltrar;
   }
 
+  obtenerCadena(columna: Column, isFiltroEspecial: boolean): string {
+    if (this.cadena.indexOf((!isFiltroEspecial) ? columna.name : this.columnaFiltroEspecial.name) != -1) {
+      this.cadena =
+        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro((!isFiltroEspecial) ? columna : this.columnaFiltroEspecial) : '';
+    }
 
+    if (!isFiltroEspecial) {
+      let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
+      columna.datosSeleccionados = filtrosSeleccionados.map((x) => x.value).toString();
+      this.cadena =
+        this.cadena != ''
+          ? this.cadena + '%' + columna.name + '_' + columna.datosSeleccionados.replace(',', '_')
+          : columna.name + '_' + columna.datosSeleccionados.replace(',', '_');
+    } else {
 
+      this.opcionFiltrar = this.obtenerFiltroEspecial(this.columnaFiltroEspecial.opctionFiltro);
+      let cadenaEspecial = this.columnaFiltroEspecial.name + '_*' + this.opcionFiltrar + '_' + this.columnaFiltroEspecial.filtroEspecial;
+      this.cadena = this.cadena != '' ? this.cadena.concat("%" + cadenaEspecial) : cadenaEspecial;
+
+      if (this.columnaFiltroEspecial.segundofiltroEspecial != '') {
+        this.opcionFiltrar = this.obtenerFiltroEspecial(this.columnaFiltroEspecial.segundaopctionFiltro);
+        let cadenaEspecial = this.columnaFiltroEspecial.name + '_*' + this.opcionFiltrar + '_' + this.columnaFiltroEspecial.segundofiltroEspecial;
+        this.cadena = this.cadena.concat("%" + cadenaEspecial);
+
+      }
+    }
+    return this.cadena;
+  }
 
   existeEvidencia(evidencias: Array<any>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
@@ -784,8 +702,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     //this.muestreosFiltrados = this.muestreos;
     //this.esHistorial = false;
   }
-
-  seleccionarFiltro(columna: Column): void {}
 
   exportarResultados(): void {
     if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
@@ -903,8 +819,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               this.consultarMonitoreos();
               this.mostrarMensaje(
                 'Se enviaron ' +
-                  this.totalItems +
-                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                this.totalItems +
+                ' muestreos a la etapa de "Acumulación resultados" correctamente',
                 'success'
               );
               this.hacerScroll();
@@ -947,8 +863,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               this.consultarMonitoreos();
               this.mostrarMensaje(
                 'Se enviaron ' +
-                  this.resultadosEnviados.length +
-                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                this.resultadosEnviados.length +
+                ' muestreos a la etapa de "Acumulación resultados" correctamente',
                 'success'
               );
               this.hacerScroll();
@@ -987,7 +903,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //SI SE OCUPA
   onCabeceroFoco(val: string = '') {
     this.cabeceroSeleccionado = false;
-    this.esfilrofoco = val.toUpperCase();
+    this.esfiltrofoco = val.toUpperCase();
     this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter(
       (f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1
     );
@@ -998,8 +914,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     let header = document.getElementById(val) as HTMLElement;
     header.scrollIntoView({ behavior: 'smooth', block: 'center' });
     this.cabeceroSeleccionado = true;
-    this.esfilrofoco = val.toUpperCase();
-    this.thprueba.nativeElement.focus();
+    this.esfiltrofoco = val.toUpperCase();   
   }
 
   eliminarFiltro(columna: Column): string {
@@ -1038,7 +953,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
 
@@ -1128,31 +1043,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   mostrarModalFiltro(opcion: string, columna: Column) {
-    columna.opctionFiltro = (opcion == this.filtradoEspecial.personalizado) ? this.filtradoEspecial.equals : opcion;
 
     switch (opcion) {
-
       case this.filtradoEspecial.personalizado: columna.opctionFiltro = this.filtradoEspecial.equals; break;
       case this.filtradoEspecialNumeral.between:
         columna.opctionFiltro = (columna.datype == "number") ? this.filtradoEspecialNumeral.greaterthanorequalto : this.filtradoEspecialFecha.beforeorequal;
         columna.segundaopctionFiltro = (columna.datype == "number") ? this.filtradoEspecialNumeral.lessthanorequalto : this.filtradoEspecialFecha.afterorequal;
-
         break;
-
       default: columna.opctionFiltro = opcion; columna.segundaopctionFiltro = '';
-      break;
+        break;
     }
-
-
-
-
     this.columnaFiltroEspecial = columna;
-
-
     this.opcionesFiltrosModal = this.opcionesFiltros;
     (columna.datype == "string") ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1) : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
 
-   
   }
 
   onSpecialFiltersClick($event: MouseEvent, columnName: string) {
@@ -1166,4 +1070,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
     $event.stopPropagation();
   }
+
+
+
+
+
 }
