@@ -514,12 +514,14 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ResultadosMuestreoParametrosTemp")]
         public async Task<IActionResult> GetMuestreoParametrosTemp(int UserId, int CuerpAId, int EstausId, int anio)
         {
-            return Ok(await Mediator.Send(new GetResultadosParametrosTempQuery
+            return Ok(await Mediator.Send(new GetResultadosParametros
             {
                 UserId = UserId,
                 CuerpoAgua = CuerpAId,
                 Estatus = EstausId,
-                Anio = anio
+                Anio = anio,
+                Page = 1,
+                PageSize = 30
             }));
         }
 

@@ -36,7 +36,7 @@ namespace Persistence.Repository
                                        where
                                              (isOCDL ? (rm.Muestreo.EstatusOcdl == estatusId || rm.Muestreo.EstatusOcdl == estatusVencido)
                                                     : (rm.Muestreo.EstatusSecaia == estatusId || rm.Muestreo.EstatusSecaia == estatusVencido))
-                                                    
+
                                        //&&
                                        //      (rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usuarioDl.CuencaId ||
                                        //       rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usuarioDl.DireccionLocalId)
@@ -244,11 +244,8 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public async Task<IEnumerable<ResultadoMuestreoDto>> GetResumenResultadosTemp(int userId, int cuerpAgua, int estatusId, int anio)
+        public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int cuerpAgua, int estatusId, int anio)
         {
-            var usr = await (_dbContext.Usuario.Include(t => t.DireccionLocal)
-                                                    .Include(t => t.Cuenca)
-                                                    .Where(t => t.Id == userId).FirstOrDefaultAsync());
 
             IQueryable<Muestreo> muestreos = _dbContext.Muestreo.Where(x => (anio == 0 ? null : anio) == null || anio == x.AnioOperacion)
                                                                 .Include(t => t.ProgramaMuestreo)
@@ -256,71 +253,64 @@ namespace Persistence.Repository
                                                                 .ThenInclude(t => t.Sitio)
                                                                 .ThenInclude(t => t.CuencaDireccionesLocales);
 
-            if (usr.DireccionLocalId != null)
+            var usr = await _dbContext.Usuario.Include(t => t.DireccionLocal).Include(t => t.Cuenca).Where(t => t.Id == userId).FirstOrDefaultAsync();
+
+            if (usr?.DireccionLocalId != null)
             {
-                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId
-                                                                    == usr.DireccionLocalId && t.EstatusId == estatusEnviado  || t.EstatusId == estatusExtensionFecha);
+                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usr.DireccionLocalId
+                                                && t.EstatusId == estatusEnviado
+                                                || t.EstatusId == estatusExtensionFecha);
+            }
+            else if (usr?.CuencaId != null)
+            {
+                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usr.CuencaId
+                                                && t.EstatusId == estatusEnviado
+                                                || t.EstatusId == estatusExtensionFecha);
             }
 
-            else if (usr.CuencaId != null)
+            var resultadosMuestreoDto = (from m in muestreos
+                                         join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
+                                         join csta in _dbContext.CuerpoTipoSubtipoAgua on m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAguaId equals csta.Id
+                                         join ca in _dbContext.CuerpoAgua on csta.CuerpoAguaId equals ca.Id
+                                         join tca in _dbContext.TipoCuerpoAgua on csta.TipoCuerpoAguaId equals tca.Id
+                                         //join stca in _dbContext.SubtipoCuerpoAgua on csta.SubtipoCuerpoAguaId equals stca.Id
+                                         join th in _dbContext.TipoHomologado on tca.TipoHomologadoId equals th.Id
+                                         join ts in _dbContext.TipoSitio on m.ProgramaMuestreo.ProgramaSitio.TipoSitioId equals ts.Id
+                                         where (th.Id == (cuerpAgua == 0 ? th.Id : cuerpAgua)) && (m.EstatusId == estatusId)
+                                         select new RegistroOriginalDto
+                                         {
+                                             MuestreoId = m.Id,
+                                             NoEntregaOCDL = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
+                                             ClaveSitioOriginal = ((m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio) + (m.ProgramaMuestreo.DomingoSemanaProgramada.ToString("yyyy"))),
+                                             ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                             ClaveMonitoreo = vpm.ClaveMuestreo,
+                                             FechaRealizacion = m.FechaRealVisita.ToString(),
+                                             Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
+                                             TipoCuerpoAguaId = tca.Id,
+                                             TipoCuerpoAgua = tca.Descripcion,
+                                             TipoHomologadoId = th.Id,
+                                             TipoHomologado = th.Descripcion,
+                                             TipoSitio = ts.Descripcion,
+                                             EstatusId = m.EstatusId
+                                         }).ToList();
+
+
+            foreach (var resultado in resultadosMuestreoDto)
             {
-                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId
-                                                                == usr.CuencaId && t.EstatusId == estatusEnviado || t.EstatusId == estatusExtensionFecha);
+                resultado.Parametros = (from r in _dbContext.ResultadoMuestreo
+                                        join pg in _dbContext.ParametrosGrupo on r.ParametroId equals pg.Id
+                                        where r.MuestreoId == resultado.MuestreoId
+                                        select new ParametroDto
+                                        {
+                                            Id= Convert.ToInt32(pg.Id),
+                                            ClaveParametro= pg.ClaveParametro,
+                                            Resultado = r.Resultado,
+                                            Descripcion=pg.Descripcion,
+                                            Orden= Convert.ToInt32(pg.Orden)
+                                        }).ToList();
             }
 
-            var lstSalida = from m in muestreos
-                            join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
-                            join csta in _dbContext.CuerpoTipoSubtipoAgua on m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAguaId equals csta.Id
-                            join ca in _dbContext.CuerpoAgua on csta.CuerpoAguaId equals ca.Id
-                            join tca in _dbContext.TipoCuerpoAgua on csta.TipoCuerpoAguaId equals tca.Id
-                            //join stca in _dbContext.SubtipoCuerpoAgua on csta.SubtipoCuerpoAguaId equals stca.Id
-                            join th in _dbContext.TipoHomologado on tca.TipoHomologadoId equals th.Id
-                            join ts in _dbContext.TipoSitio on m.ProgramaMuestreo.ProgramaSitio.TipoSitioId equals ts.Id
-                            where (th.Id == (cuerpAgua == 0 ? th.Id : cuerpAgua)) && (m.EstatusId == estatusId)
-                            select new ResultadoMuestreoDto
-                            {
-                                MuestreoId = m.Id,
-                                NoEntregaOCDL = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
-                                ClaveSitioOriginal = ((m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio) + (m.ProgramaMuestreo.DomingoSemanaProgramada.ToString("yyyy"))),
-                                ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
-                                ClaveMonitoreo = vpm.ClaveMuestreo,
-                                FechaRealizacion = m.FechaRealVisita.ToString(),
-                                Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
-                                TipoCuerpoAguaId = tca.Id,
-                                TipoCuerpoAgua = tca.Descripcion,
-                                TipoHomologadoId = th.Id,
-                                TipoHomologado = th.Descripcion,
-                                TipoSitio = ts.Descripcion,
-                                EstatusId = m.EstatusId
-                            };
-
-            List<ResultadoMuestreoDto> lstResultados = await lstSalida.ToListAsync();
-
-            foreach (var item in lstResultados)
-            {
-                var parametros = from pg in _dbContext.ParametrosGrupo
-                                 join rm in (
-                                     from srm in _dbContext.ResultadoMuestreo
-                                     where srm.MuestreoId == item.MuestreoId
-                                     select srm
-                                     ) on pg.Id equals rm.ParametroId into T
-                                 from subQry in T.DefaultIfEmpty()
-                                 orderby pg.Orden
-                                 select new ParametrosDto
-                                 {
-                                     Id= pg.Id,
-                                     ClaveParametro= pg.ClaveParametro,
-                                     Resulatdo = subQry == null ? String.Empty : subQry.Resultado,
-                                     MuestreoId = subQry == null ? 0 : subQry.MuestreoId,
-                                     Descripcion=pg.Descripcion,
-                                     Orden=(long)pg.Orden
-                                 };
-
-                List<ParametrosDto> lstparamfinal = new List<ParametrosDto>();
-                lstparamfinal = parametros.ToList();
-                item.lstParametros = lstparamfinal;
-            }
-            return lstResultados;
+            return resultadosMuestreoDto;
         }
 
         public async Task<IEnumerable<ResultadoMuestreoDto>> GetResultadosParametrosEstatus(long userId, long estatusId)
