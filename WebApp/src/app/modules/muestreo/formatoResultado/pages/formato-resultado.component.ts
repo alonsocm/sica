@@ -18,13 +18,13 @@ import { Perfil } from '../../../../shared/enums/perfil';
   templateUrl: './formato-resultado.component.html',
   styleUrls: ['./formato-resultado.component.css'],
 })
-export class FormatoResultadoComponent extends BaseService  implements OnInit {
+export class FormatoResultadoComponent extends BaseService implements OnInit {
   resultados: Array<Resultado> = [];
   resultadosFiltrados: Array<Resultado> = [];
   resultadosFinal: Array<Resultado> = [];
   cuerpoAgua: Array<TipoHomologado> = [];
   perfil: string = '';
-  parametrosTotales: any[] = []; 
+  parametrosTotales: any[] = [];
   parametros: Array<Columna> = [];
   opctionCuerpo: number = 0;
   paramTotalOrdenados: Array<any> = [];
@@ -35,12 +35,13 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
     private formatoService: FormatoResultadoService,
     private muestreoService: MuestreoService,
     private usuario: AuthService
-
-  ) {super()}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.paramTotalOrdenados = [];
-    this.perfil = this.usuario.getUser().nombrePerfil;      
+    this.perfil = this.usuario.getUser().nombrePerfil;
     this.establecerColumnas();
     this.consultaCuerpoAgua();
     this.validarPerfil();
@@ -102,7 +103,7 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
         orden: 0,
         filtro: new Filter(),
       },
-    ];   
+    ];
     let datos: Array<Columna> = [];
     this.formatoService.getParametros().subscribe(
       (result) => {
@@ -176,18 +177,19 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
       f.filtro.values = [
         ...new Set(this.resultadosFiltrados.map((m: any) => m[f.nombre])),
       ];
-    });    
+    });
   }
-
 
   exportarResultados(): void {
     console.log(this.resultadosFiltrados);
     let muestreosSeleccionados = this.obtenerSeleccionadosDescarga();
-    if (muestreosSeleccionados.length === 0 && this.resultadosFiltrados.length == 0) {
+    if (
+      muestreosSeleccionados.length === 0 &&
+      this.resultadosFiltrados.length == 0
+    ) {
       this.mostrarMensaje('Debe seleccionar al menos un monitoreo', 'warning');
       return this.hacerScroll();
     }
-    
 
     this.formatoService
       .exportarResultadosExcel(muestreosSeleccionados, this.esAdmin)
@@ -212,24 +214,23 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
   }
 
   obtenerSeleccionadosDescarga(): Array<any> {
-
-    var selec = this.resultadosFiltrados.filter((f) => f.isChecked);  
-    selec = (selec.length == 0) ? this.resultadosFiltrados : selec;
+    var selec = this.resultadosFiltrados.filter((f) => f.isChecked);
+    selec = selec.length == 0 ? this.resultadosFiltrados : selec;
     this.camposDescarga = [];
     if (selec.length > 0) {
       for (var i = 0; i < selec.length; i++) {
-        let campodes= {
+        let campodes = {
           noEntregaOCDL: selec[i].noEntregaOCDL,
           claveSitioOriginal: selec[i].claveSitioOriginal,
-          claveSitio: selec[i].claveSitio,         
+          claveSitio: selec[i].claveSitio,
           claveMonitoreo: selec[i].claveMonitoreo,
           fechaRealizacion: selec[i].fechaRealizacion,
-          laboratorio: selec[i].laboratorio,          
+          laboratorio: selec[i].laboratorio,
           tipoCuerpoAgua: selec[i].tipoCuerpoAgua,
           tipoHomologado: selec[i].tipoHomologado,
           tipoSitio: selec[i].tipoSitio,
           lstParametros: selec[i].lstParametros,
-          nombreSitio: ''
+          nombreSitio: '',
         };
         this.camposDescarga.push(campodes);
       }
@@ -246,9 +247,9 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
         return columna.filtro.selectedValue == 'Seleccione'
           ? true
           : f[columna.nombre] == columna.filtro.selectedValue;
-      });    
+      });
     });
-    this.loading = false;    
+    this.loading = false;
     this.establecerValoresFiltrosTabla();
   }
 
@@ -266,17 +267,28 @@ export class FormatoResultadoComponent extends BaseService  implements OnInit {
   validarPerfil() {
     switch (this.perfil) {
       case Perfil.ADMINISTRADOR:
-          this.esAdmin = true;
+        this.esAdmin = true;
         break;
       case Perfil.SECAIA1:
-          this.esAdmin = true;
+        this.esAdmin = true;
         break;
       case Perfil.SECAIA2:
-          this.esAdmin = true;
+        this.esAdmin = true;
         break;
       default:
-          this.esAdmin = false;
+        this.esAdmin = false;
         break;
     }
+  }
+
+  getValueParam(nombreParametro: string, parametros: any[]) {
+    let index = parametros.findIndex(
+      (f) => f.claveParametro == nombreParametro
+    );
+    if (index === -1) {
+      return '';
+    }
+
+    return parametros[index].resultado;
   }
 }
