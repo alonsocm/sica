@@ -22,7 +22,7 @@
             </select>
         </div>
         <div class="float-right">
-            <button class="btn btn-secondary mr-1" type="button" (click)="this.exportarResultados()">
+            <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
                 <img width="20px" src="./assets/images/site/ionoexel.png" alt="icono de excel" />
                 Descargar informaci&oacute;n
             </button>
@@ -33,14 +33,27 @@
         </div>
     </div>
     <br />
+    <div class="alert alert-secondary" role="alert"
+        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+        Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
+            (click)="onSelectAllPagesClick()" class="btn btn-link">
+            Seleccionar los {{this.totalItems}} registros
+        </button>
+    </div>
+    <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
+        Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
+            (click)="onUnselectAllClick()">
+            Anular la seleccion
+        </button>
+    </div>
     <div class="table-responsive dvTable">
         <table style="font-size:x-small" class="table table-bordered">
             <thead class="thead-light">
                 <tr>
                     <th style="text-align:center" class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
-                        <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                            (change)="seleccionarAll(this.muestreos)" />
+                        <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
+                            (change)="onSelectPageClick()" />
                     </th>
                     <ng-container *ngFor="let columna of this.columnas">
                         <th *ngIf="mostrarColumna(columna.etiqueta)">
@@ -51,9 +64,9 @@
             </thead>
             <tbody>
                 <tr
-                    *ngFor="let muestreo of this.muestreos| paginate: { itemsPerPage:pageSize, currentPage: page, totalItems: totalItems }; let indice=index">
+                    *ngFor="let muestreo of this.muestreos| paginate: { itemsPerPage:pageSize, currentPage: page, totalItems: totalItems };">
                     <td style="text-align:center" class="checkBox-center">
-                        <input type="checkbox" (change)="seleccionarn();" [(ngModel)]="muestreo.selected"
+                        <input type="checkbox" (change)="onSelectClick(muestreo);" [(ngModel)]="muestreo.selected"
                             title="Seleccionar">
                     </td>
                     <td *ngIf="perfil == 'ADMINISTRADOR' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">

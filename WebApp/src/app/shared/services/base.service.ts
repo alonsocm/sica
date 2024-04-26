@@ -13,6 +13,12 @@ export class BaseService {
   public pageSize: number = 30;
   public totalItems: number = 0;
 
+  //#region variables para la selección
+  selectedPage: boolean = false;
+  selectAllOption: boolean = false;
+  allSelected: boolean = false;
+  //#endregion
+
   noRegistro: string = 'No se encontraron registros';
   filtroResumen: string = 'Seleccionar filtro';
   keyword: string = 'values';

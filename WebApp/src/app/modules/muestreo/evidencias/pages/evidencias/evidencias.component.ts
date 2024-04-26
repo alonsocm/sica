@@ -37,10 +37,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   cabeceroSeleccionado: boolean = false;
 
-  //Selección de registros
-  selectAllOption: boolean = false;
-  allSelected: boolean = false;
-  selectedPage: boolean = false;
   orderBy: { column: string; type: string } = { column: '', type: '' };
 
   constructor(

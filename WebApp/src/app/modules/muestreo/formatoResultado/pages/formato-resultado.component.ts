@@ -21,8 +21,7 @@ import { Muestreo } from '../models/muestreo';
 })
 export class FormatoResultadoComponent extends BaseService implements OnInit {
   muestreos: Array<Muestreo> = [];
-  muestreosSeleccionados: Array<Resultado> = [];
-  resultadosFinal: Array<Resultado> = [];
+  muestreosSeleccionados: Array<Muestreo> = [];
   cuerpoAgua: Array<TipoHomologado> = [];
   perfil: string = '';
   parametrosTotales: any[] = [];
@@ -41,7 +40,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   ngOnInit(): void {
-    this.paramTotalOrdenados = [];
     this.perfil = this.usuario.getUser().nombrePerfil;
     this.establecerColumnas();
     this.consultaCuerpoAgua();
@@ -105,9 +103,9 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         filtro: new Filter(),
       },
     ];
-    let datos: Array<Columna> = [];
-    this.formatoService.getParametros().subscribe(
-      (result) => {
+
+    this.formatoService.getParametros().subscribe({
+      next: (result: any) => {
         this.parametrosTotales = result.data;
         for (var i = 0; i < this.parametrosTotales.length; i++) {
           let columna: Columna = {
@@ -120,8 +118,8 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
           this.paramTotalOrdenados.push(columna);
         }
       },
-      (error) => console.error(error)
-    );
+      error: (error) => console.error(error),
+    });
   }
 
   mostrarColumna(nombreColumna: string) {
@@ -166,6 +164,9 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   FiltrarCuerpoAgua() {
+    this.resetValues();
+    this.unselectMuestreos();
+
     if (this.tipoCuerpoAgua == -1) {
       this.muestreos = [];
     } else {
@@ -182,7 +183,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   exportarResultados(): void {
-    console.log(this.muestreosSeleccionados);
     let muestreosSeleccionados = this.obtenerSeleccionadosDescarga();
     if (
       muestreosSeleccionados.length === 0 &&
@@ -197,10 +197,12 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.muestreosSeleccionados = this.muestreosSeleccionados.map((m) => {
-            m.isChecked = false;
+            m.selected = false;
             return m;
           });
-          this.seleccionarTodosChck = false;
+          this.loading = false;
+          this.resetValues();
+          this.unselectMuestreos();
 
           FileService.download(response, 'FORMATO_REGISTRO_ORIGINAL.xlsx');
         },
@@ -215,7 +217,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   obtenerSeleccionadosDescarga(): Array<any> {
-    var selec = this.muestreosSeleccionados.filter((f) => f.isChecked);
+    var selec = this.muestreosSeleccionados.filter((f) => f.selected);
     selec = selec.length == 0 ? this.muestreosSeleccionados : selec;
     this.camposDescarga = [];
     if (selec.length > 0) {
@@ -230,7 +232,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
           tipoCuerpoAgua: selec[i].tipoCuerpoAgua,
           tipoHomologado: selec[i].tipoHomologado,
           tipoSitio: selec[i].tipoSitio,
-          lstParametros: selec[i].lstParametros,
+          lstParametros: selec[i].parametros,
           nombreSitio: '',
         };
         this.camposDescarga.push(campodes);
@@ -293,8 +295,77 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     return parametros[index].resultado;
   }
 
+  onSelectClick(muestreo: Muestreo) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (muestreo.selected) {
+      this.muestreosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected() ? false : true;
+    } else {
+      let index = this.muestreosSeleccionados.findIndex(
+        (m) => m.muestreoId === muestreo.muestreoId
+      );
+
+      if (index > -1) {
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    }
+  }
+
   onPageClick(page: any) {
     this.page = page;
     this.consultarMuestreos(this.tipoCuerpoAgua, page);
+  }
+
+  onSelectPageClick() {
+    this.muestreos.map((m) => {
+      m.selected = this.selectedPage;
+
+      //Buscamos el registro en los seleccionados
+      let index = this.muestreosSeleccionados.findIndex(
+        (d) => d.muestreoId === m.muestreoId
+      );
+
+      if (index == -1) {
+        //No existe en seleccionados, lo agremos
+        this.muestreosSeleccionados.push(m);
+      } else if (!this.selectedPage) {
+        //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    });
+
+    if (this.selectAllOption && !this.selectedPage) {
+      this.selectAllOption = false;
+      this.allSelected = false;
+    } else if (!this.selectAllOption && this.selectedPage) {
+      this.selectAllOption = true;
+    }
+  }
+
+  anyUnselected() {
+    return this.muestreos.some((f) => !f.selected);
+  }
+
+  onSelectAllPagesClick() {
+    this.allSelected = true;
+  }
+
+  onUnselectAllClick() {
+    this.allSelected = false;
+  }
+
+  private resetValues() {
+    this.muestreosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+  }
+
+  private unselectMuestreos() {
+    this.muestreos.forEach((m) => (m.selected = false));
   }
 }

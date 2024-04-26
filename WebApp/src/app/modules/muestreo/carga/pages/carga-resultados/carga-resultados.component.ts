@@ -75,11 +75,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   opcionColumnaFiltro: string = '';
 
-  //Selección de registros
-  selectAllOption: boolean = false;
-  allSelected: boolean = false;
-  selectedPage: boolean = false;
-
   //variable para almacenar el ordenamiento
   orderBy: { column: string; type: string } = { column: '', type: '' };
 

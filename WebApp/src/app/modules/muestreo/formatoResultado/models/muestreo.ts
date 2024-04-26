@@ -2,6 +2,7 @@ import { Parametro } from './parametro';
 import { Register } from './register';
 
 export interface Muestreo extends Register {
+  muestreoId: number;
   claveSitioOriginal: string;
   claveSitio: string;
   claveMonitoreo: string;
