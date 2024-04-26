@@ -509,20 +509,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     //filtrados
-    column.filteredDataFiltrado = this.muestreos.map((m: any) => {
-      let item: Item = {
-        value: m[column.name],
-        checked: true,
-      };
-      return item;
-    });
-    column.filteredDataFiltrado = column.data;
-    const distinctThings = column.filteredDataFiltrado.filter(
-      (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
-    );
+    //column.filteredDataFiltrado = this.muestreos.map((m: any) => {
+    //  let item: Item = {
+    //    value: m[column.name],
+    //    checked: true,
+    //  };
+    //  return item;
+    //});
+    //column.filteredDataFiltrado = column.data;
+    //const distinctThings = column.filteredDataFiltrado.filter(
+    //  (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
+    //);
 
-    column.filteredDataFiltrado = distinctThings.sort();
-    this.ordenarAscedente(column.filteredDataFiltrado);
+    //column.filteredDataFiltrado = distinctThings.sort();
+    //this.ordenarAscedente(column.filteredDataFiltrado);
   }
 
   cargarArchivo(event: Event) {
@@ -599,13 +599,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
-
-
-
     this.existeFiltrado = true;
-    this.cadena = (!isFiltroEspecial) ? this.obtenerCadena(columna, false) : this.obtenerCadena(this.columnaFiltroEspecial, true);
+    this.cadena = (!isFiltroEspecial) ? this.obtenerCadena(columna, false) : this.obtenerCadena(this.columnaFiltroEspecial, true);+
     this.consultarMonitoreos();
-    (!isFiltroEspecial) ? columna.filtered = true : this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true });
+
+    (!isFiltroEspecial) ? columna.filtered = true : this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true, m.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados });
     this.esHistorial = true;
 
     this.columnaFiltroEspecial.opctionFiltro = '';
@@ -645,22 +643,30 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (!isFiltroEspecial) {
       let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
       columna.datosSeleccionados = filtrosSeleccionados.map((x) => x.value).toString();
+
+      console.log("datosseleccionadosss");
+      console.log(columna.datosSeleccionados);
+
       this.cadena =
         this.cadena != ''
-          ? this.cadena + '%' + columna.name + '_' + columna.datosSeleccionados.replace(',', '_')
-          : columna.name + '_' + columna.datosSeleccionados.replace(',', '_');
-    } else {
+          ? this.cadena.concat('%' + columna.name + '_' + columna.datosSeleccionados).replaceAll(',', '_')
+        : columna.name.concat('_' + columna.datosSeleccionados).replaceAll(',', '_')     
+    }
+    else {
 
       this.opcionFiltrar = this.obtenerFiltroEspecial(this.columnaFiltroEspecial.opctionFiltro);
       let cadenaEspecial = this.columnaFiltroEspecial.name + '_*' + this.opcionFiltrar + '_' + this.columnaFiltroEspecial.filtroEspecial;
       this.cadena = this.cadena != '' ? this.cadena.concat("%" + cadenaEspecial) : cadenaEspecial;
+      this.columnaFiltroEspecial.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados?.concat(this.columnaFiltroEspecial.filtroEspecial + ',');
+
 
       if (this.columnaFiltroEspecial.segundofiltroEspecial != '') {
         this.opcionFiltrar = this.obtenerFiltroEspecial(this.columnaFiltroEspecial.segundaopctionFiltro);
         let cadenaEspecial = this.columnaFiltroEspecial.name + '_*' + this.opcionFiltrar + '_' + this.columnaFiltroEspecial.segundofiltroEspecial;
         this.cadena = this.cadena.concat("%" + cadenaEspecial);
-
+        this.columnaFiltroEspecial.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados?.concat(this.columnaFiltroEspecial.filtroEspecial + ',');
       }
+
     }
     return this.cadena;
   }
@@ -699,8 +705,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   limpiarFiltros() {
     this.ngOnInit();
-    //this.muestreosFiltrados = this.muestreos;
-    //this.esHistorial = false;
   }
 
   exportarResultados(): void {
@@ -1007,10 +1011,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.getSummary();
   }
 
-  getSelected() {
-    return this.muestreos.filter((f) => f.isChecked);
-  }
-
   getSummary() {
     this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
   }
@@ -1070,9 +1070,5 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
     $event.stopPropagation();
   }
-
-
-
-
 
 }
