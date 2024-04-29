@@ -23,4 +23,6 @@ export interface Column {
 
 
   filteredDataFiltrado: Array<Item>;
+
+  esUltimoFiltro?: boolean;
 }
