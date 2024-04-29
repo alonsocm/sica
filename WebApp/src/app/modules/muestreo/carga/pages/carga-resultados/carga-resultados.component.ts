@@ -84,7 +84,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     desc: false,
     data: [],
     filteredData: [],
-    filteredDataFiltrado: [],
     datype: 'string',
     opctionFiltro: '',
     segundaopctionFiltro: '',
@@ -125,8 +124,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -142,7 +140,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -158,7 +156,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'number',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -174,7 +172,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -190,7 +188,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -206,7 +204,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -222,7 +220,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -238,7 +236,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -254,7 +252,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -270,7 +268,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -286,7 +284,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -302,7 +300,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -318,7 +316,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -334,7 +332,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -348,7 +346,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         filtered: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -364,7 +362,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -380,7 +378,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -396,7 +394,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'string',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -412,7 +410,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',
@@ -428,7 +426,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         asc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+       
         datype: 'date',
         filtroEspecial: '',
         segundofiltroEspecial: '',

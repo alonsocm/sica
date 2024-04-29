@@ -11,18 +11,10 @@ export interface Column {
   asc?: boolean;
   desc?: boolean;
   datype: string;
-
-
-  datosSeleccionados: string;
+  datosSeleccionados: string; //Cadena donde se guarda las opciones seleccionadas
   opctionFiltro?: string;
   segundaopctionFiltro?: string;
   filtroEspecial?: string;
   segundofiltroEspecial?: string;
-  
-
-
-
-  filteredDataFiltrado: Array<Item>;
-
   esUltimoFiltro?: boolean;
 }
