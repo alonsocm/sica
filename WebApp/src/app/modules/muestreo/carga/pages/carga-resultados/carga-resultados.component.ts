@@ -73,7 +73,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
 
-  registroParam: FormGroup;
+  //registroParam: FormGroup;
   columnaFiltroEspecial: Column = {
     name: 'estatus',
     label: 'ESTATUS',
@@ -90,6 +90,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     segundaopctionFiltro: '',
     filtroEspecial: '',
     segundofiltroEspecial: '',
+    datosSeleccionados: '',
   };
 
   constructor(
@@ -97,15 +98,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     private fb: FormBuilder
   ) {
     super();
-    this.registroParam = this.fb.group({
-      chkFiltro: new FormControl(),
-      chckAllFiltro: new FormControl(),
-    });
+    //this.registroParam = this.fb.group({
+    //  chkFiltro: new FormControl(),
+    //  chckAllFiltro: new FormControl(),
+    //});
   }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
+  }
+
+  ngAfterViewInit() {
+
+
   }
 
   definirColumnas() {
@@ -453,7 +459,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected() ? false : true;
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
 
@@ -464,6 +470,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
+    console.log(column);
+
+
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
 
     switch (column.datype) {
@@ -509,9 +518,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
           column.filteredData = column.data;
           this.ordenarAscedente(column.filteredData);
+          this.getPreseleccionFiltradoColumna(column);
         },
-        error: (error) => {},
+        error: (error) => { },
       });
+
     } else if (
       (!column.filtered && this.existeFiltrado) ||
       (column.filtered && !column.esUltimoFiltro)
@@ -530,20 +541,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
       column.filteredData = distinctThings.sort();
       this.ordenarAscedente(column.filteredData);
+      this.getPreseleccionFiltradoColumna(column);
+
     }
 
-    //Para la preseleccion
-    if (column.esUltimoFiltro) {
-      column.filteredData.map((m) => {
-        m.checked = false;
-      });
-      column.filteredData
-        .filter((x) => column.datosSeleccionados?.includes(x.value))
-        .map((m) => {
-          m.checked = true;
-        });
-    }
+    
+   
   }
+  
+  getPreseleccionFiltradoColumna(column:Column){
+    if(column.esUltimoFiltro)
+    column.filteredData.forEach((m) => { m.checked = (column.datosSeleccionados.includes(m.value) ? true : false); })
+
+  }
+ 
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
@@ -623,6 +634,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
+
+    console.log(this.cadena);
     this.consultarMonitoreos();
 
     //(!isFiltroEspecial) ? columna.filtered = true : this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true, m.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados });
@@ -715,8 +728,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.cadena =
         this.cadena.indexOf('%') != -1
           ? this.eliminarFiltro(
-              !isFiltroEspecial ? columna : this.columnaFiltroEspecial
-            )
+            !isFiltroEspecial ? columna : this.columnaFiltroEspecial
+          )
           : '';
     }
 
@@ -729,11 +742,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.cadena =
         this.cadena != ''
           ? this.cadena
-              .concat('%' + columna.name + '_' + columna.datosSeleccionados)
-              .replaceAll(',', '_')
+            .concat('%' + columna.name + '_' + columna.datosSeleccionados)
+            .replaceAll(',', '_')
           : columna.name
-              .concat('_' + columna.datosSeleccionados)
-              .replaceAll(',', '_');
+            .concat('_' + columna.datosSeleccionados)
+            .replaceAll(',', '_');
     } else {
       this.opcionFiltrar = this.obtenerFiltroEspecial(
         this.columnaFiltroEspecial.opctionFiltro
@@ -925,8 +938,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               this.consultarMonitoreos();
               this.mostrarMensaje(
                 'Se enviaron ' +
-                  this.totalItems +
-                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                this.totalItems +
+                ' muestreos a la etapa de "Acumulación resultados" correctamente',
                 'success'
               );
               this.hacerScroll();
@@ -969,8 +982,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               this.consultarMonitoreos();
               this.mostrarMensaje(
                 'Se enviaron ' +
-                  this.resultadosEnviados.length +
-                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                this.resultadosEnviados.length +
+                ' muestreos a la etapa de "Acumulación resultados" correctamente',
                 'success'
               );
               this.hacerScroll();
@@ -1059,7 +1072,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
 

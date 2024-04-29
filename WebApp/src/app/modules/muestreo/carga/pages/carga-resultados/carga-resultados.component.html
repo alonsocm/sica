@@ -100,7 +100,7 @@
                    *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
                    class="bi bi-arrow-up"></i>
               </button>
-              <form [formGroup]="registroParam">
+             
                 <div class="dropdown-menu" style="width:250px;">
                   <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
                     <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
@@ -135,7 +135,7 @@
                            (input)="onFiltroCabecero($event, columna)" />
                     <span><i class="bi bi-search"></i></span>
                     <br />
-                    <input type="checkbox" id="chckAllFiltro{{columna.name}}" formControlName="chckAllFiltro"
+                    <input type="checkbox" id="chckAllFiltro{{columna.name}}"
                            [(ngModel)]="columna.selectAll" (change)="seleccionarAllFiltro(columna);" />
                     <label style="font-size:x-small" (click)="$event.stopPropagation()"
                            for="chckAllFiltro{{columna.name}}">
@@ -144,7 +144,7 @@
                     </label>
                     <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
                       <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked"
-                             formControlName="chkFiltro" class="check"  id="chkFiltro" />
+                              class="check" />
                       <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
                              (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
                     </div>
@@ -160,7 +160,7 @@
                     </button>
                   </div>
                 </div>
-              </form>
+              
             </div>
           </th>
         </tr>
