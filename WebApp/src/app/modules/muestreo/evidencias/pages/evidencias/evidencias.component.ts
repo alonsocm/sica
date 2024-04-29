@@ -102,8 +102,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '',
         datosSeleccionados:'',
       },
@@ -116,8 +115,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],       
         datype: '', datosSeleccionados:'',
       },
       {
@@ -129,8 +127,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -142,8 +139,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -155,8 +151,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -168,8 +163,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -181,8 +175,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -194,8 +187,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -207,8 +199,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -220,8 +211,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -233,8 +223,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -246,8 +235,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -259,8 +247,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -272,8 +259,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -285,8 +271,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -299,7 +284,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        filteredDataFiltrado: [],
+        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -311,8 +296,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -324,8 +308,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -337,8 +320,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
       {
@@ -350,8 +332,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],
-        filteredDataFiltrado: [],
+        filteredData: [],        
         datype: '', datosSeleccionados:'',
       },
     ];
