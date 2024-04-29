@@ -376,21 +376,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
       this.ordenarAscedente(column.filteredData);
     }
 
-    //filtrados
-    column.filteredDataFiltrado = this.muestreos.map((m: any) => {
-      let item: Item = {
-        value: m[column.name],
-        checked: true,
-      };
-      return item;
-    });
-    column.filteredDataFiltrado = column.data;
-    const distinctThings = column.filteredDataFiltrado.filter(
-      (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
-    );
-
-    column.filteredDataFiltrado = distinctThings.sort();
-    this.ordenarAscedente(column.filteredDataFiltrado);
   }
 
   ordenarAscedente(column: Array<Item>) {
