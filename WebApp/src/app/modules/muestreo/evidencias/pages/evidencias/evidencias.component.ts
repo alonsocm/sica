@@ -105,6 +105,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         filteredData: [],
         filteredDataFiltrado: [],
         datype: '',
+        datosSeleccionados:'',
       },
       {
         name: 'claveSitioOriginal',
@@ -117,7 +118,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'claveSitio',
@@ -130,7 +131,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'claveMonitoreo',
@@ -143,7 +144,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'nombreSitio',
@@ -156,7 +157,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'ocdl',
@@ -169,7 +170,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'cuerpoAgua',
@@ -182,7 +183,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'tipoCuerpoAguaOriginal',
@@ -195,7 +196,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'tipoCuerpoAgua',
@@ -208,7 +209,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'tipoSitio',
@@ -221,7 +222,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'laboratorio',
@@ -234,7 +235,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'laboratorioSubrogado',
@@ -247,7 +248,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'fechaProgramada',
@@ -260,7 +261,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'fechaRealizacion',
@@ -273,7 +274,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'programaAnual',
@@ -286,7 +287,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'horaInicio',
@@ -299,7 +300,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'horaFin',
@@ -312,7 +313,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'observaciones',
@@ -325,7 +326,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'fechaCargaEvidencias',
@@ -338,7 +339,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
       {
         name: 'numeroCargaEvidencias',
@@ -351,7 +352,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         data: [],
         filteredData: [],
         filteredDataFiltrado: [],
-        datype: '',
+        datype: '', datosSeleccionados:'',
       },
     ];
 

@@ -13,7 +13,7 @@ export interface Column {
   datype: string;
 
 
-  datosSeleccionados?: string;
+  datosSeleccionados: string;
   opctionFiltro?: string;
   segundaopctionFiltro?: string;
   filtroEspecial?: string;
