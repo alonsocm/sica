@@ -15,6 +15,7 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Item } from 'src/app/interfaces/filter/item';
 
 import { filtrosEspeciales, filtrosEspecialesFecha, filtrosEspecialesNumeral, mustreoExpression } from 'src/app/shared/enums/filtrosEspeciales';
+import { map } from 'rxjs';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -41,7 +42,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   filtradoEspecialNumeral: filtrosEspecialesNumeral = new filtrosEspecialesNumeral;
   filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha;
   mustreoExpression: mustreoExpression = new mustreoExpression;
-  
+
 
   opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
   leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
@@ -54,7 +55,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
-  mostrar:    boolean = true;
+  mostrar: boolean = true;
   cabeceroSeleccionado: boolean = false;
   esHistorial: boolean = false;
   existeFiltrado: boolean = false;
@@ -63,7 +64,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   allSelected: boolean = false;
   selectedPage: boolean = false;
 
-  archivo: any; 
+  archivo: any;
 
   //Paginación
   totalItems = 0;
@@ -98,7 +99,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     super();
     this.registroParam = this.fb.group({
       chkFiltro: new FormControl(),
-      chckAllFiltro: new FormControl(),     
+      chckAllFiltro: new FormControl(),
     });
   }
 
@@ -491,7 +492,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         },
         error: (error) => { },
       });
-    } else if (!column.filtered && this.existeFiltrado) {
+    } else if ((!column.filtered && this.existeFiltrado) || (column.filtered && !column.esUltimoFiltro)) {
       column.data = this.muestreos.map((m: any) => {
         let item: Item = {
           value: m[column.name],
@@ -508,22 +509,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.ordenarAscedente(column.filteredData);
     }
 
-    //filtrados
-    //column.filteredDataFiltrado = this.muestreos.map((m: any) => {
-    //  let item: Item = {
-    //    value: m[column.name],
-    //    checked: true,
-    //  };
-    //  return item;
-    //});
-    //column.filteredDataFiltrado = column.data;
-    //const distinctThings = column.filteredDataFiltrado.filter(
-    //  (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
-    //);
-
-    //column.filteredDataFiltrado = distinctThings.sort();
-    //this.ordenarAscedente(column.filteredDataFiltrado);
+    //Para la preseleccion
+    if (column.esUltimoFiltro) {
+      column.filteredData.map((m) => { m.checked = false });
+      column.filteredData.filter(x => column.datosSeleccionados?.includes(x.value)).map((m) => { m.checked = true });
+    }
   }
+
+
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
@@ -600,10 +593,22 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
     this.existeFiltrado = true;
-    this.cadena = (!isFiltroEspecial) ? this.obtenerCadena(columna, false) : this.obtenerCadena(this.columnaFiltroEspecial, true);+
+    this.cadena = (!isFiltroEspecial) ? this.obtenerCadena(columna, false) : this.obtenerCadena(this.columnaFiltroEspecial, true);
     this.consultarMonitoreos();
 
-    (!isFiltroEspecial) ? columna.filtered = true : this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true, m.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados });
+    //(!isFiltroEspecial) ? columna.filtered = true : this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true, m.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados });
+
+    this.columns.filter(x => x.esUltimoFiltro).map((m) => { m.esUltimoFiltro = false });
+
+
+    if (!isFiltroEspecial) { columna.filtered = true; columna.esUltimoFiltro = true; }
+    else {
+      this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true, m.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados, m.esUltimoFiltro = true });
+    }
+
+
+
+
     this.esHistorial = true;
 
     this.columnaFiltroEspecial.opctionFiltro = '';
@@ -642,15 +647,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     if (!isFiltroEspecial) {
       let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-      columna.datosSeleccionados = filtrosSeleccionados.map((x) => x.value).toString();
-
-      console.log("datosseleccionadosss");
-      console.log(columna.datosSeleccionados);
+      columna.datosSeleccionados = filtrosSeleccionados.map((x) => x.value).toString();   
 
       this.cadena =
         this.cadena != ''
           ? this.cadena.concat('%' + columna.name + '_' + columna.datosSeleccionados).replaceAll(',', '_')
-        : columna.name.concat('_' + columna.datosSeleccionados).replaceAll(',', '_')     
+          : columna.name.concat('_' + columna.datosSeleccionados).replaceAll(',', '_')
     }
     else {
 
@@ -918,7 +920,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     let header = document.getElementById(val) as HTMLElement;
     header.scrollIntoView({ behavior: 'smooth', block: 'center' });
     this.cabeceroSeleccionado = true;
-    this.esfiltrofoco = val.toUpperCase();   
+    this.esfiltrofoco = val.toUpperCase();
   }
 
   eliminarFiltro(columna: Column): string {

@@ -35,7 +35,7 @@ export class filtrosEspecialesFecha {
 }
 
 export class mustreoExpression {
-  equals = 'contains';
+  equals = 'equals';
   notequals = 'notequals';
   beginswith = 'beginswith';
   endswith = 'endswith';
