@@ -21,6 +21,7 @@ import {
   mustreoExpression,
 } from 'src/app/shared/enums/filtrosEspeciales';
 import { map } from 'rxjs';
+import { concat } from 'rxjs';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -635,9 +636,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     console.log(this.cadena);
     this.consultarMonitoreos();
-
-    //(!isFiltroEspecial) ? columna.filtered = true : this.columns.filter(x => x.name == this.columnaFiltroEspecial.name).map((m) => { m.filtered = true, m.datosSeleccionados = this.columnaFiltroEspecial.datosSeleccionados });
-
+   
     this.columns
       .filter((x) => x.esUltimoFiltro)
       .map((m) => {
@@ -733,18 +732,18 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     if (!isFiltroEspecial) {
       let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-      columna.datosSeleccionados = filtrosSeleccionados
-        .map((x) => x.value)
-        .toString();
+      filtrosSeleccionados.forEach((x) => {
+        columna.datosSeleccionados +=  x.value.concat('|');
+      });
 
       this.cadena =
         this.cadena != ''
           ? this.cadena
             .concat('%' + columna.name + '_' + columna.datosSeleccionados)
-            .replaceAll(',', '_')
+            .replaceAll('|', '_')
           : columna.name
             .concat('_' + columna.datosSeleccionados)
-            .replaceAll(',', '_');
+            .replaceAll('|', '_');
     } else {
       this.opcionFiltrar = this.obtenerFiltroEspecial(
         this.columnaFiltroEspecial.opctionFiltro
