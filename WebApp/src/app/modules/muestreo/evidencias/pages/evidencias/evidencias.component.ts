@@ -30,9 +30,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   initialValue: string = '';
   esfilrofoco: string = '';
   opctionFiltro: string = '';
- 
-
-
 
   constructor(
     private evidenciasService: EvidenciasService,
@@ -97,9 +94,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '',
-        datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'claveSitioOriginal',
@@ -110,8 +107,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],       
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'claveSitio',
@@ -122,8 +120,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'claveMonitoreo',
@@ -134,8 +133,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'nombreSitio',
@@ -146,8 +146,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'ocdl',
@@ -158,8 +159,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'cuerpoAgua',
@@ -170,8 +172,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'tipoCuerpoAguaOriginal',
@@ -182,8 +185,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'tipoCuerpoAgua',
@@ -194,8 +198,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'tipoSitio',
@@ -206,8 +211,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'laboratorio',
@@ -218,8 +224,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'laboratorioSubrogado',
@@ -230,8 +237,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'fechaProgramada',
@@ -242,8 +250,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'fechaRealizacion',
@@ -254,8 +263,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'programaAnual',
@@ -266,8 +276,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'horaInicio',
@@ -279,8 +290,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        
-        datype: '', datosSeleccionados:'',
+
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'horaFin',
@@ -291,8 +303,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'observaciones',
@@ -303,8 +316,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'fechaCargaEvidencias',
@@ -315,8 +329,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
         name: 'numeroCargaEvidencias',
@@ -327,8 +342,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],        
-        datype: '', datosSeleccionados:'',
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
     ];
 
@@ -370,7 +386,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
       column.filteredData = distinctThings.sort();
       this.ordenarAscedente(column.filteredData);
     }
-
   }
 
   ordenarAscedente(column: Array<Item>) {
@@ -535,7 +550,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     );
   }
 
-
   seleccionarFiltro(columna: Column): void {}
 
   filtrar(columna: Column) {
@@ -639,20 +653,20 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     return this.muestreos.some((f) => !f.isChecked);
   }
 
-  //getPreviousSelected(
-  //  muestreos: Array<Muestreo>,
-  //  muestreosSeleccionados: Array<Muestreo>
-  //) {
-  //  muestreos.forEach((f) => {
-  //    let muestreoSeleccionado = muestreosSeleccionados.find(
-  //      (x) => f.muestreoId === x.muestreoId
-  //    );
+  getPreviousSelected(
+    muestreos: Array<Muestreo>,
+    muestreosSeleccionados: Array<Muestreo>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.muestreoId === x.muestreoId
+      );
 
-  //    if (muestreoSeleccionado != undefined) {
-  //      f.isChecked = true;
-  //    }
-  //  });
-  //}
+      if (muestreoSeleccionado != undefined) {
+        f.isChecked = true;
+      }
+    });
+  }
 
   onSelectClick(muestreo: Muestreo) {
     if (this.selectedPage) this.selectedPage = false;

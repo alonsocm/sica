@@ -32,14 +32,12 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
   //Variables para los muestros
-muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
-muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
+  muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
+  muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
 
   filtrosModal: Array<Item> = [];
-  
-  resultadosEnviados: Array<number> = [];
-  
 
+  resultadosEnviados: Array<number> = [];
 
   opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
   leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
@@ -47,24 +45,17 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
   anioOperacion: string = '';
   initialValue: string = '';
 
- 
-
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
   mostrar: boolean = true;
- 
-
 
   archivo: any;
   opcionColumnaFiltro: string = '';
-
-
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
 
   //registroParam: FormGroup;
-
 
   constructor(
     private muestreoService: MuestreoService,
@@ -93,11 +84,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         asc: false,
         desc: false,
         data: [],
-        filteredData: [],       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'evidencias',
@@ -109,11 +100,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'numeroEntrega',
@@ -125,11 +116,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'number',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'number',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'claveSitio',
@@ -141,11 +132,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: '',
@@ -157,11 +148,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'claveMonitoreo',
@@ -173,11 +164,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'tipoSitio',
@@ -189,11 +180,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'nombreSitio',
@@ -205,11 +196,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'ocdl',
@@ -221,11 +212,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'tipoCuerpoAgua',
@@ -237,11 +228,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'subTipoCuerpoAgua',
@@ -253,11 +244,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'programaAnual',
@@ -269,11 +260,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'laboratorio',
@@ -285,11 +276,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'laboratorioSubrogado',
@@ -301,11 +292,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'fechaRealizacion',
@@ -315,11 +306,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         filtered: false,
         data: [],
         filteredData: [],
-       
-        datype: 'date',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'fechaProgramada',
@@ -331,11 +322,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'date',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'horaInicio',
@@ -347,11 +338,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'horaFin',
@@ -363,11 +354,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'string',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'fechaCarga',
@@ -379,11 +370,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         desc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'date',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'fechaEntregaMuestreo',
@@ -395,11 +386,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         asc: false,
         data: [],
         filteredData: [],
-       
-        datype: 'date',
-        filtroEspecial: '',
-        segundofiltroEspecial: '',
-        datosSeleccionados: '',
+
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
     ];
 
@@ -426,19 +417,16 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected() ? false : true;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
-
-
 
   public establecerValoresFiltrosTabla(column: Column) {
     console.log(column);
 
-
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
 
-    switch (column.datype) {
+    switch (column.dataType) {
       case 'string':
         this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(
           (i) => i[1]
@@ -483,12 +471,11 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
           this.ordenarAscedente(column.filteredData);
           this.getPreseleccionFiltradoColumna(column);
         },
-        error: (error) => { },
+        error: (error) => {},
       });
-
     } else if (
       (!column.filtered && this.existeFiltrado) ||
-      (column.filtered && !column.esUltimoFiltro)
+      (column.filtered && !column.isLatestFilter)
     ) {
       column.data = this.muestreos.map((m: any) => {
         let item: Item = {
@@ -505,19 +492,15 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
       column.filteredData = distinctThings.sort();
       this.ordenarAscedente(column.filteredData);
       this.getPreseleccionFiltradoColumna(column);
-
     }
-
-    
-   
   }
-  
-  getPreseleccionFiltradoColumna(column:Column){
-    if(column.esUltimoFiltro)
-    column.filteredData.forEach((m) => { m.checked = (column.datosSeleccionados.includes(m.value) ? true : false); })
 
+  getPreseleccionFiltradoColumna(column: Column) {
+    if (column.isLatestFilter)
+      column.filteredData.forEach((m) => {
+        m.checked = column.selectedData.includes(m.value) ? true : false;
+      });
   }
- 
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
@@ -600,31 +583,30 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
 
     console.log(this.cadena);
     this.consultarMonitoreos();
-   
+
     this.columns
-      .filter((x) => x.esUltimoFiltro)
+      .filter((x) => x.isLatestFilter)
       .map((m) => {
-        m.esUltimoFiltro = false;
+        m.isLatestFilter = false;
       });
 
     if (!isFiltroEspecial) {
       columna.filtered = true;
-      columna.esUltimoFiltro = true;
+      columna.isLatestFilter = true;
     } else {
       this.columns
         .filter((x) => x.name == this.columnaFiltroEspecial.name)
         .map((m) => {
           (m.filtered = true),
-            (m.datosSeleccionados =
-              this.columnaFiltroEspecial.datosSeleccionados),
-            (m.esUltimoFiltro = true);
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
         });
     }
 
     this.esHistorial = true;
 
-    this.columnaFiltroEspecial.opctionFiltro = '';
-    this.columnaFiltroEspecial.filtroEspecial = '';
+    this.columnaFiltroEspecial.optionFilter = '';
+    this.columnaFiltroEspecial.specialFilter = '';
   }
 
   obtenerFiltroEspecial(valor: string | undefined): string {
@@ -689,58 +671,58 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
       this.cadena =
         this.cadena.indexOf('%') != -1
           ? this.eliminarFiltro(
-            !isFiltroEspecial ? columna : this.columnaFiltroEspecial
-          )
+              !isFiltroEspecial ? columna : this.columnaFiltroEspecial
+            )
           : '';
     }
 
     if (!isFiltroEspecial) {
       let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
       filtrosSeleccionados.forEach((x) => {
-        columna.datosSeleccionados +=  x.value.concat('|');
+        columna.selectedData += x.value.concat('|');
       });
 
       this.cadena =
         this.cadena != ''
           ? this.cadena
-            .concat('%' + columna.name + '_' + columna.datosSeleccionados)
-            .replaceAll('|', '_')
+              .concat('%' + columna.name + '_' + columna.selectedData)
+              .replaceAll('|', '_')
           : columna.name
-            .concat('_' + columna.datosSeleccionados)
-            .replaceAll('|', '_');
+              .concat('_' + columna.selectedData)
+              .replaceAll('|', '_');
     } else {
       this.opcionFiltrar = this.obtenerFiltroEspecial(
-        this.columnaFiltroEspecial.opctionFiltro
+        this.columnaFiltroEspecial.optionFilter
       );
       let cadenaEspecial =
         this.columnaFiltroEspecial.name +
         '_*' +
         this.opcionFiltrar +
         '_' +
-        this.columnaFiltroEspecial.filtroEspecial;
+        this.columnaFiltroEspecial.specialFilter;
       this.cadena =
         this.cadena != ''
           ? this.cadena.concat('%' + cadenaEspecial)
           : cadenaEspecial;
-      this.columnaFiltroEspecial.datosSeleccionados =
-        this.columnaFiltroEspecial.datosSeleccionados?.concat(
-          this.columnaFiltroEspecial.filtroEspecial + ','
+      this.columnaFiltroEspecial.selectedData =
+        this.columnaFiltroEspecial.selectedData?.concat(
+          this.columnaFiltroEspecial.specialFilter + ','
         );
 
-      if (this.columnaFiltroEspecial.segundofiltroEspecial != '') {
+      if (this.columnaFiltroEspecial.secondSpecialFilter != '') {
         this.opcionFiltrar = this.obtenerFiltroEspecial(
-          this.columnaFiltroEspecial.segundaopctionFiltro
+          this.columnaFiltroEspecial.secondOptionFilter
         );
         let cadenaEspecial =
           this.columnaFiltroEspecial.name +
           '_*' +
           this.opcionFiltrar +
           '_' +
-          this.columnaFiltroEspecial.segundofiltroEspecial;
+          this.columnaFiltroEspecial.secondSpecialFilter;
         this.cadena = this.cadena.concat('%' + cadenaEspecial);
-        this.columnaFiltroEspecial.datosSeleccionados =
-          this.columnaFiltroEspecial.datosSeleccionados?.concat(
-            this.columnaFiltroEspecial.filtroEspecial + ','
+        this.columnaFiltroEspecial.selectedData =
+          this.columnaFiltroEspecial.selectedData?.concat(
+            this.columnaFiltroEspecial.specialFilter + ','
           );
       }
     }
@@ -899,8 +881,8 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
               this.consultarMonitoreos();
               this.mostrarMensaje(
                 'Se enviaron ' +
-                this.totalItems +
-                ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                  this.totalItems +
+                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
                 'success'
               );
               this.hacerScroll();
@@ -943,8 +925,8 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
               this.consultarMonitoreos();
               this.mostrarMensaje(
                 'Se enviaron ' +
-                this.resultadosEnviados.length +
-                ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                  this.resultadosEnviados.length +
+                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
                 'success'
               );
               this.hacerScroll();
@@ -969,10 +951,6 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
     this.selectedPage = false;
     this.getSummary();
   }
-
-
-
-
 
   pageClic(page: any) {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
@@ -1002,7 +980,7 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
@@ -1060,20 +1038,20 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
     this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
   }
 
-  //getPreviousSelected(
-  //  muestreos: Array<Muestreo>,
-  //  muestreosSeleccionados: Array<Muestreo>
-  //) {
-  //  muestreos.forEach((f) => {
-  //    let muestreoSeleccionado = muestreosSeleccionados.find(
-  //      (x) => f.muestreoId === x.muestreoId
-  //    );
+  getPreviousSelected(
+    muestreos: Array<Muestreo>,
+    muestreosSeleccionados: Array<Muestreo>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.muestreoId === x.muestreoId
+      );
 
-  //    if (muestreoSeleccionado != undefined) {
-  //      f.isChecked = true;
-  //    }
-  //  });
-  //}
+      if (muestreoSeleccionado != undefined) {
+        f.isChecked = true;
+      }
+    });
+  }
 
   onSelectAllPagesClick() {
     this.allSelected = true;
@@ -1086,8 +1064,6 @@ muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se va
   anyUnselected() {
     return this.muestreos.some((f) => !f.isChecked);
   }
-
-
 
   onSpecialFiltersClick($event: MouseEvent, columnName: string) {
     let dropDown = document.getElementById(

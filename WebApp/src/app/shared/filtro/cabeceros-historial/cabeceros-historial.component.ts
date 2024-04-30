@@ -6,21 +6,19 @@ import { MuestreoService } from '../../../modules/muestreo/liberacion/services/m
 @Component({
   selector: 'app-cabeceros-historial',
   templateUrl: './cabeceros-historial.component.html',
-  styleUrls: ['./cabeceros-historial.component.css']
+  styleUrls: ['./cabeceros-historial.component.css'],
 })
 export class CabecerosHistorialComponent extends BaseService implements OnInit {
-
   //filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
-
 
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
   muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
-  
 
-  constructor(private muestreoService: MuestreoService,) { super();  }
-
-  ngOnInit(): void {
+  constructor(private muestreoService: MuestreoService) {
+    super();
   }
+
+  ngOnInit(): void {}
 
   public consultarMonitoreos(
     page: number = this.page,
@@ -35,19 +33,14 @@ export class CabecerosHistorialComponent extends BaseService implements OnInit {
           this.muestreos = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
+          //this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected() ? false : true;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
   anyUnselected() {
     return this.muestreos.some((f) => !f.isChecked);
   }
-
-
-
-
-
 }

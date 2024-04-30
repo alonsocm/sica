@@ -4,7 +4,12 @@ import { Column } from 'src/app/interfaces/filter/column';
 import { Resultado } from 'src/app/interfaces/Resultado.interface';
 import { FilterFinal } from '../../interfaces/filtro.interface';
 import { Muestreo } from '../../interfaces/Muestreo.interface';
-import { filtrosEspeciales, filtrosEspecialesFecha, filtrosEspecialesNumeral, mustreoExpression } from '../enums/filtrosEspeciales';
+import {
+  filtrosEspeciales,
+  filtrosEspecialesFecha,
+  filtrosEspecialesNumeral,
+  mustreoExpression,
+} from '../enums/filtrosEspeciales';
 
 @Injectable({
   providedIn: 'root',
@@ -42,11 +47,9 @@ export class BaseService {
   @ViewChild('mensajes') mensajes: any;
   @ViewChildren('filtros') filtros: any;
 
-
- 
-
   filtradoEspecial: filtrosEspeciales = new filtrosEspeciales();
-  filtradoEspecialNumeral: filtrosEspecialesNumeral = new filtrosEspecialesNumeral();
+  filtradoEspecialNumeral: filtrosEspecialesNumeral =
+    new filtrosEspecialesNumeral();
   filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha();
   mustreoExpression: mustreoExpression = new mustreoExpression();
   columnaFiltroEspecial: Column = {
@@ -59,12 +62,12 @@ export class BaseService {
     desc: false,
     data: [],
     filteredData: [],
-    datype: 'string',
-    opctionFiltro: '',
-    segundaopctionFiltro: '',
-    filtroEspecial: '',
-    segundofiltroEspecial: '',
-    datosSeleccionados: '',
+    dataType: 'string',
+    optionFilter: '',
+    secondOptionFilter: '',
+    specialFilter: '',
+    secondSpecialFilter: '',
+    selectedData: '',
   };
   indicesopcionesFiltros: Array<number> = []; //Indices para indicar en que posicion se pone linea divisora
   opcionesFiltros: Array<string> = []; //Arreglo para submenu de filtro especial conforme al tipo de la columna string/number/date
@@ -81,8 +84,7 @@ export class BaseService {
   cabeceroSeleccionado: boolean = false;
   filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
 
-
-  constructor() { }
+  constructor() {}
 
   mostrarMensaje(mensaje: string, tipo: string): void {
     this.mensajeAlerta = mensaje;
@@ -175,7 +177,6 @@ export class BaseService {
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
   }
 
-
   //SI SE OCUPA
   onFiltroCabecero(val: any, columna: Column) {
     let criterioBusqueda = val.target.value;
@@ -186,54 +187,32 @@ export class BaseService {
     );
   }
 
-
-
   mostrarModalFiltro(opcion: string, columna: Column) {
     switch (opcion) {
       case this.filtradoEspecial.personalizado:
-        columna.opctionFiltro = this.filtradoEspecial.equals;
+        columna.optionFilter = this.filtradoEspecial.equals;
         break;
       case this.filtradoEspecialNumeral.between:
-        columna.opctionFiltro =
-          columna.datype == 'number'
+        columna.optionFilter =
+          columna.dataType == 'number'
             ? this.filtradoEspecialNumeral.greaterthanorequalto
             : this.filtradoEspecialFecha.beforeorequal;
-        columna.segundaopctionFiltro =
-          columna.datype == 'number'
+        columna.secondOptionFilter =
+          columna.dataType == 'number'
             ? this.filtradoEspecialNumeral.lessthanorequalto
             : this.filtradoEspecialFecha.afterorequal;
         break;
       default:
-        columna.opctionFiltro = opcion;
-        columna.segundaopctionFiltro = '';
+        columna.optionFilter = opcion;
+        columna.secondOptionFilter = '';
         break;
     }
     this.columnaFiltroEspecial = columna;
     this.opcionesFiltrosModal = this.opcionesFiltros;
-    columna.datype == 'string'
+    columna.dataType == 'string'
       ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1)
       : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
   }
-
-
-
-
-  getPreviousSelected(
-    muestreos: Array<Muestreo>,
-    muestreosSeleccionados: Array<Muestreo>
-  ) {
-    muestreos.forEach((f) => {
-      let muestreoSeleccionado = muestreosSeleccionados.find(
-        (x) => f.muestreoId === x.muestreoId
-      );
-
-      if (muestreoSeleccionado != undefined) {
-        f.isChecked = true;
-      }
-    });
-  }
-
-
 
   eliminarFiltro(columna: Column): string {
     let cadenaanterior = this.cadena.split('%');
@@ -249,7 +228,6 @@ export class BaseService {
       : false;
   }
 
-
   //SI SE OCUPA
   seleccionCabecero(val: string = '') {
     let header = document.getElementById(val) as HTMLElement;
@@ -259,12 +237,10 @@ export class BaseService {
   }
   //SI SE OCUPA
   onCabeceroFoco(val: string = '') {
-
     this.cabeceroSeleccionado = false;
     this.esfiltrofoco = val.toUpperCase();
     this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter(
       (f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1
     );
   }
-
 }
