@@ -32,66 +32,39 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
   //Variables para los muestros
-  muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API
-  muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando
+muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
+muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
 
   filtrosModal: Array<Item> = [];
-  filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
-
+  
   resultadosEnviados: Array<number> = [];
-  indicesopcionesFiltros: Array<number> = []; //Indices para indicar en que posicion se pone linea divisora
-  opcionesFiltros: Array<string> = []; //Arreglo para submenu de filtro especial conforme al tipo de la columna string/number/date
-  opcionesFiltrosModal: Array<string> = []; //Arreglo para combo en modal autofiltro personalizado conforme al tipo de la columna string/number/date
-  columns: Array<Column> = [];
+  
 
-  filtradoEspecial: filtrosEspeciales = new filtrosEspeciales();
-  filtradoEspecialNumeral: filtrosEspecialesNumeral =
-    new filtrosEspecialesNumeral();
-  filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha();
-  mustreoExpression: mustreoExpression = new mustreoExpression();
 
   opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
   leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
   numeroEntrega: string = '';
   anioOperacion: string = '';
   initialValue: string = '';
-  cadena: string = '';
-  esfiltrofoco: string = '';
+
+ 
 
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
   mostrar: boolean = true;
-  cabeceroSeleccionado: boolean = false;
-  esHistorial: boolean = false;
-  existeFiltrado: boolean = false;
+ 
+
 
   archivo: any;
   opcionColumnaFiltro: string = '';
 
-  //variable para almacenar el ordenamiento
-  orderBy: { column: string; type: string } = { column: '', type: '' };
+
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
 
   //registroParam: FormGroup;
-  columnaFiltroEspecial: Column = {
-    name: 'estatus',
-    label: 'ESTATUS',
-    order: 1,
-    selectAll: true,
-    filtered: false,
-    asc: false,
-    desc: false,
-    data: [],
-    filteredData: [],
-    datype: 'string',
-    opctionFiltro: '',
-    segundaopctionFiltro: '',
-    filtroEspecial: '',
-    segundofiltroEspecial: '',
-    datosSeleccionados: '',
-  };
+
 
   constructor(
     private muestreoService: MuestreoService,
@@ -107,11 +80,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
-  }
-
-  ngAfterViewInit() {
-
-
   }
 
   definirColumnas() {
@@ -462,11 +430,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
 
-  validarExisteFiltrado(): boolean {
-    return this.columns.filter((x) => x.filtered == true).length > 0
-      ? true
-      : false;
-  }
+
 
   public establecerValoresFiltrosTabla(column: Column) {
     console.log(column);
@@ -1006,40 +970,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.getSummary();
   }
 
-  //SI SE OCUPA
-  onFiltroCabecero(val: any, columna: Column) {
-    let criterioBusqueda = val.target.value;
-    columna.filteredData = columna.data;
-    columna.filteredData = columna.filteredData?.filter(
-      (f) =>
-        f.value.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1
-    );
-  }
 
-  //SI SE OCUPA
-  onCabeceroFoco(val: string = '') {
-    this.cabeceroSeleccionado = false;
-    this.esfiltrofoco = val.toUpperCase();
-    this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter(
-      (f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1
-    );
-  }
 
-  //SI SE OCUPA
-  seleccionCabecero(val: string = '') {
-    let header = document.getElementById(val) as HTMLElement;
-    header.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    this.cabeceroSeleccionado = true;
-    this.esfiltrofoco = val.toUpperCase();
-  }
 
-  eliminarFiltro(columna: Column): string {
-    let cadenaanterior = this.cadena.split('%');
-    let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
-    let indexx = cadenaanterior.indexOf(repetidos.toString());
-    cadenaanterior.splice(indexx, 1);
-    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
-  }
 
   pageClic(page: any) {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
@@ -1127,20 +1060,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
   }
 
-  getPreviousSelected(
-    muestreos: Array<Muestreo>,
-    muestreosSeleccionados: Array<Muestreo>
-  ) {
-    muestreos.forEach((f) => {
-      let muestreoSeleccionado = muestreosSeleccionados.find(
-        (x) => f.muestreoId === x.muestreoId
-      );
+  //getPreviousSelected(
+  //  muestreos: Array<Muestreo>,
+  //  muestreosSeleccionados: Array<Muestreo>
+  //) {
+  //  muestreos.forEach((f) => {
+  //    let muestreoSeleccionado = muestreosSeleccionados.find(
+  //      (x) => f.muestreoId === x.muestreoId
+  //    );
 
-      if (muestreoSeleccionado != undefined) {
-        f.isChecked = true;
-      }
-    });
-  }
+  //    if (muestreoSeleccionado != undefined) {
+  //      f.isChecked = true;
+  //    }
+  //  });
+  //}
 
   onSelectAllPagesClick() {
     this.allSelected = true;
@@ -1154,32 +1087,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     return this.muestreos.some((f) => !f.isChecked);
   }
 
-  mostrarModalFiltro(opcion: string, columna: Column) {
-    switch (opcion) {
-      case this.filtradoEspecial.personalizado:
-        columna.opctionFiltro = this.filtradoEspecial.equals;
-        break;
-      case this.filtradoEspecialNumeral.between:
-        columna.opctionFiltro =
-          columna.datype == 'number'
-            ? this.filtradoEspecialNumeral.greaterthanorequalto
-            : this.filtradoEspecialFecha.beforeorequal;
-        columna.segundaopctionFiltro =
-          columna.datype == 'number'
-            ? this.filtradoEspecialNumeral.lessthanorequalto
-            : this.filtradoEspecialFecha.afterorequal;
-        break;
-      default:
-        columna.opctionFiltro = opcion;
-        columna.segundaopctionFiltro = '';
-        break;
-    }
-    this.columnaFiltroEspecial = columna;
-    this.opcionesFiltrosModal = this.opcionesFiltros;
-    columna.datype == 'string'
-      ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1)
-      : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
-  }
+
 
   onSpecialFiltersClick($event: MouseEvent, columnName: string) {
     let dropDown = document.getElementById(

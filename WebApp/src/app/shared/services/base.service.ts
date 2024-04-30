@@ -3,6 +3,8 @@ import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Resultado } from 'src/app/interfaces/Resultado.interface';
 import { FilterFinal } from '../../interfaces/filtro.interface';
+import { Muestreo } from '../../interfaces/Muestreo.interface';
+import { filtrosEspeciales, filtrosEspecialesFecha, filtrosEspecialesNumeral, mustreoExpression } from '../enums/filtrosEspeciales';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +42,47 @@ export class BaseService {
   @ViewChild('mensajes') mensajes: any;
   @ViewChildren('filtros') filtros: any;
 
-  constructor() {}
+
+ 
+
+  filtradoEspecial: filtrosEspeciales = new filtrosEspeciales();
+  filtradoEspecialNumeral: filtrosEspecialesNumeral = new filtrosEspecialesNumeral();
+  filtradoEspecialFecha: filtrosEspecialesFecha = new filtrosEspecialesFecha();
+  mustreoExpression: mustreoExpression = new mustreoExpression();
+  columnaFiltroEspecial: Column = {
+    name: 'estatus',
+    label: 'ESTATUS',
+    order: 1,
+    selectAll: true,
+    filtered: false,
+    asc: false,
+    desc: false,
+    data: [],
+    filteredData: [],
+    datype: 'string',
+    opctionFiltro: '',
+    segundaopctionFiltro: '',
+    filtroEspecial: '',
+    segundofiltroEspecial: '',
+    datosSeleccionados: '',
+  };
+  indicesopcionesFiltros: Array<number> = []; //Indices para indicar en que posicion se pone linea divisora
+  opcionesFiltros: Array<string> = []; //Arreglo para submenu de filtro especial conforme al tipo de la columna string/number/date
+  opcionesFiltrosModal: Array<string> = []; //Arreglo para combo en modal autofiltro personalizado conforme al tipo de la columna string/number/date
+  columns: Array<Column> = [];
+  cadena: string = '';
+
+  //variable para almacenar el ordenamiento
+  orderBy: { column: string; type: string } = { column: '', type: '' };
+  esHistorial: boolean = false;
+  existeFiltrado: boolean = false;
+
+  esfiltrofoco: string = '';
+  cabeceroSeleccionado: boolean = false;
+  filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
+
+
+  constructor() { }
 
   mostrarMensaje(mensaje: string, tipo: string): void {
     this.mensajeAlerta = mensaje;
@@ -132,4 +174,97 @@ export class BaseService {
     if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
     let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
   }
+
+
+  //SI SE OCUPA
+  onFiltroCabecero(val: any, columna: Column) {
+    let criterioBusqueda = val.target.value;
+    columna.filteredData = columna.data;
+    columna.filteredData = columna.filteredData?.filter(
+      (f) =>
+        f.value.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1
+    );
+  }
+
+
+
+  mostrarModalFiltro(opcion: string, columna: Column) {
+    switch (opcion) {
+      case this.filtradoEspecial.personalizado:
+        columna.opctionFiltro = this.filtradoEspecial.equals;
+        break;
+      case this.filtradoEspecialNumeral.between:
+        columna.opctionFiltro =
+          columna.datype == 'number'
+            ? this.filtradoEspecialNumeral.greaterthanorequalto
+            : this.filtradoEspecialFecha.beforeorequal;
+        columna.segundaopctionFiltro =
+          columna.datype == 'number'
+            ? this.filtradoEspecialNumeral.lessthanorequalto
+            : this.filtradoEspecialFecha.afterorequal;
+        break;
+      default:
+        columna.opctionFiltro = opcion;
+        columna.segundaopctionFiltro = '';
+        break;
+    }
+    this.columnaFiltroEspecial = columna;
+    this.opcionesFiltrosModal = this.opcionesFiltros;
+    columna.datype == 'string'
+      ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1)
+      : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
+  }
+
+
+
+
+  getPreviousSelected(
+    muestreos: Array<Muestreo>,
+    muestreosSeleccionados: Array<Muestreo>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.muestreoId === x.muestreoId
+      );
+
+      if (muestreoSeleccionado != undefined) {
+        f.isChecked = true;
+      }
+    });
+  }
+
+
+
+  eliminarFiltro(columna: Column): string {
+    let cadenaanterior = this.cadena.split('%');
+    let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
+    let indexx = cadenaanterior.indexOf(repetidos.toString());
+    cadenaanterior.splice(indexx, 1);
+    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
+  }
+
+  validarExisteFiltrado(): boolean {
+    return this.columns.filter((x) => x.filtered == true).length > 0
+      ? true
+      : false;
+  }
+
+
+  //SI SE OCUPA
+  seleccionCabecero(val: string = '') {
+    let header = document.getElementById(val) as HTMLElement;
+    header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    this.cabeceroSeleccionado = true;
+    this.esfiltrofoco = val.toUpperCase();
+  }
+  //SI SE OCUPA
+  onCabeceroFoco(val: string = '') {
+
+    this.cabeceroSeleccionado = false;
+    this.esfiltrofoco = val.toUpperCase();
+    this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter(
+      (f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1
+    );
+  }
+
 }

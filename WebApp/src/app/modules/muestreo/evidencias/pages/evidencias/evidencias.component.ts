@@ -30,14 +30,9 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   initialValue: string = '';
   esfilrofoco: string = '';
   opctionFiltro: string = '';
-  existeFiltrado: boolean = false;
-  cadena: string = '';
-  esHistorial: boolean = false;
-  columns: Array<Column> = [];
+ 
 
-  cabeceroSeleccionado: boolean = false;
 
-  orderBy: { column: string; type: string } = { column: '', type: '' };
 
   constructor(
     private evidenciasService: EvidenciasService,
@@ -540,14 +535,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     );
   }
 
-  onFiltroCabecero(val: any, columna: Column) {
-    let criterioBusqueda = val.target.value;
-    columna.filteredData = columna.data;
-    columna.filteredData = columna.filteredData?.filter(
-      (f) =>
-        f.value.toLowerCase().indexOf(criterioBusqueda.toLowerCase()) !== -1
-    );
-  }
 
   seleccionarFiltro(columna: Column): void {}
 
@@ -574,19 +561,19 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.esHistorial = true;
   }
 
-  validarExisteFiltrado(): boolean {
-    return this.columns.filter((x) => x.filtered == true).length > 0
-      ? true
-      : false;
-  }
+  //validarExisteFiltrado(): boolean {
+  //  return this.columns.filter((x) => x.filtered == true).length > 0
+  //    ? true
+  //    : false;
+  //}
 
-  eliminarFiltro(columna: Column): string {
-    let cadenaanterior = this.cadena.split('%');
-    let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
-    let indexx = cadenaanterior.indexOf(repetidos.toString());
-    cadenaanterior.splice(indexx, 1);
-    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
-  }
+  //eliminarFiltro(columna: Column): string {
+  //  let cadenaanterior = this.cadena.split('%');
+  //  let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
+  //  let indexx = cadenaanterior.indexOf(repetidos.toString());
+  //  cadenaanterior.splice(indexx, 1);
+  //  return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
+  //}
 
   onSpecialFiltersClick($event: MouseEvent, columnName: string) {
     let dropDown = document.getElementById(
@@ -652,20 +639,20 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     return this.muestreos.some((f) => !f.isChecked);
   }
 
-  getPreviousSelected(
-    muestreos: Array<Muestreo>,
-    muestreosSeleccionados: Array<Muestreo>
-  ) {
-    muestreos.forEach((f) => {
-      let muestreoSeleccionado = muestreosSeleccionados.find(
-        (x) => f.muestreoId === x.muestreoId
-      );
+  //getPreviousSelected(
+  //  muestreos: Array<Muestreo>,
+  //  muestreosSeleccionados: Array<Muestreo>
+  //) {
+  //  muestreos.forEach((f) => {
+  //    let muestreoSeleccionado = muestreosSeleccionados.find(
+  //      (x) => f.muestreoId === x.muestreoId
+  //    );
 
-      if (muestreoSeleccionado != undefined) {
-        f.isChecked = true;
-      }
-    });
-  }
+  //    if (muestreoSeleccionado != undefined) {
+  //      f.isChecked = true;
+  //    }
+  //  });
+  //}
 
   onSelectClick(muestreo: Muestreo) {
     if (this.selectedPage) this.selectedPage = false;
