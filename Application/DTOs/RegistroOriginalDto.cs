@@ -4,7 +4,7 @@ namespace Application.DTOs
     public class RegistroOriginalDto
     {
         public long MuestreoId { get; set; }
-        public string NoEntregaOCDL { get; set; }
+        public string NumeroEntrega { get; set; }
         public string ClaveSitioOriginal { get; set; }
         public string ClaveSitio { get; set; }
         public string ClaveMonitoreo { get; set; }

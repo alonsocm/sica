@@ -525,6 +525,12 @@ namespace WebAPI.Controllers.v1.Operacion
             }));
         }
 
+        [HttpGet("GetDistinctValuesParametro")]
+        public async Task<IActionResult> Get(string parametro, int usuario, int cuerpoAgua, int estatus, int anio)
+        {
+            return Ok(await Mediator.Send(new GetDistinctValuesParametro { ClaveParametro=parametro, Usuario = usuario, CuerpoAgua = cuerpoAgua, Estatus = estatus, Anio = anio }));
+        }
+
         [HttpGet("ValidarResultadosPorReglas")]
         public async Task<IActionResult> Get([FromQuery] ValidarResultadosPorReglasCommand request)
         {
