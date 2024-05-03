@@ -19,6 +19,7 @@ export class MuestreosTotalesComponent implements OnInit {
 
 
   constructor(private muestreoService: MuestreoService) {
+ 
     this.filtroResumen = 'Seleccionar filtro';
     
     muestreoService.muestreos.subscribe(

@@ -51,6 +51,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   archivo: any;
   opcionColumnaFiltro: string = '';
+  
+  prueba = 'prueba';
+
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
@@ -66,6 +69,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     //  chkFiltro: new FormControl(),
     //  chckAllFiltro: new FormControl(),
     //});
+   
   }
 
   ngOnInit(): void {
@@ -399,6 +403,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.filtrosCabeceroFoco = this.columns.map((m) => {
       return m.label;
     });
+
+    this.muestreoService.filtrosCabeceroFoco = this.filtrosCabeceroFoco;
+
   }
 
   public consultarMonitoreos(
@@ -1076,4 +1083,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
     $event.stopPropagation();
   }
+
+
+  validar() {
+  
+    console.log(this.existeFiltrado);
+
+  }
+
+
+
+
 }
