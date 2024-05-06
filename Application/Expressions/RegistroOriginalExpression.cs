@@ -1,10 +1,68 @@
 ﻿using Application.DTOs;
+using Application.Wrappers;
 using System.Linq.Expressions;
 
 namespace Application.Expressions
 {
     static internal class RegistroOriginalExpression
     {
+        private static Expression<Func<RegistroOriginalDto, bool>> GetExpression(Filter filter)
+        {
+            if (filter.IsParameter)
+            {
+                return GetFilterParameterExpression(filter.Column, filter.Value, filter.Conditional);
+            }
+            else
+            {
+                return filter.Conditional switch
+                {
+                    #region Text
+                    "notequals" => GetNotEqualsExpression(filter.Column, filter.Value),
+                    "beginswith" => GetBeginsWithExpression(filter.Column, filter.Value),
+                    "notbeginswith" => GetNotBeginsWithExpression(filter.Column, filter.Value),
+                    "endswith" => GetEndsWithExpression(filter.Column, filter.Value),
+                    "notendswith" => GetNotEndsWithExpression(filter.Column, filter.Value),
+                    "contains" => GetContainsExpression(filter.Column, filter.Value),
+                    "notcontains" => GetNotContainsExpression(filter.Column, filter.Value),
+                    #endregion
+                    #region Numeric
+                    "greaterthan" => GetGreaterThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                    "lessthan" => GetLessThanExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                    "greaterthanorequalto" => GetGreaterThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                    "lessthanorequalto" => GetLessThanOrEqualToExpression(filter.Column, Convert.ToInt32(filter.Value)),
+                    #endregion
+                    #region Date
+                    "before" => GetBeforeExpression(filter.Column, DateTime.Parse(filter.Value)),
+                    "after" => GetAfterExpression(filter.Column, DateTime.Parse(filter.Value)),
+                    "beforeorequal" => GetBeforeOrEqualExpression(filter.Column, DateTime.Parse(filter.Value)),
+                    "afterorequal" => GetAfterOrEqualExpression(filter.Column, DateTime.Parse(filter.Value)),
+                    #endregion
+                    _ => muestreo => true,
+                };
+            }
+        }
+        public static List<Expression<Func<RegistroOriginalDto, bool>>> GetExpressionList(List<Filter> filters)
+        {
+            List<Expression<Func<RegistroOriginalDto, bool>>> expressions = new();
+
+            foreach (var filter in filters)
+            {
+                if (!string.IsNullOrEmpty(filter.Conditional))
+                {
+                    expressions.Add(GetExpression(filter));
+                }
+                else
+                {
+                    if (filter.Values != null && filter.Values.Any())
+                    {
+                        expressions.Add(GetContainsExpression(filter.Column, filter.Values));
+                    }
+                }
+            }
+
+            return expressions;
+        }
+
         #region StringExpressions
         public static Expression<Func<RegistroOriginalDto, bool>> GetExpression(string column, string value)
         {
@@ -238,5 +296,20 @@ namespace Application.Expressions
             };
         }
         #endregion
+
+        public static Expression<Func<RegistroOriginalDto, bool>> GetFilterParameterExpression(string parameter, string value, string conditional)
+        {
+            return conditional switch
+            {
+                "equals" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && s.Resultado == value),
+                "notequals" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && s.Resultado != value),
+                "beginswith" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && s.Resultado.StartsWith(value)),
+                "notbeginswith" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && !s.Resultado.StartsWith(value)),
+                "endswith" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && s.Resultado.EndsWith(value)),
+                "notendswith" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && !s.Resultado.EndsWith(value)),
+                "contains" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && s.Resultado.Contains(value)),
+                "notcontains" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && !s.Resultado.Contains(value)),
+            };
+        }
     }
 }

@@ -30,15 +30,10 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
             return new Response<List<string>>(GetResultadoParametro(datos, request.ClaveParametro).ToList());
         }
 
-        public IEnumerable<string> GetResultadoParametro(IEnumerable<RegistroOriginalDto> datos, string claveParametro)
+        public static IEnumerable<string> GetResultadoParametro(IEnumerable<RegistroOriginalDto> datos, string claveParametro)
         {
             var parametros = datos.Select(s => s.Parametros).SelectMany(s => s.Where(w => w.ClaveParametro == claveParametro).Select(d => d.Resultado).Distinct());
             return parametros;
         }
-    }
-
-    public class Parametro
-    {
-        public string Clave { get; set; }
     }
 }

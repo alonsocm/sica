@@ -10,6 +10,7 @@
         public string Conditional { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
         public List<string>? Values { get; set; }
+        public bool IsParameter { get; set; }
 
         public static bool IsValidFilter(string conditionalName, string value)
         {

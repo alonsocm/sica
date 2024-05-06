@@ -11,6 +11,7 @@ namespace WebAPI.Shared
             if (!string.IsNullOrEmpty(filterString))
             {
                 var arguments = filterString.Split("%");//Primero separamos el filtro, por columna
+                var isParameter = false;
 
                 foreach (var argument in arguments)
                 {
@@ -32,6 +33,14 @@ namespace WebAPI.Shared
                         }
 
                     }
+                    else if (argument.Contains('[') && argument.Contains(']'))
+                    {
+                        var splitedArgument = argument.Replace("[", string.Empty).Replace("]", string.Empty).Split('$');
+                        column = splitedArgument[0];
+                        conditional = splitedArgument[1];
+                        value = splitedArgument[2];
+                        isParameter = true;
+                    }
                     else
                     {
                         var splitedArgument = argument.Split('_');
@@ -47,7 +56,7 @@ namespace WebAPI.Shared
                         }
                     }
 
-                    filters.Add(new Filter { Column = column, Conditional = conditional, Value= value, Values = values });
+                    filters.Add(new Filter { Column = column, Conditional = conditional, Value= value, Values = values, IsParameter = isParameter });
                 }
             }
 
