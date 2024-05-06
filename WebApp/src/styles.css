@@ -1,23 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 body {
+    margin: 0;
+    padding: 0;
     font-family: sans-serif;
     font-size: 17px;
     text-align: initial;
 }
 
-h1{
+h1 {
     font-size: 2em;
 }
 
-h2{
+h2 {
     font-size: 1.5em;
 }
 
-h3{
+h3 {
     font-size: 1.17em;
 }
 
-h1, h2, h3{
+h1,
+h2,
+h3 {
     margin-top: 0.5%;
 }
 
@@ -25,25 +29,25 @@ hr.red {
     margin: 10px 0 25px
 }
 
-.element-hidden{
+.element-hidden {
     display: none !important;
 }
 
-.btn-hidden{
+.btn-hidden {
     display: none;
 }
 
-.cursor-pointer{
+.cursor-pointer {
     cursor: pointer;
 }
 
-.btn{
+.btn {
     width: auto;
     font-size: 17px;
     padding: 10px 15px;
 }
 
-.btn-secondary{
+.btn-secondary {
     font-family: sans-serif;
 }
 
@@ -62,21 +66,21 @@ hr.red {
     font-size: 1.5rem;
     line-height: 1.5;
     border-radius: .25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     width: auto;
     cursor: pointer;
 }
 
-.btn-primary-action{
-color: #fff;
-background-color: #007bff;
-border-color: #007bff;
+.btn-primary-action {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
 }
 
-.btn-primary-action:hover{
-color: #fff;
-background-color: #0069d9;
-border-color: #0062cc;
+.btn-primary-action:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
 }
 
 .btn-info-action {
@@ -110,7 +114,7 @@ border-color: #0062cc;
 }*/
 
 .td-center {
-  text-align: center
+    text-align: center
 }
 
 .dvTable {
@@ -119,38 +123,37 @@ border-color: #0062cc;
     margin: 1% 0px 1% 0px;
 }
 
-  .dvTable table {
+.dvTable table {
     font-size: xx-small;
-    text-align:center;
-  }
-    .dvTable table th {
-      font-size: x-small;
-      text-align:left;
-      vertical-align:top;
-    }
-
-.table .thead-light th {
-  vertical-align: middle;
+    text-align: center;
 }
 
-  .icon-evidencia {
+.dvTable table th {
+    font-size: x-small;
+    text-align: left;
+    vertical-align: top;
+}
+
+.table .thead-light th {
+    vertical-align: middle;
+    position: sticky;
+    top: 0px;
+}
+
+.icon-evidencia {
     width: 60px;
     height: 60px;
-  }
+}
 
 .dropdown-item {
-  font-size:xx-small; 
+    font-size: xx-small;
 }
 
 .dropdown {
-  font-size: x-small;
-  text-align: left;
+    font-size: x-small;
+    text-align: left;
 }
 
 /* .dvTable tbody>tr:hover {
     background-color: #DDDDDD;
 } */
-
-
-
-
