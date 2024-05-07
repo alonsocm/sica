@@ -2,9 +2,9 @@
   <div class="col-4"></div>
   <div class="col-4"></div>
   <div class="col-4" style="padding:0px">
-    <ng-autocomplete [data]="this.filtrosCabeceroFoco" [searchKeyword]="keyword"
-                     (inputChanged)='onCabeceroFoco($event)' (inputCleared)="this.esfiltrofoco = ''" (selected)="seleccionCabecero($event)"
-                     [itemTemplate]="itemCabeceros" placeholder="Buscar en cabeceros">
+    <ng-autocomplete [data]="this.filtrosCabeceroFoco" [searchKeyword]="keyword" (inputChanged)='onCabeceroFoco($event)'
+      (inputCleared)="this.esfiltrofoco = ''" (selected)="seleccionCabecero($event)" [itemTemplate]="itemCabeceros"
+      placeholder="Buscar en cabeceros">
     </ng-autocomplete>
     <ng-template #itemCabeceros let-item>
       <a [innerHTML]="item"></a>
@@ -12,17 +12,3 @@
   </div>
 </div>
 <br />
-
-<div *ngIf="this.esHistorialValor" class="alert alert-dark" role="group" aria-label="Basic example"
-     style="padding:10px; width:1500px; height:max-content">
-  <label>Historial filtrado</label> <br />
-  <ng-container *ngFor="let historial of this.columnsValor">
-    <button *ngIf="historial.filtered" type="button" class="btn btn-success"
-            (click)="eliminarFiltro(historial); this.existeFiltrado = validarExisteFiltrado(); this.mostrandoExisteFiltrado.emit(this.existeFiltrado); consultarMonitoreos();"
-            style="font-size:xx-small;margin-right:5px; margin-top:5px;">
-      {{historial.label}}<i class="bi bi-x"></i>
-    </button>
-  </ng-container>
-</div>
-
-

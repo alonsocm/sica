@@ -1,9 +1,7 @@
-import { ElementRef, EventEmitter, Injectable, Output, ViewChild, ViewChildren } from '@angular/core';
+import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
-import { Resultado } from 'src/app/interfaces/Resultado.interface';
-import { FilterFinal } from '../../interfaces/filtro.interface';
-import { Muestreo } from '../../interfaces/Muestreo.interface';
+
 import {
   filtrosEspeciales,
   filtrosEspecialesFecha,
@@ -46,11 +44,6 @@ export class BaseService {
 
   @ViewChild('mensajes') mensajes: any;
   @ViewChildren('filtros') filtros: any;
-
-
-
-
-
 
   filtradoEspecial: filtrosEspeciales = new filtrosEspeciales();
   filtradoEspecialNumeral: filtrosEspecialesNumeral =
@@ -97,7 +90,9 @@ export class BaseService {
 
   existeEliminacionFiltro: boolean = false;
 
-  constructor() { this.cabeceroSeleccionado = false; }
+  constructor() {
+    this.cabeceroSeleccionado = false;
+  }
 
   mostrarMensaje(mensaje: string, tipo: string): void {
     this.mensajeAlerta = mensaje;
@@ -228,31 +223,31 @@ export class BaseService {
   }
 
   eliminarFiltro(columna: Column): string {
-    
-  
     let cadenaanterior = this.cadena.split('%');
     let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
     columna.filtered = false;
     this.existeEliminacionFiltro = true;
-   
-    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
 
+    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
   }
 
-  validarExisteFiltrado(): boolean {   
+  deleteFilter(columnName: string): string {
+    let index = this.columns.findIndex((f) => f.name == columnName);
+    this.columns[index].filtered = false;
+
+    let cadenaanterior = this.cadena.split('%');
+    let repetidos = cadenaanterior.filter((x) => x.includes(columnName));
+    let indexx = cadenaanterior.indexOf(repetidos.toString());
+    cadenaanterior.splice(indexx, 1);
+
+    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
+  }
+
+  validarExisteFiltrado(): boolean {
     return this.columns.filter((x) => x.filtered == true).length > 0
       ? true
       : false;
   }
-
-
-
-
-
-
-
-  
-
 }
