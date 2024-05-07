@@ -280,7 +280,7 @@ namespace Persistence.Repository
                                          select new RegistroOriginalDto
                                          {
                                              MuestreoId = m.Id,
-                                             NoEntregaOCDL = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
+                                             NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
                                              ClaveSitioOriginal = ((m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio) + (m.ProgramaMuestreo.DomingoSemanaProgramada.ToString("yyyy"))),
                                              ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                              ClaveMonitoreo = vpm.ClaveMuestreo,

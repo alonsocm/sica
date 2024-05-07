@@ -512,17 +512,31 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ParametrosMuestreo")]
-        public async Task<IActionResult> Get(int usuario, int tipoCuerpoAgua, int estatus, int anio, int page = Page, int pageSize = PageSize)
+        public async Task<IActionResult> Get(int usuario, int tipoCuerpoAgua, int estatus, int anio, string? filter = "", int page = Page, int pageSize = PageSize)
         {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
             return Ok(await Mediator.Send(new GetResultadosParametros
             {
                 UserId = usuario,
                 CuerpoAgua = tipoCuerpoAgua,
                 Estatus = estatus,
                 Anio = anio,
+                Filter = filters,
                 Page = page,
                 PageSize = pageSize
             }));
+        }
+
+        [HttpGet("GetDistinctValuesParametro")]
+        public async Task<IActionResult> Get(string parametro, int usuario, int cuerpoAgua, int estatus, int anio)
+        {
+            return Ok(await Mediator.Send(new GetDistinctValuesParametro { ClaveParametro=parametro, Usuario = usuario, CuerpoAgua = cuerpoAgua, Estatus = estatus, Anio = anio }));
         }
 
         [HttpGet("ValidarResultadosPorReglas")]
