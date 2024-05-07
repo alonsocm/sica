@@ -48,7 +48,7 @@ export class BaseService {
   @ViewChildren('filtros') filtros: any;
 
 
-  @ViewChildren('cabeceroseleccionadoChildren') cabeceroseleccionadoChildren: boolean = false;
+
 
 
 
@@ -88,6 +88,14 @@ export class BaseService {
   esfiltrofoco: string = '';
   cabeceroSeleccionado: boolean;
   filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
+
+  opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
+  leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
+  numeroEntrega: string = '';
+  anioOperacion: string = '';
+  initialValue: string = '';
+
+  existeEliminacionFiltro: boolean = false;
 
   constructor() { this.cabeceroSeleccionado = false; }
 
@@ -220,11 +228,15 @@ export class BaseService {
   }
 
   eliminarFiltro(columna: Column): string {
-    console.log(columna);
+    
+  
     let cadenaanterior = this.cadena.split('%');
     let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
+    columna.filtered = false;
+    this.existeEliminacionFiltro = true;
+   
     return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
 
   }
@@ -234,6 +246,8 @@ export class BaseService {
       ? true
       : false;
   }
+
+
 
 
 

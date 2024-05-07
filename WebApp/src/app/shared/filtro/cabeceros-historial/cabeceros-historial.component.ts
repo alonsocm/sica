@@ -4,6 +4,7 @@ import { BaseService } from '../../services/base.service';
 import { MuestreoService } from '../../../modules/muestreo/liberacion/services/muestreo.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Column } from '../../../interfaces/filter/column';
+import { GeneralService } from '../../services/general.service';
 
 @Component({
   selector: 'app-cabeceros-historial',
@@ -19,6 +20,8 @@ export class CabecerosHistorialComponent extends BaseService implements OnInit {
   @Output() mostrandocabecero = new EventEmitter<boolean>();
   @Output() mostrandoesfiltrofoco = new EventEmitter<string>();
   @Output() mostrandoExisteFiltrado = new EventEmitter<boolean>();
+
+  @Output() mostrandoCadena = new EventEmitter<string>();
   
   
 
@@ -26,7 +29,7 @@ export class CabecerosHistorialComponent extends BaseService implements OnInit {
   @Input() columnsValor: Array<Column> = [];
   
 
-  constructor(private muestreoService: MuestreoService) {
+  constructor(private generalService: GeneralService, private muestreoService: MuestreoService) {
     super();    
 
     muestreoService.filtrosCabeceros.subscribe(
@@ -40,29 +43,12 @@ export class CabecerosHistorialComponent extends BaseService implements OnInit {
 
   ngOnInit(): void { /*console.log(this.valor)*/; }
 
-  public consultarMonitoreos(
-    page: number = this.page,
-    pageSize: number = this.NoPage,
-    filter: string = this.cadena
-  ): void {
-    this.muestreoService
-      .obtenerMuestreosPaginados(false, page, pageSize, filter, this.orderBy)
-      .subscribe({
-        next: (response: any) => {
-          this.selectedPage = false;
-          this.muestreos = response.data;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
-          this.totalItems = response.totalRecords;
-          //this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
-          this.selectedPage = this.anyUnselected() ? false : true;
-        },
-        error: (error) => {},
-      });
+  public consultarMonitoreos(): void {
+    console.log("entra a consulta monitoreos");
+    this.mostrandoCadena.emit(this.cadena);
+    return this.generalService.consultarMonitoreos();     
   }
 
-  anyUnselected() {
-    return this.muestreos.some((f) => !f.isChecked);
-  }
 
 
   //SI SE OCUPA
@@ -70,8 +56,7 @@ export class CabecerosHistorialComponent extends BaseService implements OnInit {
     let header = document.getElementById(val) as HTMLElement;
     header.scrollIntoView({ behavior: 'smooth', block: 'center' });
     this.cabeceroSeleccionado = true;
-    this.esfiltrofoco = val.toUpperCase();
- 
+    this.esfiltrofoco = val.toUpperCase(); 
     this.mostrandocabecero.emit(this.cabeceroSeleccionado);
     this.mostrandoesfiltrofoco.emit(this.esfiltrofoco);
 

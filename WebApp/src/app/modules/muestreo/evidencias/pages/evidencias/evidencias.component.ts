@@ -27,7 +27,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   registroParam: FormGroup;
 
-  initialValue: string = '';
   esfilrofoco: string = '';
   opctionFiltro: string = '';
 

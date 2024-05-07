@@ -39,12 +39,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   resultadosEnviados: Array<number> = [];
 
-  opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
-  leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
-  numeroEntrega: string = '';
-  anioOperacion: string = '';
-  initialValue: string = '';
-
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
   mostrar: boolean = true;
@@ -75,6 +69,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
+  }
+
+ 
+
+  ngAfterViewChecked() {
+    if (this.existeEliminacionFiltro === true) { console.log("entroo"); this.consultarMonitoreos(); }
   }
 
   definirColumnas() {
@@ -429,8 +429,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
-    console.log(column);
-
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
 
     switch (column.dataType) {
@@ -1087,7 +1085,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   validar() {
   
-    console.log(this.existeFiltrado);
+    console.log(this.existeEliminacionFiltro);
 
   }
 

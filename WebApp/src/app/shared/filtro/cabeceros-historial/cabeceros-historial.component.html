@@ -18,7 +18,7 @@
   <label>Historial filtrado</label> <br />
   <ng-container *ngFor="let historial of this.columnsValor">
     <button *ngIf="historial.filtered" type="button" class="btn btn-success"
-            (click)="eliminarFiltro(historial); historial.filtered=false;   this.existeFiltrado = validarExisteFiltrado(); this.mostrandoExisteFiltrado.emit(this.existeFiltrado); consultarMonitoreos();"
+            (click)="eliminarFiltro(historial); this.existeFiltrado = validarExisteFiltrado(); this.mostrandoExisteFiltrado.emit(this.existeFiltrado); consultarMonitoreos();"
             style="font-size:xx-small;margin-right:5px; margin-top:5px;">
       {{historial.label}}<i class="bi bi-x"></i>
     </button>

@@ -70,8 +70,11 @@
   <div>
     <input type="button" (click)="validar();" />
   </div>
-  <app-cabeceros-historial #cabeceroseleccionadoChildren [esHistorialValor]="this.esHistorial" [columnsValor] ="this.columns"
-   (mostrandocabecero)="this.cabeceroSeleccionado=$event" (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" (mostrandoExisteFiltrado)="this.existeFiltrado=$event"></app-cabeceros-historial>
+  <app-cabeceros-historial [esHistorialValor]="this.esHistorial" [columnsValor] ="this.columns"
+   (mostrandocabecero)="this.cabeceroSeleccionado=$event" (mostrandoesfiltrofoco)="this.esfiltrofoco=$event"
+                           (mostrandoExisteFiltrado)="this.existeFiltrado=$event" (mostrandoCadena)="this.cadena=$event">
+
+  </app-cabeceros-historial>
 
  
 
