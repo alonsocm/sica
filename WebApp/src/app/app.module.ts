@@ -113,7 +113,10 @@ import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.compo
     MapMuestreoComponent,
     ValidacionEvidenciasComponent,
     AdministracionMuestreoComponent,
-    CabecerosHistorialComponent
+    CabecerosHistorialComponent,
+    HistorialComponent,
+    AutofiltroComponent
+
     
   ],
   imports: [
