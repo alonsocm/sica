@@ -15,12 +15,22 @@ export class MuestreoService {
   >([]);
   private resultadosPrivate: BehaviorSubject<Resultado[]> = new BehaviorSubject<
     Resultado[]
-    >([]);
+  >([]);
 
-  private filtrosCabeceroFocoPrivate: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  private filtrosPrivate: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(
+    []
+  );
 
-  private cabeceroSeleccionadoPrivate: boolean = false;
+  get filtros() {
+    return this.filtrosPrivate.asObservable();
+  }
 
+  set filtrosSeleccionados(filtros: any[]) {
+    this.filtrosPrivate.next(filtros);
+  }
+
+  private filtrosCabeceroFocoPrivate: BehaviorSubject<any[]> =
+    new BehaviorSubject<any[]>([]);
 
   constructor(private http: HttpClient) {}
 
@@ -31,10 +41,9 @@ export class MuestreoService {
     return this.resultadosPrivate.asObservable();
   }
 
-  get filtrosCabeceros() { return this.filtrosCabeceroFocoPrivate.asObservable(); }
-
-
-
+  get filtrosCabeceros() {
+    return this.filtrosCabeceroFocoPrivate.asObservable();
+  }
 
   set muestreosSeleccionados(muestreos: Muestreo[]) {
     this.muestreosPrivate.next(muestreos);
@@ -44,10 +53,9 @@ export class MuestreoService {
     this.resultadosPrivate.next(resultados);
   }
 
-  set filtrosCabeceroFoco(cabeceros: any[]) { this.filtrosCabeceroFocoPrivate.next(cabeceros); }
-
-
-
+  set filtrosCabeceroFoco(cabeceros: any[]) {
+    this.filtrosCabeceroFocoPrivate.next(cabeceros);
+  }
 
   cargarArchivo(
     archivo: File,

@@ -22,6 +22,7 @@ import {
 } from 'src/app/shared/enums/filtrosEspeciales';
 import { map } from 'rxjs';
 import { concat } from 'rxjs';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -31,6 +32,7 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./carga-resultados.component.css'],
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
+  filtrosComponente: string = '';
   //Variables para los muestros
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
   muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
@@ -45,9 +47,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   archivo: any;
   opcionColumnaFiltro: string = '';
-  
-  prueba = 'prueba';
 
+  prueba = 'prueba';
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
@@ -55,26 +56,19 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //registroParam: FormGroup;
 
   constructor(
-    private muestreoService: MuestreoService,
-    private fb: FormBuilder
+    private filtroHistorialService: FiltroHistorialService,
+    private muestreoService: MuestreoService
   ) {
     super();
-    //this.registroParam = this.fb.group({
-    //  chkFiltro: new FormControl(),
-    //  chckAllFiltro: new FormControl(),
-    //});
-   
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      this.deleteFilter(columnName);
+      this.consultarMonitoreos();
+    });
   }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
-  }
-
- 
-
-  ngAfterViewChecked() {
-    if (this.existeEliminacionFiltro === true) { console.log("entroo"); this.consultarMonitoreos(); }
   }
 
   definirColumnas() {
@@ -405,7 +399,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     });
 
     this.muestreoService.filtrosCabeceroFoco = this.filtrosCabeceroFoco;
-
   }
 
   public consultarMonitoreos(
@@ -609,9 +602,21 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-
     this.columnaFiltroEspecial.optionFilter = '';
     this.columnaFiltroEspecial.specialFilter = '';
+
+    this.setColumnsFiltered();
+  }
+
+  private setColumnsFiltered() {
+    let filtrosActuales = this.columns
+      .filter((f) => f.filtered)
+      .map((m) => ({
+        name: m.name,
+        label: m.label,
+      }));
+
+    this.muestreoService.filtrosSeleccionados = filtrosActuales;
   }
 
   obtenerFiltroEspecial(valor: string | undefined): string {
@@ -1082,14 +1087,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     $event.stopPropagation();
   }
 
-
   validar() {
-  
     console.log(this.existeEliminacionFiltro);
-
   }
 
-
-
-
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.setColumnsFiltered();
+    this.consultarMonitoreos();
+  }
 }
