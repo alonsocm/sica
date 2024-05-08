@@ -20,6 +20,11 @@ export class MuestreoService {
   private filtrosPrivate: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(
     []
   );
+  private filtrosCabeceroFocoPrivate: BehaviorSubject<any[]> =
+    new BehaviorSubject<any[]>([]);
+
+  constructor(private http: HttpClient) { }
+  
 
   get filtros() {
     return this.filtrosPrivate.asObservable();
@@ -27,12 +32,7 @@ export class MuestreoService {
 
   set filtrosSeleccionados(filtros: any[]) {
     this.filtrosPrivate.next(filtros);
-  }
-
-  private filtrosCabeceroFocoPrivate: BehaviorSubject<any[]> =
-    new BehaviorSubject<any[]>([]);
-
-  constructor(private http: HttpClient) {}
+  }  
 
   get muestreos() {
     return this.muestreosPrivate.asObservable();

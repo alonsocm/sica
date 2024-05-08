@@ -64,6 +64,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.deleteFilter(columnName);
       this.consultarMonitoreos();
     });
+
+    this.filtroHistorialService.columnaFiltroEspecial.subscribe((dato: Column) => {
+      if (dato.specialFilter != null)
+      this.filtrar(dato, true);      
+    });
   }
 
   ngOnInit(): void {
@@ -577,9 +582,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.existeFiltrado = true;
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
-      : this.obtenerCadena(this.columnaFiltroEspecial, true);
-
-    console.log(this.cadena);
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);   
     this.consultarMonitoreos();
 
     this.columns
@@ -1085,10 +1088,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       dropDown.className = 'd-none';
     }
     $event.stopPropagation();
-  }
-
-  validar() {
-    console.log(this.existeEliminacionFiltro);
   }
 
   onDeleteFilterClick(columName: string) {

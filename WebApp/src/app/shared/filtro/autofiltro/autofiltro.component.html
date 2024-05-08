@@ -6,23 +6,23 @@
       </div>
       <div class="modal-body">
         <p>Mostrar las filas en las cuales:</p>
-        <p> {{this.columnaFiltroEspecial.label}} </p>
+        <p> {{this.columnaEspecial.label}} </p>
         <hr class="red">
         <table>
           <tr>
             <td style="padding:5px;">
-              <select class="form-control" [(ngModel)]="columnaFiltroEspecial.optionFilter" name="tipoFiltro">
+              <select class="form-control" [(ngModel)]="columnaEspecial.optionFilter" name="tipoFiltro">
                 <option [ngValue]="null" selected>--Seleccione--</option>
-                <option *ngFor="let nombre of opcionesFiltrosModal" [ngValue]="nombre">
+                <option *ngFor="let nombre of opcionesFiltrosmodal" [ngValue]="nombre">
                   {{nombre}}
                 </option>
               </select>
             </td>
             <td style="width:200px">
               <input class="form-control" list="dropOpciones1" id="exampleDataList"
-                     [(ngModel)]="columnaFiltroEspecial.specialFilter">
+                     [(ngModel)]="columnaEspecial.specialFilter">
               <datalist id="dropOpciones1" style="font-size:xx-small">
-                <option *ngFor="let nombre of columnaFiltroEspecial.filteredData" [ngValue]="nombre.value"
+                <option *ngFor="let nombre of columnaEspecial.filteredData" [ngValue]="nombre.value"
                         value={{nombre.value}}>
               </datalist>
             </td>
@@ -36,18 +36,18 @@
 
           <tr>
             <td style="padding:5px;">
-              <select class="form-control" [(ngModel)]="columnaFiltroEspecial.secondOptionFilter" name="tipoFiltro2">
+              <select class="form-control" [(ngModel)]="columnaEspecial.secondOptionFilter" name="tipoFiltro2">
                 <option [ngValue]="0" selected>--Seleccione--</option>
-                <option *ngFor="let nombre of opcionesFiltrosModal" [ngValue]="nombre">
+                <option *ngFor="let nombre of opcionesFiltrosmodal" [ngValue]="nombre">
                   {{nombre}}
                 </option>
               </select>
             </td>
             <td style="width:200px">
               <input class="form-control" list="dropOpciones2" id="exampleDataList"
-                     [(ngModel)]="columnaFiltroEspecial.secondSpecialFilter">
+                     [(ngModel)]="columnaEspecial.secondSpecialFilter">
               <datalist id="dropOpciones2" style="font-size:xx-small">
-                <option *ngFor="let nombre of columnaFiltroEspecial.filteredData" [ngValue]="nombre.value"
+                <option *ngFor="let nombre of columnaEspecial.filteredData" [ngValue]="nombre.value"
                         value={{nombre.value}}>
               </datalist>
             </td>
@@ -56,7 +56,7 @@
       </div>
       <div class="modal-footer">
         <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal"                >
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click) ="onFiltrar();">
           Aceptar
         </button>
       </div>
