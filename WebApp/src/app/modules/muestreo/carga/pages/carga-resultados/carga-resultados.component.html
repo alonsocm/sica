@@ -33,8 +33,8 @@
     </div>
   </div>
   <br />
-  <app-cabeceros-historial [esHistorialValor]="this.esHistorial"
-    (mostrandocabecero)="this.cabeceroSeleccionado=$event" (mostrandoesfiltrofoco)="this.esfiltrofoco=$event">
+  <app-cabeceros-historial [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+    (mostrandoesfiltrofoco)="this.esfiltrofoco=$event">
   </app-cabeceros-historial>
 
   <app-historial></app-historial>
@@ -194,7 +194,8 @@
   <hr />
 
   <app-muestreos-totales></app-muestreos-totales>
-  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial" [opcionesFiltrosmodal]="this.opcionesFiltrosModal"></app-autofiltro>  
+  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
+    [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
 
   <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog">

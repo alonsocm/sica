@@ -94,7 +94,7 @@ import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.compo
     FormatoResultadoComponent,
     EvidenciasComponent,
     ConsultaEvidenciaComponent,
-    ConsultaResultadoComponent, 
+    ConsultaResultadoComponent,
     InicialReglasComponent,
     AcumulacionResultadosComponent,
     ReglasValidarComponent,
@@ -115,9 +115,7 @@ import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.compo
     AdministracionMuestreoComponent,
     CabecerosHistorialComponent,
     HistorialComponent,
-    AutofiltroComponent
-
-    
+    AutofiltroComponent,
   ],
   imports: [
     BrowserModule,
