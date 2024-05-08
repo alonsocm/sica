@@ -673,22 +673,21 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               !isFiltroEspecial ? columna : this.columnaFiltroEspecial
             )
           : '';
-    }
+    }  
+
 
     if (!isFiltroEspecial) {
       let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
+
+      columna.selectedData = '';
       filtrosSeleccionados.forEach((x) => {
         columna.selectedData += x.value.concat('|');
       });
 
-      this.cadena =
-        this.cadena != ''
-          ? this.cadena
-              .concat('%' + columna.name + '_' + columna.selectedData)
-              .replaceAll('|', '_')
-          : columna.name
-              .concat('_' + columna.selectedData)
-              .replaceAll('|', '_');
+      this.cadena = this.cadena != '' ? this.cadena.concat('%' + columna.name + '_' + columna.selectedData).replaceAll('|', '_')
+          : columna.name.concat('_' + columna.selectedData).replaceAll('|', '_');
+     
+
     } else {
       this.opcionFiltrar = this.obtenerFiltroEspecial(
         this.columnaFiltroEspecial.optionFilter
