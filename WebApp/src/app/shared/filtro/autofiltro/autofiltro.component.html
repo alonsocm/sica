@@ -13,7 +13,7 @@
             <td style="padding:5px;">
               <select class="form-control" [(ngModel)]="columnaEspecial.optionFilter" name="tipoFiltro">
                 <option [ngValue]="null" selected>--Seleccione--</option>
-                <option *ngFor="let nombre of opcionesFiltrosmodal" [ngValue]="nombre">
+                <option *ngFor="let nombre of opcionesFiltro" [ngValue]="nombre">
                   {{nombre}}
                 </option>
               </select>
@@ -38,7 +38,7 @@
             <td style="padding:5px;">
               <select class="form-control" [(ngModel)]="columnaEspecial.secondOptionFilter" name="tipoFiltro2">
                 <option [ngValue]="0" selected>--Seleccione--</option>
-                <option *ngFor="let nombre of opcionesFiltrosmodal" [ngValue]="nombre">
+                <option *ngFor="let nombre of opcionesFiltro" [ngValue]="nombre">
                   {{nombre}}
                 </option>
               </select>
