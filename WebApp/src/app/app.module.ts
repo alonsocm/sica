@@ -60,6 +60,8 @@ import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/ma
 import { ValidacionEvidenciasComponent } from './modules/muestreo/validacion-evidencias/pages/validacion-evidencias.component';
 import { AdministracionMuestreoComponent } from './modules/muestreo/administracion/pages/administracion-muestreo/administracion-muestreo.component';
 import { CabecerosHistorialComponent } from './shared/filtro/cabeceros-historial/cabeceros-historial.component';
+import { HistorialComponent } from './shared/filtro/historial/historial.component';
+import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +113,10 @@ import { CabecerosHistorialComponent } from './shared/filtro/cabeceros-historial
     MapMuestreoComponent,
     ValidacionEvidenciasComponent,
     AdministracionMuestreoComponent,
-    CabecerosHistorialComponent
+    CabecerosHistorialComponent,
+    HistorialComponent,
+    AutofiltroComponent
+
     
   ],
   imports: [

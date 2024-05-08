@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Muestreo } from '../../../interfaces/Muestreo.interface';
+import { Component, EventEmitter, Input, OnInit, Output, } from '@angular/core';
 import { BaseService } from '../../services/base.service';
 import { MuestreoService } from '../../../modules/muestreo/liberacion/services/muestreo.service';
+
 
 @Component({
   selector: 'app-cabeceros-historial',
@@ -9,38 +9,38 @@ import { MuestreoService } from '../../../modules/muestreo/liberacion/services/m
   styleUrls: ['./cabeceros-historial.component.css'],
 })
 export class CabecerosHistorialComponent extends BaseService implements OnInit {
-  //filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
-
-  muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
-  muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
+  
+  @Output() mostrandocabecero = new EventEmitter<boolean>();
+  @Output() mostrandoesfiltrofoco = new EventEmitter<string>();
+  @Input() esHistorialValor: boolean = false;  
 
   constructor(private muestreoService: MuestreoService) {
-    super();
+    super();    
+
+    this.muestreoService.filtrosCabeceros.subscribe(
+      (cabeceros) => {
+        this.filtrosCabeceroFoco = cabeceros;        
+      }
+    );
+
   }
 
   ngOnInit(): void {}
-
-  public consultarMonitoreos(
-    page: number = this.page,
-    pageSize: number = this.NoPage,
-    filter: string = this.cadena
-  ): void {
-    this.muestreoService
-      .obtenerMuestreosPaginados(false, page, pageSize, filter, this.orderBy)
-      .subscribe({
-        next: (response: any) => {
-          this.selectedPage = false;
-          this.muestreos = response.data;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
-          this.totalItems = response.totalRecords;
-          //this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
-          this.selectedPage = this.anyUnselected() ? false : true;
-        },
-        error: (error) => {},
-      });
+ 
+  seleccionCabecero(val: string = '') {
+    let header = document.getElementById(val) as HTMLElement;
+    header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    this.cabeceroSeleccionado = true;
+    this.esfiltrofoco = val.toUpperCase(); 
+    this.mostrandocabecero.emit(this.cabeceroSeleccionado);
+    this.mostrandoesfiltrofoco.emit(this.esfiltrofoco);
   }
 
-  anyUnselected() {
-    return this.muestreos.some((f) => !f.isChecked);
+  onCabeceroFoco(val: string = '') {
+    this.cabeceroSeleccionado = false;
+    this.esfiltrofoco = val.toUpperCase();
+    this.mostrandocabecero.emit(this.cabeceroSeleccionado);
+    this.mostrandoesfiltrofoco.emit(this.esfiltrofoco);
   }
+
 }

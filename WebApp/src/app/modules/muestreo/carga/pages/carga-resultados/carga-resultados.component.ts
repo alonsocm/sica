@@ -22,6 +22,7 @@ import {
 } from 'src/app/shared/enums/filtrosEspeciales';
 import { map } from 'rxjs';
 import { concat } from 'rxjs';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -31,6 +32,7 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./carga-resultados.component.css'],
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
+  filtrosComponente: string = '';
   //Variables para los muestros
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
   muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
@@ -39,12 +41,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   resultadosEnviados: Array<number> = [];
 
-  opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
-  leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
-  numeroEntrega: string = '';
-  anioOperacion: string = '';
-  initialValue: string = '';
-
   reemplazarResultados: boolean = false;
   esTemplate: boolean = true;
   mostrar: boolean = true;
@@ -52,20 +48,27 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   archivo: any;
   opcionColumnaFiltro: string = '';
 
+  prueba = 'prueba';
+
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
 
   //registroParam: FormGroup;
 
   constructor(
-    private muestreoService: MuestreoService,
-    private fb: FormBuilder
+    private filtroHistorialService: FiltroHistorialService,
+    private muestreoService: MuestreoService
   ) {
     super();
-    //this.registroParam = this.fb.group({
-    //  chkFiltro: new FormControl(),
-    //  chckAllFiltro: new FormControl(),
-    //});
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      this.deleteFilter(columnName);
+      this.consultarMonitoreos();
+    });
+
+    this.filtroHistorialService.columnaFiltroEspecial.subscribe((dato: Column) => {
+      if (dato.specialFilter != null)
+      this.filtrar(dato, true);      
+    });
   }
 
   ngOnInit(): void {
@@ -399,6 +402,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.filtrosCabeceroFoco = this.columns.map((m) => {
       return m.label;
     });
+
+    this.muestreoService.filtrosCabeceroFoco = this.filtrosCabeceroFoco;
   }
 
   public consultarMonitoreos(
@@ -422,8 +427,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
-    console.log(column);
-
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
 
     switch (column.dataType) {
@@ -579,9 +582,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.existeFiltrado = true;
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
-      : this.obtenerCadena(this.columnaFiltroEspecial, true);
-
-    console.log(this.cadena);
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);   
     this.consultarMonitoreos();
 
     this.columns
@@ -604,9 +605,21 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-
     this.columnaFiltroEspecial.optionFilter = '';
     this.columnaFiltroEspecial.specialFilter = '';
+
+    this.setColumnsFiltered();
+  }
+
+  private setColumnsFiltered() {
+    let filtrosActuales = this.columns
+      .filter((f) => f.filtered)
+      .map((m) => ({
+        name: m.name,
+        label: m.label,
+      }));
+
+    this.muestreoService.filtrosSeleccionados = filtrosActuales;
   }
 
   obtenerFiltroEspecial(valor: string | undefined): string {
@@ -1075,5 +1088,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       dropDown.className = 'd-none';
     }
     $event.stopPropagation();
+  }
+
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.setColumnsFiltered();
+    this.consultarMonitoreos();
   }
 }

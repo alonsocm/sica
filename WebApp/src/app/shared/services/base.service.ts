@@ -1,9 +1,7 @@
 import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
-import { Resultado } from 'src/app/interfaces/Resultado.interface';
-import { FilterFinal } from '../../interfaces/filtro.interface';
-import { Muestreo } from '../../interfaces/Muestreo.interface';
+
 import {
   filtrosEspeciales,
   filtrosEspecialesFecha,
@@ -81,10 +79,20 @@ export class BaseService {
   existeFiltrado: boolean = false;
 
   esfiltrofoco: string = '';
-  cabeceroSeleccionado: boolean = false;
+  cabeceroSeleccionado: boolean;
   filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
 
-  constructor() {}
+  opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
+  leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
+  numeroEntrega: string = '';
+  anioOperacion: string = '';
+  initialValue: string = '';
+
+  existeEliminacionFiltro: boolean = false;
+
+  constructor() {
+    this.cabeceroSeleccionado = false;
+  }
 
   mostrarMensaje(mensaje: string, tipo: string): void {
     this.mensajeAlerta = mensaje;
@@ -219,6 +227,21 @@ export class BaseService {
     let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
+    columna.filtered = false;
+    this.existeEliminacionFiltro = true;
+
+    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
+  }
+
+  deleteFilter(columnName: string): string {
+    let index = this.columns.findIndex((f) => f.name == columnName);
+    this.columns[index].filtered = false;
+
+    let cadenaanterior = this.cadena.split('%');
+    let repetidos = cadenaanterior.filter((x) => x.includes(columnName));
+    let indexx = cadenaanterior.indexOf(repetidos.toString());
+    cadenaanterior.splice(indexx, 1);
+
     return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
   }
 
@@ -226,21 +249,5 @@ export class BaseService {
     return this.columns.filter((x) => x.filtered == true).length > 0
       ? true
       : false;
-  }
-
-  //SI SE OCUPA
-  seleccionCabecero(val: string = '') {
-    let header = document.getElementById(val) as HTMLElement;
-    header.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    this.cabeceroSeleccionado = true;
-    this.esfiltrofoco = val.toUpperCase();
-  }
-  //SI SE OCUPA
-  onCabeceroFoco(val: string = '') {
-    this.cabeceroSeleccionado = false;
-    this.esfiltrofoco = val.toUpperCase();
-    this.filtrosCabeceroFoco = this.filtrosCabeceroFoco.filter(
-      (f) => f.toLowerCase.indexOf(val.toLowerCase()) !== -1
-    );
   }
 }

@@ -17,7 +17,22 @@ export class MuestreoService {
     Resultado[]
   >([]);
 
-  constructor(private http: HttpClient) {}
+  private filtrosPrivate: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(
+    []
+  );
+  private filtrosCabeceroFocoPrivate: BehaviorSubject<any[]> =
+    new BehaviorSubject<any[]>([]);
+
+  constructor(private http: HttpClient) { }
+  
+
+  get filtros() {
+    return this.filtrosPrivate.asObservable();
+  }
+
+  set filtrosSeleccionados(filtros: any[]) {
+    this.filtrosPrivate.next(filtros);
+  }  
 
   get muestreos() {
     return this.muestreosPrivate.asObservable();
@@ -26,12 +41,20 @@ export class MuestreoService {
     return this.resultadosPrivate.asObservable();
   }
 
+  get filtrosCabeceros() {
+    return this.filtrosCabeceroFocoPrivate.asObservable();
+  }
+
   set muestreosSeleccionados(muestreos: Muestreo[]) {
     this.muestreosPrivate.next(muestreos);
   }
 
   set resultadosSeleccionados(resultados: Resultado[]) {
     this.resultadosPrivate.next(resultados);
+  }
+
+  set filtrosCabeceroFoco(cabeceros: any[]) {
+    this.filtrosCabeceroFocoPrivate.next(cabeceros);
   }
 
   cargarArchivo(

@@ -1,0 +1,8 @@
+<div *ngIf="this.filtros.length > 0" class="alert alert-dark filter-container" role="group" aria-label="Basic example">
+    <label>Historial filtrado</label> <br />
+    <ng-container *ngFor="let column of this.filtros">
+        <button type="button" class="btn btn-success filter-btn" (click)="onDeleteClick(column.name)">
+            {{column.label}}<i class="bi bi-x"></i>
+        </button>
+    </ng-container>
+</div>
