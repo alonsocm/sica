@@ -10,7 +10,7 @@ import { FiltroHistorialService } from '../../services/filtro-historial.service'
 })
 export class AutofiltroComponent extends BaseService implements OnInit {
   @Input() columnaEspecial: Column = this.columnaFiltroEspecial;
-  @Input() opcionesFiltrosmodal: Array<string> =[];
+  @Input() opcionesFiltro: Array<string> =[];
 
   constructor(private filtroHistorialService: FiltroHistorialService) {
     super();
