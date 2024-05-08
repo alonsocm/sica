@@ -3,7 +3,6 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
@@ -11,17 +10,7 @@ import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Item } from 'src/app/interfaces/filter/item';
-
-import {
-  filtrosEspeciales,
-  filtrosEspecialesFecha,
-  filtrosEspecialesNumeral,
-  mustreoExpression,
-} from 'src/app/shared/enums/filtrosEspeciales';
-import { map } from 'rxjs';
-import { concat } from 'rxjs';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
@@ -52,9 +41,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
-
-  //registroParam: FormGroup;
-
   constructor(
     private filtroHistorialService: FiltroHistorialService,
     private muestreoService: MuestreoService
