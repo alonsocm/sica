@@ -134,7 +134,13 @@ hr.red {
     vertical-align: top;
 }
 
+.dvTable tbody tr td{
+    text-align:left;
+    white-space: nowrap;
+}
+
 .table .thead-light th {
+    text-align: center;
     vertical-align: middle;
     position: sticky;
     top: 0px;

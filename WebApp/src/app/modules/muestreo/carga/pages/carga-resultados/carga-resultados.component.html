@@ -82,7 +82,7 @@
     <table class="table table-bordered table-hover">
       <thead class="thead-light">
         <tr>
-          <th class="checkBox-center" style="text-align:center;">
+          <th>
             <label for="chckAll">SELECCIONAR</label>
             <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();"
               title="Selecciona la página actual" />
@@ -173,7 +173,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr style="height:auto; text-align:center"
+        <tr
           *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="checkBox-center">
             <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
@@ -184,11 +184,11 @@
           <td>{{muestreo.numeroEntrega}}</td>
           <td>{{muestreo.claveSitio}}</td>
           <td>-</td>
-          <td style="width:300px">{{muestreo.claveMonitoreo}}</td>
-          <td style="width:2000px">{{muestreo.tipoSitio}}</td>
-          <td style="width:500px; text-justify:auto; text-align:left; margin:auto">{{muestreo.nombreSitio}}</td>
+          <td>{{muestreo.claveMonitoreo}}</td>
+          <td>{{muestreo.tipoSitio}}</td>
+          <td>{{muestreo.nombreSitio}}</td>
           <td>{{muestreo.ocdl}}</td>
-          <td style="width:500px">{{muestreo.tipoCuerpoAgua}}</td>
+          <td>{{muestreo.tipoCuerpoAgua}}</td>
           <td>{{muestreo.subTipoCuerpoAgua}}</td>
           <td>{{muestreo.programaAnual}}</td>
           <td>{{muestreo.laboratorio}}</td>
