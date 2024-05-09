@@ -1,4 +1,5 @@
 import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
+
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
 
@@ -222,15 +223,14 @@ export class BaseService {
       : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
   }
 
-  eliminarFiltro(columna: Column): string {
+  eliminarFiltro(columna: Column): string {   
     let cadenaanterior = this.cadena.split('%');
     let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
-    cadenaanterior.splice(indexx, 1);
+    cadenaanterior.splice(indexx, 1); 
     columna.filtered = false;
     this.existeEliminacionFiltro = true;
-
-    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
+    return (this.cadena = cadenaanterior.toString().replaceAll('|', '%'));
   }
 
   deleteFilter(columnName: string): string {
@@ -242,7 +242,7 @@ export class BaseService {
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
 
-    return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
+    return (this.cadena = cadenaanterior.toString().replaceAll('|', '%'));
   }
 
   validarExisteFiltrado(): boolean {
