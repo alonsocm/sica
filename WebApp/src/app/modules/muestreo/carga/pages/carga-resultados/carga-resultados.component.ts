@@ -1,9 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
@@ -21,6 +16,7 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./carga-resultados.component.css'],
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
+  currentHeaderFocus = '';
   filtrosComponente: string = '';
   //Variables para los muestros
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
@@ -51,10 +47,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.consultarMonitoreos();
     });
 
-    this.filtroHistorialService.columnaFiltroEspecial.subscribe((dato: Column) => {
-      if (dato.specialFilter != null)
-      this.filtrar(dato, true);      
-    });
+    this.filtroHistorialService.columnaFiltroEspecial.subscribe(
+      (dato: Column) => {
+        if (dato.specialFilter != null) this.filtrar(dato, true);
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -413,8 +410,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
+    this.setZindexToHeader(column.name);
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
-
     switch (column.dataType) {
       case 'string':
         this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(
@@ -482,6 +479,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.ordenarAscedente(column.filteredData);
       this.getPreseleccionFiltradoColumna(column);
     }
+  }
+
+  //Método que permite, mediante el z-index, mostrar correctamente el dropdown que contiene las opciones de filtro, por cada columna
+  private setZindexToHeader(columnLabel: string) {
+    if (this.currentHeaderFocus != '') {
+      let previousHeader = document.getElementById(
+        this.currentHeaderFocus
+      ) as HTMLHeadElement;
+      previousHeader.style.zIndex = '0';
+    }
+
+    this.currentHeaderFocus = columnLabel;
+    let header = document.getElementById(columnLabel) as HTMLHeadElement;
+    header.style.zIndex = '1';
   }
 
   getPreseleccionFiltradoColumna(column: Column) {
@@ -568,7 +579,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.existeFiltrado = true;
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
-      : this.obtenerCadena(this.columnaFiltroEspecial, true);   
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
     this.consultarMonitoreos();
 
     this.columns
@@ -673,8 +684,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               !isFiltroEspecial ? columna : this.columnaFiltroEspecial
             )
           : '';
-    }  
-
+    }
 
     if (!isFiltroEspecial) {
       let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
@@ -684,10 +694,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         columna.selectedData += x.value.concat('|');
       });
 
-      this.cadena = this.cadena != '' ? this.cadena.concat('%' + columna.name + '_' + columna.selectedData).replaceAll('|', '_')
-          : columna.name.concat('_' + columna.selectedData).replaceAll('|', '_');
-     
-
+      this.cadena =
+        this.cadena != ''
+          ? this.cadena
+              .concat('%' + columna.name + '_' + columna.selectedData)
+              .replaceAll('|', '_')
+          : columna.name
+              .concat('_' + columna.selectedData)
+              .replaceAll('|', '_');
     } else {
       this.opcionFiltrar = this.obtenerFiltroEspecial(
         this.columnaFiltroEspecial.optionFilter

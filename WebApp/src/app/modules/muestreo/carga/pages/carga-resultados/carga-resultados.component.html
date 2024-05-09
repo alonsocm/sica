@@ -61,9 +61,8 @@
             <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();"
               title="Selecciona la página actual" />
           </th>
-          <th
-            [ngStyle]="{ backgroundColor: (esfiltrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF') }"
-            scope="col" *ngFor="let columna of this.columns" id="{{columna.label}}">
+          <th scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+            [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
             <div class="dropdown;" style="width:max-content">
               {{columna.label}}
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
@@ -194,7 +193,8 @@
   <hr />
 
   <app-muestreos-totales></app-muestreos-totales>
-  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial" [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>  
+  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
+    [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
 
   <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog">
