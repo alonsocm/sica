@@ -27,7 +27,7 @@ export class BaseService {
 
   noRegistro: string = 'No se encontraron registros';
   filtroResumen: string = 'Seleccionar filtro';
-  keyword: string = 'values';
+  keyword: string = 'label';
   tipoAlerta: string = '';
   mensajeAlerta: string = '';
 
@@ -81,7 +81,7 @@ export class BaseService {
 
   esfiltrofoco: string = '';
   cabeceroSeleccionado: boolean;
-  filtrosCabeceroFoco: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
+  headers: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
 
   opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
   leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
@@ -223,11 +223,11 @@ export class BaseService {
       : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
   }
 
-  eliminarFiltro(columna: Column): string {   
+  eliminarFiltro(columna: Column): string {
     let cadenaanterior = this.cadena.split('%');
     let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
-    cadenaanterior.splice(indexx, 1); 
+    cadenaanterior.splice(indexx, 1);
     columna.filtered = false;
     this.existeEliminacionFiltro = true;
     return (this.cadena = cadenaanterior.toString().replaceAll('|', '%'));

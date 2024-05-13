@@ -125,7 +125,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: '',
+        name: 'clave5k',
         label: 'CLAVE 5K',
         order: 5,
         selectAll: true,
@@ -382,11 +382,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.columns = nombresColumnas;
 
-    this.filtrosCabeceroFoco = this.columns.map((m) => {
-      return m.label;
-    });
+    this.headers = this.columns.map((m) => ({
+      label: m.label,
+      name: m.name,
+    }));
 
-    this.muestreoService.filtrosCabeceroFoco = this.filtrosCabeceroFoco;
+    // this.muestreoService.filtrosCabeceroFoco = this.headers;
   }
 
   public consultarMonitoreos(

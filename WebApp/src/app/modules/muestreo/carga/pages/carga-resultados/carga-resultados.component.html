@@ -34,7 +34,7 @@
   </div>
   <br />
   <app-cabeceros-historial [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-    (mostrandoesfiltrofoco)="this.esfiltrofoco=$event">
+    (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
   </app-cabeceros-historial>
 
   <app-historial></app-historial>
@@ -62,7 +62,7 @@
               title="Selecciona la página actual" />
           </th>
           <th scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
-            [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+            [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
             <div class="dropdown;" style="width:max-content">
               {{columna.label}}
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
