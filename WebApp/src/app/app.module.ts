@@ -62,6 +62,7 @@ import { AdministracionMuestreoComponent } from './modules/muestreo/administraci
 import { CabecerosHistorialComponent } from './shared/filtro/cabeceros-historial/cabeceros-historial.component';
 import { HistorialComponent } from './shared/filtro/historial/historial.component';
 import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.component';
+import { ColumnResizeDirective } from './column-resize.directive';
 
 @NgModule({
   declarations: [
@@ -116,6 +117,7 @@ import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.compo
     CabecerosHistorialComponent,
     HistorialComponent,
     AutofiltroComponent,
+    ColumnResizeDirective,
   ],
   imports: [
     BrowserModule,
