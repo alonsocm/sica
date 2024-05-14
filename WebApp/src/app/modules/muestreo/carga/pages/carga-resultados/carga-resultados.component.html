@@ -52,22 +52,22 @@
       Anular la seleccion
     </button>
   </div>
-  <div class="dvTable table-responsive">
-    <table class="table table-bordered table-hover">
-      <thead class="thead-light">
+  <div class="dvTable">
+    <table class="table-bordered table-hover">
+      <thead>
         <tr>
-          <th>
+          <th columnResize class="td-center" style="background-color: #E9ECEF;">
             <label for="chckAll">SELECCIONAR</label>
             <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();"
               title="Selecciona la página actual" />
           </th>
-          <th scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
             [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
-            <div class="dropdown;" style="width:max-content">
-              {{columna.label}}
+            {{columna.label}}
+            <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
                 title="Filtros" aria-expanded="false"
-                (click)="establecerValoresFiltrosTabla(columna); this.initialValue = ''">
+                (click)="establecerValoresFiltrosTabla(columna); this.initialValue = '';">
                 <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
                   class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
@@ -78,7 +78,7 @@
                   class="bi bi-arrow-up"></i>
               </button>
 
-              <div class="dropdown-menu" style="width:250px;">
+              <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
                 <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
                   <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
                     class="bi bi-sort-alpha-down"></i>
@@ -130,7 +130,7 @@
                 </div>
                 <div class="modal-footer" style="font-size:xx-small; height:100px">
                   <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
-                    data-dismiss="dropdown">
+                    data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
                     Cancelar
                   </button>
                   <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
@@ -147,7 +147,7 @@
       <tbody>
         <tr
           *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
-          <td class="checkBox-center">
+          <td class="td-center">
             <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
               title="Seleccionar">
           </td>
