@@ -22,7 +22,6 @@ const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
   styleUrls: ['./carga-resultados.component.css'],
 })
 export class CargaResultadosComponent extends BaseService implements OnInit {
-  currentHeaderFocus = '';
   filtrosComponente: string = '';
   //Variables para los muestros
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
@@ -416,33 +415,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
 
-  @HostListener('document:click')
-  clickedOut() {
-    this.hideColumnFilter();
-  }
-
-  private hideColumnFilter() {
-    if (this.currentHeaderFocus != '') {
-      let dropdown = document.getElementById(
-        'dd-' + this.currentHeaderFocus
-      ) as HTMLElement;
-      dropdown.classList.remove('show');
-
-      let dropdownMenu = document.getElementById(
-        'dd-menu-' + this.currentHeaderFocus
-      ) as HTMLElement;
-      dropdownMenu.classList.remove('show');
-    }
-  }
-
-  onCancelarFiltroClick() {
-    this.hideColumnFilter();
-  }
-
   public establecerValoresFiltrosTabla(column: Column) {
-    this.setZindexToHeader(column.name);
     this.hideColumnFilter();
     this.showColumnFilter(column.name);
+    this.setZindexToHeader(column.name);
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
     switch (column.dataType) {
       case 'string':
@@ -511,15 +487,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.ordenarAscedente(column.filteredData);
       this.getPreseleccionFiltradoColumna(column);
     }
-  }
-
-  private showColumnFilter(columnName: string) {
-    let dropdown = document.getElementById('dd-' + columnName) as HTMLElement;
-    dropdown.classList.add('show');
-    let dropdownMenu = document.getElementById(
-      'dd-menu-' + columnName
-    ) as HTMLElement;
-    dropdownMenu.classList.add('show');
   }
 
   //Método que permite, mediante el z-index, mostrar correctamente el dropdown que contiene las opciones de filtro, por cada columna
@@ -1135,5 +1102,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.deleteFilter(columName);
     this.setColumnsFiltered();
     this.consultarMonitoreos();
+  }
+
+  //Se ejecuta cuando damos click en cualquier parte de la página, y cierra el dropdown de filtro por columna. Se creó debido al resize de columnas
+  @HostListener('document:click')
+  clickedOut() {
+    this.hideColumnFilter();
   }
 }

@@ -1,4 +1,10 @@
-import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
+import {
+  ElementRef,
+  HostListener,
+  Injectable,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
@@ -90,6 +96,8 @@ export class BaseService {
   initialValue: string = '';
 
   existeEliminacionFiltro: boolean = false;
+
+  currentHeaderFocus = '';
 
   constructor() {
     this.cabeceroSeleccionado = false;
@@ -249,5 +257,33 @@ export class BaseService {
     return this.columns.filter((x) => x.filtered == true).length > 0
       ? true
       : false;
+  }
+
+  //#region Funciones que manejan el mostrar/ocultar del dropdown de los filtros por columna
+  onCancelarFiltroClick() {
+    this.hideColumnFilter();
+  }
+
+  public showColumnFilter(columnName: string) {
+    let dropdown = document.getElementById('dd-' + columnName) as HTMLElement;
+    dropdown.classList.add('show');
+    let dropdownMenu = document.getElementById(
+      'dd-menu-' + columnName
+    ) as HTMLElement;
+    dropdownMenu.classList.add('show');
+  }
+
+  public hideColumnFilter() {
+    if (this.currentHeaderFocus != '') {
+      let dropdown = document.getElementById(
+        'dd-' + this.currentHeaderFocus
+      ) as HTMLElement;
+      dropdown.classList.remove('show');
+
+      let dropdownMenu = document.getElementById(
+        'dd-menu-' + this.currentHeaderFocus
+      ) as HTMLElement;
+      dropdownMenu.classList.remove('show');
+    }
   }
 }
