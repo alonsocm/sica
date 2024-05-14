@@ -131,6 +131,10 @@ hr.red {
   top: -1px;
 }
 
+table tbody td {
+  white-space: nowrap;
+}
+
 table thead tr th:hover {
   &::after {
     content: "";

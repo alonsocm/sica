@@ -58,8 +58,8 @@
         <tr>
           <th columnResize class="td-center" style="background-color: #E9ECEF;">
             <label for="chckAll">SELECCIONAR</label>
-            <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();"
-              title="Selecciona la página actual" />
+            <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
+              (change)="onSelectPageClick();" title="Selecciona la página actual" />
           </th>
           <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
             [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
@@ -148,8 +148,8 @@
         <tr
           *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="td-center">
-            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
-              title="Seleccionar">
+            <input type="checkbox" class="cursor-pointer" [(ngModel)]="muestreo.isChecked"
+              (change)="onSelectClick(muestreo)" title="Seleccionar">
           </td>
           <td>{{muestreo.estatus}}</td>
           <td>{{(muestreo.evidencias.length > 1) ? "SI":"NO"}} </td>

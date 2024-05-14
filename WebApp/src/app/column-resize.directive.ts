@@ -82,6 +82,7 @@ export class ColumnResizeDirective implements OnInit, OnDestroy {
               const cells = row.querySelectorAll('td');
               if (cells[this.columnIndex]) {
                 cells[this.columnIndex].style.width = `${newWidth}px`;
+                cells[this.columnIndex].style.whiteSpace = 'wrap';
               }
             });
 
