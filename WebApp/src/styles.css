@@ -133,6 +133,7 @@ hr.red {
 
 table tbody td {
   white-space: nowrap;
+  word-break: break-word;
 }
 
 table thead tr th:hover {
