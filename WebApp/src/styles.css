@@ -20,11 +20,12 @@ h3 {
 h1,
 h2,
 h3 {
-  margin-top: 0.5%;
+  margin-top: 0%;
+  margin-bottom: 0%;
 }
 
 hr.red {
-  margin: 10px 0 25px;
+  margin: 10px 0 15px;
 }
 
 .element-hidden {
@@ -118,15 +119,18 @@ hr.red {
 
 .dvTable {
   overflow-y: auto;
+  min-height: 600px;
   max-height: 600px;
-  margin: 1% 0px 1% 0px;
+  margin: 0% 0px 1% 0px;
   font-size: xx-small;
+  border-radius: 5px;
+  border: 1px #d6d8d9 solid;
 }
 
 .dvTable th {
   font-size: x-small;
   text-align: left;
-  vertical-align: top;
+  vertical-align: center;
   position: sticky;
   top: -1px;
 }
@@ -160,6 +164,10 @@ table thead tr th:hover {
 .dropdown {
   font-size: x-small;
   text-align: left;
+}
+
+.total-items {
+  font-weight: bold;
 }
 /* .dvTable tbody>tr:hover {
     background-color: #DDDDDD;

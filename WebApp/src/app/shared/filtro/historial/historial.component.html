@@ -1,8 +1,10 @@
-<div *ngIf="this.filtros.length > 0" class="alert alert-dark filter-container" role="group" aria-label="Basic example">
-    <label>Historial filtrado</label> <br />
+<div *ngIf="this.filtros.length > 0" class="alert alert-dark" role="group" aria-label="Basic example">
+    <label>Filtros activos:</label> <br />
     <ng-container *ngFor="let column of this.filtros">
-        <button type="button" class="btn btn-success filter-btn" (click)="onDeleteClick(column.name)">
+        <!-- <button type="button" class="btn btn-success filter-btn" (click)="onDeleteClick(column.name)">
             {{column.label}}<i class="bi bi-x"></i>
-        </button>
+        </button> -->
+        <span class="badge rounded-pill text-bg-primary">{{column.label}}<i class="bi bi-x"
+                (click)="onDeleteClick(column.name)"></i></span>
     </ng-container>
 </div>
