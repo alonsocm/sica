@@ -416,9 +416,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
-    this.hideColumnFilter();
-    this.showColumnFilter(column.name);
-    this.setZindexToHeader(column.name);
+    // this.hideColumnFilter();
+    // this.showColumnFilter(column.name);
+    // this.setZindexToHeader(column.name);
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
     switch (column.dataType) {
       case 'string':
@@ -1105,8 +1105,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   //Se ejecuta cuando damos click en cualquier parte de la página, y cierra el dropdown de filtro por columna. Se creó debido al resize de columnas
-  @HostListener('document:click')
-  clickedOut() {
-    this.hideColumnFilter();
-  }
+  // @HostListener('document:click')
+  // clickedOut() {
+  //   this.hideColumnFilter();
+  // }
 }

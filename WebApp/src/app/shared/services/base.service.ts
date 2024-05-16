@@ -261,7 +261,7 @@ export class BaseService {
 
   //#region Funciones que manejan el mostrar/ocultar del dropdown de los filtros por columna
   onCancelarFiltroClick() {
-    this.hideColumnFilter();
+    // this.hideColumnFilter();
   }
 
   public showColumnFilter(columnName: string) {

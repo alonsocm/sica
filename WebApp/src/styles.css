@@ -127,12 +127,27 @@ hr.red {
   border: 1px #d6d8d9 solid;
 }
 
-.dvTable th {
+.dvTable .thead-sticky {
   font-size: x-small;
   text-align: left;
-  vertical-align: center;
+  vertical-align: bottom;
   position: sticky;
   top: -1px;
+}
+
+.dvTable .thead-sticky .th-resize {
+  position: relative;
+}
+
+.dvTable .no-border-bottom {
+  border-bottom: 0px;
+  vertical-align: bottom;
+  background-color: #e9ecef;
+}
+
+.dvTable .no-border-top {
+  border-top: 0px;
+  background-color: #e9ecef;
 }
 
 table tbody td {

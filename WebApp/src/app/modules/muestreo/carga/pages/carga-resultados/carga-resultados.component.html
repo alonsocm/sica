@@ -54,16 +54,22 @@
   </div>
   <div class="dvTable">
     <table class="table-bordered table-hover">
-      <thead>
+      <thead class="thead-sticky">
         <tr>
-          <th columnResize class="td-center" style="background-color: #E9ECEF;">
-            <label for="chckAll">SELECCIONAR</label>
-            <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-              (change)="onSelectPageClick();" title="Selecciona la página actual" />
+          <th columnResize class="td-center no-border-bottom th-resize">
+            &nbsp;SELECCIONAR&nbsp;
           </th>
           <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+            class="no-border-bottom th-resize"
             [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
             {{columna.label}}
+          </th>
+        </tr>
+        <tr>
+          <th class="no-border-top td-center"><input class="cursor-pointer" type="checkbox" id="chckAll"
+              [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();" title="Selecciona la página actual" />
+          </th>
+          <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
             <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
                 title="Filtros" aria-expanded="false"
@@ -139,7 +145,6 @@
                   </button>
                 </div>
               </div>
-
             </div>
           </th>
         </tr>
