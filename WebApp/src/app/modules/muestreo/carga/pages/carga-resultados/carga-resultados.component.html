@@ -188,7 +188,10 @@
       <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
       </pagination-controls>
     </div>
-    <div>
+    <div class="col-md-2">
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.NoPage}}</span></p>
+    </div>
+    <div class="col-md-3">
       <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
     </div>
   </div>
