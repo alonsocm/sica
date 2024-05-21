@@ -876,8 +876,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           'Monitoreos eliminados correctamente',
           TIPO_MENSAJE.exito
         );
+        this.resetValues();
         this.hacerScroll();
-        this.seleccionarTodosChck = false;
       },
       error: (error) => {
         this.loading = false;
