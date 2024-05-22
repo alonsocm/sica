@@ -253,11 +253,13 @@ export class BaseService {
       cadenaAnterior = cadenaAnterior.substring(0, cadenaAnterior.lastIndexOf('%'));
     }
 
-    let nuevoUltimoFiltro = '';
-    nuevoUltimoFiltro = (cadenaAnterior.indexOf('%') != -1) ? cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1] : cadenaAnterior.split('_')[0];
-    let indexNuevoUltimoFiltro = this.columns.findIndex((f) => f.name == nuevoUltimoFiltro.split('_')[0]);
-    this.columns[indexNuevoUltimoFiltro].isLatestFilter = true;
-    this.existeFiltrado = this.validarExisteFiltrado();
+    if (cadenaAnterior != '') {
+      let nuevoUltimoFiltro = '';
+      nuevoUltimoFiltro = (cadenaAnterior.indexOf('%') != -1) ? cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1] : cadenaAnterior.split('_')[0];
+      let indexNuevoUltimoFiltro = this.columns.findIndex((f) => f.name == nuevoUltimoFiltro.split('_')[0]);
+      this.columns[indexNuevoUltimoFiltro].isLatestFilter = true;
+      this.existeFiltrado = this.validarExisteFiltrado();
+    }
      return this.cadena = cadenaAnterior.toString();
   }
 

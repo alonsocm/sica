@@ -52,7 +52,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     super();
     this.filtroHistorialService.columnName.subscribe((columnName) => {
       this.deleteFilter(columnName);
-      this.consultartotalCabeceros();
+      //this.consultartotalCabeceros();
       this.consultarMonitoreos();
     });
 
@@ -86,7 +86,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        name: '', label: 'CLAVE 5K', order: 5, selectAll: true, filtered: false, asc: false, desc: false,
+        name: 'clave5k', label: 'CLAVE 5K', order: 5, selectAll: true, filtered: false, asc: false, desc: false,
         data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
@@ -162,20 +162,20 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
 
-  public consultartotalCabeceros(
-    page: number = 0,
-    pageSize: number = this.pageSize,
-    filter: string = this.cadena
-  ): void {   
-    this.muestreoService
-      .obtenerMuestreosPaginados(false, page, pageSize, filter, this.orderBy)
-      .subscribe({
-        next: (response: any) => {          
-          this.muestreosdataAll = response.data;      
-        },
-        error: (error) => { },
-      });
-  }
+  //public consultartotalCabeceros(
+  //  page: number = 0,
+  //  pageSize: number = this.pageSize,
+  //  filter: string = this.cadena
+  //): void {   
+  //  this.muestreoService
+  //    .obtenerMuestreosPaginados(false, page, pageSize, filter, this.orderBy)
+  //    .subscribe({
+  //      next: (response: any) => {          
+  //        this.muestreosdataAll = response.data;      
+  //      },
+  //      error: (error) => { },
+  //    });
+  //}
 
 
   public consultarMonitoreos(
@@ -199,20 +199,16 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public establecerValoresFiltrosTabla(column: Column) {  
-
-
-    console.log(this.muestreosdataAll);
+  
     this.setColumnsFiltered(); 
 
-    this.muestreoService.filtros.subscribe((filtro) => { this.filtros = filtro });
-    console.log("filtros");
-    console.log(this.filtros);
+    this.muestreoService.filtros.subscribe((filtro) => { this.filtros = filtro });  
 
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
     this.obtenerLeyendaFiltroEspecial(column.dataType);
 
     if (!column.filtered && !this.existeFiltrado || (column.isLatestFilter && this.filtros.length == 1)) {
-      this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
+      this.muestreoService.getDistinctValuesFromColumn(column.name, this.cadena).subscribe({
         next: (response: any) => {
           column.data = response.data.map((register: any) => {
             let item: Item = {
@@ -232,24 +228,24 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       (!column.filtered && this.existeFiltrado) ||
       (column.filtered && !column.isLatestFilter)
     ) {  
+      this.muestreoService.getDistinctValuesFromColumn(column.name, this.cadena).subscribe({
+        next: (response: any) => {
+          column.data = response.data.map((register: any) => {
+            let item: Item = {
+              value: register,
+              checked: true,
+            };
+            return item;
+          });
 
-      column.data = this.muestreosdataAll.map((m: any) => {
-        let item: Item = {
-          value: m[column.name],
-          checked: true,
-        };
-        return item;
-      });      
+          column.filteredData = column.data;
+          this.ordenarAscedente(column.filteredData);
+          this.getPreseleccionFiltradoColumna(column);
+        },
+        error: (error) => { },
+      });
 
 
-      column.filteredData = column.data;
-      const distinctThings = column.filteredData.filter(
-        (thing, i, arr) => arr.findIndex((t) => t.value === thing.value) === i
-      );
-
-      column.filteredData = distinctThings.sort();
-      this.ordenarAscedente(column.filteredData);
-      this.getPreseleccionFiltradoColumna(column);
     }
   }
 
@@ -707,7 +703,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);   
     this.setColumnsFiltered();
-    this.consultartotalCabeceros();
+    //this.consultartotalCabeceros();
     this.consultarMonitoreos(); 
   }
 }

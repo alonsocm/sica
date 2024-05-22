@@ -354,7 +354,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     console.log(this.muestreos);
 
     if (!column.filtered && !this.existeFiltrado) {
-      this.muestreoService.getDistinctValuesFromColumn(column.name).subscribe({
+      this.muestreoService.getDistinctValuesFromColumn(column.name, this.cadena).subscribe({
         next: (response: any) => {
           column.data = response.data.map((register: any) => {
             let item: Item = {
@@ -537,124 +537,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     );
   }
 
-  seleccionarFiltro(columna: Column): void {}
-  obtenerFiltroEspecial(valor: string | undefined): string {
-    switch (valor) {
-      case this.filtradoEspecial.beginswith:
-        this.opcionFiltrar = this.mustreoExpression.beginswith;
-        break;
-      case this.filtradoEspecial.endswith:
-        this.opcionFiltrar = this.mustreoExpression.endswith;
-        break;
-      case this.filtradoEspecial.contains:
-        this.opcionFiltrar = this.mustreoExpression.contains;
-        break;
-      case this.filtradoEspecial.equals:
-        this.opcionFiltrar = this.mustreoExpression.equals;
-        break;
-      case this.filtradoEspecial.notcontains:
-        this.opcionFiltrar = this.mustreoExpression.notcontains;
-        break;
-      case this.filtradoEspecial.notequals:
-        this.opcionFiltrar = this.mustreoExpression.notequals;
-        break;
-
-      case this.filtradoEspecialNumeral.greaterthan:
-        this.opcionFiltrar = this.mustreoExpression.greaterthan;
-        break;
-      case this.filtradoEspecialNumeral.greaterthanorequalto:
-        this.opcionFiltrar = this.mustreoExpression.greaterthanorequalto;
-        break;
-      case this.filtradoEspecialNumeral.lessthan:
-        this.opcionFiltrar = this.mustreoExpression.lessthan;
-        break;
-      case this.filtradoEspecialNumeral.lessthanorequalto:
-        this.opcionFiltrar = this.mustreoExpression.lessthanorequalto;
-        break;
-
-      case this.filtradoEspecialFecha.before:
-        this.opcionFiltrar = this.mustreoExpression.before;
-        break;
-      case this.filtradoEspecialFecha.after:
-        this.opcionFiltrar = this.mustreoExpression.after;
-        break;
-      case this.filtradoEspecialFecha.beforeorequal:
-        this.opcionFiltrar = this.mustreoExpression.beforeorequal;
-        break;
-      case this.filtradoEspecialFecha.afterorequal:
-        this.opcionFiltrar = this.mustreoExpression.afterorequal;
-        break;
-
-      default:
-        break;
-    }
-    return this.opcionFiltrar;
-  }
-
-  obtenerCadena(columna: Column, isFiltroEspecial: boolean): string {
-    if (
-      this.cadena.indexOf(
-        !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
-      ) != -1
-    ) {
-      this.cadena =
-        this.cadena.indexOf('%') != -1 ? this.deleteFilter(columna.name) : '';
-    }
-
-    if (!isFiltroEspecial) {
-      let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-
-      columna.selectedData = '';
-      filtrosSeleccionados.forEach((x) => {
-        columna.selectedData += x.value.concat('|');
-      });
-
-      this.cadena =
-        this.cadena != ''
-          ? this.cadena
-              .concat('%' + columna.name + '_' + columna.selectedData)
-              .replaceAll('|', '_')
-          : columna.name
-              .concat('_' + columna.selectedData)
-              .replaceAll('|', '_');
-    } else {
-      this.opcionFiltrar = this.obtenerFiltroEspecial(
-        this.columnaFiltroEspecial.optionFilter
-      );
-      let cadenaEspecial =
-        this.columnaFiltroEspecial.name +
-        '_*' +
-        this.opcionFiltrar +
-        '_' +
-        this.columnaFiltroEspecial.specialFilter;
-      this.cadena =
-        this.cadena != ''
-          ? this.cadena.concat('%' + cadenaEspecial)
-          : cadenaEspecial;
-      this.columnaFiltroEspecial.selectedData =
-        this.columnaFiltroEspecial.selectedData?.concat(
-          this.columnaFiltroEspecial.specialFilter + ','
-        );
-
-      if (this.columnaFiltroEspecial.secondSpecialFilter != '') {
-        this.opcionFiltrar = this.obtenerFiltroEspecial(
-          this.columnaFiltroEspecial.secondOptionFilter
-        );
-        let cadenaEspecial =
-          this.columnaFiltroEspecial.name +
-          '_*' +
-          this.opcionFiltrar +
-          '_' +
-          this.columnaFiltroEspecial.secondSpecialFilter;
-        this.cadena = this.cadena.concat('%' + cadenaEspecial);
-        this.columnaFiltroEspecial.selectedData =
-          this.columnaFiltroEspecial.selectedData?.concat(
-            this.columnaFiltroEspecial.specialFilter + ','
-          );
-      }
-    }
-    return this.cadena;
-  }
+  seleccionarFiltro(columna: Column): void {}  
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
     this.existeFiltrado = true;
