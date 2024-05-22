@@ -26,21 +26,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //Variables para los muestros
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
   muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
-
-  muestreosdataAll: Array<Muestreo> = [];
-
-  filtrosModal: Array<Item> = [];
-
   resultadosEnviados: Array<number> = [];
-
   reemplazarResultados: boolean = false;
-  esTemplate: boolean = true;
-  mostrar: boolean = true;
-
   archivo: any;
-  opcionColumnaFiltro: string = '';
-
-  prueba = 'prueba';
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
