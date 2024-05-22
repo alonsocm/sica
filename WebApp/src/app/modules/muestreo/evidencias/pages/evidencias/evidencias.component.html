@@ -82,7 +82,7 @@
                                     Ordenar de Z a A
                                 </a>
                                 <hr class="dropdown-divider">
-                                <a (click)="eliminarFiltro(columna); columna.filtered=false; this.existeFiltrado=validarExisteFiltrado(); consultarMonitoreos();"
+                                <a (click)="deleteFilter(columna.name); columna.filtered=false; this.existeFiltrado=validarExisteFiltrado(); consultarMonitoreos();"
                                     class="dropdown-item">
                                     <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}"
                                         class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>

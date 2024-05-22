@@ -20,7 +20,7 @@ namespace Application.Features.Muestreos.Queries
 
         public async Task<Response<IEnumerable<object>>> Handle(GetDistinctValuesFromColumn request, CancellationToken cancellationToken)
         {
-            var muestreos = await _repositoryAsync.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.Cargado });
+            var muestreos = await _repositoryAsync.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.Cargado, (long)Enums.EstatusMuestreo.EvidenciasCargadas });
             var response = _repositoryAsync.GetDistinctValuesFromColumn(request.Column, muestreos);
 
             return new Response<IEnumerable<object>>(response);

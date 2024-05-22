@@ -2,6 +2,7 @@ import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
 
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
+import { Item } from '../../interfaces/filter/item';
 
 import {
   filtrosEspeciales,
@@ -223,26 +224,33 @@ export class BaseService {
       : this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 2);
   }
 
-  eliminarFiltro(columna: Column): string {   
-    let cadenaanterior = this.cadena.split('%');
-    let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
-    let indexx = cadenaanterior.indexOf(repetidos.toString());
-    cadenaanterior.splice(indexx, 1); 
-    columna.filtered = false;
-    this.existeEliminacionFiltro = true;
-    return (this.cadena = cadenaanterior.toString().replaceAll('|', '%'));
-  }
-
   deleteFilter(columnName: string): string {
     let index = this.columns.findIndex((f) => f.name == columnName);
     this.columns[index].filtered = false;
+    this.columns[index].isLatestFilter = false;
+    this.columns[index].selectedData = '';
+    this.existeEliminacionFiltro = true;
 
-    let cadenaanterior = this.cadena.split('%');
+    let cadenaanterior = this.cadena.split('%');   
+
     let repetidos = cadenaanterior.filter((x) => x.includes(columnName));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
 
-    return (this.cadena = cadenaanterior.toString().replaceAll('|', '%'));
+    let cadenaAnterior = '';
+    if (cadenaanterior.length > 0) {   
+      cadenaanterior.forEach((x) => {
+        cadenaAnterior += x.concat('%');
+      });
+      cadenaAnterior = cadenaAnterior.substring(0, cadenaAnterior.lastIndexOf('%'));
+    }
+
+    let nuevoUltimoFiltro = '';
+    nuevoUltimoFiltro = (cadenaAnterior.indexOf('%') != -1) ? cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1] : cadenaAnterior.split('_')[0];
+    let indexNuevoUltimoFiltro = this.columns.findIndex((f) => f.name == nuevoUltimoFiltro.split('_')[0]);
+    this.columns[indexNuevoUltimoFiltro].isLatestFilter = true;
+    this.existeFiltrado = this.validarExisteFiltrado();
+     return this.cadena = cadenaAnterior.toString();
   }
 
   validarExisteFiltrado(): boolean {
@@ -250,4 +258,193 @@ export class BaseService {
       ? true
       : false;
   }
+
+  obtenerLeyendaFiltroEspecial(dataType: string): void {
+
+    switch (dataType) {
+      case 'string':
+        this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de texto';
+        this.indicesopcionesFiltros = [1, 3, 5];
+        break;
+      case 'number':
+        this.opcionesFiltros = Object.entries(this.filtradoEspecialNumeral).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de número';
+        this.indicesopcionesFiltros = [1, 6];
+        break;
+      case 'date':
+        this.opcionesFiltros = Object.entries(this.filtradoEspecialFecha).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de fecha';
+        this.indicesopcionesFiltros = [0, 5];
+        break;
+      default:
+        this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(
+          (i) => i[1]
+        );
+        this.leyendaFiltrosEspeciales = 'Filtros de texto';
+        break;
+    }
+
+  }
+
+  ordenarAscedente(column: Array<Item>) {
+    column.sort(function (a: any, b: any) {
+      if (a.value > b.value) {
+        return 1;
+      }
+      if (a.value < b.value) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
+  getPreseleccionFiltradoColumna(column: Column) {  
+    if (column.isLatestFilter)
+      column.filteredData.forEach((m) => {
+        m.checked = column.selectedData.includes(m.value) ? true : false;
+      });
+  }
+
+  onSelectAllPagesClick() {
+    this.allSelected = true;
+  }
+
+  onUnselectAllClick() {
+    this.allSelected = false;
+  }
+
+  onSpecialFiltersClick($event: MouseEvent, columnName: string) {
+    let dropDown = document.getElementById(
+      'filters-' + columnName
+    ) as HTMLElement;
+    if (dropDown.className === 'd-none') {
+      dropDown.className = 'd-block';
+    } else {
+      dropDown.className = 'd-none';
+    }
+    $event.stopPropagation();
+  }
+
+  obtenerFiltroEspecial(valor: string | undefined): string {
+    switch (valor) {
+      case this.filtradoEspecial.beginswith:
+        this.opcionFiltrar = this.mustreoExpression.beginswith;
+        break;
+      case this.filtradoEspecial.endswith:
+        this.opcionFiltrar = this.mustreoExpression.endswith;
+        break;
+      case this.filtradoEspecial.contains:
+        this.opcionFiltrar = this.mustreoExpression.contains;
+        break;
+      case this.filtradoEspecial.equals:
+        this.opcionFiltrar = this.mustreoExpression.equals;
+        break;
+      case this.filtradoEspecial.notcontains:
+        this.opcionFiltrar = this.mustreoExpression.notcontains;
+        break;
+      case this.filtradoEspecial.notequals:
+        this.opcionFiltrar = this.mustreoExpression.notequals;
+        break;
+
+      case this.filtradoEspecialNumeral.greaterthan:
+        this.opcionFiltrar = this.mustreoExpression.greaterthan;
+        break;
+      case this.filtradoEspecialNumeral.greaterthanorequalto:
+        this.opcionFiltrar = this.mustreoExpression.greaterthanorequalto;
+        break;
+      case this.filtradoEspecialNumeral.lessthan:
+        this.opcionFiltrar = this.mustreoExpression.lessthan;
+        break;
+      case this.filtradoEspecialNumeral.lessthanorequalto:
+        this.opcionFiltrar = this.mustreoExpression.lessthanorequalto;
+        break;
+
+      case this.filtradoEspecialFecha.before:
+        this.opcionFiltrar = this.mustreoExpression.before;
+        break;
+      case this.filtradoEspecialFecha.after:
+        this.opcionFiltrar = this.mustreoExpression.after;
+        break;
+      case this.filtradoEspecialFecha.beforeorequal:
+        this.opcionFiltrar = this.mustreoExpression.beforeorequal;
+        break;
+      case this.filtradoEspecialFecha.afterorequal:
+        this.opcionFiltrar = this.mustreoExpression.afterorequal;
+        break;
+
+      default:
+        break;
+    }
+    return this.opcionFiltrar;
+  }
+
+  obtenerCadena(columna: Column, isFiltroEspecial: boolean): string {
+    if (
+      this.cadena.indexOf(
+        !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
+      ) != -1
+    ) {
+      this.cadena =
+        this.cadena.indexOf('%') != -1
+          ? this.deleteFilter(!isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name) : '';
+    }
+
+    if (!isFiltroEspecial) {
+      let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
+
+      columna.selectedData = '';
+      filtrosSeleccionados.forEach((x) => {
+        columna.selectedData += x.value.concat('_');
+      });    
+
+
+      this.cadena = this.cadena != '' ? this.cadena.concat('%' + columna.name + '_' + columna.selectedData) : columna.name.concat('_' + columna.selectedData);
+
+
+    } else {
+      this.opcionFiltrar = this.obtenerFiltroEspecial(
+        this.columnaFiltroEspecial.optionFilter
+      );
+      let cadenaEspecial =
+        this.columnaFiltroEspecial.name +
+        '_*' +
+        this.opcionFiltrar +
+        '_' +
+        this.columnaFiltroEspecial.specialFilter;
+      this.cadena =
+        this.cadena != ''
+          ? this.cadena.concat('%' + cadenaEspecial)
+          : cadenaEspecial;
+      this.columnaFiltroEspecial.selectedData =
+        this.columnaFiltroEspecial.selectedData?.concat(
+          this.columnaFiltroEspecial.specialFilter + ','
+        );
+
+      if (this.columnaFiltroEspecial.secondSpecialFilter != '') {
+        this.opcionFiltrar = this.obtenerFiltroEspecial(
+          this.columnaFiltroEspecial.secondOptionFilter
+        );
+        let cadenaEspecial =
+          this.columnaFiltroEspecial.name +
+          '_*' +
+          this.opcionFiltrar +
+          '_' +
+          this.columnaFiltroEspecial.secondSpecialFilter;
+        this.cadena = this.cadena.concat('%' + cadenaEspecial);
+        this.columnaFiltroEspecial.selectedData =
+          this.columnaFiltroEspecial.selectedData?.concat(
+            this.columnaFiltroEspecial.specialFilter + ','
+          );
+      }
+    }
+    return this.cadena;
+  }
+
 }

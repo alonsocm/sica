@@ -350,14 +350,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     return this.muestreos.some((f) => !f.selected);
   }
 
-  onSelectAllPagesClick() {
-    this.allSelected = true;
-  }
-
-  onUnselectAllClick() {
-    this.allSelected = false;
-  }
-
   private resetValues() {
     this.muestreosSeleccionados = [];
     this.selectAllOption = false;

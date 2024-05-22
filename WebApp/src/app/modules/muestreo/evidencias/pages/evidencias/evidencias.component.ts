@@ -387,18 +387,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     }
   }
 
-  ordenarAscedente(column: Array<Item>) {
-    column.sort(function (a: any, b: any) {
-      if (a.value > b.value) {
-        return 1;
-      }
-      if (a.value < b.value) {
-        return -1;
-      }
-      return 0;
-    });
-  }
-
   existeEvidencia(evidencias: Array<Evidencia>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
       return false;
@@ -561,7 +549,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
     if (this.cadena.indexOf(columna.name) != -1) {
       this.cadena =
-        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(columna) : '';
+        this.cadena.indexOf('%') != -1 ? this.deleteFilter(columna.name) : '';
     }
 
     this.cadena =
@@ -572,33 +560,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     columna.filtered = true;
     //this.establecerValoresFiltrosTabla(columna);
     this.esHistorial = true;
-  }
-
-  //validarExisteFiltrado(): boolean {
-  //  return this.columns.filter((x) => x.filtered == true).length > 0
-  //    ? true
-  //    : false;
-  //}
-
-  //eliminarFiltro(columna: Column): string {
-  //  let cadenaanterior = this.cadena.split('%');
-  //  let repetidos = cadenaanterior.filter((x) => x.includes(columna.name));
-  //  let indexx = cadenaanterior.indexOf(repetidos.toString());
-  //  cadenaanterior.splice(indexx, 1);
-  //  return (this.cadena = cadenaanterior.toString().replaceAll(',', '%'));
-  //}
-
-  onSpecialFiltersClick($event: MouseEvent, columnName: string) {
-    let dropDown = document.getElementById(
-      'filters-' + columnName
-    ) as HTMLElement;
-
-    if (dropDown.className === 'd-none') {
-      dropDown.className = 'd-block';
-    } else {
-      dropDown.className = 'd-none';
-    }
-    $event.stopPropagation();
   }
 
   onSelectPageClick() {
@@ -694,11 +655,4 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  onSelectAllPagesClick() {
-    this.allSelected = true;
-  }
-
-  onUnselectAllClick() {
-    this.allSelected = false;
-  }
 }
