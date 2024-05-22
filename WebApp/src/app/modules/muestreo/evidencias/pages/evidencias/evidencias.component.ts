@@ -550,28 +550,160 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   }
 
   seleccionarFiltro(columna: Column): void {}
+  obtenerFiltroEspecial(valor: string | undefined): string {
+    switch (valor) {
+      case this.filtradoEspecial.beginswith:
+        this.opcionFiltrar = this.mustreoExpression.beginswith;
+        break;
+      case this.filtradoEspecial.endswith:
+        this.opcionFiltrar = this.mustreoExpression.endswith;
+        break;
+      case this.filtradoEspecial.contains:
+        this.opcionFiltrar = this.mustreoExpression.contains;
+        break;
+      case this.filtradoEspecial.equals:
+        this.opcionFiltrar = this.mustreoExpression.equals;
+        break;
+      case this.filtradoEspecial.notcontains:
+        this.opcionFiltrar = this.mustreoExpression.notcontains;
+        break;
+      case this.filtradoEspecial.notequals:
+        this.opcionFiltrar = this.mustreoExpression.notequals;
+        break;
 
-  filtrar(columna: Column) {
-    this.existeFiltrado = true;
-    let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-    let opciones = filtrosSeleccionados
-      .map((x) => x.value)
-      .toString()
-      .replaceAll(',', '_');
+      case this.filtradoEspecialNumeral.greaterthan:
+        this.opcionFiltrar = this.mustreoExpression.greaterthan;
+        break;
+      case this.filtradoEspecialNumeral.greaterthanorequalto:
+        this.opcionFiltrar = this.mustreoExpression.greaterthanorequalto;
+        break;
+      case this.filtradoEspecialNumeral.lessthan:
+        this.opcionFiltrar = this.mustreoExpression.lessthan;
+        break;
+      case this.filtradoEspecialNumeral.lessthanorequalto:
+        this.opcionFiltrar = this.mustreoExpression.lessthanorequalto;
+        break;
 
-    if (this.cadena.indexOf(columna.name) != -1) {
+      case this.filtradoEspecialFecha.before:
+        this.opcionFiltrar = this.mustreoExpression.before;
+        break;
+      case this.filtradoEspecialFecha.after:
+        this.opcionFiltrar = this.mustreoExpression.after;
+        break;
+      case this.filtradoEspecialFecha.beforeorequal:
+        this.opcionFiltrar = this.mustreoExpression.beforeorequal;
+        break;
+      case this.filtradoEspecialFecha.afterorequal:
+        this.opcionFiltrar = this.mustreoExpression.afterorequal;
+        break;
+
+      default:
+        break;
+    }
+    return this.opcionFiltrar;
+  }
+
+  obtenerCadena(columna: Column, isFiltroEspecial: boolean): string {
+    if (
+      this.cadena.indexOf(
+        !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
+      ) != -1
+    ) {
       this.cadena =
-        this.cadena.indexOf('%') != -1 ? this.eliminarFiltro(columna) : '';
+        this.cadena.indexOf('%') != -1
+          ? this.eliminarFiltro(
+              !isFiltroEspecial ? columna : this.columnaFiltroEspecial
+            )
+          : '';
     }
 
-    this.cadena =
-      this.cadena != ''
-        ? this.cadena + '%' + columna.name + '_' + opciones
-        : columna.name + '_' + opciones;
+    if (!isFiltroEspecial) {
+      let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
+
+      columna.selectedData = '';
+      filtrosSeleccionados.forEach((x) => {
+        columna.selectedData += x.value.concat('|');
+      });
+
+      this.cadena =
+        this.cadena != ''
+          ? this.cadena
+              .concat('%' + columna.name + '_' + columna.selectedData)
+              .replaceAll('|', '_')
+          : columna.name
+              .concat('_' + columna.selectedData)
+              .replaceAll('|', '_');
+    } else {
+      this.opcionFiltrar = this.obtenerFiltroEspecial(
+        this.columnaFiltroEspecial.optionFilter
+      );
+      let cadenaEspecial =
+        this.columnaFiltroEspecial.name +
+        '_*' +
+        this.opcionFiltrar +
+        '_' +
+        this.columnaFiltroEspecial.specialFilter;
+      this.cadena =
+        this.cadena != ''
+          ? this.cadena.concat('%' + cadenaEspecial)
+          : cadenaEspecial;
+      this.columnaFiltroEspecial.selectedData =
+        this.columnaFiltroEspecial.selectedData?.concat(
+          this.columnaFiltroEspecial.specialFilter + ','
+        );
+
+      if (this.columnaFiltroEspecial.secondSpecialFilter != '') {
+        this.opcionFiltrar = this.obtenerFiltroEspecial(
+          this.columnaFiltroEspecial.secondOptionFilter
+        );
+        let cadenaEspecial =
+          this.columnaFiltroEspecial.name +
+          '_*' +
+          this.opcionFiltrar +
+          '_' +
+          this.columnaFiltroEspecial.secondSpecialFilter;
+        this.cadena = this.cadena.concat('%' + cadenaEspecial);
+        this.columnaFiltroEspecial.selectedData =
+          this.columnaFiltroEspecial.selectedData?.concat(
+            this.columnaFiltroEspecial.specialFilter + ','
+          );
+      }
+    }
+    return this.cadena;
+  }
+
+  filtrar(columna: Column, isFiltroEspecial: boolean) {
+    this.existeFiltrado = true;
+    this.cadena = !isFiltroEspecial
+      ? this.obtenerCadena(columna, false)
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
     this.consultarMonitoreos();
-    columna.filtered = true;
-    //this.establecerValoresFiltrosTabla(columna);
+
+    this.columns
+      .filter((x) => x.isLatestFilter)
+      .map((m) => {
+        m.isLatestFilter = false;
+      });
+
+    if (!isFiltroEspecial) {
+      columna.filtered = true;
+      columna.isLatestFilter = true;
+    } else {
+      this.columns
+        .filter((x) => x.name == this.columnaFiltroEspecial.name)
+        .map((m) => {
+          (m.filtered = true),
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
+        });
+    }
+
     this.esHistorial = true;
+    this.columnaFiltroEspecial.optionFilter = '';
+    this.columnaFiltroEspecial.specialFilter = '';
+
+    this.setColumnsFiltered();
+    this.hideColumnFilter();
   }
 
   //validarExisteFiltrado(): boolean {
@@ -700,5 +832,22 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   onUnselectAllClick() {
     this.allSelected = false;
+  }
+
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.setColumnsFiltered();
+    this.consultarMonitoreos();
+  }
+
+  private setColumnsFiltered() {
+    let filtrosActuales = this.columns
+      .filter((f) => f.filtered)
+      .map((m) => ({
+        name: m.name,
+        label: m.label,
+      }));
+
+    this.muestreoService.filtrosSeleccionados = filtrosActuales;
   }
 }
