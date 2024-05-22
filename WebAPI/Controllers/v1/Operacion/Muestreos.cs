@@ -155,9 +155,16 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetDistinctValuesFromColumn")]
-        public async Task<IActionResult> Get(string column)
+        public async Task<IActionResult> Get(string column, string? filter = "")
         {
-            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
         }
 
         [HttpPut]
