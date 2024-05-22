@@ -32,12 +32,10 @@
     </div>
   </div>
   <br />
-  <app-cabeceros-historial [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+  <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
     (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-  </app-cabeceros-historial>
-
+  </app-busqueda-columna>
   <app-historial></app-historial>
-
   <div class="alert alert-secondary" role="alert"
     *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
     Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
