@@ -357,10 +357,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.columns = nombresColumnas;
 
-    this.headers = this.columns.map((m) => ({
-      label: m.label,
-      name: m.name,
-    }));
+    this.setHeadersList(this.columns);
 
     // this.muestreoService.filtrosCabeceroFoco = this.headers;
   }
