@@ -208,6 +208,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.obtenerLeyendaFiltroEspecial(column.dataType);
 
     if (!column.filtered && !this.existeFiltrado || (column.isLatestFilter && this.filtros.length == 1)) {
+      this.cadena = '';
       this.muestreoService.getDistinctValuesFromColumn(column.name, this.cadena).subscribe({
         next: (response: any) => {
           column.data = response.data.map((register: any) => {
