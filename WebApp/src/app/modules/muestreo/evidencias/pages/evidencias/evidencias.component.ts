@@ -348,27 +348,30 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     ];
 
     this.columns = nombresColumnas;
+    this.setHeadersList(this.columns);
   }
 
   public establecerValoresFiltrosTabla(column: Column) {
     console.log(this.muestreos);
 
     if (!column.filtered && !this.existeFiltrado) {
-      this.muestreoService.getDistinctValuesFromColumn(column.name, this.cadena).subscribe({
-        next: (response: any) => {
-          column.data = response.data.map((register: any) => {
-            let item: Item = {
-              value: register,
-              checked: true,
-            };
-            return item;
-          });
+      this.muestreoService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
 
-          column.filteredData = column.data;
-          this.ordenarAscedente(column.filteredData);
-        },
-        error: (error) => {},
-      });
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+          },
+          error: (error) => {},
+        });
     } else if (!column.filtered && this.existeFiltrado) {
       column.data = this.muestreos.map((m: any) => {
         let item: Item = {
@@ -537,7 +540,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     );
   }
 
-  seleccionarFiltro(columna: Column): void {}  
+  seleccionarFiltro(columna: Column): void {}
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
     this.existeFiltrado = true;
@@ -665,8 +668,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
   }
-
-
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);

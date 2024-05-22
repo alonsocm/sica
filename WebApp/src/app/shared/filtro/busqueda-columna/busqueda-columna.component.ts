@@ -3,11 +3,11 @@ import { BaseService } from '../../services/base.service';
 import { MuestreoService } from '../../../modules/muestreo/liberacion/services/muestreo.service';
 
 @Component({
-  selector: 'app-cabeceros-historial',
-  templateUrl: './cabeceros-historial.component.html',
-  styleUrls: ['./cabeceros-historial.component.css'],
+  selector: 'app-busqueda-columna',
+  templateUrl: './busqueda-columna.component.html',
+  styleUrls: ['./busqueda-columna.component.css'],
 })
-export class CabecerosHistorialComponent extends BaseService implements OnInit {
+export class BusquedaColumnaComponent extends BaseService implements OnInit {
   @Output() mostrandocabecero = new EventEmitter<boolean>();
   @Output() mostrandoesfiltrofoco = new EventEmitter<string>();
   @Input() esHistorialValor: boolean = false;

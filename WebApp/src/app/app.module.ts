@@ -59,7 +59,7 @@ import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-t
 import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/map-muestreo.component';
 import { ValidacionEvidenciasComponent } from './modules/muestreo/validacion-evidencias/pages/validacion-evidencias.component';
 import { AdministracionMuestreoComponent } from './modules/muestreo/administracion/pages/administracion-muestreo/administracion-muestreo.component';
-import { CabecerosHistorialComponent } from './shared/filtro/cabeceros-historial/cabeceros-historial.component';
+import { BusquedaColumnaComponent } from './shared/filtro/busqueda-columna/busqueda-columna.component';
 import { HistorialComponent } from './shared/filtro/historial/historial.component';
 import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.component';
 import { ColumnResizeDirective } from './column-resize.directive';
@@ -114,7 +114,7 @@ import { ColumnResizeDirective } from './column-resize.directive';
     MapMuestreoComponent,
     ValidacionEvidenciasComponent,
     AdministracionMuestreoComponent,
-    CabecerosHistorialComponent,
+    BusquedaColumnaComponent,
     HistorialComponent,
     AutofiltroComponent,
     ColumnResizeDirective,

@@ -239,28 +239,36 @@ export class BaseService {
     this.columns[index].selectedData = '';
     this.existeEliminacionFiltro = true;
 
-    let cadenaanterior = this.cadena.split('%');   
+    let cadenaanterior = this.cadena.split('%');
 
     let repetidos = cadenaanterior.filter((x) => x.includes(columnName));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
 
     let cadenaAnterior = '';
-    if (cadenaanterior.length > 0) {   
+    if (cadenaanterior.length > 0) {
       cadenaanterior.forEach((x) => {
         cadenaAnterior += x.concat('%');
       });
-      cadenaAnterior = cadenaAnterior.substring(0, cadenaAnterior.lastIndexOf('%'));
+      cadenaAnterior = cadenaAnterior.substring(
+        0,
+        cadenaAnterior.lastIndexOf('%')
+      );
     }
 
     if (cadenaAnterior != '') {
       let nuevoUltimoFiltro = '';
-      nuevoUltimoFiltro = (cadenaAnterior.indexOf('%') != -1) ? cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1] : cadenaAnterior.split('_')[0];
-      let indexNuevoUltimoFiltro = this.columns.findIndex((f) => f.name == nuevoUltimoFiltro.split('_')[0]);
+      nuevoUltimoFiltro =
+        cadenaAnterior.indexOf('%') != -1
+          ? cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1]
+          : cadenaAnterior.split('_')[0];
+      let indexNuevoUltimoFiltro = this.columns.findIndex(
+        (f) => f.name == nuevoUltimoFiltro.split('_')[0]
+      );
       this.columns[indexNuevoUltimoFiltro].isLatestFilter = true;
       this.existeFiltrado = this.validarExisteFiltrado();
     }
-     return this.cadena = cadenaAnterior.toString();
+    return (this.cadena = cadenaAnterior.toString());
   }
 
   validarExisteFiltrado(): boolean {
@@ -270,7 +278,6 @@ export class BaseService {
   }
 
   obtenerLeyendaFiltroEspecial(dataType: string): void {
-
     switch (dataType) {
       case 'string':
         this.opcionesFiltros = Object.entries(this.filtradoEspecial).map(
@@ -300,7 +307,6 @@ export class BaseService {
         this.leyendaFiltrosEspeciales = 'Filtros de texto';
         break;
     }
-
   }
 
   ordenarAscedente(column: Array<Item>) {
@@ -315,7 +321,7 @@ export class BaseService {
     });
   }
 
-  getPreseleccionFiltradoColumna(column: Column) {  
+  getPreseleccionFiltradoColumna(column: Column) {
     if (column.isLatestFilter)
       column.filteredData.forEach((m) => {
         m.checked = column.selectedData.includes(m.value) ? true : false;
@@ -403,7 +409,10 @@ export class BaseService {
     ) {
       this.cadena =
         this.cadena.indexOf('%') != -1
-          ? this.deleteFilter(!isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name) : '';
+          ? this.deleteFilter(
+              !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
+            )
+          : '';
     }
 
     if (!isFiltroEspecial) {
@@ -412,12 +421,12 @@ export class BaseService {
       columna.selectedData = '';
       filtrosSeleccionados.forEach((x) => {
         columna.selectedData += x.value.concat('_');
-      });    
+      });
 
-
-      this.cadena = this.cadena != '' ? this.cadena.concat('%' + columna.name + '_' + columna.selectedData) : columna.name.concat('_' + columna.selectedData);
-
-
+      this.cadena =
+        this.cadena != ''
+          ? this.cadena.concat('%' + columna.name + '_' + columna.selectedData)
+          : columna.name.concat('_' + columna.selectedData);
     } else {
       this.opcionFiltrar = this.obtenerFiltroEspecial(
         this.columnaFiltroEspecial.optionFilter
@@ -457,7 +466,6 @@ export class BaseService {
     return this.cadena;
   }
 
-
   //#region Funciones que manejan el mostrar/ocultar del dropdown de los filtros por columna
   onCancelarFiltroClick() {
     // this.hideColumnFilter();
@@ -484,5 +492,12 @@ export class BaseService {
       ) as HTMLElement;
       dropdownMenu.classList.remove('show');
     }
+  }
+
+  public setHeadersList(columns: Array<Column>) {
+    this.headers = columns.map((m) => ({
+      label: m.label,
+      name: m.name,
+    }));
   }
 }
