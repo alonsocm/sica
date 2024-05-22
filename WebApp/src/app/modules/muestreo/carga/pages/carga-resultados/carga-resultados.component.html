@@ -33,8 +33,8 @@
     </div>
   </div>
   <br />
-  <app-cabeceros-historial [esHistorialValor]="this.esHistorial"
-    (mostrandocabecero)="this.cabeceroSeleccionado=$event" (mostrandoesfiltrofoco)="this.esfiltrofoco=$event">
+  <app-cabeceros-historial [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+    (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
   </app-cabeceros-historial>
 
   <app-historial></app-historial>
@@ -52,23 +52,28 @@
       Anular la seleccion
     </button>
   </div>
-  <div class="dvTable table-responsive">
-    <table class="table table-bordered table-hover">
-      <thead class="thead-light">
+  <div class="dvTable">
+    <table class="table-bordered table-hover">
+      <thead class="thead-sticky">
         <tr>
-          <th class="checkBox-center" style="text-align:center;">
-            <label for="chckAll">SELECCIONAR</label>
-            <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();"
-              title="Selecciona la página actual" />
+          <th columnResize class="td-center no-border-bottom th-resize">
+            &nbsp;SELECCIONAR&nbsp;
           </th>
-          <th
-            [ngStyle]="{ backgroundColor: (esfiltrofoco == this.columna.label && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.label ) ? 'yellow' : '#E9ECEF') }"
-            scope="col" *ngFor="let columna of this.columns" id="{{columna.label}}">
-            <div class="dropdown;" style="width:max-content">
-              {{columna.label}}
+          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+            class="no-border-bottom th-resize"
+            [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+            {{columna.label}}
+          </th>
+        </tr>
+        <tr>
+          <th class="no-border-top td-center"><input class="cursor-pointer" type="checkbox" id="chckAll"
+              [(ngModel)]="this.selectedPage" (change)="onSelectPageClick();" title="Selecciona la página actual" />
+          </th>
+          <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
+            <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
                 title="Filtros" aria-expanded="false"
-                (click)="establecerValoresFiltrosTabla(columna); this.initialValue = ''">
+                (click)="establecerValoresFiltrosTabla(columna); this.initialValue = '';">
                 <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
                   class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
@@ -79,7 +84,7 @@
                   class="bi bi-arrow-up"></i>
               </button>
 
-              <div class="dropdown-menu" style="width:250px;">
+              <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
                 <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
                   <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
                     class="bi bi-sort-alpha-down"></i>
@@ -129,9 +134,9 @@
                       (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
                   </div>
                 </div>
-                <div class="modal-footer" style="font-size:xx-small; height:100px">
+                <div class="modal-footer" style="font-size:xx-small;">
                   <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
-                    data-dismiss="dropdown">
+                    data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
                     Cancelar
                   </button>
                   <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
@@ -140,28 +145,27 @@
                   </button>
                 </div>
               </div>
-
             </div>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr style="height:auto; text-align:center"
+        <tr
           *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
-          <td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
-              title="Seleccionar">
+          <td class="td-center">
+            <input type="checkbox" class="cursor-pointer" [(ngModel)]="muestreo.isChecked"
+              (change)="onSelectClick(muestreo)" title="Seleccionar">
           </td>
           <td>{{muestreo.estatus}}</td>
           <td>{{(muestreo.evidencias.length > 1) ? "SI":"NO"}} </td>
           <td>{{muestreo.numeroEntrega}}</td>
           <td>{{muestreo.claveSitio}}</td>
           <td>-</td>
-          <td style="width:300px">{{muestreo.claveMonitoreo}}</td>
-          <td style="width:2000px">{{muestreo.tipoSitio}}</td>
-          <td style="width:500px; text-justify:auto; text-align:left; margin:auto">{{muestreo.nombreSitio}}</td>
+          <td>{{muestreo.claveMonitoreo}}</td>
+          <td>{{muestreo.tipoSitio}}</td>
+          <td>{{muestreo.nombreSitio}}</td>
           <td>{{muestreo.ocdl}}</td>
-          <td style="width:500px">{{muestreo.tipoCuerpoAgua}}</td>
+          <td>{{muestreo.tipoCuerpoAgua}}</td>
           <td>{{muestreo.subTipoCuerpoAgua}}</td>
           <td>{{muestreo.programaAnual}}</td>
           <td>{{muestreo.laboratorio}}</td>
@@ -179,9 +183,18 @@
       </tbody>
     </table>
   </div>
-  <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
-  </pagination-controls>
-
+  <div class="row">
+    <div class="col-md-3">
+      <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+    <div class="col-md-2">
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.NoPage}}</span></p>
+    </div>
+    <div class="col-md-3">
+      <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-6 align-self-end">
       <button class="btn btn-secondary" type="button" (click)="confirmarEliminacion()">
@@ -194,7 +207,8 @@
   <hr />
 
   <app-muestreos-totales></app-muestreos-totales>
-  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial" [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>  
+  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
+    [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
 
   <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog">

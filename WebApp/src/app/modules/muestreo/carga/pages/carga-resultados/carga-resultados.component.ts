@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -57,7 +58,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     this.filtroHistorialService.columnaFiltroEspecial.subscribe((dato: Column) => {
       if (dato.specialFilter != null)
-        this.filtrar(dato, true);
+      this.filtrar(dato, true);      
     });
   }
 
@@ -151,11 +152,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     ];
 
     this.columns = nombresColumnas;
-    this.filtrosCabeceroFoco = this.columns.map((m) => {
-      return m.label;
-    });
 
-    this.muestreoService.filtrosCabeceroFoco = this.filtrosCabeceroFoco;
+    this.headers = this.columns.map((m) => ({
+      label: m.label,
+      name: m.name,
+    }));
+
+    // this.muestreoService.filtrosCabeceroFoco = this.headers;
   }
 
 
@@ -186,7 +189,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.muestreos = response.data;
-          console.log(this.muestreos);
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
@@ -250,6 +252,22 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.getPreseleccionFiltradoColumna(column);
     }
   }
+
+  //Método que permite, mediante el z-index, mostrar correctamente el dropdown que contiene las opciones de filtro, por cada columna
+  private setZindexToHeader(columnLabel: string) {
+    if (this.currentHeaderFocus != '') {
+      let previousHeader = document.getElementById(
+        this.currentHeaderFocus
+      ) as HTMLHeadElement;
+      previousHeader.style.zIndex = '0';
+    }
+
+    this.currentHeaderFocus = columnLabel;
+    let header = document.getElementById(columnLabel) as HTMLHeadElement;
+    header.style.zIndex = '1';
+  }
+
+
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
@@ -329,8 +347,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
-
-    this.consultartotalCabeceros();  
     this.consultarMonitoreos();
 
     this.columns
@@ -356,6 +372,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.columnaFiltroEspecial.optionFilter = '';
     this.columnaFiltroEspecial.specialFilter = '';
     this.setColumnsFiltered();
+    this.hideColumnFilter();
   }
 
   private setColumnsFiltered() {
@@ -497,8 +514,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           'Monitoreos eliminados correctamente',
           TIPO_MENSAJE.exito
         );
+        this.resetValues();
         this.hacerScroll();
-        this.seleccionarTodosChck = false;
       },
       error: (error) => {
         this.loading = false;

@@ -2,12 +2,12 @@
   <div class="col-4"></div>
   <div class="col-4"></div>
   <div class="col-4" style="padding:0px">
-    <ng-autocomplete [data]="this.filtrosCabeceroFoco" [searchKeyword]="keyword" (inputChanged)='onCabeceroFoco($event)'
+    <ng-autocomplete [data]="this.headerList" [searchKeyword]="keyword" (inputChanged)='onCabeceroFoco($event)'
       (inputCleared)="this.esfiltrofoco = ''" (selected)="seleccionCabecero($event)" [itemTemplate]="itemCabeceros"
       placeholder="Buscar en cabeceros">
     </ng-autocomplete>
-    <ng-template #itemCabeceros let-item>
-      <a [innerHTML]="item"></a>
+    <ng-template #itemCabeceros let-header>
+      <a [innerHTML]="header.label"></a>
     </ng-template>
   </div>
 </div>

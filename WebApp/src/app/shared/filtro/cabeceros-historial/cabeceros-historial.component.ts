@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output, } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BaseService } from '../../services/base.service';
 import { MuestreoService } from '../../../modules/muestreo/liberacion/services/muestreo.service';
-
 
 @Component({
   selector: 'app-cabeceros-historial',
@@ -9,29 +8,22 @@ import { MuestreoService } from '../../../modules/muestreo/liberacion/services/m
   styleUrls: ['./cabeceros-historial.component.css'],
 })
 export class CabecerosHistorialComponent extends BaseService implements OnInit {
-  
   @Output() mostrandocabecero = new EventEmitter<boolean>();
   @Output() mostrandoesfiltrofoco = new EventEmitter<string>();
-  @Input() esHistorialValor: boolean = false;  
+  @Input() esHistorialValor: boolean = false;
+  @Input() headerList: Array<{ name: string; label: string }> = [];
 
-  constructor(private muestreoService: MuestreoService) {
-    super();    
-
-    this.muestreoService.filtrosCabeceros.subscribe(
-      (cabeceros) => {
-        this.filtrosCabeceroFoco = cabeceros;        
-      }
-    );
-
+  constructor() {
+    super();
   }
 
   ngOnInit(): void {}
- 
-  seleccionCabecero(val: string = '') {
-    let header = document.getElementById(val) as HTMLElement;
+
+  seleccionCabecero(val: { name: string; label: string }) {
+    let header = document.getElementById(val.name) as HTMLElement;
     header.scrollIntoView({ behavior: 'smooth', block: 'center' });
     this.cabeceroSeleccionado = true;
-    this.esfiltrofoco = val.toUpperCase(); 
+    this.esfiltrofoco = val.name;
     this.mostrandocabecero.emit(this.cabeceroSeleccionado);
     this.mostrandoesfiltrofoco.emit(this.esfiltrofoco);
   }
@@ -42,5 +34,4 @@ export class CabecerosHistorialComponent extends BaseService implements OnInit {
     this.mostrandocabecero.emit(this.cabeceroSeleccionado);
     this.mostrandoesfiltrofoco.emit(this.esfiltrofoco);
   }
-
 }

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.IRepositories;
+﻿using Application.Expressions;
+using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 
@@ -7,6 +8,7 @@ namespace Application.Features.Muestreos.Queries
     public class GetDistinctValuesFromColumn : IRequest<Response<IEnumerable<object>>>
     {
         public string Column { get; set; }
+        public List<Filter> Filters { get; set; }
     }
 
     public class GetDistinctValuesFromColumnHandler : IRequestHandler<GetDistinctValuesFromColumn, Response<IEnumerable<object>>>
@@ -20,8 +22,20 @@ namespace Application.Features.Muestreos.Queries
 
         public async Task<Response<IEnumerable<object>>> Handle(GetDistinctValuesFromColumn request, CancellationToken cancellationToken)
         {
-            var muestreos = await _repositoryAsync.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.Cargado, (long)Enums.EstatusMuestreo.EvidenciasCargadas });
-            var response = _repositoryAsync.GetDistinctValuesFromColumn(request.Column, muestreos);
+            var data = await _repositoryAsync.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.Cargado, (long)Enums.EstatusMuestreo.EvidenciasCargadas });
+            data = data.AsQueryable();
+
+            if (request.Filters.Any())
+            {
+                var expressions = MuestreoExpression.GetExpressionList(request.Filters);
+
+                foreach (var filter in expressions)
+                {
+                    data = data.AsQueryable().Where(filter);
+                }
+            }
+
+            var response = _repositoryAsync.GetDistinctValuesFromColumn(request.Column, data);
 
             return new Response<IEnumerable<object>>(response);
         }
