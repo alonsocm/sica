@@ -676,34 +676,55 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   eliminarMuestreos() {
-    let muestreosSeleccionados = this.Seleccionados(
-      this.muestreosSeleccionados
-    );
-    if (!(muestreosSeleccionados.length > 0)) {
-      this.mostrarMensaje(
-        'Debe seleccionar al menos un monitoreo para eliminar',
-        TIPO_MENSAJE.alerta
+    if (this.allSelected) {
+      this.muestreoService.deleteByFilter(this.cadena).subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.consultarMonitoreos();
+          this.loading = false;
+          this.mostrarMensaje(
+            'Monitoreos eliminados correctamente',
+            TIPO_MENSAJE.exito
+          );
+          this.resetValues();
+          this.hacerScroll();
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    } else {
+      let muestreosSeleccionados = this.Seleccionados(
+        this.muestreosSeleccionados
       );
-      return this.hacerScroll();
-    }
-    this.loading = true;
-    let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
-    this.muestreoService.eliminarMuestreos(muestreosEliminar).subscribe({
-      next: (response) => {
-        document.getElementById('btnCancelarModal')?.click();
-        this.consultarMonitoreos();
-        this.loading = false;
+
+      if (!(muestreosSeleccionados.length > 0)) {
         this.mostrarMensaje(
-          'Monitoreos eliminados correctamente',
-          TIPO_MENSAJE.exito
+          'Debe seleccionar al menos un monitoreo para eliminar',
+          TIPO_MENSAJE.alerta
         );
-        this.resetValues();
-        this.hacerScroll();
-      },
-      error: (error) => {
-        this.loading = false;
-      },
-    });
+        return this.hacerScroll();
+      }
+
+      this.loading = true;
+      let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
+      this.muestreoService.eliminarMuestreos(muestreosEliminar).subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.consultarMonitoreos();
+          this.loading = false;
+          this.mostrarMensaje(
+            'Monitoreos eliminados correctamente',
+            TIPO_MENSAJE.exito
+          );
+          this.resetValues();
+          this.hacerScroll();
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    }
   }
 
   enviarMonitoreos(): void {

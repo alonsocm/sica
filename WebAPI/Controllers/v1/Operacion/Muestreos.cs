@@ -179,6 +179,19 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new EliminarMuestreoCommand { Muestreos = muestreos }));
         }
 
+        [HttpDelete("DeleteAll")]
+        public async Task<IActionResult> Delete(string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new DeleteAllCommand { Filters = filters }));
+        }
+
         [HttpGet("ResumenResultadosPorMuestreo")]
         public async Task<IActionResult> Get([FromQuery] List<int> muestreos)
         {

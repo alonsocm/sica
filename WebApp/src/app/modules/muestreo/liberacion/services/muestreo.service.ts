@@ -23,8 +23,7 @@ export class MuestreoService {
   private filtrosCabeceroFocoPrivate: BehaviorSubject<any[]> =
     new BehaviorSubject<any[]>([]);
 
-  constructor(private http: HttpClient) { }
-  
+  constructor(private http: HttpClient) {}
 
   get filtros() {
     return this.filtrosPrivate.asObservable();
@@ -32,7 +31,7 @@ export class MuestreoService {
 
   set filtrosSeleccionados(filtros: any[]) {
     this.filtrosPrivate.next(filtros);
-  }  
+  }
 
   get muestreos() {
     return this.muestreosPrivate.asObservable();
@@ -118,11 +117,14 @@ export class MuestreoService {
     return this.http.get(environment.apiUrl + '/Muestreos', { params });
   }
 
-  getDistinctValuesFromColumn(column: string, filter: string): Observable<Object> {
+  getDistinctValuesFromColumn(
+    column: string,
+    filter: string
+  ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
         column: column,
-        filter:filter,
+        filter: filter,
       },
     });
     return this.http.get(
@@ -157,6 +159,12 @@ export class MuestreoService {
   eliminarMuestreos(muestreos: Array<number>): Observable<any> {
     const options = { body: muestreos };
     return this.http.delete(environment.apiUrl + '/muestreos', options);
+  }
+
+  deleteByFilter(filter: string): Observable<any> {
+    return this.http.delete(
+      environment.apiUrl + '/muestreos/deleteall?filter=' + filter
+    );
   }
 
   exportarCargaResultadosEbaseca(
