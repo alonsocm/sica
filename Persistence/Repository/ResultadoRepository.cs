@@ -125,7 +125,7 @@ namespace Persistence.Repository
                 var resultadoMuestreo = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado));
                 var resultado = resultadoMuestreo.ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado)
                                                             .SetProperty(x => x.ObservacionLaboratorio, resultadoDto.ObservacionesLaboratorio)
-                                                            .SetProperty(s => s.FechaEntrega, resultadoDto.FechaEntrega)
+                                                            .SetProperty(s => s.FechaEntrega, DateTime.Parse(resultadoDto.FechaEntrega))
                                                             .SetProperty(s => s.LaboratorioSubrogadoId, _dbContext.Laboratorios.Where(x => x.Nomenclatura == resultadoDto.LaboratorioSubrogado).FirstOrDefault().Id));
 
                 idMuestreo = resultadoMuestreo.FirstOrDefault().MuestreoId;

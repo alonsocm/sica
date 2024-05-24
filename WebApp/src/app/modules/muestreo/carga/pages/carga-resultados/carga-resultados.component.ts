@@ -482,9 +482,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           },
           error: (error: any) => {
             this.loading = false;
-            let archivoErrores = this.generarArchivoDeErrores(
-              error.error.Errors
-            );
+            let errores = '';
+            if (error.error.Errors === null) {
+              errores = error.error.Message;
+            } else {
+              errores = error.error.Errors;
+            }
+            let archivoErrores = this.generarArchivoDeErrores(errores);
             this.mostrarMensaje(
               'Se encontraron errores en el archivo procesado.',
               TIPO_MENSAJE.error

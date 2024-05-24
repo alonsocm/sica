@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTOs.Users
+﻿namespace Application.DTOs.Users
 {
     public class CargaMuestreoDto
     {
@@ -37,7 +31,7 @@ namespace Application.DTOs.Users
         public string? ObservacionesConagua3 { get; set; }
         public string? AnioOperacion { get; set; }
         public string? IdResultado { get; set; }
-        public DateTime FechaEntrega { get; set; }
+        public string FechaEntrega { get; set; }
         public string NoEntrega { get; set; }
         public int Linea { get; set; }
     }

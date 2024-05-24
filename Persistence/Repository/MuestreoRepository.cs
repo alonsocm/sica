@@ -160,7 +160,7 @@ namespace Persistence.Repository
                                   Resultado = cm.Resultado ?? string.Empty,
                                   LaboratorioId = l.Id,
                                   LaboratorioSubrogadoId = laboratorioSubrogado?.Id,
-                                  FechaEntrega = cm.FechaEntrega,
+                                  FechaEntrega = DateTime.Parse(cm.FechaEntrega),
                                   IdResultadoLaboratorio = Convert.ToInt64(cm.IdResultado),
                                   ObservacionLaboratorio = cm.ObservacionesLaboratorio
                               }).ToList();

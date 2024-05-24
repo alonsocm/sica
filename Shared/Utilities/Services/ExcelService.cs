@@ -59,7 +59,14 @@ namespace Shared.Utilities.Services
                         value = i;
                     }
 
-                    prop.SetValue(obj, Convert.ChangeType(value, type));
+                    try
+                    {
+                        prop.SetValue(obj, Convert.ChangeType(value, type));
+                    }
+                    catch
+                    {
+                        throw new Exception($"El valor {value} no cumple con el formato requerido. Línea: {1}");
+                    }
                 }
 
                 if (obj != null)
