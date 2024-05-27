@@ -680,6 +680,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   eliminarMuestreos() {
+    this.loading = true;
+
     if (this.allSelected) {
       this.muestreoService.deleteByFilter(this.cadena).subscribe({
         next: (response) => {
@@ -710,7 +712,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         return this.hacerScroll();
       }
 
-      this.loading = true;
       let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
       this.muestreoService.eliminarMuestreos(muestreosEliminar).subscribe({
         next: (response) => {
