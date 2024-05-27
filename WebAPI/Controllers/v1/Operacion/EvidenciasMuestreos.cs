@@ -43,7 +43,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 throw new ApplicationException("No se encontró el archivo de la evidencia solicitada");
             }
 
-            return File(archivo.Data.Archivo, "application/octet-stream", archivo.Data.NombreArchivo);
+            return File(archivo.Data.Archivo, archivo.Data.ContentType, archivo.Data.NombreArchivo);
         }
 
         [HttpGet("Archivos")]

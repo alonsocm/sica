@@ -113,8 +113,21 @@ namespace Shared.Utilities.Services
             return new ArchivoDto
             {
                 Archivo = File.ReadAllBytes(rutaEvidencia),
-                NombreArchivo = nombreArchivo
+                NombreArchivo = nombreArchivo,
+                ContentType = GetContentType(rutaEvidencia)
             };
+        }
+
+        private static string GetContentType(string rutaEvidencia)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+
+            if (!provider.TryGetContentType(rutaEvidencia, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return contentType;
         }
 
         public List<ArchivoDto> ObtenerEvidenciasPorMuestreo(string muestreo)
@@ -149,18 +162,12 @@ namespace Shared.Utilities.Services
                 throw new Exception($"No se encontró el archivo: {nombreArchivo}");
             }
 
-            var provider = new FileExtensionContentTypeProvider();
-
-            if (!provider.TryGetContentType(rutaCompleta, out var contentType))
-            {
-                contentType = "application/octet-stream";
-            }
 
             return new ArchivoDto
             {
                 Archivo = File.ReadAllBytes(rutaCompleta),
                 NombreArchivo = nombreArchivo,
-                ContentType = contentType
+                ContentType = GetContentType(rutaCompleta)
             };
         }
 
