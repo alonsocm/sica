@@ -197,32 +197,41 @@
                     <ng-container *ngFor="let sufijo of sufijos;">
                         <td *ngIf="existeEvidencia(muestreo.evidencias, sufijo) else elseBlock">
                             <div [ngSwitch]="sufijo">
-                                <img *ngSwitchCase="'A'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'A'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'C'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'C'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'D'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
+                                <img *ngSwitchCase="'D'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoPDF.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'E'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'E'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'M'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'M'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'O'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'O'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'R'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'R'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'S'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
+                                <img *ngSwitchCase="'S'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/iconoimagen.png"
                                     title="Click para descargar" />
-                                <img *ngSwitchCase="'V'" (click)="descargarEvidencia(muestreo.claveMonitoreo, sufijo)"
-                                    width="60px" class="cursor-pointer" src="./assets/images/site/ionoexel.png"
+                                <img *ngSwitchCase="'V'"
+                                    (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
+                                    class="cursor-pointer" src="./assets/images/site/ionoexel.png"
                                     title="Click para descargar" />
                             </div>
                         </td>
@@ -245,6 +254,31 @@
         <div class="col-md-3">
             <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span>
             </p>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+<button id="btn-img-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#imgModal">
+    Mostrar imagen
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">nombre archivo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img [src]="this.imgSrc" class="img-thumbnail" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
         </div>
     </div>
 </div>

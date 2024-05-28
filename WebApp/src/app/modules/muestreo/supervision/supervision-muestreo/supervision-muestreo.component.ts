@@ -396,7 +396,7 @@ export class SupervisionMuestreoComponent
             });
             this.router.navigate(['/supervision-muestreo-consulta']);
           },
-          error: (error) => {            
+          error: (error) => {
             this.hacerScroll();
             this.notificationService.updateNotification({
               text: 'Error al guardar los archivos de supervisión de muestreo',

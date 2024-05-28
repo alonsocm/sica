@@ -29,6 +29,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   esfilrofoco: string = '';
   opctionFiltro: string = '';
+  imgSrc: string = '';
 
   constructor(
     private evidenciasService: EvidenciasService,
@@ -397,7 +398,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     return evidencias.find((f) => f.sufijo == sufijoEvidencia);
   }
 
-  descargarEvidencia(claveMuestreo: string, sufijo: string) {
+  onPreviewOrDownloadFileClick(claveMuestreo: string, sufijo: string) {
     this.loading = !this.loading;
     let muestreo = this.muestreos.find(
       (x) => x.claveMonitoreo == claveMuestreo
@@ -407,9 +408,24 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.evidenciasService
       .descargarArchivo(nombreEvidencia?.nombreArchivo ?? '')
       .subscribe({
-        next: (response: any) => {
+        next: (response: Blob) => {
           this.loading = !this.loading;
-          FileService.download(response, nombreEvidencia?.nombreArchivo ?? '');
+          if (['A', 'M', 'S'].findIndex((x) => x === sufijo) != -1) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              this.imgSrc = reader.result as string;
+            };
+            reader.readAsDataURL(response);
+            document.getElementById('btn-img-modal')?.click();
+          } else if (['D', 'E'].findIndex((x) => x === sufijo) != -1) {
+            const url = URL.createObjectURL(response);
+            window.open(url);
+          } else {
+            FileService.download(
+              response,
+              nombreEvidencia?.nombreArchivo ?? ''
+            );
+          }
         },
         error: (response: any) => {
           this.loading = !this.loading;
