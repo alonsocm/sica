@@ -18,14 +18,14 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(List<IFormFile> archivos)
+        public async Task<IActionResult> Post(List<IFormFile> archivos, [FromQuery] bool reemplazar = false)
         {
             if (!archivos.Any())
             {
                 return BadRequest("No se encontraron archivos para procesar.");
             }
 
-            return Ok(await Mediator.Send(new CargaEvidenciasCommand { Archivos = archivos }));
+            return Ok(await Mediator.Send(new CargaEvidenciasCommand { Archivos = archivos, Reemplazar = reemplazar }));
         }
 
         [HttpGet]

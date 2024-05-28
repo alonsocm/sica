@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Evidencia, Muestreo } from 'src/app/interfaces/Muestreo.interface';
@@ -30,6 +30,12 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   esfilrofoco: string = '';
   opctionFiltro: string = '';
   imgSrc: string = '';
+
+  //Variables para manejar la funcionalidad de reemplazar evidencias, individualmente.
+  reemplazar: boolean = false;
+  nombreEvidencia: string = '';
+  @ViewChild('fileUpload') inputFiles: ElementRef = {} as ElementRef;
+  @ViewChild('fileReplace') inputFileReplace: ElementRef = {} as ElementRef;
 
   constructor(
     private evidenciasService: EvidenciasService,
@@ -483,20 +489,34 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.muestreos.forEach((m) => (m.isChecked = false));
   }
 
-  cargarEvidencias(event: Event) {
+  cargarEvidencias(
+    event: Event,
+    reemplazar: boolean = false,
+    nombreEvidencia: string = ''
+  ) {
     let evidencias = (event.target as HTMLInputElement).files ?? new FileList();
     let errores = this.validarTamanoArchivos(evidencias);
 
+    if (
+      reemplazar === true &&
+      nombreEvidencia.toLowerCase() != evidencias[0].name.toLocaleLowerCase()
+    ) {
+      errores =
+        'El nombre o tipo de archivo, no coincide con el de la evidencia a reemplazar.';
+    }
+
     if (errores !== '') {
       return this.mostrarMensaje(
-        'Se encontraron errores en las evidencias seleccionadas',
+        'Se encontraron errores en las evidencias seleccionadas: ' + errores,
         TipoMensaje.Alerta
       );
     }
 
     this.loading = !this.loading;
-    this.evidenciasService.cargarEvidencias(evidencias).subscribe({
+    this.evidenciasService.cargarEvidencias(evidencias, reemplazar).subscribe({
       next: (response: Respuesta) => {
+        this.resetInputFile(this.inputFileReplace);
+        this.resetInputFile(this.inputFiles);
         this.mostrarMensaje(
           'Evidencias cargadas correctamente',
           TipoMensaje.Correcto
@@ -504,6 +524,8 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         this.loading = !this.loading;
       },
       error: (response: any) => {
+        this.resetInputFile(this.inputFileReplace);
+        this.resetInputFile(this.inputFiles);
         this.loading = !this.loading;
         let archivo = this.generarArchivoDeErrores(
           response.error.Errors.toString()
@@ -700,5 +722,18 @@ export class EvidenciasComponent extends BaseService implements OnInit {
       }));
 
     this.muestreoService.filtrosSeleccionados = filtrosActuales;
+  }
+
+  onReemplazarEvidenciaClick(claveMuestreo: string, sufijo: string) {
+    let muestreo = this.muestreos.find(
+      (x) => x.claveMonitoreo == claveMuestreo
+    );
+
+    let evidencia =
+      muestreo?.evidencias.find((x) => x.sufijo == sufijo)?.nombreArchivo ?? '';
+
+    this.reemplazar = true;
+    this.nombreEvidencia = evidencia;
+    document.getElementById('fileReplace')?.click();
   }
 }

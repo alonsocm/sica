@@ -20,9 +20,9 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                        .WithMessage(archivo => $"El nombre del archivo {archivo.FileName} no cumple con el formato requerido");
             }).DependentRules(() =>
             {
-                RuleFor(x => x.Archivos).Custom((archivos, context) =>
+                RuleFor(x => new { x.Archivos, x.Reemplazar }).Custom((request, context) =>
                 {
-                    var nombresArchivos = archivos.Select(s => s.FileName).ToList();
+                    var nombresArchivos = request.Archivos.Select(s => s.FileName).ToList();
                     var clavesMuestreos = new List<string>();
 
                     nombresArchivos.ForEach(nombreArchivo =>
@@ -48,7 +48,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                         {
                             context.AddFailure($"Los resultados del monitoreo {claveMuestreo} no han sido cargados en el sistema. No fue posible cargar evidencias.");
                         }
-                        else
+                        else if (!request.Reemplazar)
                         {
                             bool contieneSufijosObligatorios = tipoCuerpoAgua.ToUpper().Contains("LÓTICO")
                                 ? sufijosObligatorios.Union(sufijosObligatoriosLotico).All(x => sufijosMonitoreo.Any(y => x == y))
