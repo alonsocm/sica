@@ -52,6 +52,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   }
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.perfil = this.usuario.getUser().nombrePerfil;
     this.definirColumnas();
 

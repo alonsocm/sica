@@ -13,6 +13,7 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { Item } from 'src/app/interfaces/filter/item';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
+import { Subscription } from 'rxjs';
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
@@ -29,6 +30,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   reemplazarResultados: boolean = false;
   archivo: any;
 
+  filtroHistorialServiceSub: Subscription;
+
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
   constructor(
@@ -36,10 +39,11 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     private muestreoService: MuestreoService
   ) {
     super();
-    this.filtroHistorialService.columnName.subscribe((columnName) => {
-      this.deleteFilter(columnName);
-      this.consultarMonitoreos();
-    });
+    this.filtroHistorialServiceSub =
+      this.filtroHistorialService.columnName.subscribe((columnName) => {
+        this.deleteFilter(columnName);
+        this.consultarMonitoreos();
+      });
 
     this.filtroHistorialService.columnaFiltroEspecial.subscribe(
       (dato: Column) => {
@@ -49,6 +53,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarMonitoreos();
   }
@@ -917,5 +922,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.deleteFilter(columName);
     this.setColumnsFiltered();
     this.consultarMonitoreos();
+  }
+
+  ngOnDestroy() {
+    this.filtroHistorialServiceSub.unsubscribe();
   }
 }
