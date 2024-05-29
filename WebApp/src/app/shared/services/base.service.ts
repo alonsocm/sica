@@ -80,6 +80,8 @@ export class BaseService {
   opcionesFiltrosModal: Array<string> = []; //Arreglo para combo en modal autofiltro personalizado conforme al tipo de la columna string/number/date
   columns: Array<Column> = [];
   cadena: string = '';
+  filtroEspecializado: string = 'Filtro personalizado';
+  filtroEspecialEquals: string = 'Es igual a';
 
   //variable para almacenar el ordenamiento
   orderBy: { column: string; type: string } = { column: '', type: '' };
@@ -205,7 +207,7 @@ export class BaseService {
     );
   }
 
-  mostrarModalFiltro(opcion: string, columna: Column) {
+  mostrarModalFiltro(opcion: string, columna: Column) { 
     switch (opcion) {
       case this.filtradoEspecial.personalizado:
         columna.optionFilter = this.filtradoEspecial.equals;
@@ -226,6 +228,19 @@ export class BaseService {
         break;
     }
     this.columnaFiltroEspecial = columna;
+    let selectData = this.columnaFiltroEspecial.selectedData.split('_');
+
+    if (selectData.length == 2) {
+      this.columnaFiltroEspecial.secondOptionFilter = (opcion === this.filtradoEspecial.personalizado) ? this.filtradoEspecial.equals : '';
+      this.columnaFiltroEspecial.specialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[0]:'';
+      this.columnaFiltroEspecial.secondSpecialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[1]: '';
+    }
+    else if (selectData.length == 1)
+    { this.columnaFiltroEspecial.specialFilter = (opcion === this.filtradoEspecial.equals || opcion === this.filtradoEspecial.personalizado) ? this.columnaFiltroEspecial.selectedData : ''; }
+
+
+  
+
     this.opcionesFiltrosModal = this.opcionesFiltros;
     columna.dataType == 'string'
       ? this.opcionesFiltrosModal.splice(this.opcionesFiltrosModal.length - 1)
@@ -237,6 +252,14 @@ export class BaseService {
     this.columns[index].filtered = false;
     this.columns[index].isLatestFilter = false;
     this.columns[index].selectedData = '';
+
+    this.columns[index].optionFilter = '';
+    this.columns[index].secondOptionFilter = '';
+    this.columns[index].specialFilter = '';
+    this.columns[index].secondSpecialFilter = '';
+
+
+
     this.existeEliminacionFiltro = true;
 
     let cadenaanterior = this.cadena.split('%');
@@ -250,9 +273,7 @@ export class BaseService {
       cadenaanterior.forEach((x) => {
         cadenaAnterior += x.concat('%');
       });
-      cadenaAnterior = cadenaAnterior.substring(
-        0,
-        cadenaAnterior.lastIndexOf('%')
+      cadenaAnterior = cadenaAnterior.substring(0,cadenaAnterior.lastIndexOf('%')
       );
     }
 
@@ -321,12 +342,11 @@ export class BaseService {
     });
   }
 
-  getPreseleccionFiltradoColumna(column: Column) {
+  getPreseleccionFiltradoColumna(column: Column, esFiltroEspecial: boolean) { 
     if (column.isLatestFilter)
       column.filteredData.forEach((m) => {
-        m.checked = column.selectedData.includes(m.value) ? true : false;
-      });
-  }
+        m.checked = (esFiltroEspecial) ? false : (column.selectedData.includes(m.value) ? true : false);
+      });  }
 
   onSelectAllPagesClick() {
     this.allSelected = true;
@@ -422,6 +442,7 @@ export class BaseService {
       filtrosSeleccionados.forEach((x) => {
         columna.selectedData += x.value.concat('_');
       });
+      columna.selectedData = columna.selectedData.substring(0, columna.selectedData.lastIndexOf('_'));
 
       this.cadena =
         this.cadena != ''

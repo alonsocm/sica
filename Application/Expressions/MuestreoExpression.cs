@@ -11,6 +11,7 @@ namespace Application.Expressions
             return filter.Conditional switch
             {
                 #region Text
+                "equals" => GetEqualsExpression(filter.Column, filter.Value),
                 "notequals" => GetNotEqualsExpression(filter.Column, filter.Value),
                 "beginswith" => GetBeginsWithExpression(filter.Column, filter.Value),
                 "notbeginswith" => GetNotBeginsWithExpression(filter.Column, filter.Value),
@@ -158,6 +159,33 @@ namespace Application.Expressions
                 _ => muestreo => muestreo.ClaveMonitoreo == ""
             };
         }
+
+        public static Expression<Func<MuestreoDto, bool>> GetEqualsExpression(string column, string value)
+        {
+            return column.ToLower() switch
+            {
+                "estatus" => muestreo => muestreo.Estatus == value,
+                "numeroentrega" => muestreo => muestreo.NumeroEntrega == value,
+                "clavesitio" => muestreo => muestreo.ClaveSitio == value,
+                "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo == value,
+                "tipositio" => muestreo => muestreo.TipoSitio == value,
+                "nombresitio" => muestreo => muestreo.NombreSitio == value,
+                "ocdl" => muestreo => muestreo.OCDL == value,
+                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua == value,
+                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua == value,
+                "programaanual" => muestreo => muestreo.ProgramaAnual == value,
+                "laboratorio" => muestreo => muestreo.Laboratorio == value,
+                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado == value,
+                "fechaprogramada" => muestreo => muestreo.FechaProgramada == value,
+                "fecharealizacion" => muestreo => muestreo.FechaRealizacion == value,
+                "horainicio" => muestreo => muestreo.HoraInicio == value,
+                "horafin" => muestreo => muestreo.HoraFin == value,
+                "fechacarga" => muestreo => muestreo.FechaCarga == value,
+                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo == value,    
+                _ => muestreo => muestreo.ClaveMonitoreo == ""
+            };
+        }
+
         public static Expression<Func<MuestreoDto, bool>> GetNotEqualsExpression(string column, string value)
         {
             return column.ToLower() switch

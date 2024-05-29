@@ -51,6 +51,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
+  
   }
 
   definirColumnas() {
@@ -363,6 +364,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public consultarMonitoreos(
+ 
     page: number = this.page,
     pageSize: number = this.NoPage,
     filter: string = this.cadena
@@ -382,9 +384,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
 
-  public establecerValoresFiltrosTabla(column: Column) {
-    this.setColumnsFiltered();
+  public establecerValoresFiltrosTabla(column: Column) {    
+    let columsdesplegadas = document.getElementsByClassName("d-block");
+    for (var i = 0; i < columsdesplegadas.length; i++) {
+      columsdesplegadas[i].className = 'd-none';
+    }
 
+    this.setColumnsFiltered();
     this.muestreoService.filtros.subscribe((filtro) => {
       this.filtros = filtro;
     });
@@ -392,51 +398,38 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
     this.obtenerLeyendaFiltroEspecial(column.dataType);
 
-    if (
-      (!column.filtered && !this.existeFiltrado) ||
-      (column.isLatestFilter && this.filtros.length == 1)
-    ) {
+    let esFiltroEspecial = (column.optionFilter === undefined || column.optionFilter === this.filtroEspecialEquals) ? false : true;
+
+    if ((!column.filtered && !this.existeFiltrado) || (column.isLatestFilter && this.filtros.length == 1)) {
       this.cadena = '';
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
-        .subscribe({
-          next: (response: any) => {
-            column.data = response.data.map((register: any) => {
-              let item: Item = {
-                value: register,
-                checked: true,
-              };
-              return item;
-            });
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
 
-            column.filteredData = column.data;
-            this.ordenarAscedente(column.filteredData);
-            this.getPreseleccionFiltradoColumna(column);
-          },
-          error: (error) => {},
-        });
-    } else if (
-      (!column.filtered && this.existeFiltrado) ||
-      (column.filtered && !column.isLatestFilter)
-    ) {
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
-        .subscribe({
-          next: (response: any) => {
-            column.data = response.data.map((register: any) => {
-              let item: Item = {
-                value: register,
-                checked: true,
-              };
-              return item;
-            });
+    if ((!column.filtered && this.existeFiltrado) || (column.filtered && !column.isLatestFilter) || (!column.filtered && !this.existeFiltrado) || (column.isLatestFilter && this.filtros.length == 1)) { 
+    this.muestreoService
+      .getDistinctValuesFromColumn(column.name, this.cadena)
+      .subscribe({
+        next: (response: any) => {
+          column.data = response.data.map((register: any) => {
+            let item: Item = {
+              value: register,
+              checked: true,
+            };
+            return item;
+          });
 
-            column.filteredData = column.data;
-            this.ordenarAscedente(column.filteredData);
-            this.getPreseleccionFiltradoColumna(column);
-          },
-          error: (error) => {},
-        });
+          column.filteredData = column.data;
+          this.ordenarAscedente(column.filteredData);
+          this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+         
+        },
+        error: (error) => { },
+      });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
   }
 
@@ -547,6 +540,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (!isFiltroEspecial) {
       columna.filtered = true;
       columna.isLatestFilter = true;
+
+      //columna.optionFilter = undefined;
+      //columna.secondOptionFilter = undefined;
+      //columna.specialFilter = undefined;
+      //columna.secondSpecialFilter = undefined;
+
     } else {
       this.columns
         .filter((x) => x.name == this.columnaFiltroEspecial.name)
@@ -558,8 +557,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-    this.columnaFiltroEspecial.optionFilter = '';
-    this.columnaFiltroEspecial.specialFilter = '';
+    //this.columnaFiltroEspecial.optionFilter = '';
+    //this.columnaFiltroEspecial.specialFilter = '';
     this.setColumnsFiltered();
     this.hideColumnFilter();
   }
