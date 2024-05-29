@@ -18,14 +18,14 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(List<IFormFile> archivos)
+        public async Task<IActionResult> Post(List<IFormFile> archivos, [FromQuery] bool reemplazar = false)
         {
             if (!archivos.Any())
             {
                 return BadRequest("No se encontraron archivos para procesar.");
             }
 
-            return Ok(await Mediator.Send(new CargaEvidenciasCommand { Archivos = archivos }));
+            return Ok(await Mediator.Send(new CargaEvidenciasCommand { Archivos = archivos, Reemplazar = reemplazar }));
         }
 
         [HttpGet]
@@ -43,7 +43,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 throw new ApplicationException("No se encontró el archivo de la evidencia solicitada");
             }
 
-            return File(archivo.Data.Archivo, "application/octet-stream", archivo.Data.NombreArchivo);
+            return File(archivo.Data.Archivo, archivo.Data.ContentType, archivo.Data.NombreArchivo);
         }
 
         [HttpGet("Archivos")]

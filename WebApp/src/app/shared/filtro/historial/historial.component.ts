@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FiltroHistorialService } from '../../services/filtro-historial.service';
 import { MuestreoService } from 'src/app/modules/muestreo/liberacion/services/muestreo.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-historial',
@@ -8,13 +9,14 @@ import { MuestreoService } from 'src/app/modules/muestreo/liberacion/services/mu
   styleUrls: ['./historial.component.css'],
 })
 export class HistorialComponent implements OnInit {
+  muestreosServiceSub: Subscription;
   filtros: any = [];
 
   constructor(
     private muestreosService: MuestreoService,
     private filtroHistorialService: FiltroHistorialService
   ) {
-    muestreosService.filtros.subscribe((filtros) => {
+    this.muestreosServiceSub = muestreosService.filtros.subscribe((filtros) => {
       this.filtros = filtros;
     });
   }
@@ -28,5 +30,9 @@ export class HistorialComponent implements OnInit {
       this.filtros.splice(index, 1);
       this.filtroHistorialService.columnDeleted = name;
     }
+  }
+
+  ngOnDestroy() {
+    this.muestreosServiceSub.unsubscribe();
   }
 }

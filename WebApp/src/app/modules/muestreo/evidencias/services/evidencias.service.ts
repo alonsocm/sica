@@ -13,14 +13,14 @@ export class EvidenciasService {
   public coordenadas = this.datocordenada.asObservable();
   constructor(private http: HttpClient) {}
 
-  cargarEvidencias(archivos: FileList): Observable<any> {
+  cargarEvidencias(archivos: FileList, reemplazar: boolean): Observable<any> {
     const formData = new FormData();
     Array.from(archivos).forEach((archivo) => {
       formData.append('archivos', archivo);
     });
 
     return this.http.post(
-      environment.apiUrl + '/EvidenciasMuestreos',
+      environment.apiUrl + '/EvidenciasMuestreos?reemplazar=' + reemplazar,
       formData
     );
   }
@@ -54,7 +54,8 @@ export class EvidenciasService {
       fromObject: { isTrack: isTrack },
     });
     return this.http.get(
-      environment.apiUrl + '/EvidenciasMuestreos/InformacionEvidencias', { params }
+      environment.apiUrl + '/EvidenciasMuestreos/InformacionEvidencias',
+      { params }
     );
   }
 
@@ -63,22 +64,24 @@ export class EvidenciasService {
       fromObject: { claveMuestreo: claveMuestreo },
     });
     return this.http.get(
-      environment.apiUrl + '/Muestreos/obtenerPuntosPorMuestreo', { params }
+      environment.apiUrl + '/Muestreos/obtenerPuntosPorMuestreo',
+      { params }
     );
   }
-  updateCoordenadas(coordenadas: any) {  
+  updateCoordenadas(coordenadas: any) {
     this.datocordenada.next(coordenadas);
   }
 
   getPosition(): Promise<any> {
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resp => {
-        resolve({ lng: resp.coords.longitude, lat: resp.coords.latitude });
-      },
-        err => {
+      navigator.geolocation.getCurrentPosition(
+        (resp) => {
+          resolve({ lng: resp.coords.longitude, lat: resp.coords.latitude });
+        },
+        (err) => {
           reject(err);
-        });
+        }
+      );
     });
   }
-  
 }

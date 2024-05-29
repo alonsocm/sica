@@ -1,12 +1,7 @@
-﻿using Application.Exceptions;
+﻿using Application.Interfaces;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Muestreos.Commands.Liberacion
 {
@@ -20,12 +15,17 @@ namespace Application.Features.Muestreos.Commands.Liberacion
         private readonly IMuestreoRepository _muestreoRepository;
         private readonly IResultado _resultadoRepository;
         private readonly IEvidenciaMuestreoRepository _evidenciaMuestreoRepository;
+        private readonly IArchivoService _archivo;
+        private readonly IVwClaveMonitoreo _claveMonitoreo;
 
-        public EliminarMuestreoCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadoRepository, IEvidenciaMuestreoRepository evidenciaMuestreoRepository)
+
+        public EliminarMuestreoCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadoRepository, IEvidenciaMuestreoRepository evidenciaMuestreoRepository, IArchivoService archivo, IVwClaveMonitoreo claveMonitoreo)
         {
             _muestreoRepository=muestreoRepository;
             _resultadoRepository=resultadoRepository;
             _evidenciaMuestreoRepository=evidenciaMuestreoRepository;
+            _archivo=archivo;
+            _claveMonitoreo = claveMonitoreo;
         }
 
         public async Task<Response<bool>> Handle(EliminarMuestreoCommand request, CancellationToken cancellationToken)
@@ -42,7 +42,6 @@ namespace Application.Features.Muestreos.Commands.Liberacion
                     }
 
                     _evidenciaMuestreoRepository.EliminarEvidenciasMuestreo(muestreoDb.Id);
-
                     var resultados = await _resultadoRepository.ObtenerElementosPorCriterioAsync(r => r.MuestreoId == muestreo);
 
                     if (resultados.Any())
@@ -54,6 +53,13 @@ namespace Application.Features.Muestreos.Commands.Liberacion
                     }
 
                     _muestreoRepository.Eliminar(muestreoDb);
+
+                    var datosMuestreo = _claveMonitoreo.ObtenerElementosPorCriterio(x => x.ProgramaMuestreoId == muestreoDb.ProgramaMuestreoId).FirstOrDefault();
+
+                    if (datosMuestreo != null)
+                    {
+                        _archivo.EliminarEvidencias(datosMuestreo.ClaveMuestreo);
+                    }
                 }
             }
 

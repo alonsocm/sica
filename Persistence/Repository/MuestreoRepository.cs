@@ -59,7 +59,8 @@ namespace Persistence.Repository
                                     {
                                         e.MuestreoId,
                                         e.NombreArchivo,
-                                        e.TipoEvidenciaMuestreo.Sufijo
+                                        e.TipoEvidenciaMuestreo.Sufijo,
+                                        e.TipoEvidenciaMuestreoId
                                     }).ToListAsync();
 
             var laboratoriosubrogado = await (from e in _dbContext.ResultadoMuestreo
@@ -82,7 +83,7 @@ namespace Persistence.Repository
 
                 f.LaboratorioSubrogado = f.LaboratorioSubrogado.TrimEnd('/');
                 f.FechaEntregaMuestreo = Fechaentrega.ToList()[0].ToString("dd/MM/yyyy");
-                f.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == f.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo }).ToList());
+                f.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == f.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo, TipoEvidencia = s.TipoEvidenciaMuestreoId }).ToList());
             });
 
             return muestreos;

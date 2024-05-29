@@ -13,6 +13,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
     public class CargaEvidenciasCommand : IRequest<Response<bool>>
     {
         public List<IFormFile> Archivos { get; set; } = new List<IFormFile>();
+        public bool Reemplazar { get; set; }
     }
 
     public class CargaEvidenciasCommandHandler : IRequestHandler<CargaEvidenciasCommand, Response<bool>>
@@ -43,7 +44,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
             {
                 var clavesMonitoreos = await _vwClaveMonitoreoRepository.ObtenerElementosPorCriterioAsync(e => e.ClaveMuestreo == evidenciasMuestreo.Muestreo) ?? throw new ApiException("No se encontraron claves de muestreo correspondientes a las evidencias procesadas");
                 var programaMuestreoId = clavesMonitoreos.FirstOrDefault()?.ProgramaMuestreoId;
-                var muestreo = _muestreoRepository.ObtenerElementosPorCriterioAsync(e => e.ProgramaMuestreoId == programaMuestreoId).Result.FirstOrDefault() ?? throw new ApiException($"No se encontró en la base de datos, el registro del muestreo: {evidenciasMuestreo.Muestreo}");
+                var muestreo = _muestreoRepository.ObtenerElementoConInclusiones(e => e.ProgramaMuestreoId == programaMuestreoId, x => x.EvidenciaMuestreo).FirstOrDefault() ?? throw new ApiException($"No se encontró en la base de datos, el registro del muestreo: {evidenciasMuestreo.Muestreo}");
                 List<EvidenciaMuestreo> evidencias = new();
                 List<string> muestreosProcesados = new();
 
@@ -110,7 +111,48 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                     muestreo.EstatusId = (int)Enums.EstatusMuestreo.EvidenciasCargadas;
                     muestreo.FechaCargaEvidencias = DateTime.Now;
 
-                    _evidenciaMuestreoRepository.InsertarRango(evidencias);
+                    if (muestreo.EvidenciaMuestreo.Any())
+                    {
+                        foreach (var evidencia in evidencias)
+                        {
+                            var evidenciaBd = muestreo.EvidenciaMuestreo.Where(w => w.NombreArchivo == evidencia.NombreArchivo).FirstOrDefault();
+
+                            if (evidenciaBd != null)
+                            {
+                                evidenciaBd.NombreArchivo = evidencia.NombreArchivo;
+                                evidenciaBd.Latitud = evidencia.Latitud;
+                                evidenciaBd.Longitud = evidencia.Longitud;
+                                evidenciaBd.Altitud = evidencia.Altitud;
+                                evidenciaBd.MarcaCamara = evidencia.MarcaCamara;
+                                evidenciaBd.ModeloCamara = evidencia.ModeloCamara;
+                                evidenciaBd.Iso = evidencia.Iso;
+                                evidenciaBd.Apertura = evidencia.Apertura;
+                                evidenciaBd.Obturador = evidencia.Obturador;
+                                evidenciaBd.DistanciaFocal = evidencia.DistanciaFocal;
+                                evidenciaBd.Flash = evidencia.Flash;
+                                evidenciaBd.Tamano = evidencia.Tamano;
+                                evidenciaBd.Direccion = evidencia.Direccion;
+                                evidenciaBd.Placas = evidencia.Placas;
+                                evidenciaBd.Laboratorio = evidencia.Laboratorio;
+                                evidenciaBd.FechaInicio = evidencia.FechaInicio;
+                                evidenciaBd.FechaFin = evidencia.FechaFin;
+                                evidenciaBd.HoraInicio = evidencia.HoraInicio;
+                                evidenciaBd.HoraFin = evidencia.HoraFin;
+                                evidenciaBd.FechaCreacion = evidencia.FechaCreacion;
+
+                                _evidenciaMuestreoRepository.Actualizar(evidenciaBd);
+                            }
+                            else
+                            {
+                                _evidenciaMuestreoRepository.Insertar(evidencia);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _evidenciaMuestreoRepository.InsertarRango(evidencias);
+                    }
+
                     _muestreoRepository.Actualizar(muestreo);
                 }
                 catch (Exception ex)

@@ -189,7 +189,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new DeleteAllCommand { Filters = filters }));
+            return Ok(await Mediator.Send(new DeleteByFilterCommand { Filters = filters }));
         }
 
         [HttpGet("ResumenResultadosPorMuestreo")]

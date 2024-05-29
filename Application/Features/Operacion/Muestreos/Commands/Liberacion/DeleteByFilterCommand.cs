@@ -1,29 +1,32 @@
 ﻿using Application.Expressions;
+using Application.Interfaces;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 
 namespace Application.Features.Muestreos.Commands.Liberacion
 {
-    public class DeleteAllCommand : IRequest<Response<bool>>
+    public class DeleteByFilterCommand : IRequest<Response<bool>>
     {
         public List<Filter> Filters { get; set; }
     }
 
-    public class DeleteAllCommandHandler : IRequestHandler<DeleteAllCommand, Response<bool>>
+    public class DeleteAllCommandHandler : IRequestHandler<DeleteByFilterCommand, Response<bool>>
     {
         private readonly IMuestreoRepository _muestreoRepository;
         private readonly IResultado _resultadoRepository;
         private readonly IEvidenciaMuestreoRepository _evidenciaMuestreoRepository;
+        private readonly IArchivoService _archivos;
 
-        public DeleteAllCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadoRepository, IEvidenciaMuestreoRepository evidenciaMuestreoRepository)
+        public DeleteAllCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadoRepository, IEvidenciaMuestreoRepository evidenciaMuestreoRepository, IArchivoService archivos)
         {
             _muestreoRepository=muestreoRepository;
             _resultadoRepository=resultadoRepository;
             _evidenciaMuestreoRepository=evidenciaMuestreoRepository;
+            _archivos = archivos;
         }
 
-        public async Task<Response<bool>> Handle(DeleteAllCommand request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(DeleteByFilterCommand request, CancellationToken cancellationToken)
         {
             var data = await _muestreoRepository.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.Cargado, (long)Enums.EstatusMuestreo.EvidenciasCargadas });
             data = data.AsQueryable();
@@ -46,6 +49,7 @@ namespace Application.Features.Muestreos.Commands.Liberacion
                     throw new KeyNotFoundException($"No se encontró el identificador: {muestreo.MuestreoId}");
 
                 _evidenciaMuestreoRepository.EliminarEvidenciasMuestreo(muestreoDb.Id);
+                _archivos.EliminarEvidencias(muestreo.ClaveMonitoreo);
 
                 var resultados = await _resultadoRepository.ObtenerElementosPorCriterioAsync(r => r.MuestreoId == muestreo.MuestreoId);
 
