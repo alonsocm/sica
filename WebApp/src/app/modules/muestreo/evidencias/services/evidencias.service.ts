@@ -84,4 +84,20 @@ export class EvidenciasService {
       );
     });
   }
+
+  deleteEvidencias(muestreos: Array<string>): Observable<any> {
+    const options = { body: muestreos };
+    return this.http.delete(
+      environment.apiUrl + '/evidenciasMuestreos',
+      options
+    );
+  }
+
+  deleteEvidenciasByFilter(filter: string): Observable<Object> {
+    return this.http.delete(
+      environment.apiUrl +
+        '/evidenciasMuestreos/deletebyfilter?filter=' +
+        filter
+    );
+  }
 }

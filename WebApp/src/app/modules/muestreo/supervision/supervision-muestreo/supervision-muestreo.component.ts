@@ -470,7 +470,7 @@ export class SupervisionMuestreoComponent
     } else if (this.validateCriteriosObligatorios()) {
       this.notificationService.updateNotification({
         text: 'Se encontraron criterios obligatorios marcados como "NO CUMPLE". Es necesario capturar las observaciones.',
-        type: NotificationType.alert,
+        type: NotificationType.warning,
         show: true,
       });
 
