@@ -410,10 +410,10 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     let muestreo = this.muestreos.find(
       (x) => x.claveMonitoreo == claveMuestreo
     );
-    let nombreEvidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
+    let evidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
 
     this.evidenciasService
-      .descargarArchivo(nombreEvidencia?.nombreArchivo ?? '')
+      .descargarArchivo(evidencia?.nombreArchivo ?? '')
       .subscribe({
         next: (response: Blob) => {
           this.loading = !this.loading;
@@ -423,15 +423,18 @@ export class EvidenciasComponent extends BaseService implements OnInit {
               this.imgSrc = reader.result as string;
             };
             reader.readAsDataURL(response);
+
+            let titutloEvidencia = document.getElementById(
+              'tituloEvidencia'
+            ) as HTMLHtmlElement;
+            titutloEvidencia.textContent = evidencia?.nombreArchivo ?? '';
+
             document.getElementById('btn-img-modal')?.click();
           } else if (['D', 'E'].findIndex((x) => x === sufijo) != -1) {
             const url = URL.createObjectURL(response);
             window.open(url);
           } else {
-            FileService.download(
-              response,
-              nombreEvidencia?.nombreArchivo ?? ''
-            );
+            FileService.download(response, evidencia?.nombreArchivo ?? '');
           }
         },
         error: (response: any) => {
