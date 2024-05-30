@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Features.CargaMasivaEvidencias.Commands;
 using Application.Features.Evidencias.Queries;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
 using WebAPI.Shared;
@@ -64,6 +65,28 @@ namespace WebAPI.Controllers.v1.Operacion
             var archivoZip = ZipService.GenerarZip(archivos.Data);
 
             return File(archivoZip, "application/octet-stream", "evidencias.zip");
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(List<string> muestreos)
+        {
+            if (!muestreos.Any())
+                return BadRequest("Debe especificar al menos una clave de muestro para eliminar sus evidencias");
+
+            return Ok(await Mediator.Send(new DeleteEvidenciasCommand { Muestreos = muestreos }));
+        }
+
+        [HttpDelete("DeleteByFilter")]
+        public async Task<ActionResult> Delete(string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new DeleteEvidenciasByFilterCommand { Filters = filters }));
         }
 
         #region Consulta Evidencias

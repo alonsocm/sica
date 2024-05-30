@@ -1,6 +1,4 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Columna } from 'src/app/interfaces/columna-inferface';
-import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Evidencia, Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Respuesta } from 'src/app/interfaces/respuesta.interface';
 import { AuthService } from 'src/app/modules/login/services/auth.service';
@@ -13,7 +11,8 @@ import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from 'src/app/interfaces/filter/item';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { filter } from 'rxjs';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-evidencias',
@@ -41,7 +40,8 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     private evidenciasService: EvidenciasService,
     private muestreoService: MuestreoService,
     private usuario: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationService: NotificationService
   ) {
     super();
     this.registroParam = this.fb.group({
@@ -55,16 +55,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.muestreoService.filtrosSeleccionados = [];
     this.perfil = this.usuario.getUser().nombrePerfil;
     this.definirColumnas();
-
-    //anterior
-    //this.evidenciasService.obtenerMuestreos().subscribe({
-    //  next: (response: any) => {
-    //    this.muestreos = response.data;
-    //    this.muestreosFiltrados = this.muestreos;
-    //    this.establecerValoresFiltrosTabla();
-    //  },
-    //  error: (error) => {},
-    //});
 
     //Implementación de lo de Alonso
     this.consultarMonitoreos();
@@ -410,10 +400,10 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     let muestreo = this.muestreos.find(
       (x) => x.claveMonitoreo == claveMuestreo
     );
-    let nombreEvidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
+    let evidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
 
     this.evidenciasService
-      .descargarArchivo(nombreEvidencia?.nombreArchivo ?? '')
+      .descargarArchivo(evidencia?.nombreArchivo ?? '')
       .subscribe({
         next: (response: Blob) => {
           this.loading = !this.loading;
@@ -423,15 +413,18 @@ export class EvidenciasComponent extends BaseService implements OnInit {
               this.imgSrc = reader.result as string;
             };
             reader.readAsDataURL(response);
+
+            let titutloEvidencia = document.getElementById(
+              'tituloEvidencia'
+            ) as HTMLHtmlElement;
+            titutloEvidencia.textContent = evidencia?.nombreArchivo ?? '';
+
             document.getElementById('btn-img-modal')?.click();
           } else if (['D', 'E'].findIndex((x) => x === sufijo) != -1) {
             const url = URL.createObjectURL(response);
             window.open(url);
           } else {
-            FileService.download(
-              response,
-              nombreEvidencia?.nombreArchivo ?? ''
-            );
+            FileService.download(response, evidencia?.nombreArchivo ?? '');
           }
         },
         error: (response: any) => {
@@ -475,11 +468,11 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         },
       });
 
-    this.resetValues();
+    this.resetSelection();
     this.unselectMuestreos();
   }
 
-  private resetValues() {
+  private resetSelection() {
     this.muestreosSeleccionados = [];
     this.selectAllOption = false;
     this.allSelected = false;
@@ -725,7 +718,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.muestreoService.filtrosSeleccionados = filtrosActuales;
   }
 
-  onReemplazarEvidenciaClick(claveMuestreo: string, sufijo: string) {
+  onReplaceEvidenciaClick(claveMuestreo: string, sufijo: string) {
     let muestreo = this.muestreos.find(
       (x) => x.claveMonitoreo == claveMuestreo
     );
@@ -736,5 +729,65 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.reemplazar = true;
     this.nombreEvidencia = evidencia;
     document.getElementById('fileReplace')?.click();
+  }
+
+  onDeleteEvidenciasClick() {
+    if (!this.allSelected && this.muestreosSeleccionados.length === 0) {
+      this.notificationService.updateNotification({
+        show: true,
+        text: 'Debe seleccionar al menos un monitoreo para eliminar',
+        type: NotificationType.warning,
+      });
+      return this.hacerScroll();
+    }
+
+    document.getElementById('btnMdlConfirmacion')?.click();
+  }
+
+  onConfirmDeleteEvidenciasClick() {
+    this.loading = true;
+    if (this.allSelected) {
+      this.evidenciasService.deleteEvidenciasByFilter(this.cadena).subscribe({
+        next: (response) => {
+          this.resetValues();
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    } else {
+      if (this.muestreosSeleccionados.length === 0) {
+        this.notificationService.updateNotification({
+          show: true,
+          text: 'Debe seleccionar al menos un monitoreo',
+          type: NotificationType.warning,
+        });
+        return this.hacerScroll();
+      }
+
+      let muestreosEliminar = this.muestreosSeleccionados.map(
+        (s) => s.claveMonitoreo
+      );
+      this.evidenciasService.deleteEvidencias(muestreosEliminar).subscribe({
+        next: (response) => {
+          this.resetValues();
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    }
+  }
+
+  private resetValues() {
+    this.consultarMonitoreos();
+    this.notificationService.updateNotification({
+      show: true,
+      text: 'Evidencias eliminadas correctamente',
+      type: NotificationType.success,
+    });
+    this.resetSelection();
+    this.hacerScroll();
+    this.loading = false;
   }
 }
