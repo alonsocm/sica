@@ -53,7 +53,7 @@
                     <th style="text-align:center" class="checkBox-center">
                         <label for="chckAll">SELECCIONAR TODOS</label>
                         <input type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-                            (change)="onSelectPageClick()" />
+                            (change)="onSelectPageClick(this.muestreos, this.muestreosSeleccionados);" />
                     </th>
                     <ng-container *ngFor="let columna of this.columnas">
                         <th *ngIf="mostrarColumna(columna.etiqueta)">
@@ -70,8 +70,10 @@
                             title="Seleccionar">
                     </td>
                     <td *ngIf="perfil == 'ADMINISTRADOR' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
-                        {{muestreo.noEntregaOCDL}}
+                        <!--{{muestreo.noEntregaOCDL}}-->
+                      1
                     </td>
+                  <td>NO</td>
                     <td>{{muestreo.claveSitioOriginal}}</td>
                     <td>{{muestreo.claveSitio}}</td>
                     <td>{{muestreo.claveMonitoreo}}</td>

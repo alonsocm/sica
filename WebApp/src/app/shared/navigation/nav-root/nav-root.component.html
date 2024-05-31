@@ -1,6 +1,9 @@
 <nav class="nav-menu">
   <div class="menu-container">
     <ul class="list-inline">
+      <div class="pull-left" style="margin-left: 10px; vertical-align:middle">
+        <img width="30px" class="CentrarObj" src="assets/images/site/LogoSica.png">
+      </div>
       <ng-container *ngFor="let pagina of this.paginasRoot">
         <li class="list-inline-item" *ngIf="pagina.url != ''; else elseBlock">
           <a routerLink="{{pagina.url}}">{{pagina.descripcion}}</a>

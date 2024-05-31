@@ -93,7 +93,7 @@ export class ReplicaDiferenteComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.muestreos = response.data;       
         this.muestreosFiltrados = this.muestreos;
-        this.establecerValoresFiltrosTabla();
+        //this.establecerValoresFiltrosTabla();
 
       },
       error: (error) => { },
@@ -121,92 +121,11 @@ export class ReplicaDiferenteComponent extends BaseService implements OnInit {
   }
 
 
-  private establecerValoresFiltrosTabla() {
-    this.filtronoEntrega.values = [
-      ...new Set(this.muestreos.map((m) => m.noEntrega)),
-    ];
-
-    this.filtroclaveUnica.values = [
-      ...new Set(this.muestreos.map((m) => m.claveUnica)),
-    ];
-
-    this.filtroclaveSitio.values = [
-      ...new Set(this.muestreos.map((m) => m.claveSitio)),
-    ];
-
-    this.filtroclaveMonitoreo.values = [
-      ...new Set(this.muestreos.map((m) => m.claveMonitoreo)),
-    ];
-
-    this.filtronombreSitio.values = [
-      ...new Set(this.muestreos.map((m) => m.nombreSitio)),
-    ];
-
-    this.filtroclaveParametro.values = [
-      ...new Set(this.muestreos.map((m) => m.claveParametro)),
-    ];
-
-    this.filtrolaboratorio.values = [
-      ...new Set(this.muestreos.map((m) => m.laboratorio)),
-    ];
-
-    this.filtrocuerpoAgua.values = [
-      ...new Set(this.muestreos.map((m) => m.tipoCuerpoAgua)),
-    ];
-
-    this.filtrocuerpoAguaO.values = [
-      ...new Set(this.muestreos.map((m) => m.tipoCuerpoAguaOriginal)),
-    ];
-
-    this.filtroresultadoAR.values = [
-      ...new Set(this.muestreos.map((m) => m.resultadoActualizadoporReplica)),
-    ];
-
-    this.filtroescorrectoROCDL.values = [
-      ...new Set(this.muestreos.map((m) => m.esCorrectoOCDL)),
-    ];
-
-    this.filtroobservacionesOCDL.values = [
-      ...new Set(this.muestreos.map((m) => m.observacionOCDL)),
-    ];
-
-    this.filtroesCorectoresultado.values = [
-      ...new Set(this.muestreos.map((m) => m.esCorrectoSECAIA)),
-    ];
-
-    this.filtroobservacionSecaia.values = [
-      ...new Set(this.muestreos.map((m) => m.observacionSECAIA)),
-    ];
-
-    this.filtroclasificaObserva.values = [
-      ...new Set(this.muestreos.map((m) => m.clasificacionObservacion)),
-    ];
-
-    this.filtroobservacionSRE.values = [
-      ...new Set(this.muestreos.map((m) => m.observacionSRENAMECA)),
-    ];
+  
 
 
-    this.filtrocomentarios.values = [
-      ...new Set(this.muestreos.map((m) => m.comentariosAprobacionResultados)),
-    ];
 
-    this.filtrofechaObservaSRE.values = [
-      ...new Set(this.muestreos.map((m) => m.fechaObservacionSRENAMECA)),
-    ];
-    this.filtroseaprueba.values = [
-      ...new Set(this.muestreos.map((m) => m.seApruebaResultadodespuesdelaReplica)),
-    ];
-    this.filtrofechaEstatus.values = [
-      ...new Set(this.muestreos.map((m) => m.fechaEstatusFinal)),
-    ];
-    this.filtronombreUsuario.values = [
-      ...new Set(this.muestreos.map((m) => m.usuarioRevision)),
-    ];
-    this.filtroestatus.values = [
-      ...new Set(this.muestreos.map((m) => m.estatusResultado)),
-    ];
-  }
+  
 
   filtrar(): void {
     this.muestreosFiltrados = this.muestreos.filter((muestreos) => {

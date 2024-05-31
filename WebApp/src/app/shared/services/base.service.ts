@@ -9,6 +9,7 @@ import {
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from '../../interfaces/filter/item';
+import { MuestreoService } from 'src/app/modules/muestreo/liberacion/services/muestreo.service';
 
 import {
   filtrosEspeciales,
@@ -89,7 +90,7 @@ export class BaseService {
   existeFiltrado: boolean = false;
 
   esfiltrofoco: string = '';
-  cabeceroSeleccionado: boolean;
+  cabeceroSeleccionado: boolean = false;
   headers: Array<any> = []; //Listado de cabeceros utilizado en el drop para redirigir al usuario al cabecero seleccionado
 
   opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
@@ -101,10 +102,6 @@ export class BaseService {
   existeEliminacionFiltro: boolean = false;
 
   currentHeaderFocus = '';
-
-  constructor() {
-    this.cabeceroSeleccionado = false;
-  }
 
   mostrarMensaje(mensaje: string, tipo: string): void {
     this.mensajeAlerta = mensaje;
@@ -207,7 +204,7 @@ export class BaseService {
     );
   }
 
-  mostrarModalFiltro(opcion: string, columna: Column) { 
+  mostrarModalFiltro(opcion: string, columna: Column) {
     switch (opcion) {
       case this.filtradoEspecial.personalizado:
         columna.optionFilter = this.filtradoEspecial.equals;
@@ -232,14 +229,10 @@ export class BaseService {
 
     if (selectData.length == 2) {
       this.columnaFiltroEspecial.secondOptionFilter = (opcion === this.filtradoEspecial.personalizado) ? this.filtradoEspecial.equals : '';
-      this.columnaFiltroEspecial.specialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[0]:'';
-      this.columnaFiltroEspecial.secondSpecialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[1]: '';
+      this.columnaFiltroEspecial.specialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[0] : '';
+      this.columnaFiltroEspecial.secondSpecialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[1] : '';
     }
-    else if (selectData.length == 1)
-    { this.columnaFiltroEspecial.specialFilter = (opcion === this.filtradoEspecial.equals || opcion === this.filtradoEspecial.personalizado) ? this.columnaFiltroEspecial.selectedData : ''; }
-
-
-  
+    else if (selectData.length == 1) { this.columnaFiltroEspecial.specialFilter = this.columnaFiltroEspecial.selectedData; }
 
     this.opcionesFiltrosModal = this.opcionesFiltros;
     columna.dataType == 'string'
@@ -273,7 +266,7 @@ export class BaseService {
       cadenaanterior.forEach((x) => {
         cadenaAnterior += x.concat('%');
       });
-      cadenaAnterior = cadenaAnterior.substring(0,cadenaAnterior.lastIndexOf('%')
+      cadenaAnterior = cadenaAnterior.substring(0, cadenaAnterior.lastIndexOf('%')
       );
     }
 
@@ -342,11 +335,12 @@ export class BaseService {
     });
   }
 
-  getPreseleccionFiltradoColumna(column: Column, esFiltroEspecial: boolean) { 
+  getPreseleccionFiltradoColumna(column: Column, esFiltroEspecial: boolean) {
     if (column.isLatestFilter)
       column.filteredData.forEach((m) => {
         m.checked = (esFiltroEspecial) ? false : (column.selectedData.includes(m.value) ? true : false);
-      });  }
+      });
+  }
 
   onSelectAllPagesClick() {
     this.allSelected = true;
@@ -430,8 +424,8 @@ export class BaseService {
       this.cadena =
         this.cadena.indexOf('%') != -1
           ? this.deleteFilter(
-              !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
-            )
+            !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
+          )
           : '';
     }
 
@@ -521,4 +515,97 @@ export class BaseService {
       name: m.name,
     }));
   }
+
+  onSelectPageClick(muestreos: Array<any>, muestreosSeleccionados: Array<any>) {
+    muestreos.map((m) => {
+      m.isChecked = this.selectedPage;
+
+      //Buscamos el registro en los seleccionados
+      let index = muestreosSeleccionados.findIndex(
+        (d) => d.muestreoId === m.muestreoId
+      );
+
+      if (index == -1) {
+        //No existe en seleccionados, lo agremos
+        muestreosSeleccionados.push(m);
+      } else if (!this.selectedPage) {
+        //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados
+        muestreosSeleccionados.splice(index, 1);
+      }
+    });
+
+    if (this.selectAllOption && !this.selectedPage) {
+      this.selectAllOption = false;
+      this.allSelected = false;
+    } else if (!this.selectAllOption && this.selectedPage) {
+      this.selectAllOption = true;
+    }
+
+    //this.getSummary();
+  }
+
+  anyUnselected(muestreos: Array<any>) {
+    return muestreos.some((f) => !f.isChecked);
+  }
+
+  public setColumnsFiltered(servicioMuestreo: MuestreoService) {
+    let filtrosActuales = this.columns
+      .filter((f) => f.filtered)
+      .map((m) => ({
+        name: m.name,
+        label: m.label,
+      }));
+
+    servicioMuestreo.filtrosSeleccionados = filtrosActuales;
+  }
+
+  public establecerValoresFiltrosTabla1(column: Column, servicioMuestreo: MuestreoService) {
+    let columsdesplegadas = document.getElementsByClassName("d-block");
+    for (var i = 0; i < columsdesplegadas.length; i++) {
+      columsdesplegadas[i].className = 'd-none';
+    }
+
+    this.setColumnsFiltered(servicioMuestreo);
+    servicioMuestreo.filtros.subscribe((filtro) => {
+      this.filtros = filtro;
+    });
+
+
+    //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+    this.obtenerLeyendaFiltroEspecial(column.dataType);
+    let esFiltroEspecial = (column.optionFilter === undefined || column.optionFilter === this.filtroEspecialEquals) ? false : true;
+
+    if ((!column.filtered && !this.existeFiltrado) || (column.isLatestFilter && this.filtros.length == 1)) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if ((!column.filtered && this.existeFiltrado) || (column.filtered && !column.isLatestFilter) || (!column.filtered && !this.existeFiltrado) || (column.isLatestFilter && this.filtros.length == 1)) {
+      servicioMuestreo.getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+
+          },
+          error: (error) => { },
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+  }
+
+
 }

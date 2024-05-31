@@ -1,12 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { acumuladosMuestreo } from '../../../../interfaces/acumuladosMuestreo.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ValidacionReglasService {
+
 
   constructor(private http: HttpClient) { }
 
@@ -49,6 +51,30 @@ export class ValidacionReglasService {
     });
     return this.http.get(environment.apiUrl + '/Resultados/ResultadosAcumuladosParametros', { params });
   }
+
+  getResultadosAcumuladosParametrosPaginados(
+    estatusId: number,
+    page: number,
+    pageSize: number,
+    filter: string,
+    order?: { column: string; type: string }
+  ): Observable<Object> {
+    let params = new HttpParams({
+      fromObject: {
+        estatusId: estatusId,
+        page: page,
+        pageSize: pageSize,
+        filter: filter,
+        order: order != null ? order.column + '_' + order.type : '',
+      },
+    });
+    return this.http.get(environment.apiUrl + '/Resultados/ResultadosAcumuladosParametros', { params });
+  }
+
+
+
+
+
   getResultadosporMonitoreo(anios: Array<number>, numeroEntrega: Array<number>, estatusId: number) {
     let params = new HttpParams({
       fromObject: { anios: anios, numeroEntrega: numeroEntrega, estatusId: estatusId },

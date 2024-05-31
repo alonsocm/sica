@@ -3,6 +3,7 @@ using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
+using System.Linq;
 
 namespace Application.Features.Muestreos.Queries
 {
@@ -21,7 +22,7 @@ namespace Application.Features.Muestreos.Queries
 
         public GetMuestreosHandler(IMuestreoRepository repositoryAsync)
         {
-            _repositoryAsync=repositoryAsync;
+            _repositoryAsync = repositoryAsync;
         }
 
         public async Task<PagedResponse<List<MuestreoDto>>> Handle(GetMuestreosPaginados request, CancellationToken cancellationToken)
@@ -53,11 +54,21 @@ namespace Application.Features.Muestreos.Queries
             if (request.Filter.Any())
             {
                 var expressions = MuestreoExpression.GetExpressionList(request.Filter);
+                List<MuestreoDto> lstMuestreo = new List<MuestreoDto>();
 
                 foreach (var filter in expressions)
                 {
-                    data = data.AsQueryable().Where(filter);
+                    if (request.Filter.Count == 2 && request.Filter[0].Conditional == "equals" && request.Filter[1].Conditional == "equals")
+                    {
+                        var dataFinal = data;
+                        dataFinal = dataFinal.AsQueryable().Where(filter);
+                        lstMuestreo.AddRange(dataFinal);
+
+                    }
+                    else
+                    { data = data.AsQueryable().Where(filter); }
                 }
+                data = (lstMuestreo.Count > 0) ? lstMuestreo.AsQueryable() : data;
             }
 
             if (request.OrderBy != null)

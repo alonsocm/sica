@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Features.Muestreos.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
@@ -561,15 +562,34 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ResultadosAcumuladosParametros")]
-        public async Task<IActionResult> GetActionAsync(int estatusId)
+        public async Task<IActionResult> GetActionAsync(int estatusId, int page, int pageSize, string? filter = "", string? order = "")
         {
-            Response<List<AcumuladosResultadoDto>> lstResultados = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoQuery
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                estatusId = estatusId
+                filters = QueryParam.GetFilters(filter);
+            }
 
-            });
+            OrderBy orderBy = null;
 
-            return Ok(lstResultados);
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+            return Ok(await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            {
+                estatusId = estatusId,
+                Page = page,
+                PageSize = pageSize,
+                Filter = filters,
+                OrderBy = orderBy
+            }));
 
         }
 

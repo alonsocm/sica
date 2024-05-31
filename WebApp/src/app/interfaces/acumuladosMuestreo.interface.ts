@@ -27,6 +27,7 @@ export interface acumuladosMuestreo extends Muestreo {
   numeroEntrega: string,
   isChecked: boolean;
 
+  validacionEvidencias: boolean;
 
   
 }

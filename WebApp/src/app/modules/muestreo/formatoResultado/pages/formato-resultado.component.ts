@@ -55,6 +55,12 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         filtro: new Filter(),
       },
       {
+        nombre: 'replica',
+        etiqueta: 'TUVO REPLICA',
+        orden: 0,
+        filtro: new Filter(),
+      },
+      {
         nombre: 'claveSitioOriginal',
         etiqueta: 'CLAVE SITIO ORIGINAL',
         orden: 0,
@@ -243,17 +249,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   filtrar(): void {
-    // this.loading = !this.loading;
-    // this.resultadosFiltrados = this.resultados;
-    // this.columnas.forEach((columna) => {
-    //   this.resultadosFiltrados = this.resultadosFiltrados.filter((f: any) => {
-    //     return columna.filtro.selectedValue == 'Seleccione'
-    //       ? true
-    //       : f[columna.nombre] == columna.filtro.selectedValue;
-    //   });
-    // });
-    // this.loading = false;
-    // this.establecerValoresFiltrosTabla();
+
   }
 
   limpiarFiltros() {
@@ -303,7 +299,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     //Vamos a agregar este registro, a los seleccionados
     if (muestreo.selected) {
       this.muestreosSeleccionados.push(muestreo);
-      this.selectedPage = this.anyUnselected() ? false : true;
+      this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
     } else {
       let index = this.muestreosSeleccionados.findIndex(
         (m) => m.muestreoId === muestreo.muestreoId
@@ -320,35 +316,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.consultarMuestreos(this.tipoCuerpoAgua, page);
   }
 
-  onSelectPageClick() {
-    this.muestreos.map((m) => {
-      m.selected = this.selectedPage;
 
-      //Buscamos el registro en los seleccionados
-      let index = this.muestreosSeleccionados.findIndex(
-        (d) => d.muestreoId === m.muestreoId
-      );
-
-      if (index == -1) {
-        //No existe en seleccionados, lo agremos
-        this.muestreosSeleccionados.push(m);
-      } else if (!this.selectedPage) {
-        //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados
-        this.muestreosSeleccionados.splice(index, 1);
-      }
-    });
-
-    if (this.selectAllOption && !this.selectedPage) {
-      this.selectAllOption = false;
-      this.allSelected = false;
-    } else if (!this.selectAllOption && this.selectedPage) {
-      this.selectAllOption = true;
-    }
-  }
-
-  anyUnselected() {
-    return this.muestreos.some((f) => !f.selected);
-  }
 
   private resetValues() {
     this.muestreosSeleccionados = [];
