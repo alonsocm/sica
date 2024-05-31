@@ -3,126 +3,124 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h1 class="row col">Evidencias de monitoreo</h1>
-  <hr class="red">
-  <div class="message-container">
-    <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-               [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
-  </div>
-  <div class="clearfix">
-    <div class="float-left">
-      <input type="file" class="element-hidden" (change)="cargarEvidencias($event, false)"
-             accept=".xls, .xlsx, .jpg, .pdf, .xlsm" multiple title="Seleccionar archivos" #fileUpload>
-      <button type="button" class="btn btn-primary" (click)="fileUpload.click()">
-        <i class="bi bi-cloud-upload"></i>
-        Seleccionar y cargar evidencias
-      </button>
+    <h1 class="row col">Evidencias de monitoreo</h1>
+    <hr class="red">
+    <div class="message-container">
+        <app-notification></app-notification>
     </div>
-    <div class="float-right">
-      <button type="button" class="btn btn-secondary mr-1" (click)="descargarEvidencias()">
-        <i class="bi bi-cloud-download"></i>
-        Descargar evidencias
-      </button>
-      <button class="btn btn-secondary btnAcciones" type="button" (click)="limpiarFiltros()">
-        <i class="bi bi-funnel"></i>
-        Limpiar filtros
-      </button>
+    <div class="clearfix">
+        <div class="float-left">
+            <input type="file" class="element-hidden" (change)="cargarEvidencias($event, false)"
+                accept=".xls, .xlsx, .jpg, .pdf, .xlsm" multiple title="Seleccionar archivos" #fileUpload>
+            <button type="button" class="btn btn-primary" (click)="fileUpload.click()">
+                <i class="bi bi-cloud-upload"></i>
+                Seleccionar y cargar evidencias
+            </button>
+        </div>
+        <div class="float-right">
+            <button type="button" class="btn btn-secondary mr-1" (click)="descargarEvidencias()">
+                <i class="bi bi-cloud-download"></i>
+                Descargar evidencias
+            </button>
+            <button type="button" class="btn btn-secondary mr-1" (click)="onDeleteEvidenciasClick()">
+                <i class="bi bi-trash"></i>
+                Eliminar evidencias
+            </button>
+            <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
+                data-target="#mdlConfirmacion" title="Seleccionar"></button>
+            <!-- <button class="btn btn-secondary btnAcciones" type="button" (click)="limpiarFiltros()">
+                <i class="bi bi-funnel"></i>
+                Limpiar filtros
+            </button> -->
+        </div>
     </div>
-  </div>
-  <br />
-  <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                        (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-  </app-busqueda-columna>
-  <app-historial></app-historial>
-  <div class="alert alert-secondary" role="alert"
-       *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
-    Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
-                                                                                        (click)="onSelectAllPagesClick()" class="btn btn-link">
-      Seleccionar los {{this.totalItems}} registros
-    </button>
-  </div>
-  <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
-    Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
-                                                                   (click)="onUnselectAllClick()">
-      Anular la seleccion
-    </button>
-  </div>
-  <input id="fileReplace" type="file" class="element-hidden"
-         (change)="cargarEvidencias($event, true, this.nombreEvidencia)" accept=".xls, .xlsx, .jpg, .pdf, .xlsm"
-         title="Seleccionar archivos" #fileReplace>
-
-  <div class="dvTable">
-    <table class="table-bordered table-hover">
-      <thead class="thead-sticky">
-        <tr>
-          <th columnResize class="td-center no-border-bottom th-resize">
-            &nbsp;SELECCIONAR&nbsp;
-          </th>
-          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
-              id="{{columna.name}}" class="no-border-bottom th-resize"
-              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
-            {{columna.label}}
-          </th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FOTO CAUDAL</th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-            MÁSCARA DE CAMPO
-          </th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-            CADENA CUSTODIA
-          </th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">BITÁCORA</th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-            FOTO MUESTREO
-          </th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-            FORMATO CAUDAL
-          </th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">TRACK</th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-            FOTO MUESTRA
-          </th>
-          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-            FORMATO DE
-            EVENTUALIDAD
-          </th>
-        </tr>
-        <tr>
-          <th class="no-border-top td-center">
-            <input class="cursor-pointer" type="checkbox" id="chckAll"
-                   [(ngModel)]="this.selectedPage" (change)="onSelectPageClick(this.muestreos, this.muestreosSeleccionados); this.getSummary();"
-                   title="Selecciona la página actual" />
-          </th>
-          <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
-            <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
-              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
-                      title="Filtros" aria-expanded="false"
-                      (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
-                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
-                   class="bi bi-caret-down-fill"></i>
-                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
-                <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
-                   class="bi bi-arrow-down"></i>
-                <i [(ngModel)]="columna.desc"
-                   *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
-                   class="bi bi-arrow-up"></i>
-              </button>
-
-              <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
-
-                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
-                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
-                     class="bi bi-sort-alpha-down"></i>
-                  Ordenar de A a Z
-                </a>
-                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
-                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
-                     class="bi bi-sort-alpha-down-alt"></i>
-                  Ordenar de Z a A
-                </a>
-                <hr class="dropdown-divider">
-                <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
-                  <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
-                </a>
+    <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+        (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+    </app-busqueda-columna>
+    <app-historial></app-historial>
+    <div class="alert alert-secondary" role="alert"
+        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+        Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
+            (click)="onSelectAllPagesClick()" class="btn btn-link">
+            Seleccionar los {{this.totalItems}} registros
+        </button>
+    </div>
+    <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
+        Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
+            (click)="onUnselectAllClick()">
+            Anular la seleccion
+        </button>
+    </div>
+    <input id="fileReplace" type="file" class="element-hidden"
+        (change)="cargarEvidencias($event, true, this.nombreEvidencia)" accept=".xls, .xlsx, .jpg, .pdf, .xlsm"
+        title="Seleccionar archivos" #fileReplace>
+    <div class="dvTable">
+        <table class="table-bordered table-hover">
+            <thead class="thead-sticky">
+                <tr>
+                    <th columnResize class="td-center no-border-bottom th-resize">
+                        &nbsp;SELECCIONAR&nbsp;
+                    </th>
+                    <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
+                        id="{{columna.name}}" class="no-border-bottom th-resize"
+                        [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+                        {{columna.label}}
+                    </th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FOTO CAUDAL</th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">MÁSCARA DE CAMPO
+                    </th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">CADENA CUSTODIA
+                    </th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">BITÁCORA</th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FOTO MUESTREO
+                    </th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FORMATO CAUDAL
+                    </th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">TRACK</th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FOTO MUESTRA
+                    </th>
+                    <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FORMATO DE
+                        EVENTUALIDAD
+                    </th>
+                </tr>
+                <tr>
+                    <th class="no-border-top td-center"><input class="cursor-pointer" type="checkbox" id="chckAll"
+                            [(ngModel)]="this.selectedPage" (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);"
+                            title="Selecciona la página actual" />
+                    </th>
+                    <th class="no-border-top" *ngFor="let columna of this.columns let i = index"
+                        id="filter-{{columna.name}}">
+                        <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
+                            <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown"
+                                aria-haspopup="true" title="Filtros" aria-expanded="false"
+                                (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
+                                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                                    class="bi bi-caret-down-fill"></i>
+                                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                                <i [(ngModel)]="columna.asc"
+                                    *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                                    class="bi bi-arrow-down"></i>
+                                <i [(ngModel)]="columna.desc"
+                                    *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                                    class="bi bi-arrow-up"></i>
+                            </button>
+                            <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
+                                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
+                                        class="bi bi-sort-alpha-down"></i>
+                                    Ordenar de A a Z
+                                </a>
+                                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
+                                        class="bi bi-sort-alpha-down-alt"></i>
+                                    Ordenar de Z a A
+                                </a>
+                                <hr class="dropdown-divider">
+                                <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
+                                    <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}"
+                                        class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>
+                                    Eliminar filtro de {{columna.label}}
+                                </a>
 
 
                 <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
@@ -221,7 +219,7 @@
                     </svg>
                   </a>
                   <a type="button" title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -241,7 +239,7 @@
                     </svg>
                   </a>
                   <a type="button" title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -261,7 +259,7 @@
                     </svg>
                   </a>
                   <a title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -281,7 +279,7 @@
                     </svg>
                   </a>
                   <a title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -301,7 +299,7 @@
                     </svg>
                   </a>
                   <a title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -321,7 +319,7 @@
                     </svg>
                   </a>
                   <a type="button" title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -341,7 +339,7 @@
                     </svg>
                   </a>
                   <a title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -361,7 +359,7 @@
                     </svg>
                   </a>
                   <a title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -381,7 +379,7 @@
                     </svg>
                   </a>
                   <a title="Reemplazar evidencia"
-                     (click)="onReemplazarEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                     (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
                       <path fill-rule="evenodd"
@@ -425,21 +423,42 @@
 
 <!-- Modal -->
 <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">nombre archivo</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <img [src]="this.imgSrc" class="img-thumbnail" />
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloEvidencia"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img [src]="this.imgSrc" class="img-thumbnail" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+
+<div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar eliminación</h4>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro de eliminar las evidencias de los monitoreos seleccionados?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnCancelarModal" type="button" class="btn btn-secondary"
+                    data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    (click)="onConfirmDeleteEvidenciasClick()">
+                    Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

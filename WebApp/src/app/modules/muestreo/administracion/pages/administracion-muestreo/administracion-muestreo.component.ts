@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
@@ -9,12 +9,18 @@ import { FileService } from '../../../../../shared/services/file.service';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { ValidacionReglasService } from '../../../validacion/services/validacion-reglas.service';
 
+
 @Component({
   selector: 'app-administracion-muestreo',
   templateUrl: './administracion-muestreo.component.html',
   styleUrls: ['./administracion-muestreo.component.css']
 })
 export class AdministracionMuestreoComponent extends BaseService implements OnInit {
+
+  @ViewChild('canvas', { static: true }) myCanvas!: ElementRef;
+  @ViewChild('canvasFinal', { static: true }) myCanvasFinal!: ElementRef;
+  
+
   ejemplo: string = "#ejemplo";
   etapaCarga: string = "Carga Ebaseca";
   etapaValRegOrig: string = "Validación de registro original";
@@ -88,6 +94,41 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
 
   ngOnInit(): void {
     this.obtenerTotales();
+
+    const canvas: HTMLCanvasElement = this.myCanvas.nativeElement;
+    const canvasFinal: HTMLCanvasElement = this.myCanvasFinal.nativeElement;
+
+    //canvasFinal.addEventListener()
+
+    const contextFinal = canvasFinal.getContext('2d');
+
+
+
+    if (contextFinal) {
+    
+     contextFinal.fillStyle = 'rgba(71, 246, 15, 0.57)';
+      this.#drawRectangle1(contextFinal);
+      this.#drawRectangle2(contextFinal);
+      //this.#drawRectangle(contextFinal);
+      
+      
+    }
+
+
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.strokeStyle = 'red';
+      context.fillStyle = 'rgba(17, 0, 255, 0.5)';
+     this.#useGradients(context);
+      this.#drawRectangle(context);
+      this.#drawTriangle(context);
+      this.#drawArc(context);
+      this.#drawCurve(context);
+      this.#drawUsingPath(context);
+      this.#drawLine(context);
+      this.#drawText(context);
+    }
+
   }
   enviarMonitoreos(Etapamod: string, esLiberacion: boolean) {
     this.etapa = "";
@@ -189,5 +230,120 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
     });
 
   }
+
+
+
+
+
+  #drawRectangle(context: CanvasRenderingContext2D) {
+    context.fillRect(20, 20, 100, 100);
+  
+    //context.clearRect(40, 40, 30, 30);
+    //context.strokeRect(50, 50, 10, 10);
+  }
+
+  #drawRectangle1(context: CanvasRenderingContext2D) {
+    context.fillRect(1180, 5, 300, 100);
+    context.font = '20px Arial';
+    context.shadowColor = 'rgba(71, 246, 15, 0.57)';
+    context.fillStyle ="red"
+    context.fillText('Hellooo', 1180, 35);
+   
+  }
+
+
+  #drawRectangle2(context: CanvasRenderingContext2D) {
+    context.fillRect(1180, 200, 300, 100);
+    context.font = '20px Arial';
+    context.shadowColor = 'rgba(71, 246, 15, 0.57)';
+    context.fillStyle = "white"
+    context.fillText('segundo', 1180, 230);
+  }
+
+  //#drawText(context: CanvasRenderingContext2D) {
+  //  context.shadowOffsetX = 4;
+  //  context.shadowOffsetY = 4;
+  //  context.shadowBlur = 3;
+  //  context.shadowColor = 'rgba(0, 0, 0, 0.5)';
+  //  context.fillStyle = 'black';
+  //  context.font = '48px Arial';
+  //  context.fillText('Hello', 100, 500);
+  //}
+
+
+
+
+  #drawTriangle(context: CanvasRenderingContext2D) {
+    context.beginPath();
+    context.moveTo(150, 70);
+    context.lineTo(200, 20);
+    context.lineTo(200, 120);
+    context.fill();
+     context.closePath();
+     context.stroke();
+  }
+  #drawArc(context: CanvasRenderingContext2D) {
+    context.beginPath();
+    context.arc(300, 100, 80, (Math.PI / 180) * 0, (Math.PI / 180) * 360);
+    context.stroke();
+     context.fill();
+  }
+  #drawCurve(context: CanvasRenderingContext2D) {
+    context.beginPath();
+    context.moveTo(500, 200);
+    context.quadraticCurveTo(550, 0, 600, 200);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(700, 200);
+    context.bezierCurveTo(750, 0, 750, 100, 800, 200);
+    context.stroke();
+  }
+
+  #drawUsingPath(context: CanvasRenderingContext2D) {
+    context.lineWidth = 20;
+    context.lineJoin = 'bevel';
+    const rectangle = new Path2D();
+    rectangle.rect(20, 150, 100, 100);
+    context.stroke(rectangle);
+    const circle = new Path2D();
+    circle.arc(300, 300, 80, (Math.PI / 180) * 0, (Math.PI / 180) * 360);
+    context.fill(circle);
+  }
+  #drawLine(context: CanvasRenderingContext2D) {
+    context.lineWidth = 10;
+    context.lineCap = 'round';
+    context.setLineDash([4, 4]);
+    context.lineDashOffset = 0;
+    context.beginPath();
+    context.moveTo(100, 600);
+    context.lineTo(200, 600);
+    context.stroke();
+  }
+  #drawText(context: CanvasRenderingContext2D) {
+    context.shadowOffsetX = 4;
+    context.shadowOffsetY = 4;
+    context.shadowBlur = 3;
+    context.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    context.fillStyle = 'black';
+    context.font = '48px Arial';
+    context.fillText('Hello', 100, 500);
+  }
+
+  #useGradients(context: CanvasRenderingContext2D) {
+    const lineargradient = context.createLinearGradient(20, 20, 120, 120);
+    lineargradient.addColorStop(0, 'white');
+    lineargradient.addColorStop(1, 'black');
+    context.fillStyle = lineargradient;
+    const radgrad = context.createRadialGradient(300, 300, 40, 300, 300, 80);
+    radgrad.addColorStop(0, '#A7D30C');
+    radgrad.addColorStop(0.9, '#019F62');
+    radgrad.addColorStop(1, 'rgba(1, 159, 98, 0.5)');
+    context.fillStyle = radgrad;
+    const conicGrad = context.createConicGradient((Math.PI / 180) * 0, 150, 70);
+    conicGrad.addColorStop(0, '#A7D30C');
+    conicGrad.addColorStop(1, '#fff');
+    context.fillStyle = conicGrad;
+  }
+  
 }
 
