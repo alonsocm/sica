@@ -235,10 +235,11 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   descargarEvidencias() {
     if (this.muestreosSeleccionados.length === 0) {
-      this.mostrarMensaje(
-        'No ha seleccionado ningún monitoreo',
-        TipoMensaje.Alerta
-      );
+      this.notificationService.updateNotification({
+        show: true,
+        text: 'No ha seleccionado ningún monitoreo',
+        type: NotificationType.warning,
+      });
       return this.hacerScroll();
     }
 
