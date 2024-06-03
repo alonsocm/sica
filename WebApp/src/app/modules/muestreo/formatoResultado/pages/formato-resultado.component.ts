@@ -13,6 +13,7 @@ import { TipoHomologado } from 'src/app/interfaces/catalogos/tipo-homologado';
 import { AuthService } from '../../../login/services/auth.service';
 import { Perfil } from '../../../../shared/enums/perfil';
 import { Muestreo } from '../models/muestreo';
+import { Column } from '../../../../interfaces/filter/column';
 
 @Component({
   selector: 'app-formato-resultado',
@@ -33,7 +34,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
 
   constructor(
     private formatoService: FormatoResultadoService,
-    private muestreoService: MuestreoService,
+    public muestreoService: MuestreoService,
     private usuario: AuthService
   ) {
     super();
@@ -41,92 +42,107 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
 
   ngOnInit(): void {
     this.perfil = this.usuario.getUser().nombrePerfil;
-    this.establecerColumnas();
+    this.muestreoService.filtrosSeleccionados = [];
+    this.definirColumnas();
+
     this.consultaCuerpoAgua();
     this.validarPerfil();
+
   }
 
-  establecerColumnas() {
-    this.columnas = [
+  definirColumnas() {
+    let nombresColumnas: Array<Column> = [
+
       {
-        nombre: 'noEntregaOCDL',
-        etiqueta: 'N° ENTREGA',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'noEntregaOCDL', label: 'N° ENTREGA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'replica',
-        etiqueta: 'TUVO REPLICA',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'replica', label: 'TUVO REPLICA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'claveSitioOriginal',
-        etiqueta: 'CLAVE SITIO ORIGINAL',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'claveSitioOriginal', label: 'CLAVE SITIO ORIGINAL', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'claveSitio',
-        etiqueta: 'CLAVE SITIO',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'claveSitio', label: 'CLAVE SITIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'claveMonitoreo',
-        etiqueta: 'CLAVE MONITOREO',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'claveMonitoreo', label: 'CLAVE MONITOREO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'fechaRealizacion',
-        etiqueta: 'FECHA REALIZACIÓN',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'fechaRealizacion', label: 'FECHA REALIZACIÓN', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'laboratorio',
-        etiqueta: 'LABORATORIO',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'laboratorio', label: 'LABORATORIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'tipoCuerpoAgua',
-        etiqueta: 'TIPO CUERPO AGUA ORIGINAL',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'tipoCuerpoAgua', label: 'TIPO CUERPO AGUA ORIGINAL', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'tipoHomologado',
-        etiqueta: 'TIPO CUERPO AGUA',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'tipoHomologado', label: 'TIPO CUERPO AGUA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'tipoSitio',
-        etiqueta: 'TIPO SITIO',
-        orden: 0,
-        filtro: new Filter(),
+        name: 'tipoSitio', label: 'TIPO SITIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
     ];
-
+    this.columns = nombresColumnas;
     this.formatoService.getParametros().subscribe({
       next: (result: any) => {
         this.parametrosTotales = result.data;
         for (var i = 0; i < this.parametrosTotales.length; i++) {
-          let columna: Columna = {
-            nombre: this.parametrosTotales[i].claveParametro.toLowerCase(),
-            etiqueta: this.parametrosTotales[i].claveParametro,
-            orden: this.parametrosTotales[i].id,
-            filtro: new Filter(),
+          let columna: Column = {
+            name: this.parametrosTotales[i].claveParametro.toLowerCase(),
+            label: this.parametrosTotales[i].claveParametro,
+            order: this.parametrosTotales[i].id,
+            selectAll: true, filtered: false, asc: false, desc: false, data: [],
+            filteredData: [],
+            dataType: 'string',
+            specialFilter: '', secondSpecialFilter: '', selectedData: '',
           };
-          this.columnas.push(columna);
+          this.columns.push(columna);
           this.paramTotalOrdenados.push(columna);
+          this.setHeadersList(this.columns);
         }
       },
       error: (error) => console.error(error),
     });
+
+    
   }
+
+
+  public consultarMonitoreos(
+    tipoCuerpo: number = this.tipoCuerpoAgua,
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ): void {
+    this.loading = true;
+    this.formatoService
+      .getMuestreosParametrosPaginados(tipoCuerpo, page, this.pageSize, filter, this.orderBy)
+      .subscribe({
+        next: (response: any) => {
+          this.selectedPage = false;
+          this.muestreos = response.data;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
+          //this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
+          this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
+          this.loading = false;
+        },
+        error: (error) => { },
+      });
+  }
+
 
   mostrarColumna(nombreColumna: string) {
     let mostrar: boolean = true;
@@ -156,7 +172,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
           this.muestreos = response.data;
           this.establecerValoresFiltrosTabla();
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
 
@@ -165,7 +181,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.cuerpoAgua = response.data;
       },
-      error: (error) => {},
+      error: (error) => { },
     });
   }
 
@@ -176,7 +192,8 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     if (this.tipoCuerpoAgua == -1) {
       this.muestreos = [];
     } else {
-      this.consultarMuestreos(this.tipoCuerpoAgua, this.page);
+      this.consultarMonitoreos();
+      //this.consultarMuestreos(this.tipoCuerpoAgua, this.page);
     }
   }
 
@@ -248,19 +265,10 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     return this.camposDescarga;
   }
 
-  filtrar(): void {
 
-  }
 
   limpiarFiltros() {
-    this.columnas.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrar();
-    this.filtros.forEach((element: any) => {
-      element.clear();
-    });
-    document.getElementById('dvMessage')?.click();
+    this.ngOnInit();
   }
 
   validarPerfil() {
@@ -327,5 +335,61 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
 
   private unselectMuestreos() {
     this.muestreos.forEach((m) => (m.selected = false));
+  }
+
+  sort(column: string, type: string) {
+    this.orderBy = { column, type };
+    this.muestreoService
+      .obtenerMuestreosPaginados(false, this.page, this.NoPage, this.cadena, {
+        column: column,
+        type: type,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.muestreos = response.data;
+        },
+        error: (error) => { },
+      });
+  }
+
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.setColumnsFiltered(this.muestreoService);
+    this.consultarMonitoreos();
+  }
+
+  filtrar(columna: Column, isFiltroEspecial: boolean) {
+    this.existeFiltrado = true;
+    this.cadena = !isFiltroEspecial
+      ? this.obtenerCadena(columna, false)
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
+    this.consultarMonitoreos();
+
+    this.columns
+      .filter((x) => x.isLatestFilter)
+      .map((m) => {
+        m.isLatestFilter = false;
+      });
+
+    if (!isFiltroEspecial) {
+      columna.filtered = true;
+      columna.isLatestFilter = true;
+    } else {
+      this.columns
+        .filter((x) => x.name == this.columnaFiltroEspecial.name)
+        .map((m) => {
+          (m.filtered = true),
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
+        });
+    }
+
+    this.esHistorial = true;
+    this.setColumnsFiltered(this.muestreoService);
+    this.hideColumnFilter();
+  }
+  pageClic(page: any) {
+    this.consultarMonitoreos();
+    this.page = page;
   }
 }

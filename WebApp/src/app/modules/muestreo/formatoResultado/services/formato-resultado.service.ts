@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../../login/services/auth.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -41,6 +42,29 @@ export class FormatoResultadoService {
       { params }
     );
   }
+
+
+  getMuestreosParametrosPaginados(tipoCuerpo: number, page: number, pageSize: number, filter: string,
+    order?: { column: string; type: string }): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        usuario: this.authService.getUser().usuarioId,
+        tipoCuerpoAgua: tipoCuerpo,
+        estatus: estatusMuestreo.Cargado,
+        page,
+        pageSize,
+        filter,
+        order: order != null ? order.column + '_' + order.type : '',
+      },
+    });
+    return this.http.get<any>(
+      environment.apiUrl + '/resultados/ParametrosMuestreo',
+      { params }
+    );
+  }
+
+
+
 
   getCuerpoAgua() {
     return this.http.get<any>(

@@ -245,8 +245,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
 
   sort(column: string, type: string) {
     this.orderBy = { column, type };
-    this.muestreoService
-      .obtenerMuestreosPaginados(false, this.page, this.NoPage, this.cadena, {
+    this.validacionService.getResultadosAcumuladosParametrosPaginados(estatusMuestreo.AcumulacionResultados, this.page, this.NoPage, this.cadena, {
         column: column,
         type: type,
       })

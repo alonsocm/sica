@@ -14,6 +14,7 @@ using Application.Wrappers;
 using AutoMapper;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.Style;
 using Shared.Utilities.Services;
 using System.Reflection;
 using WebAPI.Shared;
@@ -513,8 +514,10 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ParametrosMuestreo")]
-        public async Task<IActionResult> Get(int usuario, int tipoCuerpoAgua, int estatus, int anio, string? filter = "", int page = Page, int pageSize = PageSize)
+        public async Task<IActionResult> Get(int usuario, int tipoCuerpoAgua, int estatus, int anio, string? filter = "", int page = Page, int pageSize = PageSize, string? order = "")
         {
+
+           
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -522,7 +525,21 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetResultadosParametros
+        
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+
+
+            return Ok(await Mediator.Send(new GetResultadosParametrosPaginados
             {
                 UserId = usuario,
                 CuerpoAgua = tipoCuerpoAgua,
@@ -530,7 +547,12 @@ namespace WebAPI.Controllers.v1.Operacion
                 Anio = anio,
                 Filter = filters,
                 Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                
+                Filter = filters,
+                OrderBy = orderBy
+
+
             }));
         }
 
