@@ -474,10 +474,12 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     }
 
     if (errores !== '') {
-      return this.mostrarMensaje(
-        'Se encontraron errores en las evidencias seleccionadas: ' + errores,
-        TipoMensaje.Alerta
-      );
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'Se encontraron errores en las evidencias seleccionadas: ' + errores,
+      });
     }
 
     this.loading = !this.loading;
