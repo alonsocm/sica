@@ -48,6 +48,8 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
 
     this.consultaCuerpoAgua();
     this.validarPerfil();
+    this.consultarMonitoreos();
+
   }
 
   definirColumnas() {
@@ -312,19 +314,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       error: (error) => {},
     });
   }
-
-  FiltrarCuerpoAgua() {
-    this.resetValues();
-    this.unselectMuestreos();
-
-    if (this.tipoCuerpoAgua == -1) {
-      this.muestreos = [];
-    } else {
-      this.consultarMonitoreos();
-      //this.consultarMuestreos(this.tipoCuerpoAgua, this.page);
-    }
-  }
-
   establecerValoresFiltrosTabla() {
     this.columnas.forEach((f) => {
       f.filtro.values = [
