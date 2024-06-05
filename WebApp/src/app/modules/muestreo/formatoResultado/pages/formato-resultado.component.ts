@@ -21,6 +21,7 @@ import { Column } from '../../../../interfaces/filter/column';
   styleUrls: ['./formato-resultado.component.css'],
 })
 export class FormatoResultadoComponent extends BaseService implements OnInit {
+  width: number = 150;
   muestreos: Array<Muestreo> = [];
   muestreosSeleccionados: Array<Muestreo> = [];
   cuerpoAgua: Array<TipoHomologado> = [];
@@ -47,51 +48,169 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
 
     this.consultaCuerpoAgua();
     this.validarPerfil();
-
   }
 
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
-
       {
-        name: 'noEntregaOCDL', label: 'N° ENTREGA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'noEntregaOCDL',
+        label: 'N° ENTREGA',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'replica', label: 'TUVO REPLICA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'replica',
+        label: 'TUVO REPLICA',
+        order: 3,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'claveSitioOriginal', label: 'CLAVE SITIO ORIGINAL', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'claveSitioOriginal',
+        label: 'CLAVE SITIO ORIGINAL',
+        order: 4,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'claveSitio', label: 'CLAVE SITIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'claveSitio',
+        label: 'CLAVE SITIO',
+        order: 5,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'claveMonitoreo', label: 'CLAVE MONITOREO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'claveMonitoreo',
+        label: 'CLAVE MONITOREO',
+        order: 6,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'fechaRealizacion', label: 'FECHA REALIZACIÓN', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'fechaRealizacion',
+        label: 'FECHA REALIZACIÓN',
+        order: 7,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'laboratorio', label: 'LABORATORIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'laboratorio',
+        label: 'LABORATORIO',
+        order: 8,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'tipoCuerpoAgua', label: 'TIPO CUERPO AGUA ORIGINAL', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'tipoCuerpoAgua',
+        label: 'TIPO CUERPO AGUA ORIGINAL',
+        order: 9,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'tipoHomologado', label: 'TIPO CUERPO AGUA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'tipoHomologado',
+        label: 'TIPO CUERPO AGUA',
+        order: 10,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
       {
-        name: 'tipoSitio', label: 'TIPO SITIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'tipoSitio',
+        label: 'TIPO SITIO',
+        order: 11,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
     ];
     this.columns = nombresColumnas;
@@ -103,10 +222,17 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
             name: this.parametrosTotales[i].claveParametro.toLowerCase(),
             label: this.parametrosTotales[i].claveParametro,
             order: this.parametrosTotales[i].id,
-            selectAll: true, filtered: false, asc: false, desc: false, data: [],
+            selectAll: true,
+            filtered: false,
+            asc: false,
+            desc: false,
+            data: [],
             filteredData: [],
             dataType: 'string',
-            specialFilter: '', secondSpecialFilter: '', selectedData: '',
+            specialFilter: '',
+            secondSpecialFilter: '',
+            selectedData: '',
+            pinned: false,
           };
           this.columns.push(columna);
           this.paramTotalOrdenados.push(columna);
@@ -115,10 +241,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       },
       error: (error) => console.error(error),
     });
-
-    
   }
-
 
   public consultarMonitoreos(
     tipoCuerpo: number = this.tipoCuerpoAgua,
@@ -128,7 +251,13 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   ): void {
     this.loading = true;
     this.formatoService
-      .getMuestreosParametrosPaginados(tipoCuerpo, page, this.pageSize, filter, this.orderBy)
+      .getMuestreosParametrosPaginados(
+        tipoCuerpo,
+        page,
+        this.pageSize,
+        filter,
+        this.orderBy
+      )
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
@@ -139,10 +268,9 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
           this.loading = false;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
-
 
   mostrarColumna(nombreColumna: string) {
     let mostrar: boolean = true;
@@ -172,7 +300,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
           this.muestreos = response.data;
           this.establecerValoresFiltrosTabla();
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
@@ -181,7 +309,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.cuerpoAgua = response.data;
       },
-      error: (error) => { },
+      error: (error) => {},
     });
   }
 
@@ -265,8 +393,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     return this.camposDescarga;
   }
 
-
-
   limpiarFiltros() {
     this.ngOnInit();
   }
@@ -324,8 +450,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.consultarMuestreos(this.tipoCuerpoAgua, page);
   }
 
-
-
   private resetValues() {
     this.muestreosSeleccionados = [];
     this.selectAllOption = false;
@@ -348,7 +472,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
