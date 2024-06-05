@@ -276,7 +276,7 @@ namespace Persistence.Repository
                                          //join stca in _dbContext.SubtipoCuerpoAgua on csta.SubtipoCuerpoAguaId equals stca.Id
                                          join th in _dbContext.TipoHomologado on tca.TipoHomologadoId equals th.Id
                                          join ts in _dbContext.TipoSitio on m.ProgramaMuestreo.ProgramaSitio.TipoSitioId equals ts.Id
-                                         where (th.Id == (cuerpAgua == 0 ? th.Id : cuerpAgua)) && (m.EstatusId == estatusId)
+                                         where m.EstatusId == estatusId                                         
                                          select new RegistroOriginalDto
                                          {
                                              MuestreoId = m.Id,

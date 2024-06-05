@@ -1,25 +1,20 @@
 <router-outlet name="menu"></router-outlet>
 <div *ngIf="loading">
-    <app-loading></app-loading>
+  <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h1 class="row col">Consulta registro original</h1>
+  <h6 class="row col">Consulta registro original</h6>
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
                (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
+
   <div class="clearfix">
-    <div class="float-left">
-      <label for="tipoCuerpoAgua">Tipo de Cuerpo de Agua Original:</label>
-      <select class="form-control" [(ngModel)]="tipoCuerpoAgua" (change)="FiltrarCuerpoAgua()"
-              name="tipoCuerpoAgua" title="Seleccione el tipo cuerpo de agua">
-        <option [ngValue]="-1" selected>--Seleccione--</option>
-        <option [ngValue]="0">Todos</option>
-        <option *ngFor="let nombre of cuerpoAgua" [ngValue]="nombre.id">
-          {{nombre.descripcion}}
-        </option>
-      </select>
+    <div class="float-lefth col-md-4">
+      <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+      </app-busqueda-columna>
     </div>
     <div class="float-right">
       <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
@@ -32,12 +27,8 @@
       </button>
     </div>
   </div>
-  <br />
-  <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                        (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-  </app-busqueda-columna>
-  <app-historial></app-historial>
 
+  <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
     Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
@@ -51,8 +42,9 @@
       Anular la seleccion
     </button>
   </div>
+
   <div class="dvTable">
-    <table style="font-size:x-small" class="table-bordered table-hover">
+    <table class="table-bordered table-hover">
       <thead class="thead-sticky">
         <tr>
           <th columnResize class="td-center no-border-bottom th-resize">
@@ -160,9 +152,19 @@
           </td>
           <td *ngIf="perfil == 'ADMINISTRADOR' || perfil == 'SECAIA 1' || perfil == 'SECAIA 2'">
 
+
+
+
+
+
+
             <!--{{muestreo.noEntregaOCDL}}-->
             1
+
+
           </td>
+
+
           <td>NO</td>
           <td>{{muestreo.claveSitioOriginal}}</td>
           <td>{{muestreo.claveSitio}}</td>
@@ -188,10 +190,13 @@
       </pagination-controls>
     </div>
     <div class="col-md-2">
-      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.NoPage}}</span></p>
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.muestreos.length}}</span></p>
     </div>
     <div class="col-md-3">
       <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
     </div>
   </div>
 </div>
+
+<app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
+                [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>

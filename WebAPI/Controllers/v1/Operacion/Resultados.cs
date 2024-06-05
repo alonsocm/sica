@@ -549,8 +549,8 @@ namespace WebAPI.Controllers.v1.Operacion
                 Page = page,
                 PageSize = pageSize,
                 
-                Filter = filters,
-                OrderBy = orderBy
+                //Filter = filters,
+                //OrderBy = orderBy
 
 
             }));

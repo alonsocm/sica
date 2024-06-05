@@ -3,25 +3,29 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h1 class="row col">Carga de resultados validados</h1>
+  <h6 class="row col">Carga de resultados validados</h6>
   <hr class="red">
   <div class="message-container">
     <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-      [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+               [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
+
   <div class="clearfix">
-    <div class="float-left">
+    <div class="float-lefth col-md-4">
+      <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+      </app-busqueda-columna>
+    </div>
+    <div class="float-right">
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-        title="Seleccionar archivo" #inputExcelMonitoreos>
-      <button type="button" class="btn btn-primary" (click)="inputExcelMonitoreos.click()" title="Seleccionar archivo">
+             title="Seleccionar archivo" #inputExcelMonitoreos>
+      <button type="button" class="btn btn-primary mr-1" (click)="inputExcelMonitoreos.click()" title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
         Seleccionar y procesar archivo...
       </button>
-      <button style="margin-left:5px" class="btn btn-primary" type="button" (click)="enviarMonitoreos()">
+      <button class="btn btn-primary mr-1" type="button" (click)="enviarMonitoreos()">
         <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s)
       </button>
-    </div>
-    <div class="float-right">
       <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
@@ -31,21 +35,18 @@
       </button>
     </div>
   </div>
-  <br />
-  <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-    (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-  </app-busqueda-columna>
+
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
-    *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+       *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
     Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
-      (click)="onSelectAllPagesClick()" class="btn btn-link">
+                                                                                        (click)="onSelectAllPagesClick()" class="btn btn-link">
       Seleccionar los {{this.totalItems}} registros
     </button>
   </div>
   <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
     Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
-      (click)="onUnselectAllClick()">
+                                                                   (click)="onUnselectAllClick()">
       Anular la seleccion
     </button>
   </div>
@@ -57,32 +58,33 @@
             &nbsp;SELECCIONAR&nbsp;
           </th>
           <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
-            class="no-border-bottom th-resize"
-            [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+              class="no-border-bottom th-resize"
+              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
             {{columna.label}}
           </th>
         </tr>
         <tr>
-          <th class="no-border-top td-center"><input class="cursor-pointer" type="checkbox" id="chckAll"
-              [(ngModel)]="this.selectedPage" (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);  this.getSummary();" title="Selecciona la página actual" />
+          <th class="no-border-top td-center">
+            <input class="cursor-pointer" type="checkbox" id="chckAll"
+                   [(ngModel)]="this.selectedPage" (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);  this.getSummary();" title="Selecciona la página actual" />
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
             <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
-                title="Filtros" aria-expanded="false"
-                (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
+                      title="Filtros" aria-expanded="false"
+                      (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
                 <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
-                  class="bi bi-caret-down-fill"></i>
+                   class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
                 <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
-                  class="bi bi-arrow-down"></i>
+                   class="bi bi-arrow-down"></i>
                 <i [(ngModel)]="columna.desc"
-                  *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
-                  class="bi bi-arrow-up"></i>
+                   *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                   class="bi bi-arrow-up"></i>
               </button>
 
               <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
-               
+
                 <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
                   <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
                      class="bi bi-sort-alpha-down"></i>
@@ -189,7 +191,7 @@
       </pagination-controls>
     </div>
     <div class="col-md-2">
-      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.NoPage}}</span></p>
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.muestreos.length}}</span></p>
     </div>
     <div class="col-md-3">
       <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
@@ -201,14 +203,14 @@
         <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
       </button>
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
-        data-target="#mdlConfirmacion" title="Seleccionar"></button>
+              data-target="#mdlConfirmacion" title="Seleccionar"></button>
     </div>
   </div>
   <hr />
 
   <app-muestreos-totales></app-muestreos-totales>
   <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
-    [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
+                  [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
 
   <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog">
@@ -230,11 +232,11 @@
   </div>
 
   <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
-    data-target="#mdlConfirmacionActualizacion">
+          data-target="#mdlConfirmacionActualizacion">
     Abrir modal
   </button>
   <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static"
-    data-toggle="modal">
+       data-toggle="modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
