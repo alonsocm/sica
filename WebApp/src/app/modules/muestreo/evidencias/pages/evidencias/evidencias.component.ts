@@ -89,99 +89,277 @@ export class EvidenciasComponent extends BaseService implements OnInit {
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
-        name: 'noEntrega', label: 'N° ENTREGA', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'noEntrega',
+        label: 'N° ENTREGA',
+        order: 1,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'claveSitioOriginal', label: 'CLAVE SITIO ORIGINAL', order: 2, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'claveSitioOriginal',
+        label: 'CLAVE SITIO ORIGINAL',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'claveSitio', label: 'CLAVE SITIO', order: 3, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'claveSitio',
+        label: 'CLAVE SITIO',
+        order: 3,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'claveMonitoreo', label: 'CLAVE MONITOREO', order: 4, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'claveMonitoreo',
+        label: 'CLAVE MONITOREO',
+        order: 4,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'nombreSitio', label: 'NOMBRE SITIO', order: 5, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'nombreSitio',
+        label: 'NOMBRE SITIO',
+        order: 5,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'ocdl', label: 'OC/DL', order: 6, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'ocdl',
+        label: 'OC/DL',
+        order: 6,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'cuerpoAgua', label: 'CUERPO DE AGUA', order: 7, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'cuerpoAgua',
+        label: 'CUERPO DE AGUA',
+        order: 7,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'tipoCuerpoAguaOriginal', label: 'TIPO CUERPO AGUA ORIGINAL', order: 8, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'tipoCuerpoAguaOriginal',
+        label: 'TIPO CUERPO AGUA ORIGINAL',
+        order: 8,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'tipoCuerpoAgua', label: 'TIPO CUERPO AGUA', order: 9, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'tipoCuerpoAgua',
+        label: 'TIPO CUERPO AGUA',
+        order: 9,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'tipoSitio', label: 'TIPO SITIO', order: 10, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'tipoSitio',
+        label: 'TIPO SITIO',
+        order: 10,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'laboratorio', label: 'LABORATORIO', order: 11, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'laboratorio',
+        label: 'LABORATORIO',
+        order: 11,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'laboratorioSubrogado', label: 'LABORATORIO SUBROGADO', order: 12, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'laboratorioSubrogado',
+        label: 'LABORATORIO SUBROGADO',
+        order: 12,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'fechaProgramada', label: 'FECHA PROGRAMACIÓN', order: 13, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'fechaProgramada',
+        label: 'FECHA PROGRAMACIÓN',
+        order: 13,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'fechaRealizacion', label: 'FECHA REALIZACIÓN', order: 14, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'fechaRealizacion',
+        label: 'FECHA REALIZACIÓN',
+        order: 14,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'programaAnual', label: 'AÑO', order: 15, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'programaAnual',
+        label: 'AÑO',
+        order: 15,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'horaInicio', label: 'HORA INICIO MUESTREO', order: 16, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'horaInicio',
+        label: 'HORA INICIO MUESTREO',
+        order: 16,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'horaFin', label: 'HORA FIN MUESTREO', order: 17, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'horaFin',
+        label: 'HORA FIN MUESTREO',
+        order: 17,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'observaciones', label: 'OBSERVACIONES', order: 18, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'observaciones',
+        label: 'OBSERVACIONES',
+        order: 18,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'fechaCargaEvidencias', label: 'FECHA CARGA EVIDENCIAS A SICA', order: 19, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: '', selectedData: '',
+        name: 'fechaCargaEvidencias',
+        label: 'FECHA CARGA EVIDENCIAS A SICA',
+        order: 19,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: '',
+        selectedData: '',
       },
       {
-        name: 'numeroCargaEvidencias', label: 'NÚMERO DE CARGA DE EVIDENCIAS', order: 20, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'number', selectedData: '',
+        name: 'numeroCargaEvidencias',
+        label: 'NÚMERO DE CARGA DE EVIDENCIAS',
+        order: 20,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'number',
+        selectedData: '',
       },
     ];
 
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
   }
-
-  
 
   existeEvidencia(evidencias: Array<Evidencia>, sufijoEvidencia: string) {
     if (evidencias.length == 0) {
@@ -307,10 +485,11 @@ export class EvidenciasComponent extends BaseService implements OnInit {
       next: (response: Respuesta) => {
         this.resetInputFile(this.inputFileReplace);
         this.resetInputFile(this.inputFiles);
-        this.mostrarMensaje(
-          'Evidencias cargadas correctamente',
-          TipoMensaje.Correcto
-        );
+        this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.success,
+          text: 'Evidencias cargadas correctamente',
+        });
         this.loading = !this.loading;
       },
       error: (response: any) => {
@@ -364,11 +543,11 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   mostrarCampo(): boolean {
     return (
       this.perfil ===
-      (Perfil.ADMINISTRADOR || Perfil.SECAIA1 || Perfil.SECAIA2) ?? true
+        (Perfil.ADMINISTRADOR || Perfil.SECAIA1 || Perfil.SECAIA2) ?? true
     );
   }
 
-  seleccionarFiltro(columna: Column): void { }
+  seleccionarFiltro(columna: Column): void {}
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
     this.existeFiltrado = true;
@@ -404,9 +583,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.hideColumnFilter();
   }
 
-  
-
-
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.muestreoService
@@ -418,14 +594,13 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
   getSummary() {
     this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
   }
-
 
   getPreviousSelected(
     muestreos: Array<Muestreo>,
@@ -474,7 +649,6 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.setColumnsFiltered(this.muestreoService);
     this.consultarMonitoreos();
   }
-
 
   onReplaceEvidenciaClick(claveMuestreo: string, sufijo: string) {
     let muestreo = this.muestreos.find(
