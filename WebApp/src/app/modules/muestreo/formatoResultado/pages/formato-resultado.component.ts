@@ -51,10 +51,9 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.muestreoService.filtrosSeleccionados = [];
     this.perfil = this.usuario.getUser().nombrePerfil;
     this.definirColumnas();
-    while (this.perfil.includes(this.numEntregaVisible.toString())) {
-      this.esVisibleNumEntrega = true;
-    }
-    this.consultarMonitoreos();
+    this.esVisibleNumEntrega = (this.numEntregaVisible.filter(x => x.includes(this.perfil)).length > 0) ? true : false;
+        this.consultarMonitoreos();
+  
   }
 
   definirColumnas() {
@@ -229,11 +228,14 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.formatoService.getParametros().subscribe({
       next: (result: any) => {
         this.parametrosTotales = result.data;
+        let orderParametro = 11;
         for (var i = 0; i < this.parametrosTotales.length; i++) {
+          orderParametro++;
           let columna: Column = {
             name: this.parametrosTotales[i].claveParametro.toLowerCase(),
             label: this.parametrosTotales[i].claveParametro,
-            order: this.parametrosTotales[i].id,
+            /*order: this.parametrosTotales[i].id,*/
+            order: orderParametro,
             selectAll: true,
             filtered: false,
             asc: false,
