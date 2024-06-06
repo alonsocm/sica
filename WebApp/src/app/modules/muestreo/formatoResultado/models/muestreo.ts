@@ -1,7 +1,7 @@
 import { Parametro } from './parametro';
-import { Register } from './register';
+import { Row } from './row';
 
-export interface Muestreo extends Register {
+export interface Muestreo extends Row {
   muestreoId: number;
   claveSitioOriginal: string;
   claveSitio: string;
