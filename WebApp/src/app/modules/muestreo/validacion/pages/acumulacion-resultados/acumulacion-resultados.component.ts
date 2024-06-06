@@ -6,6 +6,8 @@ import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interf
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
 import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
+import { NotificationService } from '../../../../../shared/services/notification.service';
+import { NotificationType } from '../../../../../shared/enums/notification-type';
 
 @Component({
   selector: 'app-acumulacion-resultados',
@@ -13,7 +15,10 @@ import { MuestreoService } from '../../../liberacion/services/muestreo.service';
   styleUrls: ['./acumulacion-resultados.component.css']
 })
 export class AcumulacionResultadosComponent extends BaseService implements OnInit {
-  constructor(private validacionService: ValidacionReglasService, public muestreoService: MuestreoService) { super(); }
+  constructor(
+    private validacionService: ValidacionReglasService,
+    public muestreoService: MuestreoService,
+    private notificationService: NotificationService) { super(); }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
 
@@ -177,8 +182,13 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
 
   onDownload(): void {
     if (this.resultadosFiltradosn.length == 0) {
-      this.mostrarMensaje('No hay información existente para descargar', 'warning');
-      return this.hacerScroll();
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'No hay información existente para descargar',
+      });
     }
 
     this.loading = true;
@@ -189,12 +199,14 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
           this.loading = false;
         },
         error: (response: any) => {
-          this.mostrarMensaje(
-            'No fue posible descargar la información',
-            'danger'
-          );
           this.loading = false;
           this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text:
+              'No fue posible descargar la información',
+          });
         },
       });
   }
@@ -207,11 +219,13 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
     console.log(totalmuestreos);
 
     if (resuladosenviados.length == 0) {
-      this.hacerScroll();
-      return this.mostrarMensaje(
-        'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
-        'danger'
-      );
+      this.hacerScroll();    
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.danger,
+        text:
+          'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+      });
     }
 
     this.validacionService.enviarMuestreoaValidar(
@@ -224,21 +238,25 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
           this.loading = true;
           if (response.succeded) {
             this.loading = false;
-            this.consultarMonitoreos();
-            this.mostrarMensaje(
-              'Se enviaron los muestreos a la etapa de "Módulo inicial reglas" correctamente',
-              'success'
-            );
+            this.consultarMonitoreos();    
             this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text:
+                'Se enviaron los muestreos a la etapa de "Módulo inicial reglas" correctamente',
+            });
           }
         },
         error: (response: any) => {
-          this.loading = false;
-          this.mostrarMensaje(
-            ' Error al enviar los muestreos a la etapa de "Módulo inicial reglas"',
-            'danger'
-          );
+          this.loading = false;     
           this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text:
+              'Error al enviar los muestreos a la etapa de "Módulo inicial reglas',
+          });
         },
       });
   }  
@@ -332,5 +350,23 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
   pageClic(page: any) {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
+  }
+
+  eliminarMuestreos() { }
+
+  confirmarEliminacion() {
+    let muestreosSeleccionados = this.Seleccionados(
+      this.resultadosFiltrados
+    );
+    if (!(muestreosSeleccionados.length > 0)) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'Debe seleccionar al menos un monitoreo para eliminar los resultados correspondientes',
+      });
+    }
+    document.getElementById('btnMdlConfirmacion')?.click();
   }
 }
