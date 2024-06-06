@@ -17,4 +17,5 @@ export interface Column {
   specialFilter?: string;
   secondSpecialFilter?: string;
   isLatestFilter?: boolean;
+  pinned?: boolean;
 }

@@ -7,7 +7,7 @@
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+      (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
 
   <div class="clearfix">
@@ -27,18 +27,17 @@
       </button>
     </div>
   </div>
-
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
-       *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+    *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
     Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
-                                                                                        (click)="onSelectAllPagesClick()" class="btn btn-link">
+      (click)="onSelectAllPagesClick()" class="btn btn-link">
       Seleccionar los {{this.totalItems}} registros
     </button>
   </div>
   <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
     Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
-                                                                   (click)="onUnselectAllClick()">
+      (click)="onUnselectAllClick()">
       Anular la seleccion
     </button>
   </div>
@@ -47,19 +46,32 @@
     <table class="table-bordered table-hover">
       <thead class="thead-sticky">
         <tr>
-          <th columnResize class="td-center no-border-bottom th-resize">
+          <th class="td-center no-border-bottom sticky-col size-col" style="left:0px">
             &nbsp;SELECCIONAR&nbsp;
           </th>
-          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
-              class="no-border-bottom th-resize"
-              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
-            {{columna.label}}
-          </th>
+          <ng-container *ngFor="let columna of this.columns let i = index;">
+            <div *ngIf="columna.pinned then thenBlock else elseBlock"></div>
+            <ng-template #thenBlock>
+              <th id="{{columna.name}}" class="no-border-bottom sticky-col size-col"
+                [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'left.px':this.width * (i+1)}">
+                {{columna.label}}
+              </th>
+            </ng-template>
+            <ng-template #elseBlock>
+              <th columnResize id="{{columna.name}}" class="no-border-bottom th-resize" [ngStyle]=" { 'backgroundColor' : (esfiltrofoco==this.columna.name && !this.cabeceroSeleccionado) ||
+                (this.columna.label.indexOf(esfiltrofoco) !=-1 && this.esfiltrofoco !='' && !this.cabeceroSeleccionado )
+                ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco==this.columna.name ) ? 'yellow' : '#E9ECEF' )
+                }">
+                {{columna.label}}
+              </th>
+            </ng-template>
+          </ng-container>
         </tr>
         <tr>
-          <th class="no-border-top td-center">
-            <input class="cursor-pointer" type="checkbox" id="chckAll"
-                   [(ngModel)]="this.selectedPage" (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);" title="Selecciona la página actual" />
+          <th class="no-border-top td-center sticky-col size-col" style="left: 0px;">
+            <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
+              (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);"
+              title="Selecciona la página actual" />
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
             <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
@@ -92,9 +104,12 @@
                 <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
                   <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
                 </a>
+
+
                 <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                    aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
                   <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals" style="color: palegreen" class="bi bi-check-square-fill"></i>
+
                   {{leyendaFiltrosEspeciales}}
                 </a>
 
@@ -142,26 +157,42 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let muestreo of this.muestreos| paginate: { itemsPerPage:pageSize, currentPage: page, totalItems: totalItems };">
-          <td style="text-align:center" class="checkBox-center">
+        <tr
+          *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:pageSize, currentPage: page, totalItems: totalItems };">
+          <td style="text-align:center; left: 0px;" class="checkBox-center sticky-td size-col">
             <input type="checkbox" (change)="onSelectClick(muestreo);" [(ngModel)]="muestreo.selected"
-                   title="Seleccionar">
+              title="Seleccionar">
           </td>
-          <td>{{muestreo.estatus}}</td>
-          <td *ngIf="esVisibleNumEntrega">
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 1 * this.width : ''}">{{muestreo.estatus}}</td>
+          <td *ngIf="esVisibleNumEntrega" class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 2 * this.width : ''}">
             {{muestreo.noEntregaOCDL}}
           </td>
-          <td>NO</td>
-          <td>{{muestreo.claveSitioOriginal}}</td>
-          <td>{{muestreo.claveSitio}}</td>
-          <td>{{muestreo.claveMonitoreo}}</td>
-          <td>{{muestreo.fechaRealizacion}}</td>
-          <td>{{muestreo.laboratorio}}</td>
-          <td> {{muestreo.tipoCuerpoAgua}}</td>
-          <td>{{muestreo.tipoHomologado}}</td>
-          <td>{{muestreo.tipoSitio}}</td>
+          <td class="checkBox-center sticky-td size-col " [ngStyle]="{'left.px': true ? 3 * this.width : ''}">
+            NO
+          </td>
+          <td class="checkBox-center sticky-td sticky-td size-col" [ngStyle]="{'left.px': true ? 4 * this.width : ''}">
+            {{muestreo.claveSitioOriginal}}</td>
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 5 * this.width : ''}">
+            {{muestreo.claveSitio}}</td>
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 6 * this.width : ''}">
+            {{muestreo.laboratorio}}
+          </td>
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 7 * this.width : ''}">
+            {{muestreo.tipoCuerpoAgua}}
+          </td>
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 8 * this.width : ''}">
+            {{muestreo.tipoHomologado}}
+          </td>
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 9 * this.width : ''}">
+            {{muestreo.tipoSitio}}</td>
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 10 * this.width : ''}">
+            {{muestreo.tipoSitio}}</td>
+          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 11 * this.width : ''}">
+            {{muestreo.tipoSitio}}</td>
           <ng-container *ngFor="let parametro of parametrosTotales">
-            <td>{{getValueParam(parametro.claveParametro, muestreo.parametros)}}</td>
+            <td style="position: relative; z-index: -2;">{{getValueParam(parametro.claveParametro,
+              muestreo.parametros)}}
+            </td>
           </ng-container>
         </tr>
         <tr *ngIf="this.muestreos.length==0">
@@ -183,6 +214,5 @@
     </div>
   </div>
 </div>
-
 <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
                 [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>

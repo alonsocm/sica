@@ -1,5 +1,4 @@
 ﻿using Application.DTOs;
-using Application.Features.Muestreos.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
@@ -14,7 +13,6 @@ using Application.Wrappers;
 using AutoMapper;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.Style;
 using Shared.Utilities.Services;
 using System.Reflection;
 using WebAPI.Shared;
@@ -517,7 +515,7 @@ namespace WebAPI.Controllers.v1.Operacion
         public async Task<IActionResult> Get(int usuario, int estatus, int anio, string? filter, int page, int pageSize, string? order)
         {
 
-           
+
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -525,7 +523,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-        
+
             OrderBy orderBy = null;
 
             if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
