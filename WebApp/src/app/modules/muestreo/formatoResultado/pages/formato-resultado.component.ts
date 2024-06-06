@@ -49,7 +49,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.consultaCuerpoAgua();
     this.validarPerfil();
     this.consultarMonitoreos();
-
   }
 
   definirColumnas() {
@@ -434,11 +433,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     }
   }
 
-  onPageClick(page: any) {
-    this.page = page;
-    this.consultarMuestreos(this.tipoCuerpoAgua, page);
-  }
-
   private resetValues() {
     this.muestreosSeleccionados = [];
     this.selectAllOption = false;
@@ -501,7 +495,8 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.setColumnsFiltered(this.muestreoService);
     this.hideColumnFilter();
   }
-  pageClic(page: any) {
+
+  onPageClick(page: any) {
     this.consultarMonitoreos();
     this.page = page;
   }

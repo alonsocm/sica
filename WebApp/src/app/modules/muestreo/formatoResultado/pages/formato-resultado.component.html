@@ -13,7 +13,7 @@
   <div class="clearfix">
     <div class="float-lefth col-md-4">
       <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+        (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
       </app-busqueda-columna>
     </div>
     <div class="float-right">
@@ -211,11 +211,12 @@
   </div>
   <div class="row">
     <div class="col-md-3">
-      <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
+      <pagination-controls (pageChange)="onPageClick($event)" previousLabel="Anterior" nextLabel="Siguiente">
       </pagination-controls>
     </div>
     <div class="col-md-2">
-      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.muestreos.length}}</span></p>
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.muestreos.length}}</span>
+      </p>
     </div>
     <div class="col-md-3">
       <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
@@ -223,4 +224,4 @@
   </div>
 </div>
 <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
-                [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
+  [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
