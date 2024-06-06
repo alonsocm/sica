@@ -164,8 +164,8 @@
               title="Seleccionar">
           </td>
           <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 1 * this.width : ''}">{{muestreo.estatus}}</td>
-          <td *ngIf="esVisibleNumEntrega" class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 2 * this.width : ''}">
-            {{muestreo.noEntregaOCDL}}
+          <td *ngIf="esVisibleNumEntrega == true" class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 2 * this.width : ''}">
+            {{muestreo.numeroEntrega}}
           </td>
           <td class="checkBox-center sticky-td size-col " [ngStyle]="{'left.px': true ? 3 * this.width : ''}">
             NO

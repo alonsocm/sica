@@ -60,7 +60,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
-        name: 'estatus', label: 'ESTATUS', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        name: 'estatus', label: 'ESTATUS', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [],
         filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
 
@@ -262,11 +262,12 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   ): void {
     this.loading = true;
     this.formatoService
-      .getMuestreosParametrosPaginados(tipoCuerpo, page, this.pageSize, filter, this.orderBy)
+      .getMuestreosParametrosPaginados(page, this.pageSize, filter, this.orderBy)
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.muestreos = response.data;         
+          this.muestreos = response.data;
+          console.log(this.muestreos);
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
@@ -277,22 +278,19 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       });
   }
 
+  getPreviousSelected(
+    muestreos: Array<Muestreo>,
+    muestreosSeleccionados: Array<Muestreo>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.muestreoId === x.muestreoId
+      );
 
-  mostrarColumna(nombreColumna: string) {
-    let mostrar: boolean = true;
-
-    if (nombreColumna === 'N°. ENTREGA') {
-      if (this.perfil === Perfil.ADMINISTRADOR) {
-        mostrar = true;
-      } else if (this.perfil === Perfil.SECAIA1) {
-        mostrar = true;
-      } else if (this.perfil === Perfil.SECAIA2) {
-        mostrar = true;
-      } else {
-        mostrar = false;
+      if (muestreoSeleccionado != undefined) {
+        f.isChecked = true;
       }
-    }
-    return mostrar;
+    });
   }
 
   consultarMuestreos(tipoCuerpo: number, page: number) {
@@ -303,8 +301,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.totalItems = response.totalRecords;
           this.loading = false;
-          this.muestreos = response.data;
-          this.establecerValoresFiltrosTabla();
+          this.muestreos = response.data;          
         },
         error: (error) => { },
       });
@@ -360,7 +357,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     if (selec.length > 0) {
       for (var i = 0; i < selec.length; i++) {
         let campodes = {
-          noEntregaOCDL: selec[i].noEntregaOCDL,
+          noEntregaOCDL: selec[i].numeroEntrega,
           claveSitioOriginal: selec[i].claveSitioOriginal,
           claveSitio: selec[i].claveSitio,
           claveMonitoreo: selec[i].claveMonitoreo,
