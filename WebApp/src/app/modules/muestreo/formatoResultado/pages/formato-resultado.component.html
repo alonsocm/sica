@@ -7,7 +7,7 @@
   <hr class="red">
   <div class="message-container">
     <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-      (mostrando)="this.mostrarAlerta=$event"></app-alert>
+               (mostrando)="this.mostrarAlerta=$event"></app-alert>
   </div>
 
   <div class="clearfix">
@@ -29,15 +29,15 @@
   </div>
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
-    *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+       *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
     Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
-      (click)="onSelectAllPagesClick()" class="btn btn-link">
+                                                                                        (click)="onSelectAllPagesClick()" class="btn btn-link">
       Seleccionar los {{this.totalItems}} registros
     </button>
   </div>
   <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
     Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
-      (click)="onUnselectAllClick()">
+                                                                   (click)="onUnselectAllClick()">
       Anular la seleccion
     </button>
   </div>
@@ -159,11 +159,11 @@
           </ng-container>
         </tr>
       </thead>
-      <tbody>  
+      <tbody>
         <tr *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td style="text-align:center; left: 0px;" class="checkBox-center sticky-td size-col">
-            <input type="checkbox" (change)="onSelectClick(muestreo);" [(ngModel)]="muestreo.selected"
-                   title="Seleccionar">
+            <input type="checkbox" [(ngModel)]="muestreo.isChecked"
+                   (change)="onSelectClick(muestreo)" title="Seleccionar">
           </td>
           <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 1 * this.width : ''}">{{muestreo.estatus}}</td>
           <td *ngIf="this.esVisibleNumEntrega" class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 2 * this.width : ''}">
