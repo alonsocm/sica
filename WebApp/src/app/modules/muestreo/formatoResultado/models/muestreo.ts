@@ -13,4 +13,6 @@ export interface Muestreo extends Register {
   tipoHomologado: string;
   tipoSitio: string;
   parametros: Array<Parametro>;
+  isChecked: boolean;
+  estatus: string;
 }

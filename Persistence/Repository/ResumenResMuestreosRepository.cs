@@ -244,7 +244,7 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int cuerpAgua, int estatusId, int anio)
+        public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int estatusId, int anio)
         {
 
             IQueryable<Muestreo> muestreos = _dbContext.Muestreo.Where(x => (anio == 0 ? null : anio) == null || anio == x.AnioOperacion)
@@ -291,7 +291,10 @@ namespace Persistence.Repository
                                              TipoHomologadoId = th.Id,
                                              TipoHomologado = th.Descripcion,
                                              TipoSitio = ts.Descripcion,
-                                             EstatusId = m.EstatusId
+                                             EstatusId = m.EstatusId,
+                                             Estatus = m.Estatus.Descripcion
+                                             
+                                          
                                          }).ToList();
 
 

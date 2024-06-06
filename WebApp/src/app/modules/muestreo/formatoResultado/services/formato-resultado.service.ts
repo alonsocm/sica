@@ -44,12 +44,11 @@ export class FormatoResultadoService {
   }
 
 
-  getMuestreosParametrosPaginados(tipoCuerpo: number, page: number, pageSize: number, filter: string,
+  getMuestreosParametrosPaginados(page: number, pageSize: number, filter: string,
     order?: { column: string; type: string }): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
-        usuario: this.authService.getUser().usuarioId,
-        tipoCuerpoAgua: tipoCuerpo,
+        usuario: this.authService.getUser().usuarioId,       
         estatus: estatusMuestreo.Cargado,
         page,
         pageSize,

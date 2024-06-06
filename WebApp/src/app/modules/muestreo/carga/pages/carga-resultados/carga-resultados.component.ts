@@ -13,9 +13,8 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 import { Subscription } from 'rxjs';
+import { NotificationService } from 'src/app/shared/services/notification.service'; import { NotificationType } from '../../../../../shared/enums/notification-type';
 
-
-const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 
 @Component({
   selector: 'app-carga-resultados',
@@ -29,14 +28,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   resultadosEnviados: Array<number> = [];
   reemplazarResultados: boolean = false;
   archivo: any;
-
   filtroHistorialServiceSub: Subscription;
 
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
-    {} as ElementRef;
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(
     private filtroHistorialService: FiltroHistorialService,
     public muestreoService: MuestreoService,
+    private notificationService: NotificationService
 
   ) {
     super();
@@ -153,7 +151,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   public consultarMonitoreos(
-
     page: number = this.page,
     pageSize: number = this.NoPage,
     filter: string = this.cadena
@@ -191,7 +188,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     if (this.archivo) {
-      this.loading = !this.loading;
+      this.loading = true;
 
       this.muestreoService
         .cargarArchivo(this.archivo[0], false, this.reemplazarResultados)
@@ -199,12 +196,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           next: (response: any) => {
             if (response.data.correcto) {
               this.loading = false;
-              this.mostrarMensaje(
-                'Archivo procesado correctamente.',
-                TIPO_MENSAJE.exito
-              );
               this.resetInputFile(this.inputExcelMonitoreos);
               this.consultarMonitoreos();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.success,
+                text:
+                  'Archivo procesado correctamente.',
+              });
             } else {
               this.loading = false;
               this.numeroEntrega = response.data.numeroEntrega;
@@ -223,13 +222,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               errores = error.error.Errors;
             }
             let archivoErrores = this.generarArchivoDeErrores(errores);
-            this.mostrarMensaje(
-              'Se encontraron errores en el archivo procesado.',
-              TIPO_MENSAJE.error
-            );
             this.hacerScroll();
             FileService.download(archivoErrores, 'errores.txt');
             this.resetInputFile(this.inputExcelMonitoreos);
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.danger,
+              text:
+                'Se encontraron errores en el archivo procesado.',
+            });
           },
         });
     }
@@ -241,12 +242,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       next: (response: any) => {
         if (response.data.correcto) {
           this.loading = false;
-          this.mostrarMensaje(
-            'Archivo procesado correctamente.',
-            TIPO_MENSAJE.exito
-          );
           this.resetInputFile(this.inputExcelMonitoreos);
           this.consultarMonitoreos();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text:
+              'Se sustituyeron los datos correctamente.',
+          });
         } else {
           this.loading = false;
         }
@@ -254,13 +257,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       error: (error: any) => {
         this.loading = false;
         let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-        this.mostrarMensaje(
-          'Se encontraron errores en el archivo procesado.',
-          TIPO_MENSAJE.error
-        );
         this.hacerScroll();
         FileService.download(archivoErrores, 'errores.txt');
         this.resetInputFile(this.inputExcelMonitoreos);
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.danger,
+          text:
+            'Se encontraron errores en el archivo procesado.',
+        });
       },
     });
   }
@@ -304,42 +309,19 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     return evidencias.find((f) => f.sufijo == sufijoEvidencia);
   }
 
-  descargarEvidencia(claveMuestreo: string, sufijo: string) {
-    this.loading = !this.loading;
-    let muestreo = this.muestreosSeleccionados.find(
-      (x) => x.claveMonitoreo == claveMuestreo
-    );
-    let nombreEvidencia = muestreo?.evidencias.find((x) => x.sufijo == sufijo);
-
-    this.muestreoService
-      .descargarArchivo(nombreEvidencia?.nombreArchivo)
-      .subscribe({
-        next: (response: any) => {
-          this.loading = !this.loading;
-          FileService.download(response, nombreEvidencia?.nombreArchivo ?? '');
-        },
-        error: (response: any) => {
-          this.loading = !this.loading;
-          this.mostrarMensaje(
-            'No fue posible descargar la información',
-            'danger'
-          );
-          this.hacerScroll();
-        },
-      });
-  }
-
   limpiarFiltros() {
     this.ngOnInit();
   }
 
   exportarResultados(): void {
     if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
-      this.mostrarMensaje(
-        'No hay información seleccionada para descargar',
-        'warning'
-      );
-      return this.hacerScroll();
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'No hay información seleccionada para descargar',
+      });
     }
 
     this.loading = true;
@@ -353,12 +335,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.loading = false;
         },
         error: (response: any) => {
-          this.mostrarMensaje(
-            'No fue posible descargar la información',
-            'danger'
-          );
           this.loading = false;
           this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text:
+              'No fue posible descargar la información',
+          });
         },
       });
     } else {
@@ -372,12 +356,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.loading = false;
           },
           error: (response: any) => {
-            this.mostrarMensaje(
-              'No fue posible descargar la información',
-              'danger'
-            );
             this.loading = false;
             this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.danger,
+              text:
+                'No fue posible descargar la información',
+            });
           },
         });
     }
@@ -391,31 +377,34 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     let muestreosSeleccionados = this.Seleccionados(
       this.muestreosSeleccionados
     );
-    if (!(muestreosSeleccionados.length > 0)) {
-      this.mostrarMensaje(
-        'Debe seleccionar al menos un monitoreo para eliminar',
-        TIPO_MENSAJE.alerta
-      );
-      return this.hacerScroll();
+    if (!(muestreosSeleccionados.length > 0)) {     
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'Debe seleccionar al menos un monitoreo para eliminar',
+      });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
   }
 
   eliminarMuestreos() {
     this.loading = true;
-
     if (this.allSelected) {
       this.muestreoService.deleteByFilter(this.cadena).subscribe({
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
           this.consultarMonitoreos();
-          this.loading = false;
-          this.mostrarMensaje(
-            'Monitoreos eliminados correctamente',
-            TIPO_MENSAJE.exito
-          );
+          this.loading = false;       
           this.resetValues();
           this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text:
+              'Monitoreos eliminados correctamente',
+          });
         },
         error: (error) => {
           this.loading = false;
@@ -426,12 +415,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         this.muestreosSeleccionados
       );
 
-      if (!(muestreosSeleccionados.length > 0)) {
-        this.mostrarMensaje(
-          'Debe seleccionar al menos un monitoreo para eliminar',
-          TIPO_MENSAJE.alerta
-        );
-        return this.hacerScroll();
+      if (!(muestreosSeleccionados.length > 0)) {   
+        this.hacerScroll();
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.warning,
+          text:
+            'Debe seleccionar al menos un monitoreo para eliminar',
+        });
       }
 
       let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
@@ -439,13 +430,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
           this.consultarMonitoreos();
-          this.loading = false;
-          this.mostrarMensaje(
-            'Monitoreos eliminados correctamente',
-            TIPO_MENSAJE.exito
-          );
+          this.loading = false;     
           this.resetValues();
           this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text:
+              'Monitoreos eliminados correctamente',
+          });
         },
         error: (error) => {
           this.loading = false;
@@ -468,23 +461,25 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             if (response.succeded) {
               this.resetValues();
               this.loading = false;
-              this.consultarMonitoreos();
-              this.mostrarMensaje(
-                'Se enviaron ' +
-                this.totalItems +
-                ' muestreos a la etapa de "Acumulación resultados" correctamente',
-                'success'
-              );
+              this.consultarMonitoreos();       
               this.hacerScroll();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.success,
+                text:
+                  'Se enviaron' + this.totalItems + ' muestreos a la etapa de "Acumulación resultados" correctamente ',
+              });
             }
           },
           error: (response: any) => {
-            this.loading = false;
-            this.mostrarMensaje(
-              ' Error al enviar los muestreos a la etapa de "Acumulación resultados"',
-              'danger'
-            );
+            this.loading = false;                    
             this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.danger,
+              text:
+                'Error al enviar los muestreos a la etapa de "Acumulación resultados',
+            });
           },
         });
     } else {
@@ -494,11 +489,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
 
       if (this.resultadosEnviados.length == 0) {
-        this.hacerScroll();
-        return this.mostrarMensaje(
-          'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
-          'danger'
-        );
+        this.hacerScroll();      
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.warning,
+          text:
+            'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+        });
       }
 
       this.muestreoService
@@ -512,23 +509,25 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             if (response.succeded) {
               this.resetValues();
               this.loading = false;
-              this.consultarMonitoreos();
-              this.mostrarMensaje(
-                'Se enviaron ' +
-                this.resultadosEnviados.length +
-                ' muestreos a la etapa de "Acumulación resultados" correctamente',
-                'success'
-              );
+              this.consultarMonitoreos();       
               this.hacerScroll();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.success,
+                text:
+                  'Se enviaron ' + this.resultadosEnviados.length + ' muestreos a la etapa de "Acumulación resultados" correctamente',
+              });
             }
           },
           error: (response: any) => {
-            this.loading = false;
-            this.mostrarMensaje(
-              ' Error al enviar los muestreos a la etapa de "Acumulación resultados"',
-              'danger'
-            );
+            this.loading = false;      
             this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.danger,
+              text:
+                'Error al enviar los muestreos a la etapa de "Acumulación resultados"',
+            });
           },
         });
     }

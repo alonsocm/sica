@@ -514,7 +514,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ParametrosMuestreo")]
-        public async Task<IActionResult> Get(int usuario, int tipoCuerpoAgua, int estatus, int anio, string? filter = "", int page = Page, int pageSize = PageSize, string? order = "")
+        public async Task<IActionResult> Get(int usuario, int estatus, int anio, string? filter, int page, int pageSize, string? order)
         {
 
            
@@ -541,8 +541,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new GetResultadosParametrosPaginados
             {
-                UserId = usuario,
-                CuerpoAgua = tipoCuerpoAgua,
+                UserId = usuario,               
                 Estatus = estatus,
                 Anio = anio,
                 Filter = filters,

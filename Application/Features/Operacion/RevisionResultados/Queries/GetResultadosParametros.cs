@@ -24,7 +24,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
 
         public async Task<PagedResponse<List<RegistroOriginalDto>>> Handle(GetResultadosParametrosPaginados request, CancellationToken cancellationToken)
         {
-            IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.UserId, request.CuerpoAgua, request.Estatus, request.Anio)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
+            IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.UserId, request.Estatus, request.Anio)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
 
             if (request.Filter.Any())
             {

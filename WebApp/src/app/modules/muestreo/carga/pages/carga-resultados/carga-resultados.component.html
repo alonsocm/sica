@@ -6,10 +6,8 @@
   <h6 class="row col">Carga de resultados validados</h6>
   <hr class="red">
   <div class="message-container">
-    <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-               [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    <app-notification></app-notification>
   </div>
-
   <div class="clearfix">
     <div class="float-lefth col-md-4">
       <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"

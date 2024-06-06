@@ -25,7 +25,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
 
         public async Task<Response<List<string>>> Handle(GetDistinctValuesParametro request, CancellationToken cancellationToken)
         {
-            IEnumerable<RegistroOriginalDto> datos = await _repositoryAsync.GetResumenResultadosTemp(request.Usuario, request.CuerpoAgua, request.Estatus, request.Anio)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
+            IEnumerable<RegistroOriginalDto> datos = await _repositoryAsync.GetResumenResultadosTemp(request.Usuario, request.Estatus, request.Anio)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
 
             return new Response<List<string>>(GetResultadoParametro(datos, request.ClaveParametro).ToList());
         }
