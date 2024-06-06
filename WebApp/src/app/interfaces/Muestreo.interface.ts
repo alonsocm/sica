@@ -4,11 +4,11 @@ export interface Muestreo {
   claveSitio: string;
   claveMonitoreo: string;
   estado: string;
-  cuerpoAgua: string,
+  cuerpoAgua: string;
   tipoCuerpoAgua: string;
   subTipoCuerpoAgua: string;
   laboratorio: string;
-  laboratorioSubrogado: string
+  laboratorioSubrogado: string;
   fechaRealizacion: string;
   fechaLimiteRevision: string;
   numeroEntrega: string;

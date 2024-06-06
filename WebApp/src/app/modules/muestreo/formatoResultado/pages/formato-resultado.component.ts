@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Resultado, ResultadoDescarga } from '../../../../interfaces/Resultado.interface';
+import { ResultadoDescarga } from '../../../../interfaces/Resultado.interface';
 import { MuestreoService } from '../../liberacion/services/muestreo.service';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { FileService } from 'src/app/shared/services/file.service';
@@ -32,7 +32,11 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   paramTotalOrdenados: Array<any> = [];
   camposDescarga: Array<ResultadoDescarga> = [];
   esVisibleNumEntrega: boolean = false;
-  numEntregaVisible: Array<Perfil> = [Perfil.ADMINISTRADOR, Perfil.SECAIA1, Perfil.SECAIA2];
+  numEntregaVisible: Array<Perfil> = [
+    Perfil.ADMINISTRADOR,
+    Perfil.SECAIA1,
+    Perfil.SECAIA2,
+  ];
   filtroHistorialServiceSub: Subscription;
 
   constructor(
@@ -54,18 +58,31 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.muestreoService.filtrosSeleccionados = [];
     this.perfil = this.usuario.getUser().nombrePerfil;
     this.definirColumnas();
-    this.esVisibleNumEntrega = (this.numEntregaVisible.filter(x => x.includes(this.perfil)).length > 0) ? true : false;
-        this.consultarMonitoreos();
-  
+    this.esVisibleNumEntrega =
+      this.numEntregaVisible.filter((x) => x.includes(this.perfil)).length > 0
+        ? true
+        : false;
+    this.consultarMonitoreos();
   }
 
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
-        name: 'estatus', label: 'ESTATUS', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'estatus',
+        label: 'ESTATUS',
+        order: 1,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
       },
-
       {
         name: 'noEntregaOCDL',
         label: 'N° ENTREGA',
@@ -267,7 +284,12 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   ): void {
     this.loading = true;
     this.formatoService
-      .getMuestreosParametrosPaginados(page, this.pageSize, filter, this.orderBy)
+      .getMuestreosParametrosPaginados(
+        page,
+        this.pageSize,
+        filter,
+        this.orderBy
+      )
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
@@ -306,9 +328,9 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.totalItems = response.totalRecords;
           this.loading = false;
-          this.muestreos = response.data;          
+          this.muestreos = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
@@ -317,7 +339,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       next: (response: any) => {
         this.cuerpoAgua = response.data;
       },
-      error: (error) => { },
+      error: (error) => {},
     });
   }
 
@@ -331,8 +353,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'Debe seleccionar al menos un monitoreo',
+        text: 'Debe seleccionar al menos un monitoreo',
       });
     }
 
@@ -351,12 +372,11 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
           FileService.download(response, 'FORMATO_REGISTRO_ORIGINAL.xlsx');
         },
         error: (response: any) => {
-       this.hacerScroll();
+          this.hacerScroll();
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.danger,
-            text:
-              'No fue posible descargar la información',
+            text: 'No fue posible descargar la información',
           });
         },
       });
@@ -437,7 +457,10 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.formatoService
-      .getMuestreosParametrosPaginados(this.page, this.NoPage, this.cadena, { column: column, type: type })
+      .getMuestreosParametrosPaginados(this.page, this.NoPage, this.cadena, {
+        column: column,
+        type: type,
+      })
       .subscribe({
         next: (response: any) => {
           this.muestreos = response.data;
