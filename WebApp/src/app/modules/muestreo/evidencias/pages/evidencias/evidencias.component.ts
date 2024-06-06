@@ -428,12 +428,12 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.loading = !this.loading;
           this.seleccionarTodosChck = false;
-          this.muestreosSeleccionados.map((m) => (m.isChecked = false));
+          this.muestreosSeleccionados.map((m) => (m.selected = false));
           FileService.download(response, 'evidencias.zip');
         },
         error: (response: any) => {
           this.loading = !this.loading;
-          this.muestreosSeleccionados.map((m) => (m.isChecked = false));
+          this.muestreosSeleccionados.map((m) => (m.selected = false));
           this.mostrarMensaje(
             'No fue posible descargar la información',
             TipoMensaje.Error
@@ -454,7 +454,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
   }
 
   private unselectMuestreos() {
-    this.muestreos.forEach((m) => (m.isChecked = false));
+    this.muestreos.forEach((m) => (m.selected = false));
   }
 
   cargarEvidencias(
@@ -614,7 +614,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
       );
 
       if (muestreoSeleccionado != undefined) {
-        f.isChecked = true;
+        f.selected = true;
       }
     });
   }
@@ -625,7 +625,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     if (this.allSelected) this.allSelected = false;
 
     //Vamos a agregar este registro, a los seleccionados
-    if (muestreo.isChecked) {
+    if (muestreo.selected) {
       this.muestreosSeleccionados.push(muestreo);
       this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
     } else {
