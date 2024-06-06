@@ -9,7 +9,7 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<ResultadoMuestreoDto>> GetResumenResultados(int userId, bool isOCDL);
         List<ResultadoMuestreo> ConvertMuestreosParamsList(List<UpdateMuestreoExcelDto> updateMuestreoExcelDtoList);
         List<ResultadoMuestreo> ConvertMuestreosParamsListSECAIA(List<UpdateMuestreoSECAIAExcelDto> updateMuestreoExcelDtoList);
-        Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int cuerpAgua, int estatusId, int anio);
+        Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int estatusId, int anio);
 
 
         Task<IEnumerable<ResultadoMuestreoDto>> GetResultadosParametrosEstatus(long userId, long estatusId);

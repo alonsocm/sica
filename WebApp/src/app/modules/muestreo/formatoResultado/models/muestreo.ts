@@ -8,9 +8,11 @@ export interface Muestreo extends Register {
   claveMonitoreo: string;
   fechaRealizacion: string;
   laboratorio: string;
-  noEntregaOCDL: string;
+  numeroEntrega: string;
   tipoCuerpoAgua: string;
   tipoHomologado: string;
   tipoSitio: string;
   parametros: Array<Parametro>;
+  isChecked: boolean;
+  estatus: string;
 }

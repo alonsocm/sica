@@ -17,5 +17,7 @@ namespace Application.DTOs
         public string TipoSitio { get; set; }
         public int EstatusId { get; set; }
         public List<ParametroDto> Parametros { get; set; }
+
+        public string Estatus { get; set; }
     }
 }

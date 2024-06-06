@@ -5,61 +5,153 @@
   </div>
 </form>
 <div class="container-fluid">
-  <h1 class="row col">Resumen de carga de resultados para validar (por monitoreo)</h1>
+  <h6 class="row col">Resumen de carga de resultados para validar (por monitoreo)</h6>
   <hr class="red">
   <div class="message-container">
-    <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    <app-notification></app-notification>
   </div>
-  <div class="row">
-    <div class="form-group col-lg-2 align-self-end">
-      <label for="anios">Seleccionar año(s):*</label>
-      <select class="form-control" name="anios" id="anios" multiple [(ngModel)]="aniosSeleccionados"
-              [size]="this.anios.length">
-        <option *ngFor="let anio of anios" value="{{anio}}">{{anio}}</option>
-      </select>
-    </div>
-    <div class="form-group col-lg-3 align-self-end">
+
+  <div class="clearfix">
+    <div class="float-lefth col-md-3">
       <label for="entrega">Seleccionar número(s) de entrega:*</label>
       <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas"
               [size]="this.entregas.length">
         <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
       </select>
+
     </div>
-    <div class="form-group col align-self-end">
+    <div class="float-lefth col-md-1">
+      <br />
       <button class="btn btn-primary" type="button" (click)="cargaResultados()">
         <i class="bi bi-send"></i> Ver resultados
       </button>
     </div>
-    <div class="form-group col align-self-end">
-      <button class=" btn btn-secondary mr-1" type="button" (click)="onDownload()">
+
+    <div class="float-right">
+      <br />
+      <button class="btn btn-secondary mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
-      <button class="btn btn-secondary" type="button">
+      <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
+    <div class="float-right col-md-4">
+      <br />
+      <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+      </app-busqueda-columna>
+    </div>
   </div>
-  <div class="table-responsive dvTable">
-    <table width="10000px" class="table-responsive table table-bordered table-hover">
-      <thead class="thead-light">
+  <app-historial></app-historial>
+  <div class="alert alert-secondary" role="alert" *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+    Los {{this.resultadosMuestreo.length}} registros de esta página están seleccionados.
+    <button type="button" (click)="onSelectAllPagesClick()" class="btn btn-link">
+      Seleccionar los {{this.totalItems}} registros
+    </button>
+  </div>
+  <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
+    Los {{this.totalItems}} registros están seleccionados.
+    <button type="button" class="btn btn-link" (click)="onUnselectAllClick()">
+      Anular la seleccion
+    </button>
+  </div>
+  <div class="dvTable">
+    <table class="table-bordered table-hover">
+      <thead class="thead-sticky">
         <tr>
-          <th class="checkBox-center col-lg-1">
-            <label for="chckAll">SELECCIONAR TODOS</label>
-            <input type="checkbox" id="chckAll" [(ngModel)]="this.seleccionarTodosChck"
-                   (change)="seleccionarAll(this.resultadosFiltradosn)" />
+          <th columnResize class="td-center no-border-bottom th-resize">
+            &nbsp;SELECCIONAR&nbsp;
           </th>
-          <th *ngFor="let columna of columnas">
-            {{columna.etiqueta}}
-            <ng-autocomplete #filtros [data]="columna.filtro.values" [searchKeyword]="this.keyword"
-                             (selected)="columna.filtro.selectedValue = $event; filtrarn()"
-                             (inputCleared)="columna.filtro.selectedValue = 'Seleccione'; filtrarn()" [itemTemplate]="itemTemplate"
-                             placeholder="seleccione">
-            </ng-autocomplete>
-            <ng-template #itemTemplate let-item>
-              <a [innerHTML]="item"></a>
-            </ng-template>
+          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+              class="no-border-bottom th-resize"
+              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+            {{columna.label}}
+          </th>
+        </tr>
+        <tr>
+          <th class="no-border-top td-center">
+            <input class="cursor-pointer" type="checkbox" id="chckAll"
+                   [(ngModel)]="this.selectedPage" (change)="onSelectPageClick(this.resultadosMuestreo,this.resultadosFiltradosn);" title="Selecciona la página actual" />
+          </th>
+          <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
+            <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
+                      title="Filtros" aria-expanded="false"
+                      (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
+                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                   class="bi bi-caret-down-fill"></i>
+                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                   class="bi bi-arrow-down"></i>
+                <i [(ngModel)]="columna.desc"
+                   *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                   class="bi bi-arrow-up"></i>
+              </button>
+
+              <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
+
+                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
+                     class="bi bi-sort-alpha-down"></i>
+                  Ordenar de A a Z
+                </a>
+                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
+                     class="bi bi-sort-alpha-down-alt"></i>
+                  Ordenar de Z a A
+                </a>
+                <hr class="dropdown-divider">
+                <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
+                  <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
+                </a>
+                <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
+                  <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals" style="color: palegreen" class="bi bi-check-square-fill"></i>
+
+                  {{leyendaFiltrosEspeciales}}
+                </a>
+                <div id="filters-{{columna.name}}" class="d-none">
+                  <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
+                     (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal"
+                     data-target="#mdlFiltro">
+                    <i id="imgFiltroEspecializado" *ngIf="(nombre == this.filtroEspecializado && columna.optionFilter != null && columna.secondOptionFilter != '') || nombre === columna.optionFilter && columna.optionFilter != this.filtroEspecialEquals && columna.secondOptionFilter ==''" class="bi bi-check-lg"></i>
+                    {{nombre}} ...
+                    <div *ngIf="this.indicesopcionesFiltros.includes(indice)" class="dropdown-divider"></div>
+                  </a>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div style="height:300px; overflow:scroll; padding:5px">
+                  <input class="form-control" placeholder="Buscar" type="text"
+                         (input)="onFiltroCabecero($event, columna)" />
+                  <span><i class="bi bi-search"></i></span>
+                  <br />
+                  <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
+                         (change)="seleccionarAllFiltro(columna);" />
+                  <label style="font-size:x-small" (click)="$event.stopPropagation()"
+                         for="chckAllFiltro{{columna.name}}">
+                    Seleccionar
+                    todos
+                  </label>
+                  <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
+                    <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
+                    <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
+                           (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
+                  </div>
+                </div>
+                <div class="modal-footer" style="font-size:xx-small;">
+                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
+                          data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
+                    Cancelar
+                  </button>
+                  <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
+                          (click)="filtrar(columna,false);">
+                    Aceptar
+                  </button>
+                </div>
+              </div>
+            </div>
           </th>
         </tr>
       </thead>
@@ -96,15 +188,27 @@
         </tr>
       </tbody>
     </table>
-    </div>
-    <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-    </pagination-controls>
-    <div class="clearfix">
-      <div class="float-right">
-        <button class="btn btn-primary rigth" type="button" (click)="enviaraValidacion()">
-          <i class="bi bi-send"></i> Enviar a validación
-        </button>
-      </div>
-    </div>
-    <br />
   </div>
+  <div class="row">
+    <div class="col-md-3">
+      <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+    <div class="col-md-2">
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.resultadosMuestreo.length}}</span></p>
+    </div>
+    <div class="col-md-3">
+      <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
+    </div>
+  </div>
+  <div class="clearfix">
+    <div class="float-right">
+      <button class="btn btn-primary rigth" type="button" (click)="enviaraValidacion()">
+        <i class="bi bi-send"></i> Enviar a validación
+      </button>
+    </div>
+  </div>
+  <hr />
+  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
+                  [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
+</div>

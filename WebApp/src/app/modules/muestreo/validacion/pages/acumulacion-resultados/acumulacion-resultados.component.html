@@ -5,14 +5,21 @@
   </div>
 </form>
 <div class="container-fluid">
-  <h1 class="row col">Acumulación de resultados</h1>
+  <h6 class="row col">Acumulación de resultados</h6>
   <hr class="red">
   <div class="message-container">
-    <app-alert id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta" [type]="this.tipoAlerta"
-               (mostrando)="this.mostrarAlerta=$event"></app-alert>
+    <app-notification></app-notification>
   </div>
   <div class="clearfix">
+    <div class="float-lefth col-md-4">
+      <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+      </app-busqueda-columna>
+    </div>
     <div class="float-right">
+      <button class="btn btn-primary mr-1" type="button" (click)="enviarmonitoreos()">
+        <i class="bi bi-send"></i> Enviar monitoreos
+      </button>
       <button class="btn btn-secondary mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
@@ -22,21 +29,17 @@
       </button>
     </div>
   </div>
-  <br />
-  <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                        (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-  </app-busqueda-columna>
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
-    Los {{this.datosAcumualdos.length}} registros de esta página están seleccionados. <button type="button"
-                                                                                              (click)="onSelectAllPagesClick()" class="btn btn-link">
+    Los {{this.datosAcumualdos.length}} registros de esta página están seleccionados.
+    <button type="button" (click)="onSelectAllPagesClick()" class="btn btn-link">
       Seleccionar los {{this.totalItems}} registros
     </button>
   </div>
   <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
-    Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
-                                                                   (click)="onUnselectAllClick()">
+    Los {{this.totalItems}} registros están seleccionados.
+    <button type="button" class="btn btn-link" (click)="onUnselectAllClick()">
       Anular la seleccion
     </button>
   </div>
@@ -53,7 +56,6 @@
               [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
             {{columna.label}}
           </th>
-
         </tr>
         <tr>
           <th class="no-border-top td-center">
@@ -76,7 +78,6 @@
               </button>
 
               <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
-
                 <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
                   <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
                      class="bi bi-sort-alpha-down"></i>
@@ -91,15 +92,12 @@
                 <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
                   <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
                 </a>
-
-
                 <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                    aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
                   <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals" style="color: palegreen" class="bi bi-check-square-fill"></i>
 
                   {{leyendaFiltrosEspeciales}}
                 </a>
-
                 <div id="filters-{{columna.name}}" class="d-none">
                   <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
                      (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal"
@@ -144,21 +142,12 @@
         </tr>
       </thead>
       <tbody>
-        <!--<tr style="text-align:center"
-            *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">-->
-
         <tr *ngFor="let dato of this.resultadosFiltradosn | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
-
-          <!--<td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="dato.isChecked" (change)="seleccionar()" title="Seleccionar">
-          </td>-->
           <td class="td-center">
             <input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.isChecked"
                    (change)="onSelectClick(dato)" title="Seleccionar">
           </td>
-          <td class="td-center">
-            <input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.validacionEvidencias">
-          </td>
+          <td class="td-center">NO</td>
           <td style="text-align:center">{{dato.numeroEntrega}}</td>
           <td>{{dato.claveUnica}}</td>
           <td>{{dato.claveMonitoreo}}</td>
@@ -202,20 +191,41 @@
       </pagination-controls>
     </div>
     <div class="col-md-2">
-      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.NoPage}}</span></p>
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.datosAcumualdos.length}}</span></p>
     </div>
     <div class="col-md-3">
       <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
     </div>
   </div>
-  <div class="clearfix">
-    <div class="float-right">
-      <button class="btn btn-primary rigth" type="button" (click)="enviarmonitoreos()">
-        <i class="bi bi-send"></i> Enviar monitoreos
+  <div class="row">
+    <div class="col-md-6 align-self-end">
+      <button class="btn btn-secondary" type="button" (click)="confirmarEliminacion()">
+        <i class="bi bi-trash"></i>&nbsp;Eliminar resultados de monitoreos seleccionados
       </button>
+      <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
+              data-target="#mdlConfirmacion" title="Seleccionar"></button>
     </div>
   </div>
+  <hr />
   <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
                   [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
-  <br /><br />
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar eliminación</h4>
+        </div>
+        <div class="modal-body">
+          <p>¿Está seguro de eliminar los resultados correspondientes de los monitoreos seleccionados?</p>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="eliminarMuestreos()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

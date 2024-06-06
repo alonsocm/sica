@@ -128,16 +128,17 @@ hr.red {
 }
 
 .dvTable .thead-sticky {
-  font-size: x-small;
-  text-align: left;
-  vertical-align: bottom;
+  font-size:xx-small;
+  text-align:center;
+  vertical-align:middle;
   position: sticky;
   top: -1px;
 }
 
-.dvTable .thead-sticky .th-resize {
-  position: relative;
-}
+  .dvTable .thead-sticky .th-resize {
+    position: relative;
+    text-align: center;
+  }
 
 .dvTable .no-border-bottom {
   border-bottom: 0px;
