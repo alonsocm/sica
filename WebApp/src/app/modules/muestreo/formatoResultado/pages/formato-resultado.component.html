@@ -164,7 +164,7 @@
         <tr
           *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td style="text-align:center; left: 0px;" class="checkBox-center sticky-td size-col">
-            <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
+            <input type="checkbox" [(ngModel)]="muestreo.selected" (change)="onSelectClick(muestreo)"
               title="Seleccionar">
           </td>
           <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 1 * this.width : ''}">
