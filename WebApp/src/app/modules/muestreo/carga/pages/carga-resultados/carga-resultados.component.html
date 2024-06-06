@@ -97,15 +97,12 @@
                 <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
                   <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
                 </a>
-
-
                 <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                    aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
                   <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals" style="color: palegreen" class="bi bi-check-square-fill"></i>
 
                   {{leyendaFiltrosEspeciales}}
                 </a>
-
                 <div id="filters-{{columna.name}}" class="d-none">
                   <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
                      (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal"

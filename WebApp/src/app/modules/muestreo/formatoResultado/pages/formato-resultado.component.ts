@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Resultado, ResultadoDescarga } from '../../../../interfaces/Resultado.interface';
 import { MuestreoService } from '../../liberacion/services/muestreo.service';
 import { Columna } from 'src/app/interfaces/columna-inferface';
@@ -12,6 +12,8 @@ import { Muestreo } from '../models/muestreo';
 import { Column } from '../../../../interfaces/filter/column';
 import { FiltroHistorialService } from '../../../../shared/services/filtro-historial.service';
 import { Subscription } from 'rxjs';
+import { NotificationService } from '../../../../shared/services/notification.service';
+import { NotificationType } from '../../../../shared/enums/notification-type';
 
 @Component({
   selector: 'app-formato-resultado',
@@ -37,7 +39,8 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     private filtroHistorialService: FiltroHistorialService,
     private formatoService: FormatoResultadoService,
     public muestreoService: MuestreoService,
-    private usuario: AuthService
+    private usuario: AuthService,
+    private notificationService: NotificationService
   ) {
     super();
     this.filtroHistorialServiceSub =
@@ -324,8 +327,13 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       muestreosSeleccionados.length === 0 &&
       this.muestreosSeleccionados.length == 0
     ) {
-      this.mostrarMensaje('Debe seleccionar al menos un monitoreo', 'warning');
-      return this.hacerScroll();
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'Debe seleccionar al menos un monitoreo',
+      });
     }
 
     this.formatoService
@@ -343,11 +351,13 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
           FileService.download(response, 'FORMATO_REGISTRO_ORIGINAL.xlsx');
         },
         error: (response: any) => {
-          this.mostrarMensaje(
-            'No fue posible descargar la información',
-            'danger'
-          );
-          this.hacerScroll();
+       this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text:
+              'No fue posible descargar la información',
+          });
         },
       });
   }

@@ -13,7 +13,8 @@ import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 import { Subscription } from 'rxjs';
-import { NotificationService } from 'src/app/shared/services/notification.service'; import { NotificationType } from '../../../../../shared/enums/notification-type';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from '../../../../../shared/enums/notification-type';
 
 
 @Component({
