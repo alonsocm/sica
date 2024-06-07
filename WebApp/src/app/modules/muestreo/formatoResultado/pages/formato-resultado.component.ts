@@ -38,6 +38,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     Perfil.SECAIA2,
   ];
   filtroHistorialServiceSub: Subscription;
+  firstColumnWidth: number = 75;
 
   constructor(
     private filtroHistorialService: FiltroHistorialService,
@@ -524,7 +525,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   setLeftPosition(columns: Array<Column>) {
-    let left = 75; //Es el ancho que tiene la primer columna (se puede modificar), la que contiene el checkbox de seleccionar.
+    let left = this.firstColumnWidth; //Es el ancho que tiene la primer columna (se puede modificar), la que contiene el checkbox de seleccionar.
 
     for (let index = 0; index < columns.length; index++) {
       columns[index].startAt = left;
