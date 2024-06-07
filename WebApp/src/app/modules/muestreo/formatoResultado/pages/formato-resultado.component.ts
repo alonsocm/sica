@@ -82,6 +82,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 50,
       },
       {
         name: 'noEntregaOCDL',
@@ -98,6 +99,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 50,
       },
       {
         name: 'replica',
@@ -114,6 +116,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 50,
       },
       {
         name: 'claveSitioOriginal',
@@ -130,6 +133,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 100,
       },
       {
         name: 'claveSitio',
@@ -146,6 +150,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 85,
       },
       {
         name: 'claveMonitoreo',
@@ -162,6 +167,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 100,
       },
       {
         name: 'fechaRealizacion',
@@ -178,6 +184,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 75,
       },
       {
         name: 'laboratorio',
@@ -194,6 +201,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 75,
       },
       {
         name: 'tipoCuerpoAgua',
@@ -210,6 +218,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 85,
       },
       {
         name: 'tipoHomologado',
@@ -226,6 +235,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 85,
       },
       {
         name: 'tipoSitio',
@@ -242,9 +252,12 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
         pinned: true,
+        width: 150,
       },
     ];
     this.columns = nombresColumnas;
+    this.setLeftPosition(this.columns);
+
     this.formatoService.getParametros().subscribe({
       next: (result: any) => {
         this.parametrosTotales = result.data;
@@ -294,7 +307,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.muestreos = response.data;
-          console.log(this.muestreos);
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
@@ -509,5 +521,14 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   onPageClick(page: any) {
     this.consultarMonitoreos();
     this.page = page;
+  }
+
+  setLeftPosition(columns: Array<Column>) {
+    let left = 75; //Es el ancho que tiene la primer columna (se puede modificar), la que contiene el checkbox de seleccionar.
+
+    for (let index = 0; index < columns.length; index++) {
+      columns[index].startAt = left;
+      left += columns[index].width ?? 0;
+    }
   }
 }

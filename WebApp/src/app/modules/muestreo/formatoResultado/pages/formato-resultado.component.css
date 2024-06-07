@@ -24,3 +24,8 @@ table {
   border-collapse: separate;
   border-spacing: 0;
 }
+
+table tbody td {
+  white-space: wrap;
+  word-break: break-word;
+}
