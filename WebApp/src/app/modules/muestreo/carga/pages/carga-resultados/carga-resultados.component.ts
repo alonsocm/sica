@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import {  Component,  ElementRef,  HostListener,  OnInit,  ViewChild} from '@angular/core';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
@@ -15,6 +9,7 @@ import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial
 import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
+import { Notificacion } from '../../../../../shared/models/notification-model';
 
 
 @Component({
@@ -30,12 +25,14 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   reemplazarResultados: boolean = false;
   archivo: any;
   filtroHistorialServiceSub: Subscription;
+  notificacion: Notificacion = { title: 'Confirmar eliminación', text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?' };
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(
     private filtroHistorialService: FiltroHistorialService,
     public muestreoService: MuestreoService,
     private notificationService: NotificationService
+
 
   ) {
     super();
@@ -50,6 +47,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         if (dato.specialFilter != null) this.filtrar(dato, true);
       }
     );
+
+    this.muestreoService.muestreos.subscribe((muestreos) => {
+      if (this.isAceptarNotificacion) {
+        this.eliminarMuestreos();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -378,7 +381,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     let muestreosSeleccionados = this.Seleccionados(
       this.muestreosSeleccionados
     );
-    if (!(muestreosSeleccionados.length > 0)) {     
+    if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -397,7 +400,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
           this.consultarMonitoreos();
-          this.loading = false;       
+          this.loading = false;
           this.resetValues();
           this.hacerScroll();
           return this.notificationService.updateNotification({
@@ -416,7 +419,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         this.muestreosSeleccionados
       );
 
-      if (!(muestreosSeleccionados.length > 0)) {   
+      if (!(muestreosSeleccionados.length > 0)) {
         this.hacerScroll();
         return this.notificationService.updateNotification({
           show: true,
@@ -431,7 +434,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
           this.consultarMonitoreos();
-          this.loading = false;     
+          this.loading = false;
           this.resetValues();
           this.hacerScroll();
           return this.notificationService.updateNotification({
@@ -462,7 +465,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             if (response.succeded) {
               this.resetValues();
               this.loading = false;
-              this.consultarMonitoreos();       
+              this.consultarMonitoreos();
               this.hacerScroll();
               return this.notificationService.updateNotification({
                 show: true,
@@ -473,7 +476,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             }
           },
           error: (response: any) => {
-            this.loading = false;                    
+            this.loading = false;
             this.hacerScroll();
             return this.notificationService.updateNotification({
               show: true,
@@ -490,7 +493,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
 
       if (this.resultadosEnviados.length == 0) {
-        this.hacerScroll();      
+        this.hacerScroll();
         return this.notificationService.updateNotification({
           show: true,
           type: NotificationType.warning,
@@ -510,7 +513,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             if (response.succeded) {
               this.resetValues();
               this.loading = false;
-              this.consultarMonitoreos();       
+              this.consultarMonitoreos();
               this.hacerScroll();
               return this.notificationService.updateNotification({
                 show: true,
@@ -521,7 +524,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             }
           },
           error: (response: any) => {
-            this.loading = false;      
+            this.loading = false;
             this.hacerScroll();
             return this.notificationService.updateNotification({
               show: true,

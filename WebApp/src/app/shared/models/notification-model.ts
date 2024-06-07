@@ -5,3 +5,8 @@ export interface NotificationModel {
   type?: NotificationType;
   text?: string;
 }
+
+export interface Notificacion {
+  title: string;
+  text: string;
+}

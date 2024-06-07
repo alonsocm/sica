@@ -102,6 +102,7 @@ export class BaseService {
   existeEliminacionFiltro: boolean = false;
 
   currentHeaderFocus = '';
+  isAceptarNotificacion: boolean = false;
 
   mostrarMensaje(mensaje: string, tipo: string): void {
     this.mensajeAlerta = mensaje;
@@ -510,10 +511,13 @@ export class BaseService {
   }
 
   public setHeadersList(columns: Array<Column>) {
+    console.log("columnsss");
+    console.log(columns);
     this.headers = columns.map((m) => ({
       label: m.label,
       name: m.name,
     }));
+    console.log(this.headers);
   }
 
   onSelectPageClick(muestreos: Array<any>, muestreosSeleccionados: Array<any>) {

@@ -63,6 +63,7 @@ import { BusquedaColumnaComponent } from './shared/filtro/busqueda-columna/busqu
 import { HistorialComponent } from './shared/filtro/historial/historial.component';
 import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.component';
 import { ColumnResizeDirective } from './column-resize.directive';
+import { NotificacionEmergenteComponent } from './shared/notificacion-emergente/notificacion-emergente.component';
 
 @NgModule({
   declarations: [
@@ -118,6 +119,7 @@ import { ColumnResizeDirective } from './column-resize.directive';
     HistorialComponent,
     AutofiltroComponent,
     ColumnResizeDirective,
+    NotificacionEmergenteComponent,
   ],
   imports: [
     BrowserModule,
