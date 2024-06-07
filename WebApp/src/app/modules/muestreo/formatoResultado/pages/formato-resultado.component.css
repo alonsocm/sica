@@ -1,5 +1,5 @@
 .sticky-col {
-  /* position: -webkit-sticky; */
+  position: -webkit-sticky;
   position: sticky;
   background-color: rgb(233, 236, 239);
   z-index: 1;
@@ -7,7 +7,6 @@
 
 .sticky-td {
   position: sticky;
-  z-index: -1;
   background-color: white;
 }
 

@@ -42,8 +42,8 @@
   </div>
 
   <div class="dvTable">
-    <table class="table-bordered table-hover">
-      <thead class="thead-sticky">
+    <table class="table-bordered">
+      <thead class="thead-sticky" style="z-index: 1;">
         <tr>
           <th class="td-center no-border-bottom sticky-col size-col" style="left:0px">
             &nbsp;SELECCIONAR&nbsp;
@@ -162,8 +162,9 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
-          <td style="text-align:center; left: 0px;" class="checkBox-center sticky-td size-col">
+          *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}"
+          style="z-index: 0;">
+          <td style=" text-align:center; left: 0px;" class="checkBox-center sticky-td size-col">
             <input type="checkbox" [(ngModel)]="muestreo.selected" (change)="onSelectClick(muestreo)"
               title="Seleccionar">
           </td>
@@ -201,7 +202,7 @@
             {{muestreo.tipoSitio}}
           </td>
           <ng-container *ngFor="let parametro of parametrosTotales">
-            <td style="position: relative; z-index: -2;">
+            <td style="position: relative; z-index: -1;">
               {{getValueParam(parametro.claveParametro,muestreo.parametros)}}
             </td>
           </ng-container>
