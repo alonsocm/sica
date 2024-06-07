@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import {  Component,  ElementRef,  HostListener,  OnInit,  ViewChild} from '@angular/core';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
@@ -15,6 +9,7 @@ import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial
 import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
+import { Notificacion } from '../../../../../shared/models/notification-model';
 
 @Component({
   selector: 'app-carga-resultados',
@@ -29,6 +24,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   reemplazarResultados: boolean = false;
   archivo: any;
   filtroHistorialServiceSub: Subscription;
+  notificacion: Notificacion = { title: 'Confirmar eliminación', text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?' };
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
@@ -36,6 +32,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     private filtroHistorialService: FiltroHistorialService,
     public muestreoService: MuestreoService,
     private notificationService: NotificationService
+
   ) {
     super();
     this.filtroHistorialServiceSub =
@@ -49,6 +46,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         if (dato.specialFilter != null) this.filtrar(dato, true);
       }
     );
+
+    this.muestreoService.muestreos.subscribe((muestreos) => {
+      if (this.isAceptarNotificacion) {
+        this.eliminarMuestreos();
+      }
+    });
   }
 
   ngOnInit(): void {

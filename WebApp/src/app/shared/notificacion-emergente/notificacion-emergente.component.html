@@ -1,0 +1,19 @@
+<div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-center" id="staticBackdropLabel">{{this.notificacion.title}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{this.notificacion.text}}</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="btnClickAceptar()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

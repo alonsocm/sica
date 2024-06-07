@@ -214,26 +214,8 @@
 
   <app-muestreos-totales></app-muestreos-totales>
   <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
-    [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
-
-  <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar eliminación</h4>
-        </div>
-        <div class="modal-body">
-          <p>¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?</p>
-        </div>
-        <div class="modal-footer">
-          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="eliminarMuestreos()">
-            Aceptar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+                  [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>  
+  <app-notificacion-emergente [notificacion]="this.notificacion" (isEjecutar)="this.isAceptarNotificacion=$event"></app-notificacion-emergente>
 
   <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
     data-target="#mdlConfirmacionActualizacion">
