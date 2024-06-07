@@ -514,15 +514,12 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ParametrosMuestreo")]
         public async Task<IActionResult> Get(int usuario, int estatus, int anio, string? filter, int page, int pageSize, string? order)
         {
-
-
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
             {
                 filters = QueryParam.GetFilters(filter);
             }
-
 
             OrderBy orderBy = null;
 
@@ -535,21 +532,16 @@ namespace WebAPI.Controllers.v1.Operacion
                 };
             }
 
-
-
             return Ok(await Mediator.Send(new GetResultadosParametrosPaginados
             {
-                UserId = usuario,               
+                UserId = usuario,
                 Estatus = estatus,
                 Anio = anio,
                 Filter = filters,
                 Page = page,
                 PageSize = pageSize,
-                
                 //Filter = filters,
                 //OrderBy = orderBy
-
-
             }));
         }
 
