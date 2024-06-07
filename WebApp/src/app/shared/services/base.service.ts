@@ -160,7 +160,7 @@ export class BaseService {
 
   seleccionarAll(resultadosFiltrados: Array<any>): void {
     resultadosFiltrados.map((m) => {
-      m.isChecked = this.seleccionarTodosChck ? true : false;
+      m.selected = this.seleccionarTodosChck ? true : false;
     });
   }
 
@@ -172,7 +172,7 @@ export class BaseService {
 
   //sustituye a obtenerseleccionados()
   Seleccionados(Seleccionados: Array<any>) {
-    return Seleccionados.filter((f) => f.isChecked);
+    return Seleccionados.filter((f) => f.selected);
   }
 
   descargarArchivo(file: any, fileName: string) {
@@ -229,11 +229,18 @@ export class BaseService {
     let selectData = this.columnaFiltroEspecial.selectedData.split('_');
 
     if (selectData.length == 2) {
-      this.columnaFiltroEspecial.secondOptionFilter = (opcion === this.filtradoEspecial.personalizado) ? this.filtradoEspecial.equals : '';
-      this.columnaFiltroEspecial.specialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[0] : '';
-      this.columnaFiltroEspecial.secondSpecialFilter = (opcion === this.filtradoEspecial.personalizado) ? selectData[1] : '';
+      this.columnaFiltroEspecial.secondOptionFilter =
+        opcion === this.filtradoEspecial.personalizado
+          ? this.filtradoEspecial.equals
+          : '';
+      this.columnaFiltroEspecial.specialFilter =
+        opcion === this.filtradoEspecial.personalizado ? selectData[0] : '';
+      this.columnaFiltroEspecial.secondSpecialFilter =
+        opcion === this.filtradoEspecial.personalizado ? selectData[1] : '';
+    } else if (selectData.length == 1) {
+      this.columnaFiltroEspecial.specialFilter =
+        this.columnaFiltroEspecial.selectedData;
     }
-    else if (selectData.length == 1) { this.columnaFiltroEspecial.specialFilter = this.columnaFiltroEspecial.selectedData; }
 
     this.opcionesFiltrosModal = this.opcionesFiltros;
     columna.dataType == 'string'
@@ -252,8 +259,6 @@ export class BaseService {
     this.columns[index].specialFilter = '';
     this.columns[index].secondSpecialFilter = '';
 
-
-
     this.existeEliminacionFiltro = true;
 
     let cadenaanterior = this.cadena.split('%');
@@ -267,7 +272,9 @@ export class BaseService {
       cadenaanterior.forEach((x) => {
         cadenaAnterior += x.concat('%');
       });
-      cadenaAnterior = cadenaAnterior.substring(0, cadenaAnterior.lastIndexOf('%')
+      cadenaAnterior = cadenaAnterior.substring(
+        0,
+        cadenaAnterior.lastIndexOf('%')
       );
     }
 
@@ -339,7 +346,11 @@ export class BaseService {
   getPreseleccionFiltradoColumna(column: Column, esFiltroEspecial: boolean) {
     if (column.isLatestFilter)
       column.filteredData.forEach((m) => {
-        m.checked = (esFiltroEspecial) ? false : (column.selectedData.includes(m.value) ? true : false);
+        m.checked = esFiltroEspecial
+          ? false
+          : column.selectedData.includes(m.value)
+          ? true
+          : false;
       });
   }
 
@@ -425,8 +436,8 @@ export class BaseService {
       this.cadena =
         this.cadena.indexOf('%') != -1
           ? this.deleteFilter(
-            !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
-          )
+              !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
+            )
           : '';
     }
 
@@ -437,7 +448,10 @@ export class BaseService {
       filtrosSeleccionados.forEach((x) => {
         columna.selectedData += x.value.concat('_');
       });
-      columna.selectedData = columna.selectedData.substring(0, columna.selectedData.lastIndexOf('_'));
+      columna.selectedData = columna.selectedData.substring(
+        0,
+        columna.selectedData.lastIndexOf('_')
+      );
 
       this.cadena =
         this.cadena != ''
@@ -522,7 +536,7 @@ export class BaseService {
 
   onSelectPageClick(muestreos: Array<any>, muestreosSeleccionados: Array<any>) {
     muestreos.map((m) => {
-      m.isChecked = this.selectedPage;
+      m.selected = this.selectedPage;
 
       //Buscamos el registro en los seleccionados
       let index = muestreosSeleccionados.findIndex(
@@ -549,7 +563,7 @@ export class BaseService {
   }
 
   anyUnselected(muestreos: Array<any>) {
-    return muestreos.some((f) => !f.isChecked);
+    return muestreos.some((f) => !f.selected);
   }
 
   public setColumnsFiltered(servicioMuestreo: MuestreoService) {
@@ -563,8 +577,11 @@ export class BaseService {
     servicioMuestreo.filtrosSeleccionados = filtrosActuales;
   }
 
-  public establecerValoresFiltrosTabla1(column: Column, servicioMuestreo: MuestreoService) {
-    let columsdesplegadas = document.getElementsByClassName("d-block");
+  public establecerValoresFiltrosTabla1(
+    column: Column,
+    servicioMuestreo: MuestreoService
+  ) {
+    let columsdesplegadas = document.getElementsByClassName('d-block');
     for (var i = 0; i < columsdesplegadas.length; i++) {
       columsdesplegadas[i].className = 'd-none';
     }
@@ -574,18 +591,30 @@ export class BaseService {
       this.filtros = filtro;
     });
 
-
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
     this.obtenerLeyendaFiltroEspecial(column.dataType);
-    let esFiltroEspecial = (column.optionFilter === undefined || column.optionFilter === this.filtroEspecialEquals) ? false : true;
+    let esFiltroEspecial =
+      column.optionFilter === undefined ||
+      column.optionFilter === this.filtroEspecialEquals
+        ? false
+        : true;
 
-    if ((!column.filtered && !this.existeFiltrado) || (column.isLatestFilter && this.filtros.length == 1)) {
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
       this.cadena = '';
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
 
-    if ((!column.filtered && this.existeFiltrado) || (column.filtered && !column.isLatestFilter) || (!column.filtered && !this.existeFiltrado) || (column.isLatestFilter && this.filtros.length == 1)) {
-      servicioMuestreo.getDistinctValuesFromColumn(column.name, this.cadena)
+    if (
+      (!column.filtered && this.existeFiltrado) ||
+      (column.filtered && !column.isLatestFilter) ||
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      servicioMuestreo
+        .getDistinctValuesFromColumn(column.name, this.cadena)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
@@ -599,9 +628,8 @@ export class BaseService {
             column.filteredData = column.data;
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-
           },
-          error: (error) => { },
+          error: (error) => {},
         });
     }
 
@@ -610,6 +638,4 @@ export class BaseService {
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
   }
-
-
 }

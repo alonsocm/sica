@@ -11,7 +11,6 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 
-
 @Component({
   selector: 'app-carga-resultados',
   templateUrl: './carga-resultados.component.html',
@@ -27,12 +26,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   filtroHistorialServiceSub: Subscription;
   notificacion: Notificacion = { title: 'Confirmar eliminación', text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?' };
 
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
   constructor(
     private filtroHistorialService: FiltroHistorialService,
     public muestreoService: MuestreoService,
     private notificationService: NotificationService
-
 
   ) {
     super();
@@ -64,94 +63,322 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
-        name: 'estatus', label: 'ESTATUS', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'estatus',
+        label: 'ESTATUS',
+        order: 1,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'esreplica', label: 'ES REPLICA', order: 2, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'esreplica',
+        label: 'ES REPLICA',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'evidencias', label: 'EVIDENCIAS COMPLETAS', order: 3, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'evidencias',
+        label: 'EVIDENCIAS COMPLETAS',
+        order: 3,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'numeroEntrega', label: 'NÚMERO CARGA', order: 4, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'number', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'numeroEntrega',
+        label: 'NÚMERO CARGA',
+        order: 4,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'number',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'claveSitio', label: 'CLAVE NOSEC', order: 5, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'claveSitio',
+        label: 'CLAVE NOSEC',
+        order: 5,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'clave5k', label: 'CLAVE 5K', order: 6, selectAll: true, filtered: false, asc: false, desc: false, data: [],
-        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'clave5k',
+        label: 'CLAVE 5K',
+        order: 6,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'claveMonitoreo', label: 'CLAVE MONITOREO', order: 7, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'claveMonitoreo',
+        label: 'CLAVE MONITOREO',
+        order: 7,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'tipoSitio', label: 'TIPO DE SITIO', order: 8, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'tipoSitio',
+        label: 'TIPO DE SITIO',
+        order: 8,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'nombreSitio', label: 'SITIO', order: 9, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'nombreSitio',
+        label: 'SITIO',
+        order: 9,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'ocdl', label: 'OC/DL', order: 10, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'ocdl',
+        label: 'OC/DL',
+        order: 10,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'tipoCuerpoAgua', label: 'TIPO CUERPO AGUA', order: 11, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'tipoCuerpoAgua',
+        label: 'TIPO CUERPO AGUA',
+        order: 11,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'subTipoCuerpoAgua', label: 'SUBTIPO CUERPO DE AGUA', order: 12, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'subTipoCuerpoAgua',
+        label: 'SUBTIPO CUERPO DE AGUA',
+        order: 12,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'programaAnual', label: 'PROGRAMA ANUAL', order: 13, selectAll: true, filtered: false, asc: false, desc: false,
-        data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'programaAnual',
+        label: 'PROGRAMA ANUAL',
+        order: 13,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'laboratorio', label: 'LABORATORIO', order: 14, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'laboratorio',
+        label: 'LABORATORIO',
+        order: 14,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'laboratorioSubrogado', label: 'LABORATORIO SUBROGADO', order: 15, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'laboratorioSubrogado',
+        label: 'LABORATORIO SUBROGADO',
+        order: 15,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'fechaRealizacion', label: 'FECHA REALIZACIÓN', order: 16, selectAll: true, filtered: false, data: [], filteredData: [],
-        dataType: 'date', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'fechaRealizacion',
+        label: 'FECHA REALIZACIÓN',
+        order: 16,
+        selectAll: true,
+        filtered: false,
+        data: [],
+        filteredData: [],
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'fechaProgramada', label: 'FECHA PROGRAMACIÓN', order: 17, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'date', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'fechaProgramada',
+        label: 'FECHA PROGRAMACIÓN',
+        order: 17,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'horaInicio', label: 'HORA INICIO MUESTREO', order: 18, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'horaInicio',
+        label: 'HORA INICIO MUESTREO',
+        order: 18,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'horaFin', label: 'HORA FIN MUESTREO', order: 19, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'horaFin',
+        label: 'HORA FIN MUESTREO',
+        order: 19,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'fechaCarga', label: 'FECHA CARGA SICA', order: 20, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'date', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'fechaCarga',
+        label: 'FECHA CARGA SICA',
+        order: 20,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'fechaEntregaMuestreo', label: 'FECHA ENTREGA', order: 21, selectAll: true, filtered: false,
-        desc: false, asc: false, data: [], filteredData: [], dataType: 'date', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'fechaEntregaMuestreo',
+        label: 'FECHA ENTREGA',
+        order: 21,
+        selectAll: true,
+        filtered: false,
+        desc: false,
+        asc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'date',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
     ];
 
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
-
   }
 
   public consultarMonitoreos(
@@ -172,7 +399,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
           this.loading = false;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
@@ -205,8 +432,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               return this.notificationService.updateNotification({
                 show: true,
                 type: NotificationType.success,
-                text:
-                  'Archivo procesado correctamente.',
+                text: 'Archivo procesado correctamente.',
               });
             } else {
               this.loading = false;
@@ -232,8 +458,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.danger,
-              text:
-                'Se encontraron errores en el archivo procesado.',
+              text: 'Se encontraron errores en el archivo procesado.',
             });
           },
         });
@@ -251,8 +476,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.success,
-            text:
-              'Se sustituyeron los datos correctamente.',
+            text: 'Se sustituyeron los datos correctamente.',
           });
         } else {
           this.loading = false;
@@ -267,8 +491,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         return this.notificationService.updateNotification({
           show: true,
           type: NotificationType.danger,
-          text:
-            'Se encontraron errores en el archivo procesado.',
+          text: 'Se encontraron errores en el archivo procesado.',
         });
       },
     });
@@ -323,8 +546,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'No hay información seleccionada para descargar',
+        text: 'No hay información seleccionada para descargar',
       });
     }
 
@@ -344,8 +566,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.danger,
-            text:
-              'No fue posible descargar la información',
+            text: 'No fue posible descargar la información',
           });
         },
       });
@@ -365,8 +586,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.danger,
-              text:
-                'No fue posible descargar la información',
+              text: 'No fue posible descargar la información',
             });
           },
         });
@@ -374,7 +594,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   private unselectMuestreos() {
-    this.muestreos.forEach((m) => (m.isChecked = false));
+    this.muestreos.forEach((m) => (m.selected = false));
   }
 
   confirmarEliminacion() {
@@ -386,8 +606,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'Debe seleccionar al menos un monitoreo para eliminar',
+        text: 'Debe seleccionar al menos un monitoreo para eliminar',
       });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
@@ -406,8 +625,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.success,
-            text:
-              'Monitoreos eliminados correctamente',
+            text: 'Monitoreos eliminados correctamente',
           });
         },
         error: (error) => {
@@ -424,8 +642,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         return this.notificationService.updateNotification({
           show: true,
           type: NotificationType.warning,
-          text:
-            'Debe seleccionar al menos un monitoreo para eliminar',
+          text: 'Debe seleccionar al menos un monitoreo para eliminar',
         });
       }
 
@@ -440,8 +657,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.success,
-            text:
-              'Monitoreos eliminados correctamente',
+            text: 'Monitoreos eliminados correctamente',
           });
         },
         error: (error) => {
@@ -471,7 +687,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
                 show: true,
                 type: NotificationType.success,
                 text:
-                  'Se enviaron' + this.totalItems + ' muestreos a la etapa de "Acumulación resultados" correctamente ',
+                  'Se enviaron' +
+                  this.totalItems +
+                  ' muestreos a la etapa de "Acumulación resultados" correctamente ',
               });
             }
           },
@@ -481,8 +699,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.danger,
-              text:
-                'Error al enviar los muestreos a la etapa de "Acumulación resultados',
+              text: 'Error al enviar los muestreos a la etapa de "Acumulación resultados',
             });
           },
         });
@@ -497,8 +714,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         return this.notificationService.updateNotification({
           show: true,
           type: NotificationType.warning,
-          text:
-            'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+          text: 'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
         });
       }
 
@@ -519,7 +735,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
                 show: true,
                 type: NotificationType.success,
                 text:
-                  'Se enviaron ' + this.resultadosEnviados.length + ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                  'Se enviaron ' +
+                  this.resultadosEnviados.length +
+                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
               });
             }
           },
@@ -529,8 +747,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.danger,
-              text:
-                'Error al enviar los muestreos a la etapa de "Acumulación resultados"',
+              text: 'Error al enviar los muestreos a la etapa de "Acumulación resultados"',
             });
           },
         });
@@ -561,7 +778,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
@@ -571,7 +788,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     if (this.allSelected) this.allSelected = false;
 
     //Vamos a agregar este registro, a los seleccionados
-    if (muestreo.isChecked) {
+    if (muestreo.selected) {
       this.muestreosSeleccionados.push(muestreo);
       this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
     } else {
@@ -601,7 +818,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       );
 
       if (muestreoSeleccionado != undefined) {
-        f.isChecked = true;
+        f.selected = true;
       }
     });
   }

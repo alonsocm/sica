@@ -1,4 +1,6 @@
-export interface Muestreo {
+import { Row } from '../modules/muestreo/formatoResultado/models/row';
+
+export interface Muestreo extends Row {
   muestreoId: number;
   ocdl: string;
   claveSitio: string;

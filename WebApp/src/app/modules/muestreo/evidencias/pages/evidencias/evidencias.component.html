@@ -3,471 +3,452 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-    <h6 class="row col">Evidencias de monitoreo</h6>
-    <hr class="red">
-    <div class="message-container">
-        <app-notification></app-notification>
+  <h6 class="row col">Evidencias de monitoreo</h6>
+  <hr class="red">
+  <div class="message-container">
+    <app-notification></app-notification>
+  </div>
+  <div class="clearfix">
+    <div class="float-lefth col-md-4">
+      <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+        (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+      </app-busqueda-columna>
     </div>
-    <div class="clearfix">
-      <div class="float-lefth col-md-4">
-        <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                              (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-        </app-busqueda-columna>
-      </div>
 
-      <div class="float-right">
-        <input type="file" class="element-hidden" (change)="cargarEvidencias($event, false)"
-               accept=".xls, .xlsx, .jpg, .pdf, .xlsm" multiple title="Seleccionar archivos" #fileUpload>
-        <button type="button" class="btn btn-primary mr-1" (click)="fileUpload.click()">
-          <i class="bi bi-cloud-upload"></i>
-          Seleccionar y cargar evidencias
-        </button>
-        <button type="button" class="btn btn-secondary mr-1" (click)="descargarEvidencias()">
-          <i class="bi bi-cloud-download"></i>
-          Descargar evidencias
-        </button>
-        <button type="button" class="btn btn-secondary mr-1" (click)="onDeleteEvidenciasClick()">
-          <i class="bi bi-trash"></i>
-          Eliminar evidencias
-        </button>
-        <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
-                data-target="#mdlConfirmacion" title="Seleccionar"></button>
-        <button class="btn btn-secondary btnAcciones" type="button" (click)="limpiarFiltros()">
-          <i class="bi bi-funnel"></i>
-          Limpiar filtros
-        </button>
-      </div>
-    </div>   
+    <div class="float-right">
+      <input type="file" class="element-hidden" (change)="cargarEvidencias($event, false)"
+        accept=".xls, .xlsx, .jpg, .pdf, .xlsm" multiple title="Seleccionar archivos" #fileUpload>
+      <button type="button" class="btn btn-primary mr-1" (click)="fileUpload.click()">
+        <i class="bi bi-cloud-upload"></i>
+        Seleccionar y cargar evidencias
+      </button>
+      <button type="button" class="btn btn-secondary mr-1" (click)="descargarEvidencias()">
+        <i class="bi bi-cloud-download"></i>
+        Descargar evidencias
+      </button>
+      <button type="button" class="btn btn-secondary mr-1" (click)="onDeleteEvidenciasClick()">
+        <i class="bi bi-trash"></i>
+        Eliminar evidencias
+      </button>
+      <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
+        data-target="#mdlConfirmacion" title="Seleccionar"></button>
+      <button class="btn btn-secondary btnAcciones" type="button" (click)="limpiarFiltros()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
 
-      <app-historial></app-historial>
-      <div class="alert alert-secondary" role="alert"
-           *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
-        Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
-                                                                                            (click)="onSelectAllPagesClick()" class="btn btn-link">
-          Seleccionar los {{this.totalItems}} registros
-        </button>
-      </div>
-      <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
-        Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
-                                                                       (click)="onUnselectAllClick()">
-          Anular la seleccion
-        </button>
-      </div>
-      <input id="fileReplace" type="file" class="element-hidden"
-             (change)="cargarEvidencias($event, true, this.nombreEvidencia)" accept=".xls, .xlsx, .jpg, .pdf, .xlsm"
-             title="Seleccionar archivos" #fileReplace>
-      <div class="dvTable">
-        <table class="table-bordered table-hover">
-          <thead class="thead-sticky">
-            <tr>
-              <th columnResize class="td-center no-border-bottom th-resize">
-                &nbsp;SELECCIONAR&nbsp;
-              </th>
-              <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
-                  id="{{columna.name}}" class="no-border-bottom th-resize"
-                  [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
-                {{columna.label}}
-              </th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FOTO CAUDAL</th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-                MÁSCARA DE CAMPO
-              </th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-                CADENA CUSTODIA
-              </th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">BITÁCORA</th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-                FOTO MUESTREO
-              </th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-                FORMATO CAUDAL
-              </th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">TRACK</th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-                FOTO MUESTRA
-              </th>
-              <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
-                FORMATO DE
-                EVENTUALIDAD
-              </th>
-            </tr>
-            <tr>
-              <th class="no-border-top td-center">
-                <input class="cursor-pointer" type="checkbox" id="chckAll"
-                       [(ngModel)]="this.selectedPage" (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);"
-                       title="Selecciona la página actual" />
-              </th>
-              <th class="no-border-top" *ngFor="let columna of this.columns let i = index"
-                  id="filter-{{columna.name}}">
-                <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
-                  <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown"
-                          aria-haspopup="true" title="Filtros" aria-expanded="false"
-                          (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
-                    <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
-                       class="bi bi-caret-down-fill"></i>
-                    <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
-                    <i [(ngModel)]="columna.asc"
-                       *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
-                       class="bi bi-arrow-down"></i>
-                    <i [(ngModel)]="columna.desc"
-                       *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
-                       class="bi bi-arrow-up"></i>
-                  </button>
-                  <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
-                    <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
-                      <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
-                         class="bi bi-sort-alpha-down"></i>
-                      Ordenar de A a Z
-                    </a>
-                    <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
-                      <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
-                         class="bi bi-sort-alpha-down-alt"></i>
-                      Ordenar de Z a A
-                    </a>
-                    <hr class="dropdown-divider">
-                    <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
-                      <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}"
-                         class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>
-                      Eliminar filtro de {{columna.label}}
-                    </a>
+  <app-historial></app-historial>
+  <div class="alert alert-secondary" role="alert"
+    *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+    Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
+      (click)="onSelectAllPagesClick()" class="btn btn-link">
+      Seleccionar los {{this.totalItems}} registros
+    </button>
+  </div>
+  <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
+    Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
+      (click)="onUnselectAllClick()">
+      Anular la seleccion
+    </button>
+  </div>
+  <input id="fileReplace" type="file" class="element-hidden"
+    (change)="cargarEvidencias($event, true, this.nombreEvidencia)" accept=".xls, .xlsx, .jpg, .pdf, .xlsm"
+    title="Seleccionar archivos" #fileReplace>
+  <div class="dvTable">
+    <table class="table-bordered table-hover">
+      <thead class="thead-sticky">
+        <tr>
+          <th columnResize class="td-center no-border-bottom th-resize">
+            &nbsp;SELECCIONAR&nbsp;
+          </th>
+          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+            class="no-border-bottom th-resize"
+            [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+            {{columna.label}}
+          </th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">FOTO CAUDAL</th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
+            MÁSCARA DE CAMPO
+          </th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
+            CADENA CUSTODIA
+          </th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">BITÁCORA</th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
+            FOTO MUESTREO
+          </th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
+            FORMATO CAUDAL
+          </th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">TRACK</th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
+            FOTO MUESTRA
+          </th>
+          <th class="no-border-top" columnResize class="td-center no-border-bottom th-resize">
+            FORMATO DE
+            EVENTUALIDAD
+          </th>
+        </tr>
+        <tr>
+          <th class="no-border-top td-center">
+            <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
+              (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);"
+              title="Selecciona la página actual" />
+          </th>
+          <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
+            <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
+                title="Filtros" aria-expanded="false"
+                (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
+                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                  class="bi bi-caret-down-fill"></i>
+                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                  class="bi bi-arrow-down"></i>
+                <i [(ngModel)]="columna.desc"
+                  *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                  class="bi bi-arrow-up"></i>
+              </button>
+              <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
+                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
+                    class="bi bi-sort-alpha-down"></i>
+                  Ordenar de A a Z
+                </a>
+                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
+                    class="bi bi-sort-alpha-down-alt"></i>
+                  Ordenar de Z a A
+                </a>
+                <hr class="dropdown-divider">
+                <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
+                  <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i
+                    style="padding:0px" class="bi bi-x"></i>
+                  Eliminar filtro de {{columna.label}}
+                </a>
 
 
-                    <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
-                      <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals" style="color: palegreen" class="bi bi-check-square-fill"></i>
+                <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
+                  <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals"
+                    style="color: palegreen" class="bi bi-check-square-fill"></i>
 
-                      {{leyendaFiltrosEspeciales}}
-                    </a>
+                  {{leyendaFiltrosEspeciales}}
+                </a>
 
-                    <div id="filters-{{columna.name}}" class="d-none">
-                      <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
-                         (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal"
-                         data-target="#mdlFiltro">
-                        <i id="imgFiltroEspecializado" *ngIf="(nombre == this.filtroEspecializado && columna.optionFilter != null && columna.secondOptionFilter != '') || nombre === columna.optionFilter && columna.optionFilter != this.filtroEspecialEquals && columna.secondOptionFilter ==''" class="bi bi-check-lg"></i>
-                        {{nombre}} ...
-                        <div *ngIf="this.indicesopcionesFiltros.includes(indice)" class="dropdown-divider"></div>
-                      </a>
-                    </div>
-                    <div class="dropdown-divider"></div>
-                    <div style="height:300px; overflow:scroll; padding:5px">
-                      <input class="form-control" placeholder="Buscar" type="text"
-                             (input)="onFiltroCabecero($event, columna)" />
-                      <span><i class="bi bi-search"></i></span>
-                      <br />
-                      <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
-                             (change)="seleccionarAllFiltro(columna);" />
-                      <label style="font-size:x-small" (click)="$event.stopPropagation()"
-                             for="chckAllFiltro{{columna.name}}">
-                        Seleccionar
-                        todos
-                      </label>
-                      <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
-                        <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
-                        <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
-                               (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
-                      </div>
-                    </div>
-                    <div class="modal-footer" style="font-size:xx-small;">
-                      <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
-                              data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
-                        Cancelar
-                      </button>
-                      <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
-                              (click)="filtrar(columna,false);">
-                        Aceptar
-                      </button>
-                    </div>
+                <div id="filters-{{columna.name}}" class="d-none">
+                  <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
+                    (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal"
+                    data-target="#mdlFiltro">
+                    <i id="imgFiltroEspecializado"
+                      *ngIf="(nombre == this.filtroEspecializado && columna.optionFilter != null && columna.secondOptionFilter != '') || nombre === columna.optionFilter && columna.optionFilter != this.filtroEspecialEquals && columna.secondOptionFilter ==''"
+                      class="bi bi-check-lg"></i>
+                    {{nombre}} ...
+                    <div *ngIf="this.indicesopcionesFiltros.includes(indice)" class="dropdown-divider"></div>
+                  </a>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div style="height:300px; overflow:scroll; padding:5px">
+                  <input class="form-control" placeholder="Buscar" type="text"
+                    (input)="onFiltroCabecero($event, columna)" />
+                  <span><i class="bi bi-search"></i></span>
+                  <br />
+                  <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
+                    (change)="seleccionarAllFiltro(columna);" />
+                  <label style="font-size:x-small" (click)="$event.stopPropagation()"
+                    for="chckAllFiltro{{columna.name}}">
+                    Seleccionar
+                    todos
+                  </label>
+                  <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
+                    <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
+                    <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
+                      (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
                   </div>
                 </div>
-              </th>
-              <th *ngFor="let init of [1,2,3,4,4,6,7,8,9]" class="no-border-top"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
-              <td class="td-center">
-                <input type="checkbox" [(ngModel)]="muestreo.isChecked" (change)="onSelectClick(muestreo)"
-                       title="Seleccionar">
-              </td>
-              <td *ngIf="mostrarCampo()">{{muestreo.numeroEntrega}}</td>
-              <td>-</td>
-              <td>{{muestreo.claveSitio}}</td>
-              <td>{{muestreo.claveMonitoreo}}</td>
-              <td>{{muestreo.nombreSitio}}</td>
-              <td>{{muestreo.ocdl}}</td>
-              <td>{{muestreo.cuerpoAgua}}</td>
-              <td>-</td>
-              <td>{{muestreo.tipoCuerpoAgua}}</td>
-              <td>{{muestreo.tipoSitio}}</td>
-              <td>{{muestreo.laboratorio}}</td>
-              <td>-</td>
-              <td>{{muestreo.fechaProgramada}}</td>
-              <td>{{muestreo.fechaRealizacion}}</td>
-              <td>{{muestreo.programaAnual}}</td>
-              <td>{{muestreo.horaInicio}}</td>
-              <td>{{muestreo.horaFin}}</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <ng-container *ngFor="let sufijo of sufijos;">
-                <td *ngIf="existeEvidencia(muestreo.evidencias, sufijo) else elseBlock">
-                  <div [ngSwitch]="sufijo">
-                    <!-- <img *ngSwitchCase="'A'"
+                <div class="modal-footer" style="font-size:xx-small;">
+                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
+                    data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
+                    Cancelar
+                  </button>
+                  <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
+                    (click)="filtrar(columna,false);">
+                    Aceptar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </th>
+          <th *ngFor="let init of [1,2,3,4,4,6,7,8,9]" class="no-border-top"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
+          <td class="td-center">
+            <input type="checkbox" [(ngModel)]="muestreo.selected" (change)="onSelectClick(muestreo)"
+              title="Seleccionar">
+          </td>
+          <td *ngIf="mostrarCampo()">{{muestreo.numeroEntrega}}</td>
+          <td>-</td>
+          <td>{{muestreo.claveSitio}}</td>
+          <td>{{muestreo.claveMonitoreo}}</td>
+          <td>{{muestreo.nombreSitio}}</td>
+          <td>{{muestreo.ocdl}}</td>
+          <td>{{muestreo.cuerpoAgua}}</td>
+          <td>-</td>
+          <td>{{muestreo.tipoCuerpoAgua}}</td>
+          <td>{{muestreo.tipoSitio}}</td>
+          <td>{{muestreo.laboratorio}}</td>
+          <td>-</td>
+          <td>{{muestreo.fechaProgramada}}</td>
+          <td>{{muestreo.fechaRealizacion}}</td>
+          <td>{{muestreo.programaAnual}}</td>
+          <td>{{muestreo.horaInicio}}</td>
+          <td>{{muestreo.horaFin}}</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <ng-container *ngFor="let sufijo of sufijos;">
+            <td *ngIf="existeEvidencia(muestreo.evidencias, sufijo) else elseBlock">
+              <div [ngSwitch]="sufijo">
+                <!-- <img *ngSwitchCase="'A'"
                     (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)" width="60px"
                     class="cursor-pointer evidencia-icon" src="./assets/images/site/iconoimagen.png"
                     title="Click para descargar" /> -->
-                    <div *ngSwitchCase="'A'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para vista previa">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                             height="30" fill="currentColor" class="bi bi-file-earmark-image"
-                             viewBox="0 0 16 16">
-                          <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                          <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
-                        </svg>
-                      </a>
-                      <a type="button" title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'C'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30"
-                             height="30" fill="currentColor" class="bi bi-filetype-xls"
-                             viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
-                        </svg>
-                      </a>
-                      <a type="button" title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'D'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30"
-                             height="30" fill="currentColor" class="bi bi-filetype-pdf"
-                             viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803q.43 0 .732-.173.305-.175.463-.474a1.4 1.4 0 0 0 .161-.677q0-.375-.158-.677a1.2 1.2 0 0 0-.46-.477q-.3-.18-.732-.179m.545 1.333a.8.8 0 0 1-.085.38.57.57 0 0 1-.238.241.8.8 0 0 1-.375.082H.788V12.48h.66q.327 0 .512.181.185.183.185.522m1.217-1.333v3.999h1.46q.602 0 .998-.237a1.45 1.45 0 0 0 .595-.689q.196-.45.196-1.084 0-.63-.196-1.075a1.43 1.43 0 0 0-.589-.68q-.396-.234-1.005-.234zm.791.645h.563q.371 0 .609.152a.9.9 0 0 1 .354.454q.118.302.118.753a2.3 2.3 0 0 1-.068.592 1.1 1.1 0 0 1-.196.422.8.8 0 0 1-.334.252 1.3 1.3 0 0 1-.483.082h-.563zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638z" />
-                        </svg>
-                      </a>
-                      <a title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'E'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                             height="30" fill="currentColor" class="bi bi-file-earmark-image"
-                             viewBox="0 0 16 16">
-                          <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                          <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
-                        </svg>
-                      </a>
-                      <a title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'M'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                             height="30" fill="currentColor" class="bi bi-file-earmark-image"
-                             viewBox="0 0 16 16">
-                          <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                          <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
-                        </svg>
-                      </a>
-                      <a title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'O'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30"
-                             height="30" fill="currentColor" class="bi bi-filetype-xls"
-                             viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
-                        </svg>
-                      </a>
-                      <a type="button" title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'R'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30"
-                             height="30" fill="currentColor" class="bi bi-filetype-xls"
-                             viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
-                        </svg>
-                      </a>
-                      <a title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'S'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                             height="30" fill="currentColor" class="bi bi-file-earmark-image"
-                             viewBox="0 0 16 16">
-                          <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                          <path d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
-                        </svg>
-                      </a>
-                      <a title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                    <div *ngSwitchCase="'V'">
-                      <a class="cursor-pointer"
-                         (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
-                         title="Click para descargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30"
-                             height="30" fill="currentColor" class="bi bi-filetype-xls"
-                             viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
-                        </svg>
-                      </a>
-                      <a title="Reemplazar evidencia"
-                         (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                             fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                </td>
-                <ng-template #elseBlock>
-                  <td>-</td>
-                </ng-template>
-              </ng-container>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="row">
-        <div class="col-md-3">
-          <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
-          </pagination-controls>
-        </div>
-        <div class="col-md-2">
-          <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.muestreos.length}}</span></p>
-        </div>
-        <div class="col-md-3">
-          <p class="total-items">
-            Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span>
-          </p>
-        </div>
-      </div>
+                <div *ngSwitchCase="'A'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para vista previa">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="30" fill="currentColor"
+                      class="bi bi-file-earmark-image" viewBox="0 0 16 16">
+                      <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+                      <path
+                        d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
+                    </svg>
+                  </a>
+                  <a type="button" title="Reemplazar evidencia"
+                    (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'C'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                      class="bi bi-filetype-xls" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
+                    </svg>
+                  </a>
+                  <a type="button" title="Reemplazar evidencia"
+                    (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'D'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                      class="bi bi-filetype-pdf" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803q.43 0 .732-.173.305-.175.463-.474a1.4 1.4 0 0 0 .161-.677q0-.375-.158-.677a1.2 1.2 0 0 0-.46-.477q-.3-.18-.732-.179m.545 1.333a.8.8 0 0 1-.085.38.57.57 0 0 1-.238.241.8.8 0 0 1-.375.082H.788V12.48h.66q.327 0 .512.181.185.183.185.522m1.217-1.333v3.999h1.46q.602 0 .998-.237a1.45 1.45 0 0 0 .595-.689q.196-.45.196-1.084 0-.63-.196-1.075a1.43 1.43 0 0 0-.589-.68q-.396-.234-1.005-.234zm.791.645h.563q.371 0 .609.152a.9.9 0 0 1 .354.454q.118.302.118.753a2.3 2.3 0 0 1-.068.592 1.1 1.1 0 0 1-.196.422.8.8 0 0 1-.334.252 1.3 1.3 0 0 1-.483.082h-.563zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638z" />
+                    </svg>
+                  </a>
+                  <a title="Reemplazar evidencia" (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'E'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="30" fill="currentColor"
+                      class="bi bi-file-earmark-image" viewBox="0 0 16 16">
+                      <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+                      <path
+                        d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
+                    </svg>
+                  </a>
+                  <a title="Reemplazar evidencia" (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'M'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="30" fill="currentColor"
+                      class="bi bi-file-earmark-image" viewBox="0 0 16 16">
+                      <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+                      <path
+                        d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
+                    </svg>
+                  </a>
+                  <a title="Reemplazar evidencia" (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'O'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                      class="bi bi-filetype-xls" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
+                    </svg>
+                  </a>
+                  <a type="button" title="Reemplazar evidencia"
+                    (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'R'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                      class="bi bi-filetype-xls" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
+                    </svg>
+                  </a>
+                  <a title="Reemplazar evidencia" (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'S'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="30" fill="currentColor"
+                      class="bi bi-file-earmark-image" viewBox="0 0 16 16">
+                      <path d="M6.502 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
+                      <path
+                        d="M14 14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM4 1a1 1 0 0 0-1 1v10l2.224-2.224a.5.5 0 0 1 .61-.075L8 11l2.157-3.02a.5.5 0 0 1 .76-.063L13 10V4.5h-2A1.5 1.5 0 0 1 9.5 3V1z" />
+                    </svg>
+                  </a>
+                  <a title="Reemplazar evidencia" (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+                <div *ngSwitchCase="'V'">
+                  <a class="cursor-pointer" (click)="onPreviewOrDownloadFileClick(muestreo.claveMonitoreo, sufijo)"
+                    title="Click para descargar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                      class="bi bi-filetype-xls" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM6.472 15.29a1.2 1.2 0 0 1-.111-.449h.765a.58.58 0 0 0 .254.384q.106.073.25.114.143.041.319.041.246 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .085-.29.39.39 0 0 0-.153-.326q-.152-.12-.462-.193l-.619-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.351-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.19-.272.527-.422.338-.15.777-.149.457 0 .78.152.324.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.247-.181.9.9 0 0 0-.369-.068q-.325 0-.513.152a.47.47 0 0 0-.184.384q0 .18.143.3a1 1 0 0 0 .405.175l.62.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-2.945-3.358h-.893L1.81 13.37h-.036l-.832-1.438h-.93l1.227 1.983L0 15.931h.861l.853-1.415h.035l.85 1.415h.908L2.253 13.94zm2.727 3.325H4.557v-3.325h-.79v4h2.487z" />
+                    </svg>
+                  </a>
+                  <a title="Reemplazar evidencia" (click)="onReplaceEvidenciaClick(muestreo.claveMonitoreo, sufijo)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      class="bi bi-arrow-left-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd"
+                        d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5m14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </td>
+            <ng-template #elseBlock>
+              <td>-</td>
+            </ng-template>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
+      </pagination-controls>
     </div>
+    <div class="col-md-2">
+      <p class="total-items">Registros por página: <span class="badge text-bg-primary">{{this.muestreos.length}}</span>
+      </p>
+    </div>
+    <div class="col-md-3">
+      <p class="total-items">
+        Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span>
+      </p>
+    </div>
+  </div>
+</div>
 <!-- Button trigger modal -->
 <button id="btn-img-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#imgModal">
   Mostrar imagen
 </button>
 
 <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
-                [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
+  [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
 
 
 <!-- Modal -->
 <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="tituloEvidencia"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <img [src]="this.imgSrc" class="img-thumbnail" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tituloEvidencia"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img [src]="this.imgSrc" class="img-thumbnail" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="modal fade modal-dialog-centered" id="mdlConfirmacion" data-bs-backdrop="static" data-toggle="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar eliminación</h4>
-            </div>
-            <div class="modal-body">
-                <p>¿Está seguro de eliminar las evidencias de los monitoreos seleccionados?</p>
-            </div>
-            <div class="modal-footer">
-                <button id="btnCancelarModal" type="button" class="btn btn-secondary"
-                    data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                    (click)="onConfirmDeleteEvidenciasClick()">
-                    Aceptar
-                </button>
-            </div>
-        </div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar eliminación</h4>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro de eliminar las evidencias de los monitoreos seleccionados?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onConfirmDeleteEvidenciasClick()">
+          Aceptar
+        </button>
+      </div>
     </div>
+  </div>
 </div>
