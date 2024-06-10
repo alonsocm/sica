@@ -45,14 +45,15 @@
     <table class="table-bordered">
       <thead class="thead-sticky" style="z-index: 1;">
         <tr>
-          <th class="td-center no-border-bottom sticky-col size-col" style="left:0px">
+          <th class="td-center no-border-bottom sticky-col"
+            [ngStyle]="{'left.px':0, 'width.px': this.firstColumnWidth, 'min-width.px': this.firstColumnWidth, 'max-width.px': this.firstColumnWidth}">
             &nbsp;SELECCIONAR&nbsp;
           </th>
           <ng-container *ngFor="let columna of this.columns let i = index;">
             <div *ngIf="columna.pinned then thenBlock else elseBlock"></div>
             <ng-template #thenBlock>
-              <th id="{{columna.name}}" class="no-border-bottom sticky-col size-col"
-                [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'left.px':this.width * (i+1)}">
+              <th id="{{columna.name}}" class="no-border-bottom sticky-col"
+                [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'left.px':columna.startAt, 'width.px':columna.width}">
                 {{columna.label}}
               </th>
             </ng-template>
@@ -67,15 +68,16 @@
           </ng-container>
         </tr>
         <tr>
-          <th class="no-border-top td-center sticky-col size-col" style="left: 0px;">
+          <th class="no-border-top td-center sticky-col"
+            [ngStyle]="{'left.px':0, 'width.px': this.firstColumnWidth, 'min-width.px': this.firstColumnWidth, 'max-width.px': this.firstColumnWidth}">
             <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
               (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);"
               title="Selecciona la página actual" />
           </th>
           <ng-container *ngFor="let columna of this.columns let i = index">
-            <th
-              [ngClass]="{'pinned-no-border-top sticky-col size-col': columna.pinned, 'no-border-top': !columna.pinned}"
-              id="filter-{{columna.name}}" [ngStyle]="{'left.px': columna.pinned?this.width * (i+1):''}">
+            <th [ngClass]="{'pinned-no-border-top sticky-col': columna.pinned, 'no-border-top': !columna.pinned}"
+              id="filter-{{columna.name}}"
+              [ngStyle]="{'left.px': columna.pinned?columna.startAt:'', 'width.px':columna.pinned?columna.width:'', 'max-width.px':columna.pinned?columna.width:'', 'min-width.px':columna.pinned?columna.width:''}">
               <div class="dropdown" style="width:max-content;" id="dd-{{columna.name}}"
                 [ngStyle]="{'position': columna.pinned?'relative':'static'}">
                 <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
@@ -164,41 +166,54 @@
         <tr
           *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}"
           style="z-index: 0;">
-          <td style=" text-align:center; left: 0px;" class="checkBox-center sticky-td size-col">
+          <td style=" text-align:center"
+            [ngStyle]="{'left.px':0, 'width.px': this.firstColumnWidth, 'min-width.px': this.firstColumnWidth, 'max-width.px': this.firstColumnWidth}"
+            class="checkBox-center sticky-td">
             <input type="checkbox" [(ngModel)]="muestreo.selected" (change)="onSelectClick(muestreo)"
               title="Seleccionar">
           </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 1 * this.width : ''}">
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[0].startAt, 'width.px':this.columns[0].width, 'max-width.px':this.columns[0].width, 'min-width.px':this.columns[0].width}">
             {{muestreo.estatus}}</td>
-          <td *ngIf="this.esVisibleNumEntrega" class="checkBox-center sticky-td size-col"
-            [ngStyle]="{'left.px': true ? 2 * this.width : ''}">
+          <td *ngIf="this.esVisibleNumEntrega" class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[1].startAt, 'width.px':this.columns[1].width, 'max-width.px':this.columns[1].width, 'min-width.px':this.columns[1].width}">
             {{muestreo.numeroEntrega}}
           </td>
-          <td class="checkBox-center sticky-td size-col " [ngStyle]="{'left.px': true ? 3 * this.width : ''}">
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[2].startAt, 'width.px':this.columns[2].width, 'max-width.px':this.columns[2].width, 'min-width.px':this.columns[2].width}">
             NO
           </td>
-          <td class="checkBox-center sticky-td sticky-td size-col" [ngStyle]="{'left.px': true ? 4 * this.width : ''}">
+          <td class="checkBox-center sticky-td sticky-td"
+            [ngStyle]="{'left.px': this.columns[3].startAt, 'width.px':this.columns[3].width, 'max-width.px':this.columns[3].width, 'min-width.px':this.columns[3].width}">
             {{muestreo.claveSitioOriginal}}
           </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 5 * this.width : ''}">
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[4].startAt, 'width.px':this.columns[4].width, 'max-width.px':this.columns[4].width, 'min-width.px':this.columns[4].width}">
             {{muestreo.claveSitio}}
           </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 6 * this.width : ''}">
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[5].startAt, 'width.px':this.columns[5].width, 'max-width.px':this.columns[5].width, 'min-width.px':this.columns[5].width}">
+            {{muestreo.claveMonitoreo}}
+          </td>
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[6].startAt, 'width.px':this.columns[6].width, 'max-width.px':this.columns[6].width, 'min-width.px':this.columns[6].width}">
+            {{muestreo.fechaRealizacion}}
+          </td>
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[7].startAt, 'width.px':this.columns[7].width, 'max-width.px':this.columns[7].width, 'min-width.px':this.columns[7].width}">
             {{muestreo.laboratorio}}
           </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 7 * this.width : ''}">
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[8].startAt, 'width.px':this.columns[8].width, 'max-width.px':this.columns[8].width, 'min-width.px':this.columns[8].width}">
             {{muestreo.tipoCuerpoAgua}}
           </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 8 * this.width : ''}">
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[9].startAt, 'width.px':this.columns[9].width, 'max-width.px':this.columns[9].width, 'min-width.px':this.columns[9].width}">
             {{muestreo.tipoHomologado}}
           </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 9 * this.width : ''}">
-            {{muestreo.tipoSitio}}
-          </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 10 * this.width : ''}">
-            {{muestreo.tipoSitio}}
-          </td>
-          <td class="checkBox-center sticky-td size-col" [ngStyle]="{'left.px': true ? 11 * this.width : ''}">
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[10].startAt, 'width.px':this.columns[10].width, 'max-width.px':this.columns[10].width, 'min-width.px':this.columns[10].width}"
+            style="word-break: break-all;">
             {{muestreo.tipoSitio}}
           </td>
           <ng-container *ngFor="let parametro of parametrosTotales">

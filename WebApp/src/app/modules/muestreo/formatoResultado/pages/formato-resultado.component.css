@@ -10,12 +10,6 @@
   background-color: white;
 }
 
-.size-col {
-  width: 150px;
-  min-width: 150px;
-  max-width: 150px;
-}
-
 .pinned-no-border-top {
   border-top: 0px;
 }
@@ -23,4 +17,9 @@
 table {
   border-collapse: separate;
   border-spacing: 0;
+}
+
+table tbody td {
+  white-space: wrap;
+  word-break: break-word;
 }

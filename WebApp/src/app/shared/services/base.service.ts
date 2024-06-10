@@ -525,13 +525,10 @@ export class BaseService {
   }
 
   public setHeadersList(columns: Array<Column>) {
-    console.log("columnsss");
-    console.log(columns);
     this.headers = columns.map((m) => ({
       label: m.label,
       name: m.name,
     }));
-    console.log(this.headers);
   }
 
   onSelectPageClick(muestreos: Array<any>, muestreosSeleccionados: Array<any>) {

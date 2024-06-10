@@ -18,4 +18,8 @@ export interface Column {
   secondSpecialFilter?: string;
   isLatestFilter?: boolean;
   pinned?: boolean;
+  //#region Propiedades para establecer el ancho de una columna. Cuando son columnas fijas.
+  width?: number;
+  startAt?: number;
+  //#endregion
 }

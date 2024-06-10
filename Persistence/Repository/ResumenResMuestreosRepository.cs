@@ -276,7 +276,7 @@ namespace Persistence.Repository
                                          //join stca in _dbContext.SubtipoCuerpoAgua on csta.SubtipoCuerpoAguaId equals stca.Id
                                          join th in _dbContext.TipoHomologado on tca.TipoHomologadoId equals th.Id
                                          join ts in _dbContext.TipoSitio on m.ProgramaMuestreo.ProgramaSitio.TipoSitioId equals ts.Id
-                                         where m.EstatusId == estatusId                                         
+                                         where m.EstatusId == estatusId
                                          select new RegistroOriginalDto
                                          {
                                              MuestreoId = m.Id,
@@ -286,7 +286,7 @@ namespace Persistence.Repository
                                              ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                              ClaveMonitoreo = vpm.ClaveMuestreo,
                                              FechaRealizacion = m.FechaRealVisita.ToString(),
-                                             Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
+                                             Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? "Sin laboratorio asignado",
                                              TipoCuerpoAguaId = tca.Id,
                                              TipoCuerpoAgua = tca.Descripcion,
                                              TipoHomologadoId = th.Id,
@@ -294,8 +294,6 @@ namespace Persistence.Repository
                                              TipoSitio = ts.Descripcion,
                                              EstatusId = m.EstatusId,
                                              Estatus = m.Estatus.Descripcion
-                                             
-                                          
                                          }).ToList();
 
 
