@@ -281,6 +281,7 @@ namespace Persistence.Repository
                                          {
                                              MuestreoId = m.Id,
                                              NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
+                                             //Programa de muestreo
                                              ClaveSitioOriginal = ((m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio) + (m.ProgramaMuestreo.DomingoSemanaProgramada.ToString("yyyy"))),
                                              ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                              ClaveMonitoreo = vpm.ClaveMuestreo,

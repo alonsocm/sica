@@ -13,6 +13,7 @@ using Application.Wrappers;
 using AutoMapper;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.Style;
 using Shared.Utilities.Services;
 using System.Reflection;
 using WebAPI.Shared;
@@ -613,9 +614,32 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ResultadosporMuestreo")]
-        public async Task<IActionResult> GetActionAsync([FromQuery] GetResultadosporMuestreoQuery request)
+        public async Task<IActionResult> GetResultadosporMuestreoAsync(int estatusId, int page, int pageSize, string? filter = "", string? order = "")
         {
-            return Ok(await Mediator.Send(new GetResultadosporMuestreoQuery { Anios = request.Anios, NumeroEntrega = request.NumeroEntrega, estatusId = request.estatusId }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column =order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+            return Ok(await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+            {
+                estatusId = estatusId,
+                page = page,
+                pageSize = pageSize,
+                Filter = filters,
+                OrderBy = orderBy
+            }));
         }
 
         //ExportaciondeExcelPantallasValidacionReglas

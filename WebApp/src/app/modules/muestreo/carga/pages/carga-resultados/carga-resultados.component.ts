@@ -45,13 +45,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       (dato: Column) => {
         if (dato.specialFilter != null) this.filtrar(dato, true);
       }
-    );
-
-    this.muestreoService.muestreos.subscribe((muestreos) => {
-      if (this.isAceptarNotificacion) {
-        this.eliminarMuestreos();
-      }
-    });
+    ); 
   }
 
   ngOnInit(): void {
@@ -714,7 +708,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         return this.notificationService.updateNotification({
           show: true,
           type: NotificationType.warning,
-          text: 'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+          text: 'Debes de seleccionar al menos un muestreo con evidencias cargadas para ser enviado a la etapa de "Acumulación resultados"',
         });
       }
 
@@ -782,7 +776,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
 
-  onSelectClick(muestreo: Muestreo) {
+  onSelectClick(muestreo: Muestreo) {   
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
     if (this.allSelected) this.allSelected = false;
@@ -800,7 +794,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         this.muestreosSeleccionados.splice(index, 1);
       }
     }
-
+ 
     this.getSummary();
   }
 

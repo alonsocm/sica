@@ -42,6 +42,7 @@ namespace Application.DTOs
 
         public List<ParametrosDto> lstParametros { get; set; }
 
+        public long resultadoMuestreoId { get; set; }
 
 
         public AcumuladosResultadoDto()
@@ -77,6 +78,7 @@ namespace Application.DTOs
             this.resultadoReglas = string.Empty;
 
             this.lstParametros = new List<ParametrosDto>();
+            this.resultadoMuestreoId = 0;
         }
     }
 }

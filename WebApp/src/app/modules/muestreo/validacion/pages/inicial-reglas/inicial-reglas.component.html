@@ -12,23 +12,16 @@
   </div>
 
   <div class="clearfix">
-    <div class="float-lefth col-md-3">
-      <label for="entrega">Seleccionar número(s) de entrega:*</label>
-      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas"
-              [size]="this.entregas.length">
-        <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
-      </select>
-
-    </div>
-    <div class="float-lefth col-md-1">
-      <br />
-      <button class="btn btn-primary" type="button" (click)="cargaResultados()">
-        <i class="bi bi-send"></i> Ver resultados
-      </button>
+    <div class="float-lefth col-md-4">
+      <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+      </app-busqueda-columna>
     </div>
 
     <div class="float-right">
-      <br />
+      <button class="btn btn-primary mr-1" type="button" (click)="enviaraValidacion()">
+        <i class="bi bi-send"></i> Enviar a validación
+      </button>
       <button class="btn btn-secondary mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
@@ -37,12 +30,7 @@
         Limpiar filtros
       </button>
     </div>
-    <div class="float-right col-md-4">
-      <br />
-      <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-      </app-busqueda-columna>
-    </div>
+
   </div>
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert" *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
@@ -203,9 +191,7 @@
   </div>
   <div class="clearfix">
     <div class="float-right">
-      <button class="btn btn-primary rigth" type="button" (click)="enviaraValidacion()">
-        <i class="bi bi-send"></i> Enviar a validación
-      </button>
+
     </div>
   </div>
   <hr />

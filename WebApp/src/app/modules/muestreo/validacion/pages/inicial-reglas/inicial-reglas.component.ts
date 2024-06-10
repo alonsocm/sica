@@ -30,19 +30,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   ngOnInit(): void {
  
     this.definirColumnas();
-
-    this.validacionService.obtenerMuestreos().subscribe({
-      next: (response: any) => {
-        this.anios = response.data;
-      },
-      error: (error) => { },
-    });
-    this.validacionService.obtenerNumerosEntrega().subscribe({
-      next: (response: any) => {
-        this.entregas = response.data;
-      },
-      error: (error) => { },
-    });
+    this.cargaResultados();
 
   }
 
@@ -139,29 +127,29 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.setHeadersList(this.columns);
   }
 
-  cargaResultados() {
-    if (
-      this.entregasSeleccionadas.length == 0 &&
-      this.aniosSeleccionados.length == 0
-    ) {   
-      this.hacerScroll();
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text:
-          'Debes de seleccionar al menos un número de entrega',
-      });
-    }
+  cargaResultados(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ): void {
+
     this.loading = true;
     this.validacionService
-      .getResultadosporMonitoreo(
-        this.aniosSeleccionados,
-        this.entregasSeleccionadas,
-        estatusMuestreo.InicialReglas
+      .getResultadosporMonitoreoPaginados(
+        estatusMuestreo.InicialReglas, page, pageSize, filter, this.orderBy
       )
       .subscribe({
         next: (response: any) => {
+          this.selectedPage = false;
           this.resultadosMuestreo = response.data;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
+
+          this.getPreviousSelected(this.resultadosMuestreo, this.resultadosFiltradosn);
+          this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
+
+
+
           this.resultadosFiltradosn = this.resultadosMuestreo;
           this.resultadosn = this.resultadosMuestreo;
           this.loading = false;

@@ -26,6 +26,8 @@ export interface acumuladosMuestreo extends Muestreo {
   costoParametro: number,
   numeroEntrega: string,
   isChecked: boolean;
+  resultadoMuestreoId: number;
+
 
   validacionEvidencias: boolean;
 

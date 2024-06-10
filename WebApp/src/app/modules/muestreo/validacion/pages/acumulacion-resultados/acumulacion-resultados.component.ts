@@ -8,6 +8,7 @@ import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
+import { Notificacion } from '../../../../../shared/models/notification-model';
 
 @Component({
   selector: 'app-acumulacion-resultados',
@@ -21,6 +22,12 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
     private notificationService: NotificationService) { super(); }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación',
+    text: '¿Está seguro de eliminar los resultados seleccionados?'
+  };
+
+
 
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
@@ -164,35 +171,31 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
       next: (response: any) => {
 
         this.selectedPage = false;
-        this.datosAcumualdos = response.data;
+        this.datosAcumualdos = response.data;       
         this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
         this.totalItems = response.totalRecords;
         this.getPreviousSelected(this.datosAcumualdos, this.resultadosFiltrados);
         this.selectedPage = this.anyUnselected(this.datosAcumualdos) ? false : true;
-
-        this.resultadosFiltradosn = this.datosAcumualdos;
-        this.resultadosn = this.datosAcumualdos;
         this.loading = false;
 
       },
       error: (error) => { this.loading = false; },
     });
-
+   
   }
 
-  onDownload(): void {
-    if (this.resultadosFiltradosn.length == 0) {
+  //cambiar cuando selecciona todo
+  onDownload(): void {    
+    if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'No hay información existente para descargar',
+        text: 'No hay información seleccionada para descargar',
       });
     }
-
-    this.loading = true;
-    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltradosn)
+    
+    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'AcumulacionResultados.xlsx');
@@ -212,19 +215,19 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
   }
 
   enviarmonitoreos(): void {
-    console.log(this.resultadosFiltradosn);
-    let resuladosenviados = this.Seleccionados(this.resultadosFiltradosn).map(
+    console.log(this.datosAcumualdos);
+    let resuladosenviados = this.Seleccionados(this.datosAcumualdos).map(
       (m) => { return m.muestreoId; });
-    let totalmuestreos = this.Seleccionados(this.resultadosFiltradosn).filter(x => x.claveSitio);
+    let totalmuestreos = this.Seleccionados(this.datosAcumualdos).filter(x => x.claveSitio);
     console.log(totalmuestreos);
 
     if (resuladosenviados.length == 0) {
       this.hacerScroll();    
       return this.notificationService.updateNotification({
         show: true,
-        type: NotificationType.danger,
+        type: NotificationType.warning,
         text:
-          'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+          'Debes de seleccionar al menos un muestreo con evidencias cargadas para ser enviados a la etapa de "Módulo incial reglas"',
       });
     }
 
@@ -287,11 +290,11 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
   ) {
     muestreos.forEach((f) => {
       let muestreoSeleccionado = muestreosSeleccionados.find(
-        (x) => f.muestreoId === x.muestreoId
+        (x) => f.resultadoMuestreoId === x.resultadoMuestreoId
       );
 
       if (muestreoSeleccionado != undefined) {
-        f.isChecked = true;
+        f.selected = true;
       }
     });
   }
@@ -332,7 +335,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
     if (this.allSelected) this.allSelected = false;
 
     //Vamos a agregar este registro, a los seleccionados
-    if (muestreo.isChecked) {
+    if (muestreo.selected) {
       this.resultadosFiltrados.push(muestreo);
       this.selectedPage = this.anyUnselected(this.datosAcumualdos) ? false : true;
     } else {
@@ -343,7 +346,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
       if (index > -1) {
         this.resultadosFiltrados.splice(index, 1);
       }
-    }
+    }   
  
   }
 
@@ -356,7 +359,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
 
   confirmarEliminacion() {
     let muestreosSeleccionados = this.Seleccionados(
-      this.resultadosFiltrados
+      this.datosAcumualdos
     );
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
@@ -364,7 +367,7 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
         show: true,
         type: NotificationType.warning,
         text:
-          'Debe seleccionar al menos un monitoreo para eliminar los resultados correspondientes',
+          'Debe seleccionar al menos un resultado para ser eliminado',
       });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
