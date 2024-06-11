@@ -9,6 +9,7 @@ import { NotificationType } from '../../../../../shared/enums/notification-type'
 import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { Notificacion } from '../../../../../shared/models/notification-model';
+import { Item } from 'src/app/interfaces/filter/item';
 
 @Component({
   selector: 'app-inicial-reglas',
@@ -27,13 +28,12 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   resultadosEnviados: Array<number> = [];
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
-    text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?'
+    text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
   };
 
   ngOnInit(): void {
     this.definirColumnas();
     this.cargaResultados();
-
   }
 
   definirColumnas() {
@@ -353,11 +353,14 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     pageSize: number = this.NoPage,
     filter: string = this.cadena
   ): void {
-
     this.loading = true;
     this.validacionService
       .getResultadosporMonitoreoPaginados(
-        estatusMuestreo.InicialReglas, page, pageSize, filter, this.orderBy
+        estatusMuestreo.InicialReglas,
+        page,
+        pageSize,
+        filter,
+        this.orderBy
       )
       .subscribe({
         next: (response: any) => {
@@ -365,8 +368,13 @@ export class InicialReglasComponent extends BaseService implements OnInit {
           this.resultadosMuestreo = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(this.resultadosMuestreo, this.resultadosFiltradosn);
-          this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
+          this.getPreviousSelected(
+            this.resultadosMuestreo,
+            this.resultadosFiltradosn
+          );
+          this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
+            ? false
+            : true;
           this.loading = false;
         },
         error: (error) => {
@@ -385,7 +393,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       });
     }
     this.loading = true;
-
 
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
     this.validacionService
@@ -569,7 +576,9 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     //Vamos a agregar este registro, a los seleccionados
     if (muestreo.selected) {
       this.resultadosFiltradosn.push(muestreo);
-      this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
+      this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
+        ? false
+        : true;
     } else {
       let index = this.resultadosFiltradosn.findIndex(
         (m) => m.muestreoId === muestreo.muestreoId
@@ -585,25 +594,67 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.resultadosFiltradosn = [];
     this.selectAllOption = false;
     this.allSelected = false;
-    this.selectedPage = false;    
+    this.selectedPage = false;
   }
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(
-      this.resultadosMuestreo
-    );
+    let muestreosSeleccionados = this.Seleccionados(this.resultadosMuestreo);
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'Debe seleccionar al menos un resultado para ser eliminado',
+        text: 'Debe seleccionar al menos un resultado para ser eliminado',
       });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
   }
 
-  eliminarResultados() { }
+  eliminarResultados() {}
 
+  onFilterIconClick(column: Column) {
+    this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
+
+    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
+    this.filtros = filteredColumns;
+
+    this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    let esFiltroEspecial = this.IsCustomFilter(column);
+
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if (this.requiresToRefreshColumnValues(column)) {
+      this.muestreoService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => {},
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+  }
 }
