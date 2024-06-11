@@ -124,7 +124,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     this.loading = true;
     this.validacionService
       .getResultadosporMonitoreoPaginados(
-        estatusMuestreo.InicialReglas, page, pageSize, filter, this.orderBy
+        estatusMuestreo.SeleccionadoParaValidar, page, pageSize, filter, this.orderBy
       )
       .subscribe({
         next: (response: any) => {
@@ -132,14 +132,9 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
           this.resultadosMuestreo = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-
           this.getPreviousSelected(this.resultadosMuestreo, this.resultadosFiltradosn);
           this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
 
-
-
-          this.resultadosFiltradosn = this.resultadosMuestreo;
-          this.resultadosn = this.resultadosMuestreo;
           this.loading = false;
         },
         error: (error) => {
