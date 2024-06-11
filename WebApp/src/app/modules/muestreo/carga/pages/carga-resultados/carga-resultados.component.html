@@ -73,7 +73,7 @@
             <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
                 title="Filtros" aria-expanded="false"
-                (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
+                (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService);">
                 <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
                   class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
@@ -214,8 +214,9 @@
 
   <app-muestreos-totales></app-muestreos-totales>
   <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
-                  [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>  
-  <app-notificacion-emergente [notificacion]="this.notificacion" (isEjecutar)="this.isAceptarNotificacion=$event"></app-notificacion-emergente>
+    [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
+  <app-notificacion-emergente [notificacion]="this.notificacion"
+    (isEjecutar)="this.isAceptarNotificacion=$event"></app-notificacion-emergente>
 
   <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
     data-target="#mdlConfirmacionActualizacion">

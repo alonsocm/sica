@@ -484,7 +484,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.consultarMonitoreos();
   }
 
@@ -515,7 +515,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.hideColumnFilter();
   }
 

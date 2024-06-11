@@ -580,8 +580,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     this.esHistorial = true;
     this.columnaFiltroEspecial.optionFilter = '';
     this.columnaFiltroEspecial.specialFilter = '';
-
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.hideColumnFilter();
   }
 
@@ -648,7 +647,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.consultarMonitoreos();
   }
 
