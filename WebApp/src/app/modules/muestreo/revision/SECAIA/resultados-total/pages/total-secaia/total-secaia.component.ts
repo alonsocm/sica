@@ -227,9 +227,9 @@ export class TotalSecaiaComponent extends BaseService implements OnInit {
 
   obtenerSeleccionadosDescarga(): Array<any> {
     this.camposDescarga = [];
-    if (this.resultadosFiltradosn.filter((f) => f.isChecked).length > 0) {
+    if (this.resultadosFiltradosn.filter((f) => f.selected).length > 0) {
       this.resultadosFiltradosn
-        .filter((f) => f.isChecked)
+        .filter((f) => f.selected)
         .forEach((x) => {
           let campodes: ResultadoDescarga = {
             noEntregaOCDL: x.noEntregaOCDL,

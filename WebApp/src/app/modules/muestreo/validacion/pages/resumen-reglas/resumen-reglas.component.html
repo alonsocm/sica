@@ -41,7 +41,7 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+          *ngFor="let dato of this.datosAcumualdos| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
           <td>{{dato.numeroEntrega}}</td>
           <td>{{dato.claveUnica}}</td>
           <td>{{dato.claveMonitoreo}}</td>
@@ -72,7 +72,7 @@
         </tr>
         <tr class="td-center">
           <td colspan="27">
-            <div *ngIf="this.resultadosFiltradosn.length==0">
+            <div *ngIf="this.datosAcumualdos.length==0">
               No se encontraron registros
             </div>
           </td>

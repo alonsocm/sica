@@ -584,9 +584,12 @@ export class BaseService {
     }
 
     this.setColumnsFiltered(servicioMuestreo);
+
+    //Revisar
     servicioMuestreo.filtros.subscribe((filtro) => {
       this.filtros = filtro;
     });
+   
 
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
     this.obtenerLeyendaFiltroEspecial(column.dataType);

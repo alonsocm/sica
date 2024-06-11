@@ -47,28 +47,68 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       { nombre: 'replica', etiqueta: 'REPLICA', orden: 0, filtro: new Filter() },
       { nombre: 'cambioResultado', etiqueta: 'CAMBIO DE RESULTADO', orden: 0, filtro: new Filter() }
     ];
+    this.consultarMonitoreos();
 
     //cAMBIAR ESTATUS
-    this.validacionService.getResultadosAcumuladosParametros(estatusMuestreo.ValidadoPorReglas).subscribe({
+    //this.validacionService.getResultadosAcumuladosParametrosPaginados(estatusMuestreo.ValidadoPorReglas).subscribe({
+    //  next: (response: any) => {
+    //    this.loading = true;
+    //    this.datosAcumualdos = response.data;      
+    //    this.resultadosFiltradosn = this.datosAcumualdos;        
+    //    this.resultadosn = this.datosAcumualdos;
+    //    this.loading = false;
+    //  },
+    //  error: (error) => { this.loading = false; },
+    //});
+
+  }
+
+  consultarMonitoreos(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ): void {
+    this.loading = true;
+    this.validacionService.getResultadosAcumuladosParametrosPaginados(estatusMuestreo.ValidadoPorReglas, page, pageSize, filter, this.orderBy).subscribe({
       next: (response: any) => {
-        this.loading = true;
-        this.datosAcumualdos = response.data;      
-        this.resultadosFiltradosn = this.datosAcumualdos;        
-        this.resultadosn = this.datosAcumualdos;
+
+        this.selectedPage = false;
+        this.datosAcumualdos = response.data;
+        this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+        this.totalItems = response.totalRecords;
+        this.getPreviousSelected(this.datosAcumualdos, this.resultadosFiltradosn);
+        this.selectedPage = this.anyUnselected(this.datosAcumualdos) ? false : true;
         this.loading = false;
+
       },
       error: (error) => { this.loading = false; },
     });
 
   }
+
+  getPreviousSelected(
+    muestreos: Array<acumuladosMuestreo>,
+    muestreosSeleccionados: Array<acumuladosMuestreo>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.resultadoMuestreoId === x.resultadoMuestreoId
+      );
+
+      if (muestreoSeleccionado != undefined) {
+        f.selected = true;
+      }
+    });
+  }
+
   onDownload(): void {
-    if (this.resultadosFiltradosn.length == 0) {
+    if (this.datosAcumualdos.length == 0) {
       this.mostrarMensaje('No hay información existente para descargar', 'warning');
       return this.hacerScroll();
     }
 
     this.loading = true;
-    this.validacionService.exportExcelResumenResultados(this.resultadosFiltradosn)
+    this.validacionService.exportExcelResumenResultados(this.datosAcumualdos)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'ResumenValidacionReglas.xlsx');

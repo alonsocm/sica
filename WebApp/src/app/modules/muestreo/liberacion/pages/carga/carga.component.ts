@@ -108,18 +108,57 @@ export class CargaComponent extends BaseService implements OnInit {
     this.consultarMonitoreos();
   }
 
-  private consultarMonitoreos(): void {
-    this.muestreoService.obtenerMuestreos(true).subscribe({
-      next: (response: any) => {
-        this.muestreos = response.data;
-        this.muestreosFiltrados = this.muestreos;
-        this.muestreoService.muestreosSeleccionados =
-          this.obtenerSeleccionados();
-        this.establecerValoresFiltrosTabla();
-      },
-      error: (error) => {},
+  //private consultarMonitoreos(): void {
+  //  this.muestreoService.obtenerMuestreos(true).subscribe({
+  //    next: (response: any) => {
+  //      this.muestreos = response.data;
+  //      this.muestreosFiltrados = this.muestreos;
+  //      this.muestreoService.muestreosSeleccionados =
+  //        this.obtenerSeleccionados();
+  //      this.establecerValoresFiltrosTabla();
+  //    },
+  //    error: (error) => {},
+  //  });
+  //}
+
+
+  private consultarMonitoreos(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ): void {
+    this.loading = true;
+    this.muestreoService
+      .obtenerMuestreosPaginados(true, page, pageSize, filter, this.orderBy)
+      .subscribe({
+        next: (response: any) => {
+          this.selectedPage = false;
+          this.muestreos = response.data;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
+          this.getPreviousSelected(this.muestreos, this.muestreosFiltrados);
+          this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
+          this.loading = false;
+        },
+        error: (error) => { },
+      });
+  }
+
+  getPreviousSelected(
+    muestreos: Array<Muestreo>,
+    muestreosSeleccionados: Array<Muestreo>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.muestreoId === x.muestreoId
+      );
+
+      if (muestreoSeleccionado != undefined) {
+        f.selected = true;
+      }
     });
   }
+
 
   private establecerValoresFiltrosTabla() {
     this.columnas.forEach((f) => {

@@ -205,7 +205,7 @@ export class TotalComponent extends BaseService implements OnInit {
     this.totalService.getResultadosMuestreosParametros(true).subscribe({
       next: (response: any) => {
         this.resultadosn = response.data;
-        this.resultadosFiltradosn = this.resultadosn;
+        //this.resultadosFiltradosn = this.resultadosn;
         if (this.resultadosn.length > 0) {
           this.totalService.getObseravciones().subscribe(
             (result) => {
@@ -361,5 +361,27 @@ export class TotalComponent extends BaseService implements OnInit {
           this.loading = false;
         },
       });
+  }
+
+  onSelectClick(muestreo: any) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (muestreo.selected) {
+      this.resultadosFiltradosn.push(muestreo);
+      this.selectedPage = this.anyUnselected(this.resultadosn) ? false : true;
+    } else {
+      let index = this.resultadosFiltradosn.findIndex(
+        (m) => m.muestreoId === muestreo.muestreoId
+      );
+
+      if (index > -1) {
+        this.resultadosFiltradosn.splice(index, 1);
+      }
+    }
+
+    
   }
 }

@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@auth0/angular-jwt": "^5.0.2",
+    "@ng-bootstrap/ng-bootstrap": "^16.0.0",
+    "mdb-angular-ui-kit": "^6.0.0",
     "ngx-toastr": "^15.0.0"
   }
 }
