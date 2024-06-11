@@ -10,26 +10,25 @@
   </div>
   <div class="clearfix">
     <div class="float-lefth col-md-4">
-      <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial"
-        (mostrandocabecero)="this.cabeceroSeleccionado=$event" (mostrandoesfiltrofoco)="this.esfiltrofoco=$event"
-        [headerList]="this.headers">
+      <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+        (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
       </app-busqueda-columna>
     </div>
     <div class="float-right">
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
         title="Seleccionar archivo" #inputExcelMonitoreos>
-      <button type="button" class="btn btn-primary mr-1" (click)="inputExcelMonitoreos.click()"
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
         title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
         Seleccionar y procesar archivo...
       </button>
-      <button class="btn btn-primary mr-1" type="button" (click)="enviarMonitoreos()">
+      <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarMonitoreos()">
         <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s)
       </button>
-      <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
+      <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="exportarResultados()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
-      <button class="btn btn-secondary" (click)="this.limpiarFiltros()">
+      <button class="btn btn-secondary btn-sm" (click)="this.limpiarFiltros()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
@@ -202,7 +201,7 @@
   </div>
   <div class="row">
     <div class="col-md-6 align-self-end">
-      <button class="btn btn-secondary" type="button" (click)="confirmarEliminacion()">
+      <button class="btn btn-secondary btn-sm" type="button" (click)="confirmarEliminacion()">
         <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
       </button>
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"

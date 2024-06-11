@@ -1,13 +1,9 @@
-
- 
-  <div style="padding:0px">
-    <ng-autocomplete [data]="this.headerList" [searchKeyword]="keyword" (inputChanged)='onCabeceroFoco($event)'
-      (inputCleared)="this.esfiltrofoco = ''" (selected)="seleccionCabecero($event)" [itemTemplate]="itemCabeceros"
-      placeholder="Buscar en cabeceros">
-    </ng-autocomplete>
-    <ng-template #itemCabeceros let-header>
-      <a [innerHTML]="header.label"></a>
-    </ng-template>
-  </div>
-
-<br />
+<div class="ng-autocomplete">
+  <ng-autocomplete [data]="this.headerList" [searchKeyword]="keyword" (inputChanged)='onCabeceroFoco($event)'
+    (inputCleared)="this.esfiltrofoco = ''" (selected)="seleccionCabecero($event)" [itemTemplate]="itemCabeceros"
+    placeholder="Buscar en cabeceros">
+  </ng-autocomplete>
+  <ng-template #itemCabeceros let-header>
+    <a [innerHTML]="header.label"></a>
+  </ng-template>
+</div>
