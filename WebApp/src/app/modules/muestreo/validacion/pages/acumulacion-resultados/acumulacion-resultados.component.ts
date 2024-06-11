@@ -9,6 +9,7 @@ import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../../shared/models/notification-model';
+import { Item } from 'src/app/interfaces/filter/item';
 
 @Component({
   selector: 'app-acumulacion-resultados',
@@ -30,7 +31,7 @@ export class AcumulacionResultadosComponent
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
-    text: '¿Está seguro de eliminar los resultados seleccionados?'
+    text: '¿Está seguro de eliminar los resultados seleccionados?',
   };
 
   ngOnInit(): void {
@@ -489,25 +490,37 @@ export class AcumulacionResultadosComponent
     filter: string = this.cadena
   ): void {
     this.loading = true;
-    this.validacionService.getResultadosAcumuladosParametrosPaginados(estatusMuestreo.AcumulacionResultados, page, pageSize, filter, this.orderBy).subscribe({
-      next: (response: any) => {
-
-        this.selectedPage = false;
-        this.datosAcumualdos = response.data;       
-        this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
-        this.totalItems = response.totalRecords;
-        this.getPreviousSelected(this.datosAcumualdos, this.resultadosFiltrados);
-        this.selectedPage = this.anyUnselected(this.datosAcumualdos) ? false : true;
-        this.loading = false;
-
-      },
-      error: (error) => { this.loading = false; },
-    });
-   
+    this.validacionService
+      .getResultadosAcumuladosParametrosPaginados(
+        estatusMuestreo.AcumulacionResultados,
+        page,
+        pageSize,
+        filter,
+        this.orderBy
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.selectedPage = false;
+          this.datosAcumualdos = response.data;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
+          this.getPreviousSelected(
+            this.datosAcumualdos,
+            this.resultadosFiltrados
+          );
+          this.selectedPage = this.anyUnselected(this.datosAcumualdos)
+            ? false
+            : true;
+          this.loading = false;
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
   }
 
   //cambiar cuando selecciona todo
-  onDownload(): void {    
+  onDownload(): void {
     if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -516,8 +529,9 @@ export class AcumulacionResultadosComponent
         text: 'No hay información seleccionada para descargar',
       });
     }
-    
-    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
+
+    this.validacionService
+      .exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'AcumulacionResultados.xlsx');
@@ -537,8 +551,13 @@ export class AcumulacionResultadosComponent
 
   enviarmonitoreos(): void {
     let resuladosenviados = this.Seleccionados(this.datosAcumualdos).map(
-      (m) => { return m.muestreoId; });
-    let totalmuestreos = this.Seleccionados(this.datosAcumualdos).filter(x => x.claveSitio);
+      (m) => {
+        return m.muestreoId;
+      }
+    );
+    let totalmuestreos = this.Seleccionados(this.datosAcumualdos).filter(
+      (x) => x.claveSitio
+    );
     console.log(totalmuestreos);
 
     if (resuladosenviados.length == 0) {
@@ -546,8 +565,7 @@ export class AcumulacionResultadosComponent
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'Debes de seleccionar al menos un muestreo con evidencias cargadas para ser enviados a la etapa de "Módulo incial reglas"',
+        text: 'Debes de seleccionar al menos un muestreo con evidencias cargadas para ser enviados a la etapa de "Módulo incial reglas"',
       });
     }
 
@@ -682,18 +700,61 @@ export class AcumulacionResultadosComponent
   eliminarMuestreos() {}
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(
-      this.datosAcumualdos
-    );
+    let muestreosSeleccionados = this.Seleccionados(this.datosAcumualdos);
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'Debe seleccionar al menos un resultado para ser eliminado',
+        text: 'Debe seleccionar al menos un resultado para ser eliminado',
       });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
+  }
+
+  onFilterIconClick(column: Column) {
+    this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
+
+    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
+    this.filtros = filteredColumns;
+
+    this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    let esFiltroEspecial = this.IsCustomFilter(column);
+
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if (this.requiresToRefreshColumnValues(column)) {
+      this.muestreoService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => {},
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
   }
 }
