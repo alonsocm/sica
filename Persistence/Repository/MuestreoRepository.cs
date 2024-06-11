@@ -276,8 +276,8 @@ namespace Persistence.Repository
                                        fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
                                        validadoReglas = (m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas) ? true : false,
-                                       resultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty
-
+                                       resultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty,
+                                       resultadoMuestreoId = resMuestreo.Id
 
 
                                    }).ToListAsync();
@@ -299,7 +299,7 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(List<int> anios, List<int> numeroCarga, int estatusId)
+        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId)
         {
             var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas
 
@@ -327,7 +327,7 @@ namespace Persistence.Repository
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
                                        cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI"
-                                   }).Where(x => anios.Contains(x.anioOperacion) && numeroCarga.Contains(Convert.ToInt32(x.NumeroEntrega)) && x.estatusId == estatusId).ToListAsync();
+                                   }).Where(x => x.estatusId == estatusId).ToListAsync();
 
             foreach (var dato in muestreos)
             {

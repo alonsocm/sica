@@ -8,6 +8,7 @@ import { NotificationService } from '../../../../../shared/services/notification
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
+import { Notificacion } from '../../../../../shared/models/notification-model';
 
 @Component({
   selector: 'app-inicial-reglas',
@@ -22,29 +23,17 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   ) {
     super();
   }
-
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
-  aniosSeleccionados: Array<number> = [];
-  entregasSeleccionadas: Array<number> = [];
   resultadosEnviados: Array<number> = [];
-  anios: Array<number> = [];
-  entregas: Array<number> = [];
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación',
+    text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?'
+  };
 
   ngOnInit(): void {
     this.definirColumnas();
+    this.cargaResultados();
 
-    this.validacionService.obtenerMuestreos().subscribe({
-      next: (response: any) => {
-        this.anios = response.data;
-      },
-      error: (error) => {},
-    });
-    this.validacionService.obtenerNumerosEntrega().subscribe({
-      next: (response: any) => {
-        this.entregas = response.data;
-      },
-      error: (error) => {},
-    });
   }
 
   definirColumnas() {
@@ -359,30 +348,25 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.setHeadersList(this.columns);
   }
 
-  cargaResultados() {
-    if (
-      this.entregasSeleccionadas.length == 0 &&
-      this.aniosSeleccionados.length == 0
-    ) {
-      this.hacerScroll();
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'Debes de seleccionar al menos un número de entrega',
-      });
-    }
+  cargaResultados(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ): void {
+
     this.loading = true;
     this.validacionService
-      .getResultadosporMonitoreo(
-        this.aniosSeleccionados,
-        this.entregasSeleccionadas,
-        estatusMuestreo.InicialReglas
+      .getResultadosporMonitoreoPaginados(
+        estatusMuestreo.InicialReglas, page, pageSize, filter, this.orderBy
       )
       .subscribe({
         next: (response: any) => {
+          this.selectedPage = false;
           this.resultadosMuestreo = response.data;
-          this.resultadosFiltradosn = this.resultadosMuestreo;
-          this.resultadosn = this.resultadosMuestreo;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
+          this.getPreviousSelected(this.resultadosMuestreo, this.resultadosFiltradosn);
+          this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
           this.loading = false;
         },
         error: (error) => {
@@ -390,15 +374,19 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         },
       });
   }
+
   onDownload(): void {
-    if (this.resultadosFiltradosn.length == 0) {
+    if (this.resultadosFiltradosn.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'No hay información existente para descargar',
+        text: 'No hay información seleccionada para descargar',
       });
     }
+    this.loading = true;
+
+
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
     this.validacionService
       .exportExcelResultadosaValidar(
@@ -423,6 +411,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         },
       });
   }
+
   enviaraValidacion(): void {
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn).map(
       (m) => {
@@ -470,6 +459,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       });
   }
   limpiarFiltros() {}
+
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     //cambiar
@@ -485,11 +475,13 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         error: (error) => {},
       });
   }
+
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
     this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.consultarMonitoreos();
   }
+
   public consultarMonitoreos(
     page: number = this.page,
     pageSize: number = this.NoPage,
@@ -568,4 +560,50 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
   }
+
+  onSelectClick(muestreo: acumuladosMuestreo) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (muestreo.selected) {
+      this.resultadosFiltradosn.push(muestreo);
+      this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
+    } else {
+      let index = this.resultadosFiltradosn.findIndex(
+        (m) => m.muestreoId === muestreo.muestreoId
+      );
+
+      if (index > -1) {
+        this.resultadosFiltradosn.splice(index, 1);
+      }
+    }
+  }
+
+  private resetValues() {
+    this.resultadosFiltradosn = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;    
+  }
+
+  confirmarEliminacion() {
+    let muestreosSeleccionados = this.Seleccionados(
+      this.resultadosMuestreo
+    );
+    if (!(muestreosSeleccionados.length > 0)) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'Debe seleccionar al menos un resultado para ser eliminado',
+      });
+    }
+    document.getElementById('btnMdlConfirmacion')?.click();
+  }
+
+  eliminarResultados() { }
+
 }

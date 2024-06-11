@@ -1,6 +1,5 @@
 
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { MuestreoService } from '../../modules/muestreo/liberacion/services/muestreo.service';
 import { Notificacion } from '../models/notification-model';
 import { BaseService } from '../services/base.service';
 
@@ -14,17 +13,14 @@ export class NotificacionEmergenteComponent extends BaseService implements OnIni
     title: '',
     text: ''
   };
-  @Output() isEjecutar = new EventEmitter<boolean>();
-  @Input() datosSeleccionados: Array<any> = [];
+  @Output() changed = new EventEmitter<boolean>();
 
-
-  constructor(private muestreoService: MuestreoService) { super(); }
+  constructor() { super(); }
 
   ngOnInit(): void {
   }
-  btnClickAceptar() {
-   
-    this.isAceptarNotificacion = true; this.isEjecutar.emit(this.isAceptarNotificacion);
-    this.muestreoService.muestreosSeleccionados = this.datosSeleccionados;
+  btnClickAceptar() {     
+    this.changed.emit(true);
+
   }
 }

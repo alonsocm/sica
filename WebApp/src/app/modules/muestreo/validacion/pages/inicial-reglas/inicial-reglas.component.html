@@ -1,11 +1,9 @@
 <router-outlet name="menu"></router-outlet>
-<form>
-  <div class="form-group  d-flex justify-content-center">
-    <app-loading *ngIf="loading"></app-loading>
-  </div>
-</form>
+<div *ngIf="loading">
+  <app-loading></app-loading>
+</div>
 <div class="container-fluid">
-  <h6 class="row col">Resumen de carga de resultados para validar (por monitoreo)</h6>
+  <h1>Resumen de carga de resultados para validar (por monitoreo)</h1>
   <hr class="red">
   <div class="message-container">
     <app-notification></app-notification>
@@ -13,22 +11,20 @@
 
   <div class="clearfix">
     <div class="float-lefth col-md-3">
-      <label for="entrega">Seleccionar número(s) de entrega:*</label>
-      <select class="form-control" name="entrega" id="entrega" multiple [(ngModel)]="entregasSeleccionadas"
-              [size]="this.entregas.length">
-        <option *ngFor="let entrega of entregas" value="{{entrega}}">{{entrega}}</option>
-      </select>
-
-    </div>
-    <div class="float-lefth col-md-1">
-      <br />
-      <button class="btn btn-primary" type="button" (click)="cargaResultados()">
-        <i class="bi bi-send"></i> Ver resultados
-      </button>
+      <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+      </app-busqueda-columna>
     </div>
 
     <div class="float-right">
-      <br />
+      <button class="btn btn-primary mr-1" type="button" (click)="enviaraValidacion()">
+        <i class="bi bi-send"></i> Enviar a validación
+      </button>
+      <button class="btn btn-secondary mr-1" type="button" (click)="confirmarEliminacion()">
+        <i class="bi bi-trash"></i>&nbsp;Eliminar resultados de monitoreos seleccionados
+      </button>
+      <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
+              data-target="#mdlConfirmacion" title="Seleccionar"></button>
       <button class="btn btn-secondary mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
@@ -37,12 +33,7 @@
         Limpiar filtros
       </button>
     </div>
-    <div class="float-right col-md-4">
-      <br />
-      <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-      </app-busqueda-columna>
-    </div>
+
   </div>
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert" *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
@@ -156,9 +147,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let dato of this.resultadosFiltradosn| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
+        <tr *ngFor="let dato of this.resultadosMuestreo| paginate: { itemsPerPage:NoPage, currentPage: page }; let indice=index">
           <td class="td-center">
-            <input type="checkbox" [(ngModel)]="dato.isChecked" (change)="seleccionarn()" title="Seleccionar">
+            <input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.selected"
+                   (change)="onSelectClick(dato)" title="Seleccionar">
           </td>
           <td>{{dato.claveSitio}}</td>
           <td>{{dato.claveMonitoreo}}</td>
@@ -181,7 +173,7 @@
           <td></td>
           <td></td>
         </tr>
-        <tr *ngIf="this.resultadosFiltradosn.length==0">
+        <tr *ngIf="this.resultadosMuestreo.length==0">
           <td colspan="21" class="td-center">
             No se encontraron registros
           </td>
@@ -201,14 +193,8 @@
       <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
     </div>
   </div>
-  <div class="clearfix">
-    <div class="float-right">
-      <button class="btn btn-primary rigth" type="button" (click)="enviaraValidacion()">
-        <i class="bi bi-send"></i> Enviar a validación
-      </button>
-    </div>
-  </div>
   <hr />
   <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
                   [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
+  <app-notificacion-emergente [notificacion]="this.notificacion" (changed)="this.eliminarResultados();"></app-notificacion-emergente>
 </div>

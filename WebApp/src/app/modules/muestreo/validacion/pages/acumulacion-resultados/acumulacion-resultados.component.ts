@@ -8,6 +8,7 @@ import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
+import { Notificacion } from '../../../../../shared/models/notification-model';
 
 @Component({
   selector: 'app-acumulacion-resultados',
@@ -27,6 +28,10 @@ export class AcumulacionResultadosComponent
   }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
   resultadosFiltrados: Array<acumuladosMuestreo> = [];
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación',
+    text: '¿Está seguro de eliminar los resultados seleccionados?'
+  };
 
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
@@ -484,51 +489,35 @@ export class AcumulacionResultadosComponent
     filter: string = this.cadena
   ): void {
     this.loading = true;
-    this.validacionService
-      .getResultadosAcumuladosParametrosPaginados(
-        estatusMuestreo.AcumulacionResultados,
-        page,
-        pageSize,
-        filter,
-        this.orderBy
-      )
-      .subscribe({
-        next: (response: any) => {
-          this.selectedPage = false;
-          this.datosAcumualdos = response.data;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
-          this.totalItems = response.totalRecords;
-          this.getPreviousSelected(
-            this.datosAcumualdos,
-            this.resultadosFiltrados
-          );
-          this.selectedPage = this.anyUnselected(this.datosAcumualdos)
-            ? false
-            : true;
+    this.validacionService.getResultadosAcumuladosParametrosPaginados(estatusMuestreo.AcumulacionResultados, page, pageSize, filter, this.orderBy).subscribe({
+      next: (response: any) => {
 
-          this.resultadosFiltradosn = this.datosAcumualdos;
-          this.resultadosn = this.datosAcumualdos;
-          this.loading = false;
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
+        this.selectedPage = false;
+        this.datosAcumualdos = response.data;       
+        this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+        this.totalItems = response.totalRecords;
+        this.getPreviousSelected(this.datosAcumualdos, this.resultadosFiltrados);
+        this.selectedPage = this.anyUnselected(this.datosAcumualdos) ? false : true;
+        this.loading = false;
+
+      },
+      error: (error) => { this.loading = false; },
+    });
+   
   }
 
-  onDownload(): void {
-    if (this.resultadosFiltradosn.length == 0) {
+  //cambiar cuando selecciona todo
+  onDownload(): void {    
+    if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'No hay información existente para descargar',
+        text: 'No hay información seleccionada para descargar',
       });
     }
-
-    this.loading = true;
-    this.validacionService
-      .exportarResultadosAcumuladosExcel(this.resultadosFiltradosn)
+    
+    this.validacionService.exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'AcumulacionResultados.xlsx');
@@ -547,23 +536,18 @@ export class AcumulacionResultadosComponent
   }
 
   enviarmonitoreos(): void {
-    console.log(this.resultadosFiltradosn);
-    let resuladosenviados = this.Seleccionados(this.resultadosFiltradosn).map(
-      (m) => {
-        return m.muestreoId;
-      }
-    );
-    let totalmuestreos = this.Seleccionados(this.resultadosFiltradosn).filter(
-      (x) => x.claveSitio
-    );
+    let resuladosenviados = this.Seleccionados(this.datosAcumualdos).map(
+      (m) => { return m.muestreoId; });
+    let totalmuestreos = this.Seleccionados(this.datosAcumualdos).filter(x => x.claveSitio);
     console.log(totalmuestreos);
 
     if (resuladosenviados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
-        type: NotificationType.danger,
-        text: 'Debes de seleccionar al menos un muestreo con evidencias cargadas para enviar a la etapa de "Acumulación resultados"',
+        type: NotificationType.warning,
+        text:
+          'Debes de seleccionar al menos un muestreo con evidencias cargadas para ser enviados a la etapa de "Módulo incial reglas"',
       });
     }
 
@@ -629,11 +613,11 @@ export class AcumulacionResultadosComponent
   ) {
     muestreos.forEach((f) => {
       let muestreoSeleccionado = muestreosSeleccionados.find(
-        (x) => f.muestreoId === x.muestreoId
+        (x) => f.resultadoMuestreoId === x.resultadoMuestreoId
       );
 
       if (muestreoSeleccionado != undefined) {
-        f.isChecked = true;
+        f.selected = true;
       }
     });
   }
@@ -674,7 +658,7 @@ export class AcumulacionResultadosComponent
     if (this.allSelected) this.allSelected = false;
 
     //Vamos a agregar este registro, a los seleccionados
-    if (muestreo.isChecked) {
+    if (muestreo.selected) {
       this.resultadosFiltrados.push(muestreo);
       this.selectedPage = this.anyUnselected(this.datosAcumualdos)
         ? false
@@ -698,13 +682,16 @@ export class AcumulacionResultadosComponent
   eliminarMuestreos() {}
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(this.resultadosFiltrados);
+    let muestreosSeleccionados = this.Seleccionados(
+      this.datosAcumualdos
+    );
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un monitoreo para eliminar los resultados correspondientes',
+        text:
+          'Debe seleccionar al menos un resultado para ser eliminado',
       });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
