@@ -633,10 +633,29 @@ export class BaseService {
     }
   }
 
-  private collapseFilterOptions() {
+  public collapseFilterOptions() {
     let columsdesplegadas = document.getElementsByClassName('d-block');
     for (var i = 0; i < columsdesplegadas.length; i++) {
       columsdesplegadas[i].className = 'd-none';
     }
+  }
+
+  requiresToRefreshColumnValues(column: Column) {
+    if (
+      (!column.filtered && this.existeFiltrado) ||
+      (column.filtered && !column.isLatestFilter) ||
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  IsCustomFilter(column: Column) {
+    return column.optionFilter === undefined ||
+      column.optionFilter === this.filtroEspecialEquals
+      ? false
+      : true;
   }
 }

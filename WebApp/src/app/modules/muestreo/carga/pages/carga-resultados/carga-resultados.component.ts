@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../../shared/models/notification-model';
+import { Item } from 'src/app/interfaces/filter/item';
 
 @Component({
   selector: 'app-carga-resultados',
@@ -47,7 +48,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       (dato: Column) => {
         if (dato.specialFilter != null) this.filtrar(dato, true);
       }
-    ); 
+    );
   }
 
   ngOnInit(): void {
@@ -778,7 +779,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       });
   }
 
-  onSelectClick(muestreo: Muestreo) {   
+  onSelectClick(muestreo: Muestreo) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
     if (this.allSelected) this.allSelected = false;
@@ -796,7 +797,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         this.muestreosSeleccionados.splice(index, 1);
       }
     }
- 
+
     this.getSummary();
   }
 
@@ -827,5 +828,51 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   ngOnDestroy() {
     this.filtroHistorialServiceSub.unsubscribe();
+  }
+
+  onFilterIconClick(column: Column) {
+    this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
+
+    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
+    this.filtros = filteredColumns;
+
+    this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    let esFiltroEspecial = this.IsCustomFilter(column);
+
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if (this.requiresToRefreshColumnValues(column)) {
+      this.muestreoService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => {},
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
   }
 }
