@@ -574,65 +574,6 @@ export class BaseService {
     return filtrosActuales;
   }
 
-  public establecerValoresFiltrosTabla1(
-    column: Column,
-    muestreoService: MuestreoService
-  ) {
-    this.collapseFilterOptions();
-    let filteredColumns = this.getFilteredColumns();
-
-    muestreoService.filtrosSeleccionados = filteredColumns;
-    this.filtros = filteredColumns;
-
-    //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
-    this.obtenerLeyendaFiltroEspecial(column.dataType);
-
-    let esFiltroEspecial =
-      column.optionFilter === undefined ||
-      column.optionFilter === this.filtroEspecialEquals
-        ? false
-        : true;
-
-    if (
-      (!column.filtered && !this.existeFiltrado) ||
-      (column.isLatestFilter && this.filtros.length == 1)
-    ) {
-      this.cadena = '';
-      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-    }
-
-    if (
-      (!column.filtered && this.existeFiltrado) ||
-      (column.filtered && !column.isLatestFilter) ||
-      (!column.filtered && !this.existeFiltrado) ||
-      (column.isLatestFilter && this.filtros.length == 1)
-    ) {
-      muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
-        .subscribe({
-          next: (response: any) => {
-            column.data = response.data.map((register: any) => {
-              let item: Item = {
-                value: register,
-                checked: true,
-              };
-              return item;
-            });
-
-            column.filteredData = column.data;
-            this.ordenarAscedente(column.filteredData);
-            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-          },
-          error: (error) => {},
-        });
-    }
-
-    if (esFiltroEspecial) {
-      column.selectAll = false;
-      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-    }
-  }
-
   public collapseFilterOptions() {
     let columsdesplegadas = document.getElementsByClassName('d-block');
     for (var i = 0; i < columsdesplegadas.length; i++) {
