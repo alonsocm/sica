@@ -1,4 +1,4 @@
-import {  Component,  ElementRef,  HostListener,  OnInit,  ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
@@ -24,7 +24,10 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   reemplazarResultados: boolean = false;
   archivo: any;
   filtroHistorialServiceSub: Subscription;
-  notificacion: Notificacion = { title: 'Confirmar eliminación', text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?' };
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación',
+    text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?',
+  };
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
@@ -32,7 +35,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     private filtroHistorialService: FiltroHistorialService,
     public muestreoService: MuestreoService,
     private notificationService: NotificationService
-
   ) {
     super();
     this.filtroHistorialServiceSub =
@@ -519,7 +521,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.hideColumnFilter();
   }
 
@@ -819,7 +821,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.consultarMonitoreos();
   }
 

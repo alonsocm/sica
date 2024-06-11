@@ -563,7 +563,7 @@ export class BaseService {
     return muestreos.some((f) => !f.selected);
   }
 
-  public setColumnsFiltered(servicioMuestreo: MuestreoService) {
+  public getFilteredColumns() {
     let filtrosActuales = this.columns
       .filter((f) => f.filtered)
       .map((m) => ({
@@ -571,28 +571,22 @@ export class BaseService {
         label: m.label,
       }));
 
-    servicioMuestreo.filtrosSeleccionados = filtrosActuales;
+    return filtrosActuales;
   }
 
   public establecerValoresFiltrosTabla1(
     column: Column,
-    servicioMuestreo: MuestreoService
+    muestreoService: MuestreoService
   ) {
-    let columsdesplegadas = document.getElementsByClassName('d-block');
-    for (var i = 0; i < columsdesplegadas.length; i++) {
-      columsdesplegadas[i].className = 'd-none';
-    }
+    this.collapseFilterOptions();
+    let filteredColumns = this.getFilteredColumns();
 
-    this.setColumnsFiltered(servicioMuestreo);
-
-    //Revisar
-    servicioMuestreo.filtros.subscribe((filtro) => {
-      this.filtros = filtro;
-    });
-   
+    muestreoService.filtrosSeleccionados = filteredColumns;
+    this.filtros = filteredColumns;
 
     //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
     this.obtenerLeyendaFiltroEspecial(column.dataType);
+
     let esFiltroEspecial =
       column.optionFilter === undefined ||
       column.optionFilter === this.filtroEspecialEquals
@@ -613,7 +607,7 @@ export class BaseService {
       (!column.filtered && !this.existeFiltrado) ||
       (column.isLatestFilter && this.filtros.length == 1)
     ) {
-      servicioMuestreo
+      muestreoService
         .getDistinctValuesFromColumn(column.name, this.cadena)
         .subscribe({
           next: (response: any) => {
@@ -636,6 +630,13 @@ export class BaseService {
     if (esFiltroEspecial) {
       column.selectAll = false;
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+  }
+
+  private collapseFilterOptions() {
+    let columsdesplegadas = document.getElementsByClassName('d-block');
+    for (var i = 0; i < columsdesplegadas.length; i++) {
+      columsdesplegadas[i].className = 'd-none';
     }
   }
 }

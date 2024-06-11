@@ -72,8 +72,8 @@
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
             <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
-                      title="Filtros" aria-expanded="false"
-                      (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService); this.initialValue = '';">
+                title="Filtros" aria-expanded="false"
+                (click)="establecerValoresFiltrosTabla1(columna, this.muestreoService);">
                 <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
                    class="bi bi-caret-down-fill"></i>
                 <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>

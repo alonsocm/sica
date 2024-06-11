@@ -16,9 +16,11 @@ import { Notificacion } from '../../../../../shared/models/notification-model';
   styleUrls: ['./reglas-validar.component.css'],
 })
 export class ReglasValidarComponent extends BaseService implements OnInit {
-  constructor(private validacionService: ValidacionReglasService,
+  constructor(
+    private validacionService: ValidacionReglasService,
     public muestreoService: MuestreoService,
-    private notificationService: NotificationService,) {
+    private notificationService: NotificationService
+  ) {
     super();
   }
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
@@ -26,93 +28,289 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   resultadosEnviados: Array<any> = [];
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
-    text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?'
+    text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
   };
   ngOnInit(): void {
     this.definirColumnas();
     this.cargaResultados();
-
   }
 
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
-        name: 'claveSitio', label: 'CLAVE SITIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'claveSitio',
+        label: 'CLAVE SITIO',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'claveMonitoreo', label: 'CLAVE MUESTREO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'claveMonitoreo',
+        label: 'CLAVE MUESTREO',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'nombreSitio', label: 'NOMBRE SITIO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'nombreSitio',
+        label: 'NOMBRE SITIO',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'fechaRealizacion', label: 'FECHA REALIZACIÓN', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'fechaRealizacion',
+        label: 'FECHA REALIZACIÓN',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'fechaProgramada', label: 'FECHA PROGRAMADA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'fechaProgramada',
+        label: 'FECHA PROGRAMADA',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'laboratorioRealizoMuestreo', label: 'LABORATORIO BASE DE DATOS', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'laboratorioRealizoMuestreo',
+        label: 'LABORATORIO BASE DE DATOS',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'cuerpoAgua', label: 'CUERPO DE AGUA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'cuerpoAgua',
+        label: 'CUERPO DE AGUA',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'tipoCuerpoAgua', label: 'TIPO CUERPO AGUA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'tipoCuerpoAgua',
+        label: 'TIPO CUERPO AGUA',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'subtipoCuerpoAgua', label: 'SUBTIPO CUERPO AGUA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'subtipoCuerpoAgua',
+        label: 'SUBTIPO CUERPO AGUA',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'muestreoCompletoPorResultados', label: 'MUESTREO COMPLETO POR RESULTADOS', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'muestreoCompletoPorResultados',
+        label: 'MUESTREO COMPLETO POR RESULTADOS',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
 
       {
-        name: 'cumpleReglasCondic', label: '¿CUMPLE CON LA REGLAS CONDICIONANTES?', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'cumpleReglasCondic',
+        label: '¿CUMPLE CON LA REGLAS CONDICIONANTES?',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'cumpleFechaEntrega', label: 'CUMPLE CON LA FECHA DE ENTREGA', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'cumpleFechaEntrega',
+        label: 'CUMPLE CON LA FECHA DE ENTREGA',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'reglaValicdacion', label: 'SE CORRE REGLA DE VALIDACIÓN', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'reglaValicdacion',
+        label: 'SE CORRE REGLA DE VALIDACIÓN',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'autorizacionRegla', label: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'autorizacionRegla',
+        label: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'cumpleTodosCriterios', label: 'CUMPLE CRITERIOS PARA APLICAR REGLAS', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'cumpleTodosCriterios',
+        label: 'CUMPLE CRITERIOS PARA APLICAR REGLAS',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'resultado', label: 'RESULTADO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'resultado',
+        label: 'RESULTADO',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'muestreoValidadoPor', label: 'MUESTREO VALIDADO POR', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'muestreoValidadoPor',
+        label: 'MUESTREO VALIDADO POR',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
-        name: 'porcentajePago', label: '% DE PAGO', order: 0, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-        dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        name: 'porcentajePago',
+        label: '% DE PAGO',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
     ];
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
-
   }
 
   cargaResultados(
@@ -120,7 +318,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     pageSize: number = this.NoPage,
     filter: string = this.cadena
   ): void {
-
     this.loading = true;
     this.validacionService
       .getResultadosporMonitoreoPaginados(
@@ -132,9 +329,17 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
           this.resultadosMuestreo = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(this.resultadosMuestreo, this.resultadosFiltradosn);
-          this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
 
+          this.getPreviousSelected(
+            this.resultadosMuestreo,
+            this.resultadosFiltradosn
+          );
+          this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
+            ? false
+            : true;
+
+          this.resultadosFiltradosn = this.resultadosMuestreo;
+          this.resultadosn = this.resultadosMuestreo;
           this.loading = false;
         },
         error: (error) => {
@@ -226,21 +431,27 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     this.orderBy = { column, type };
     //cambiar
     this.validacionService
-      .getResultadosporMonitoreoPaginados(estatusMuestreo.InicialReglas, this.page, this.NoPage, this.cadena,{
-        column: column,
-        type: type,
-      })
+      .getResultadosporMonitoreoPaginados(
+        estatusMuestreo.InicialReglas,
+        this.page,
+        this.NoPage,
+        this.cadena,
+        {
+          column: column,
+          type: type,
+        }
+      )
       .subscribe({
         next: (response: any) => {
           this.resultadosMuestreo = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.cargaResultados();
   }
 
@@ -271,7 +482,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-    this.setColumnsFiltered(this.muestreoService);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.hideColumnFilter();
   }
 
@@ -281,22 +492,19 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(
-      this.resultadosMuestreo
-    );
+    let muestreosSeleccionados = this.Seleccionados(this.resultadosMuestreo);
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text:
-          'Debe seleccionar al menos un resultado para ser eliminado',
+        text: 'Debe seleccionar al menos un resultado para ser eliminado',
       });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
   }
 
-  eliminarResultados() { }
+  eliminarResultados() {}
 
   onSelectClick(muestreo: acumuladosMuestreo) {
     if (this.selectedPage) this.selectedPage = false;
@@ -306,7 +514,9 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     //Vamos a agregar este registro, a los seleccionados
     if (muestreo.selected) {
       this.resultadosFiltradosn.push(muestreo);
-      this.selectedPage = this.anyUnselected(this.resultadosMuestreo) ? false : true;
+      this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
+        ? false
+        : true;
     } else {
       let index = this.resultadosFiltradosn.findIndex(
         (m) => m.muestreoId === muestreo.muestreoId
@@ -316,6 +526,5 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         this.resultadosFiltradosn.splice(index, 1);
       }
     }
-
   }
 }
