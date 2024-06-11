@@ -27,8 +27,6 @@ export class AcumulacionResultadosComponent extends BaseService implements OnIni
     text: '¿Está seguro de eliminar los resultados seleccionados?'
   };
 
-
-
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();

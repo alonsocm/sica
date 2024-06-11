@@ -28,6 +28,9 @@ export interface acumuladosMuestreo extends Muestreo {
   isChecked: boolean;
   resultadoMuestreoId: number;
 
+  cumpleReglasCondic: boolean;
+  observaciones: string;
+  cumpleFechaEntrega: boolean;
 
   validacionEvidencias: boolean;
 
