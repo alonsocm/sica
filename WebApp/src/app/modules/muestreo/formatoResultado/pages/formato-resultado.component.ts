@@ -14,6 +14,7 @@ import { FiltroHistorialService } from '../../../../shared/services/filtro-histo
 import { Subscription } from 'rxjs';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { NotificationType } from '../../../../shared/enums/notification-type';
+import { Item } from 'src/app/interfaces/filter/item';
 
 @Component({
   selector: 'app-formato-resultado',
@@ -530,6 +531,52 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     for (let index = 0; index < columns.length; index++) {
       columns[index].startAt = left;
       left += columns[index].width ?? 0;
+    }
+  }
+
+  onFilterIconClick(column: Column) {
+    this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
+
+    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
+    this.filtros = filteredColumns;
+
+    this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    let esFiltroEspecial = this.IsCustomFilter(column);
+
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if (this.requiresToRefreshColumnValues(column)) {
+      this.muestreoService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => {},
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
   }
 }
