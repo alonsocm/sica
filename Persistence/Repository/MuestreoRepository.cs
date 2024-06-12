@@ -5,7 +5,6 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System.Linq.Expressions;
 
 namespace Persistence.Repository
 {
@@ -89,22 +88,6 @@ namespace Persistence.Repository
             });
 
             return muestreos;
-        }
-
-        public IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data)
-        {
-            var muestreos = data.AsQueryable();
-            var select = GenerateDynamicSelect<MuestreoDto>(column);
-
-            return muestreos.Select(select).Distinct();
-        }
-
-        public static Expression<Func<T, object>> GenerateDynamicSelect<T>(string propertyName)
-        {
-            var parameter = Expression.Parameter(typeof(T), "x");
-            var property = Expression.Property(parameter, propertyName);
-            var conversion = Expression.Convert(property, typeof(object));
-            return Expression.Lambda<Func<T, object>>(conversion, parameter);
         }
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)

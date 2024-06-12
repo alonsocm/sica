@@ -1,12 +1,7 @@
 ﻿using Application.Interfaces.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
@@ -134,6 +129,22 @@ namespace Persistence.Repository
             }
 
             return queryable;
+        }
+
+        public IEnumerable<object> GetDistinctValuesFromColumn<T>(string column, IEnumerable<T> data)
+        {
+            var muestreos = data.AsQueryable();
+            var select = GenerateDynamicSelect<T>(column);
+
+            return muestreos.Select(select).Distinct();
+        }
+
+        public static Expression<Func<T, object>> GenerateDynamicSelect<T>(string propertyName)
+        {
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.Property(parameter, propertyName);
+            var conversion = Expression.Convert(property, typeof(object));
+            return Expression.Lambda<Func<T, object>>(conversion, parameter);
         }
     }
 }
