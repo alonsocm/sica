@@ -29,6 +29,7 @@
         public string HoraCargaEvidencias { get; set; }
         public string NumeroCargaEvidencias { get; set; }
         public string TipoCuerpoAguaOriginal { get; set; }
+        public string TipoCuerpoAguaHomologado { get; set; }
         public string? SubTipoCuerpoAgua { get; set; }
         public string DireccionLocal { get; set; }
         public string OrganismoCuenca { get; set; }
@@ -36,39 +37,41 @@
         public List<EvidenciaDto> Evidencias { get; set; }
 
         public long ProgramaMuestreoId { get; set; }
-        public int estatusId { get; set; }
+        public int EstatusId { get; set; }
         public string? FechaEntregaMuestreo { get; set; }
+        public string FechaCargaEvidencias { get; set; }
 
         public MuestreoDto()
         {
-            this.DiaProgramado = string.Empty;
-            this.Evidencias = new List<EvidenciaDto>();
-            this.OCDL = string.Empty;
-            this.ClaveSitioOriginal = string.Empty;
-            this.CuerpoAgua = string.Empty;
-            this.Estado = string.Empty;
-            this.FechaCarga = string.Empty;
-            this.FechaLimiteRevision = string.Empty;
-            this.HoraCargaEvidencias = string.Empty;
-            this.NumeroCargaEvidencias = string.Empty;
-            this.NumeroEntrega = string.Empty;
-            this.Observaciones = string.Empty;
-            this.DireccionLocal = string.Empty;
-            this.Estatus = string.Empty;
-            this.HoraInicio = string.Empty;
-            this.HoraFin = string.Empty;
-            this.Laboratorio = string.Empty;
-            this.LaboratorioSubrogado = string.Empty;
-            this.OrganismoCuenca = string.Empty;
-            this.ProgramaAnual = string.Empty;
-            this.TipoSitio = string.Empty;
-            this.TipoCuerpoAguaOriginal = string.Empty;
-            this.ProgramaMuestreoId = 0;
-            this.estatusId = 0;
-            this.MuestreoId = 0;
-            this.SubTipoCuerpoAgua = string.Empty;
-            this.FechaEntregaMuestreo = string.Empty;
-
+            DiaProgramado = string.Empty;
+            Evidencias = new List<EvidenciaDto>();
+            OCDL = string.Empty;
+            ClaveSitioOriginal = string.Empty;
+            CuerpoAgua = string.Empty;
+            Estado = string.Empty;
+            FechaCarga = string.Empty;
+            FechaLimiteRevision = string.Empty;
+            HoraCargaEvidencias = string.Empty;
+            NumeroCargaEvidencias = string.Empty;
+            NumeroEntrega = string.Empty;
+            Observaciones = string.Empty;
+            DireccionLocal = string.Empty;
+            Estatus = string.Empty;
+            HoraInicio = string.Empty;
+            HoraFin = string.Empty;
+            Laboratorio = string.Empty;
+            LaboratorioSubrogado = string.Empty;
+            OrganismoCuenca = string.Empty;
+            ProgramaAnual = string.Empty;
+            TipoSitio = string.Empty;
+            TipoCuerpoAguaOriginal = string.Empty;
+            TipoCuerpoAguaHomologado = string.Empty;
+            ProgramaMuestreoId = 0;
+            EstatusId = 0;
+            MuestreoId = 0;
+            SubTipoCuerpoAgua = string.Empty;
+            FechaEntregaMuestreo = string.Empty;
+            FechaCargaEvidencias = string.Empty;
         }
     }
 }
