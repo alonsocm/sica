@@ -2,7 +2,6 @@
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Domain.Entities;
-using MediatR;
 
 namespace Application.Interfaces.IRepositories
 {

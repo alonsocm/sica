@@ -94,35 +94,17 @@ namespace Persistence.Repository
         public IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data)
         {
             var muestreos = data.AsQueryable();
-            var valores = muestreos.Select(GetProperty(column)).Distinct();
+            var select = GenerateDynamicSelect<MuestreoDto>(column);
 
-            return valores;
+            return muestreos.Select(select).Distinct();
         }
 
-        public Expression<Func<MuestreoDto, object>> GetProperty(string column)
+        public static Expression<Func<T, object>> GenerateDynamicSelect<T>(string propertyName)
         {
-            return column.ToLower() switch
-            {
-                "estatus" => muestreo => muestreo.Estatus,
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega,
-                "clavesitio" => muestreo => muestreo.ClaveSitio,
-                "claveMonitoreo" => muestreo => muestreo.ClaveMonitoreo,
-                "tipositio" => muestreo => muestreo.TipoSitio,
-                "nombresitio" => muestreo => muestreo.NombreSitio,
-                "ocdl" => muestreo => muestreo.OCDL,
-                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua,
-                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua,
-                "programaanual" => muestreo => muestreo.ProgramaAnual,
-                "laboratorio" => muestreo => muestreo.Laboratorio,
-                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado,
-                "fechaprogramada" => muestreo => muestreo.FechaProgramada,
-                "fecharealizacion" => muestreo => muestreo.FechaRealizacion,
-                "horainicio" => muestreo => muestreo.HoraInicio,
-                "horafin" => muestreo => muestreo.HoraFin,
-                "fechacarga" => muestreo => muestreo.FechaCarga,
-                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo,
-                _ => muestreo => muestreo.ClaveMonitoreo
-            };
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.Property(parameter, propertyName);
+            var conversion = Expression.Convert(property, typeof(object));
+            return Expression.Lambda<Func<T, object>>(conversion, parameter);
         }
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)
