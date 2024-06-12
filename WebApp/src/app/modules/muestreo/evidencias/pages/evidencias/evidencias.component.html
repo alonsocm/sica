@@ -3,7 +3,7 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h6 class="row col">Evidencias de monitoreo</h6>
+  <h1 class="row col">Evidencias de monitoreo</h1>
   <hr class="red">
   <div class="message-container">
     <app-notification></app-notification>
@@ -18,21 +18,21 @@
     <div class="float-right">
       <input type="file" class="element-hidden" (change)="cargarEvidencias($event, false)"
         accept=".xls, .xlsx, .jpg, .pdf, .xlsm" multiple title="Seleccionar archivos" #fileUpload>
-      <button type="button" class="btn btn-primary mr-1" (click)="fileUpload.click()">
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="fileUpload.click()">
         <i class="bi bi-cloud-upload"></i>
         Seleccionar y cargar evidencias
       </button>
-      <button type="button" class="btn btn-secondary mr-1" (click)="descargarEvidencias()">
+      <button type="button" class="btn btn-secondary btn-sm mr-1" (click)="descargarEvidencias()">
         <i class="bi bi-cloud-download"></i>
         Descargar evidencias
       </button>
-      <button type="button" class="btn btn-secondary mr-1" (click)="onDeleteEvidenciasClick()">
+      <button type="button" class="btn btn-secondary btn-sm mr-1" (click)="onDeleteEvidenciasClick()">
         <i class="bi bi-trash"></i>
         Eliminar evidencias
       </button>
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
         data-target="#mdlConfirmacion" title="Seleccionar"></button>
-      <button class="btn btn-secondary btnAcciones" type="button" (click)="limpiarFiltros()">
+      <button class="btn btn-secondary btn-sm btnAcciones" type="button" (click)="limpiarFiltros()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
@@ -172,8 +172,8 @@
                     data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
                     Cancelar
                   </button>
-                  <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
-                    (click)="filtrar(columna,false);">
+                  <button type="button" class="btn btn-primary btn-sm" style="font-size:xx-small"
+                    data-dismiss="dropdown" (click)="filtrar(columna,false);">
                     Aceptar
                   </button>
                 </div>
