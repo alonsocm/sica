@@ -201,7 +201,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'tipoCuerpoAgua',
+        name: 'tipoCuerpoAguaHomologado',
         label: 'TIPO CUERPO AGUA',
         order: 9,
         selectAll: true,
