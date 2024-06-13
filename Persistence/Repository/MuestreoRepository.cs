@@ -5,7 +5,6 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System.Linq.Expressions;
 
 namespace Persistence.Repository
 {
@@ -29,6 +28,7 @@ namespace Persistence.Repository
                                        Estado = m.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre ?? string.Empty,
                                        CuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                        TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                       TipoCuerpoAguaHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion ?? string.Empty,
                                        SubTipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion ?? string.Empty,
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
                                        FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
@@ -48,7 +48,8 @@ namespace Persistence.Repository
                                        NumeroCargaEvidencias = string.Empty,
                                        TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
-                                       OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty
+                                       OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
+                                       FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty
                                    })
                                    .ToListAsync();
 
@@ -87,40 +88,6 @@ namespace Persistence.Repository
             });
 
             return muestreos;
-        }
-
-        public IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data)
-        {
-            var muestreos = data.AsQueryable();
-            var valores = muestreos.Select(GetProperty(column)).Distinct();
-
-            return valores;
-        }
-
-        public Expression<Func<MuestreoDto, object>> GetProperty(string column)
-        {
-            return column.ToLower() switch
-            {
-                "estatus" => muestreo => muestreo.Estatus,
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega,
-                "clavesitio" => muestreo => muestreo.ClaveSitio,
-                "claveMonitoreo" => muestreo => muestreo.ClaveMonitoreo,
-                "tipositio" => muestreo => muestreo.TipoSitio,
-                "nombresitio" => muestreo => muestreo.NombreSitio,
-                "ocdl" => muestreo => muestreo.OCDL,
-                "tipocuerpoagua" => muestreo => muestreo.TipoCuerpoAgua,
-                "subtipocuerpoagua" => muestreo => muestreo.SubTipoCuerpoAgua,
-                "programaanual" => muestreo => muestreo.ProgramaAnual,
-                "laboratorio" => muestreo => muestreo.Laboratorio,
-                "laboratoriosubrogado" => muestreo => muestreo.LaboratorioSubrogado,
-                "fechaprogramada" => muestreo => muestreo.FechaProgramada,
-                "fecharealizacion" => muestreo => muestreo.FechaRealizacion,
-                "horainicio" => muestreo => muestreo.HoraInicio,
-                "horafin" => muestreo => muestreo.HoraFin,
-                "fechacarga" => muestreo => muestreo.FechaCarga,
-                "fechaentregamuestreo" => muestreo => muestreo.FechaEntregaMuestreo,
-                _ => muestreo => muestreo.ClaveMonitoreo
-            };
         }
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)
@@ -323,11 +290,11 @@ namespace Persistence.Repository
                                        anioOperacion = resultados.AnioOperacion ?? 0,
                                        NumeroEntrega = resultados.NumeroEntrega.ToString() ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,
-                                       estatusId = resultados.EstatusId,
+                                       EstatusId = resultados.EstatusId,
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
                                        cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI"
-                                   }).Where(x => x.estatusId == estatusId).ToListAsync();
+                                   }).Where(x => x.EstatusId == estatusId).ToListAsync();
 
             foreach (var dato in muestreos)
             {

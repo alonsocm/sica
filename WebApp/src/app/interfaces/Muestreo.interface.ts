@@ -4,10 +4,12 @@ export interface Muestreo extends Row {
   muestreoId: number;
   ocdl: string;
   claveSitio: string;
+  claveSitioOriginal: string;
   claveMonitoreo: string;
   estado: string;
   cuerpoAgua: string;
   tipoCuerpoAgua: string;
+  tipoCuerpoAguaHomologado: string;
   subTipoCuerpoAgua: string;
   laboratorio: string;
   laboratorioSubrogado: string;
@@ -30,6 +32,7 @@ export interface Muestreo extends Row {
   programaMuestreoId: number;
   estatusId: number;
   fechaEntregaMuestreo: string;
+  fechaCargaEvidencias: string;
 }
 
 export interface Evidencia {

@@ -2,7 +2,6 @@
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Domain.Entities;
-using MediatR;
 
 namespace Application.Interfaces.IRepositories
 {
@@ -19,6 +18,5 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId);
         Task<bool> ExisteSustitucionPrevia(int periodo);
         public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
-        IEnumerable<object> GetDistinctValuesFromColumn(string column, IEnumerable<MuestreoDto> data);
     }
 }

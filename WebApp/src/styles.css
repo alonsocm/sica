@@ -40,12 +40,6 @@ hr.red {
   cursor: pointer;
 }
 
-.btn {
-  width: auto;
-  font-size: 17px;
-  padding: 10px 15px;
-}
-
 .btn-secondary {
   font-family: sans-serif;
 }
@@ -128,17 +122,17 @@ hr.red {
 }
 
 .dvTable .thead-sticky {
-  font-size:xx-small;
-  text-align:center;
-  vertical-align:middle;
+  font-size: xx-small;
+  text-align: center;
+  vertical-align: middle;
   position: sticky;
   top: -1px;
 }
 
-  .dvTable .thead-sticky .th-resize {
-    position: relative;
-    text-align: center;
-  }
+.dvTable .thead-sticky .th-resize {
+  position: relative;
+  text-align: center;
+}
 
 .dvTable .no-border-bottom {
   border-bottom: 0px;
@@ -188,3 +182,9 @@ table thead tr th:hover {
 /* .dvTable tbody>tr:hover {
     background-color: #DDDDDD;
 } */
+
+.ng-autocomplete {
+  left: 0px;
+  width: 400px !important;
+  height: 50px !important;
+}
