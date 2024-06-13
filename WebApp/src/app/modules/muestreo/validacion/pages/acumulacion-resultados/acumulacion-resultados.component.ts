@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ValidacionReglasService } from '../../services/validacion-reglas.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
@@ -16,10 +16,10 @@ import { Item } from 'src/app/interfaces/filter/item';
   templateUrl: './acumulacion-resultados.component.html',
   styleUrls: ['./acumulacion-resultados.component.css'],
 })
-export class AcumulacionResultadosComponent
-  extends BaseService
-  implements OnInit
+export class AcumulacionResultadosComponent   extends BaseService   implements OnInit
 {
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
   constructor(
     private validacionService: ValidacionReglasService,
     public muestreoService: MuestreoService,
@@ -33,6 +33,7 @@ export class AcumulacionResultadosComponent
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados seleccionados?',
   };
+  archivo: any;
 
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
@@ -697,7 +698,59 @@ export class AcumulacionResultadosComponent
     this.page = page;
   }
 
-  eliminarMuestreos() {}
+  eliminarResultados() {
+    console.log(this.allSelected);
+    this.loading = true;
+    if (this.allSelected) {
+      this.validacionService.deleteResultadosByFilter(estatusMuestreo.AcumulacionResultados, this.cadena).subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.consultarMonitoreos();
+          this.loading = false;
+          document.getElementById('inputExcelMonitoreos')?.click(); 
+          this.resetValues();
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Resultados eliminados correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    } else {
+      this.loading = false; 
+      let muestreosSeleccionados = this.Seleccionados(this.datosAcumualdos); 
+      let resultadosEliminar = muestreosSeleccionados.map((s) => s.resultadoMuestreoId);
+      this.validacionService.deleteResultadosById(resultadosEliminar).subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();            
+          this.consultarMonitoreos();
+          this.loading = false;
+          document.getElementById('inputExcelMonitoreos')?.click(); 
+          this.resetValues();
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Resultados eliminados correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    }
+  }
+
+  private resetValues() {
+    this.resultadosFiltrados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+  }
 
   confirmarEliminacion() {
     let muestreosSeleccionados = this.Seleccionados(this.datosAcumualdos);
@@ -756,5 +809,9 @@ export class AcumulacionResultadosComponent
       column.selectAll = false;
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
+  }
+
+  cargarArchivo(event: Event) {
+    this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
   }
 }

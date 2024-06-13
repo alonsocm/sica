@@ -91,7 +91,22 @@ export class ValidacionReglasService {
   enviarMuestreoaValidar(estatusId: number, muestreos: Array<number>) {  
     let datos = { estatusId: estatusId, muestreos: muestreos };
     return this.http.put(environment.apiUrl + '/Muestreos/cambioEstatusMuestreos', datos);
-  }  
+  }
+
+  deleteResultadosByFilter(estatusId: number, filter: string): Observable<any> {
+    let params = new HttpParams({
+      fromObject: {
+        estatusId: estatusId,
+        Filters: filter  
+      },
+    });
+    return this.http.delete(environment.apiUrl + '/Resultados/DeleteAllResultados', { params });    
+  }
+
+  deleteResultadosById(resultados: Array<number>): Observable<any> {
+    const options = { body: resultados };
+    return this.http.delete(environment.apiUrl + '/Resultados', options);
+  }
 }
 
 
