@@ -123,24 +123,24 @@
                     (input)="onFiltroCabecero($event, columna)" />
                   <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
                     (change)="seleccionarAllFiltro(columna);" />
-                  <label style="font-size:x-small" (click)="$event.stopPropagation()"
+                  <label style="font-size:x-small;" (click)="$event.stopPropagation()"
                     for="chckAllFiltro{{columna.name}}">
                     Seleccionar
                     todos
                   </label>
                   <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
                     <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
-                    <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
+                    <label for="{{columna.name+i}}" style="font-size:xx-small; display: inline;"
                       (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
                   </div>
                 </div>
                 <div class="modal-footer" style="font-size:xx-small;">
-                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
-                    data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
+                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small"
+                    class="btn btn-secondary btn-sm" data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
                     Cancelar
                   </button>
-                  <button type="button" class="btn btn-primary" style="font-size:xx-small" data-dismiss="dropdown"
-                    (click)="filtrar(columna,false);">
+                  <button type="button" class="btn btn-primary btn-sm" style="font-size:xx-small"
+                    data-dismiss="dropdown" (click)="filtrar(columna,false);">
                     Aceptar
                   </button>
                 </div>
