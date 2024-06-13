@@ -79,6 +79,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     pageSize: number = this.NoPage,
     filter: string = this.cadena
   ) {
+    this.loading = true;
     this.muestreoService
       .obtenerMuestreosPaginados(false, page, pageSize, filter, this.orderBy)
       .subscribe({
@@ -89,8 +90,11 @@ export class EvidenciasComponent extends BaseService implements OnInit {
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
+          this.loading = false;
         },
-        error: (error) => {},
+        error: (error) => {
+          this.loading = false;
+        },
       });
   }
 

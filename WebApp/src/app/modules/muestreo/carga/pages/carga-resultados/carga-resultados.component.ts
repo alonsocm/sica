@@ -396,7 +396,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
           this.loading = false;
         },
-        error: (error) => {},
+        error: (error) => {
+          this.loading = false;
+        },
       });
   }
 
