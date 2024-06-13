@@ -599,4 +599,8 @@ export class BaseService {
       ? false
       : true;
   }
+
+  onLimpiarFiltrosClick() {
+    window.location.reload();
+  }
 }

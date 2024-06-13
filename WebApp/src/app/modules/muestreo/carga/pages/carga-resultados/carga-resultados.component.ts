@@ -533,10 +533,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     return evidencias.find((f) => f.sufijo == sufijoEvidencia);
   }
 
-  limpiarFiltros() {
-    this.ngOnInit();
-  }
-
   exportarResultados(): void {
     if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
