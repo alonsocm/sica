@@ -422,10 +422,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     return this.camposDescarga;
   }
 
-  limpiarFiltros() {
-    this.ngOnInit();
-  }
-
   getValueParam(nombreParametro: string, parametros: any[]) {
     let index = parametros.findIndex(
       (f) => f.claveParametro == nombreParametro

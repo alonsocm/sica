@@ -3,7 +3,7 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h6 class="row col">Consulta registro original</h6>
+  <h1 class="row col">Consulta registro original</h1>
   <hr class="red">
   <div class="message-container">
     <app-notification></app-notification>
@@ -16,11 +16,11 @@
       </app-busqueda-columna>
     </div>
     <div class="float-right">
-      <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
-        <img width="20px" src="./assets/images/site/ionoexel.png" alt="icono de excel" />
+      <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="exportarResultados()">
+        <i class="bi bi-cloud-download"></i>
         Descargar informaci&oacute;n
       </button>
-      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltros()">
+      <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
