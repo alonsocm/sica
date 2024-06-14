@@ -813,5 +813,36 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
 
   cargarArchivo(event: Event) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    this.loading = true;
+    if (this.archivo) {
+      this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+        next: (response: any) => {
+          if (response.data.correcto) {
+            this.loading = false;
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.consultarMonitoreos();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Se sustituyeron los datos correctamente.',
+            });
+          } else {
+            this.loading = false;
+          }
+        },
+        error: (error: any) => {
+          this.loading = false;
+          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
+          this.hacerScroll();
+          FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelMonitoreos);
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
+          });
+        },
+      });
+    }
   }
 }
