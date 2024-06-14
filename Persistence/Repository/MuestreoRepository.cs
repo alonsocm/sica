@@ -2,6 +2,7 @@
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
+using Application.Models;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
@@ -91,10 +92,7 @@ namespace Persistence.Repository
         }
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)
-        {
-            var laboratorios = _dbContext.Laboratorios.ToList();
-            var parametros = _dbContext.ParametrosGrupo.ToList();
-
+        {           
             var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion, s.NoEntrega }).Distinct().ToList();
             var muestreos = (from cm in cargaMuestreos
                              join vcm in _dbContext.VwClaveMuestreo on cm.Muestreo equals vcm.ClaveMuestreo
@@ -105,7 +103,7 @@ namespace Persistence.Repository
                                  HoraInicio = TimeSpan.Parse(cm.HoraInicioMuestreo),
                                  HoraFin = TimeSpan.Parse(cm.HoraFinMuestreo),
                                  EstatusId = validado ? (int)Application.Enums.EstatusMuestreo.NoEnviado : (int)Application.Enums.EstatusMuestreo.Cargado,
-                                 ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList, laboratorios, parametros),
+                                 ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList),
                                  NumeroEntrega = Convert.ToInt32(cm.NoEntrega),
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
                                  FechaCarga = DateTime.Now
@@ -114,8 +112,12 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public List<ResultadoMuestreo> GenerarResultados(string claveMuestreo, List<CargaMuestreoDto> cargaMuestreoDto, List<Laboratorios> laboratorios, List<ParametrosGrupo> parametros)
+        public List<ResultadoMuestreo> GenerarResultados(string claveMuestreo, List<CargaMuestreoDto> cargaMuestreoDto)
         {
+
+            var laboratorios = _dbContext.Laboratorios.ToList();
+            var parametros = _dbContext.ParametrosGrupo.ToList();
+
             var resultados = (from cm in cargaMuestreoDto
                               join p in parametros on cm.ClaveParametro equals p.ClaveParametro
                               join l in laboratorios on cm.LaboratorioRealizoMuestreo equals l.Nomenclatura
@@ -135,6 +137,37 @@ namespace Persistence.Repository
 
             return resultados;
         }
+
+        public List<ResultadoMuestreo> GenerarResultados(List<CargaMuestreoDto> cargaMuestreoDto)
+        {
+            var laboratorios = _dbContext.Laboratorios.ToList();
+            var parametros = _dbContext.ParametrosGrupo.ToList();           
+
+            var resultados = (from cm in cargaMuestreoDto
+                              join vcm in _dbContext.VwClaveMuestreo on cm.Muestreo equals vcm.ClaveMuestreo
+                              join ms in _dbContext.Muestreo on vcm.ProgramaMuestreoId equals ms.ProgramaMuestreoId
+                              join p in parametros on cm.ClaveParametro equals p.ClaveParametro
+                              join l in laboratorios on cm.LaboratorioRealizoMuestreo equals l.Nomenclatura
+                              join ls in laboratorios on cm.LaboratorioSubrogado equals ls.Nomenclatura into lsg
+                             
+                              from laboratorioSubrogado in lsg.DefaultIfEmpty()
+                            
+                              select new ResultadoMuestreo
+                              {
+                                  MuestreoId = ms.Id,
+                                  ParametroId = p.Id,
+                                  Resultado = cm.Resultado ?? string.Empty,
+                                  LaboratorioId = l.Id,
+                                  LaboratorioSubrogadoId = laboratorioSubrogado?.Id,
+                                  FechaEntrega = DateTime.Parse(cm.FechaEntrega),
+                                  IdResultadoLaboratorio = Convert.ToInt64(cm.IdResultado),
+                                  ObservacionLaboratorio = cm.ObservacionesLaboratorio
+                              }).ToList();
+
+            return resultados;
+        }
+
+
 
         public async Task<IEnumerable<ResumenResultadosDto>> GetResumenResultados(List<int> muestreos)
         {

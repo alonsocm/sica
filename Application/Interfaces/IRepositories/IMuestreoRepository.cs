@@ -9,6 +9,10 @@ namespace Application.Interfaces.IRepositories
     {
         Task<IEnumerable<MuestreoDto>> GetResumenMuestreosAsync(List<long> estatus);
         List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado);
+
+        List<ResultadoMuestreo> GenerarResultados(string claveMuestreo, List<CargaMuestreoDto> cargaMuestreoDto);
+        List<ResultadoMuestreo> GenerarResultados(List<CargaMuestreoDto> cargaMuestreoDto);
+
         Task<IEnumerable<ResumenResultadosDto>> GetResumenResultados(List<int> muestreos);
         List<Muestreo> ConvertMuestreosParamsList(List<UpdateMuestreoExcelDto> updateMuestreoExcelDtoList);
         string GetTipoCuerpoAguaHomologado(string claveMuestreo);
