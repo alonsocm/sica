@@ -13,7 +13,6 @@ using Application.Wrappers;
 using AutoMapper;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.Style;
 using Shared.Utilities.Services;
 using System.Reflection;
 using WebAPI.Shared;
@@ -547,9 +546,16 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetDistinctValuesParametro")]
-        public async Task<IActionResult> Get(string parametro, int usuario, int cuerpoAgua, int estatus, int anio)
+        public async Task<IActionResult> Get(int usuario, string parametro, int estatus, int anio, string? filter = "")
         {
-            return Ok(await Mediator.Send(new GetDistinctValuesParametro { ClaveParametro=parametro, Usuario = usuario, CuerpoAgua = cuerpoAgua, Estatus = estatus, Anio = anio }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro=parametro, Estatus = estatus, Anio = anio, Filter =  filters }));
         }
 
         [HttpGet("ValidarResultadosPorReglas")]

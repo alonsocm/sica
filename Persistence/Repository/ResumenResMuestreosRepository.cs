@@ -246,71 +246,48 @@ namespace Persistence.Repository
 
         public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int estatusId, int anio)
         {
+            var muestreos = _dbContext.Muestreo.AsQueryable().Where(x => (anio == 0 ? null : anio) == null || anio == x.AnioOperacion);
+            var usuario = await _dbContext.Usuario.Where(t => t.Id == userId).FirstOrDefaultAsync();
 
-            IQueryable<Muestreo> muestreos = _dbContext.Muestreo.Where(x => (anio == 0 ? null : anio) == null || anio == x.AnioOperacion)
-                                                                .Include(t => t.ProgramaMuestreo)
-                                                                .ThenInclude(t => t.ProgramaSitio)
-                                                                .ThenInclude(t => t.Sitio)
-                                                                .ThenInclude(t => t.CuencaDireccionesLocales);
-
-            var usr = await _dbContext.Usuario.Include(t => t.DireccionLocal).Include(t => t.Cuenca).Where(t => t.Id == userId).FirstOrDefaultAsync();
-
-            if (usr?.DireccionLocalId != null)
+            if (usuario?.DireccionLocalId != null)
             {
-                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usr.DireccionLocalId
+                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usuario.DireccionLocalId
                                                 && t.EstatusId == estatusEnviado
                                                 || t.EstatusId == estatusExtensionFecha);
             }
-            else if (usr?.CuencaId != null)
+            else if (usuario?.CuencaId != null)
             {
-                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usr.CuencaId
+                muestreos = muestreos.Where(t => t.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usuario.CuencaId
                                                 && t.EstatusId == estatusEnviado
                                                 || t.EstatusId == estatusExtensionFecha);
             }
 
-            var resultadosMuestreoDto = (from m in muestreos
-                                         join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
-                                         join csta in _dbContext.CuerpoTipoSubtipoAgua on m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAguaId equals csta.Id
-                                         join ca in _dbContext.CuerpoAgua on csta.CuerpoAguaId equals ca.Id
-                                         join tca in _dbContext.TipoCuerpoAgua on csta.TipoCuerpoAguaId equals tca.Id
-                                         //join stca in _dbContext.SubtipoCuerpoAgua on csta.SubtipoCuerpoAguaId equals stca.Id
-                                         join th in _dbContext.TipoHomologado on tca.TipoHomologadoId equals th.Id
-                                         join ts in _dbContext.TipoSitio on m.ProgramaMuestreo.ProgramaSitio.TipoSitioId equals ts.Id
-                                         where m.EstatusId == estatusId
-                                         select new RegistroOriginalDto
-                                         {
-                                             MuestreoId = m.Id,
-                                             NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
-                                             //Programa de muestreo
-                                             ClaveSitioOriginal = ((m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio) + (m.ProgramaMuestreo.DomingoSemanaProgramada.ToString("yyyy"))),
-                                             ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
-                                             ClaveMonitoreo = vpm.ClaveMuestreo,
-                                             FechaRealizacion = m.FechaRealVisita.ToString(),
-                                             Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? "Sin laboratorio asignado",
-                                             TipoCuerpoAguaId = tca.Id,
-                                             TipoCuerpoAgua = tca.Descripcion,
-                                             TipoHomologadoId = th.Id,
-                                             TipoHomologado = th.Descripcion,
-                                             TipoSitio = ts.Descripcion,
-                                             EstatusId = m.EstatusId,
-                                             Estatus = m.Estatus.Descripcion
-                                         }).ToList();
-
-
-            foreach (var resultado in resultadosMuestreoDto)
+            var resultadosMuestreoDto = muestreos.Where(m => m.EstatusId == estatusId).Select(m => new RegistroOriginalDto
             {
-                resultado.Parametros = (from r in _dbContext.ResultadoMuestreo
-                                        join pg in _dbContext.ParametrosGrupo on r.ParametroId equals pg.Id
-                                        where r.MuestreoId == resultado.MuestreoId
-                                        select new ParametroDto
-                                        {
-                                            Id= Convert.ToInt32(pg.Id),
-                                            ClaveParametro= pg.ClaveParametro,
-                                            Resultado = r.Resultado,
-                                            Descripcion=pg.Descripcion,
-                                            Orden= Convert.ToInt32(pg.Orden)
-                                        }).ToList();
-            }
+                MuestreoId = m.Id,
+                NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
+                ClaveSitioOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio + m.ProgramaMuestreo.DomingoSemanaProgramada.ToString("yyyy"),
+                ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                ClaveMonitoreo = m.ProgramaMuestreo.NombreCorrectoArchivo,
+                FechaRealizacion = m.FechaRealVisita.ToString() ?? string.Empty,
+                Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? "Sin laboratorio asignado" : m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? "Sin laboratorio asignado",
+                TipoCuerpoAguaId = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAguaId,
+                TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion,
+                TipoHomologadoId = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado == null ? 0 : m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Id,
+                TipoHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado == null ? string.Empty : m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion,
+                TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion??string.Empty,
+                EstatusId = m.EstatusId,
+                Estatus = m.Estatus.Descripcion,
+                Parametros = m.ResultadoMuestreo.Select(s =>
+                              new ParametroDto
+                              {
+                                  Id= (int)s.ParametroId,
+                                  ClaveParametro= s.Parametro.ClaveParametro,
+                                  Resultado = s.Resultado,
+                                  Descripcion=s.Parametro.Descripcion,
+                                  Orden= Convert.ToInt32(s.Parametro.Orden)
+                              }).ToList()
+            });
 
             return resultadosMuestreoDto;
         }

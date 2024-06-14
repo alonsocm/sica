@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
@@ -9,9 +10,9 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
     {
         public string ClaveParametro { get; set; }
         public int Usuario { get; set; }
-        public int CuerpoAgua { get; set; }
         public int Estatus { get; set; }
         public int Anio { get; set; }
+        public List<Filter> Filter { get; set; }
     }
 
     public class GetDistinctValuesParametroHandler : IRequestHandler<GetDistinctValuesParametro, Response<List<string>>>
@@ -25,9 +26,19 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
 
         public async Task<Response<List<string>>> Handle(GetDistinctValuesParametro request, CancellationToken cancellationToken)
         {
-            IEnumerable<RegistroOriginalDto> datos = await _repositoryAsync.GetResumenResultadosTemp(request.Usuario, request.Estatus, request.Anio)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
+            IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.Usuario, request.Estatus, request.Anio)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
 
-            return new Response<List<string>>(GetResultadoParametro(datos, request.ClaveParametro).ToList());
+            if (request.Filter.Any())
+            {
+                var expressions = RegistroOriginalExpression.GetExpressionList(request.Filter);
+
+                foreach (var filter in expressions)
+                {
+                    data = data.AsQueryable().Where(filter);
+                }
+            }
+
+            return new Response<List<string>>(GetResultadoParametro(data, request.ClaveParametro).ToList());
         }
 
         public static IEnumerable<string> GetResultadoParametro(IEnumerable<RegistroOriginalDto> datos, string claveParametro)
