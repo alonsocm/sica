@@ -63,16 +63,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         name: 'estatus',
         label: 'ESTATUS',
         order: 1,
-        selectAll: true,
-        filtered: false,
-        asc: false,
-        desc: false,
-        data: [],
-        filteredData: [],
-        dataType: 'string',
-        specialFilter: '',
-        secondSpecialFilter: '',
-        selectedData: '',
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
         name: 'esreplica',
@@ -773,7 +764,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
 
@@ -864,7 +855,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
           },
-          error: (error) => {},
+          error: (error) => { },
         });
     }
 

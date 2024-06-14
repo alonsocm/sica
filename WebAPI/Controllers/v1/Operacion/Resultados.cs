@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
@@ -626,7 +627,7 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 orderBy = new OrderBy
                 {
-                    Column =order.Split('_')[0],
+                    Column = order.Split('_')[0],
                     Type = order.Split('_')[1]
                 };
             }
@@ -821,7 +822,18 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> Delete(List<long> resultados)
+        { return Ok(await Mediator.Send(new DeleteResultadosByIdCommand { lstResultadosId = resultados })); }
 
+        [HttpDelete("DeleteAllResultados")]
+        public async Task<IActionResult> Delete(int estatusId, string? filter = "")
+        {
+            var filters = new List<Filter>();
+            if (!string.IsNullOrEmpty(filter))
+            { filters = QueryParam.GetFilters(filter); }
 
+            return Ok(await Mediator.Send(new DeleteResultadosByFilterCommand { Filters = filters, estatusId = estatusId }));
+        }
     }
 }

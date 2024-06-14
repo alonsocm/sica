@@ -27,8 +27,8 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
 
         public CargaMasivaMuestreosCommandHandler(IMuestreoRepository repositoryAsync, IResultado resultadosRepository)
         {
-            _repository=repositoryAsync;
-            _resultadosRepository=resultadosRepository;
+            _repository = repositoryAsync;
+            _resultadosRepository = resultadosRepository;
         }
 
         public async Task<Response<ResultadoCargaMuestreo>> Handle(CargaMuestreosCommand request, CancellationToken cancellationToken)
@@ -54,8 +54,8 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
             else if (existeCargaPrevia && request.Reemplazar)
             {
                 var resultadosNoEncontrados = _resultadosRepository.ActualizarValorResultado(request.Muestreos);
-                var muestreos = _repository.ConvertToMuestreosList(resultadosNoEncontrados, request.Validado);
-                _repository.InsertarRango(muestreos);
+                var resultados = _repository.GenerarResultados(resultadosNoEncontrados.ToList());
+                _resultadosRepository.InsertarRango(resultados);
                 resultadoCarga.Correcto = true;
             }
 
