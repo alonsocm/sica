@@ -42,7 +42,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
 
         public static IEnumerable<string> GetResultadoParametro(IEnumerable<RegistroOriginalDto> datos, string claveParametro)
         {
-            var parametros = datos.Select(s => s.Parametros).SelectMany(s => s.Where(w => w.ClaveParametro == claveParametro).Select(d => d.Resultado).Distinct());
+            var parametros = datos.Select(s => s.Parametros).SelectMany(s => s.Where(w => w.ClaveParametro == claveParametro).Select(d => d.Resultado)).Distinct();
             return parametros;
         }
     }
