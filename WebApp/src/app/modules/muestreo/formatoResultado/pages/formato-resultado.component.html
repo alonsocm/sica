@@ -130,8 +130,6 @@
                   <div style="height:300px; overflow:scroll; padding:5px">
                     <input class="form-control" placeholder="Buscar" type="text"
                       (input)="onFiltroCabecero($event, columna)" />
-                    <span><i class="bi bi-search"></i></span>
-                    <br />
                     <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
                       (change)="seleccionarAllFiltro(columna);" />
                     <label style="font-size:x-small" (click)="$event.stopPropagation()"

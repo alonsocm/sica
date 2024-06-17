@@ -310,7 +310,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.muestreos = response.data;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.page = response.totalRecords !== this.totalItems ? 1 : page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
@@ -518,8 +518,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   onPageClick(page: any) {
-    this.consultarMonitoreos();
-    this.page = page;
+    this.consultarMonitoreos(page);
   }
 
   setLeftPosition(columns: Array<Column>) {
