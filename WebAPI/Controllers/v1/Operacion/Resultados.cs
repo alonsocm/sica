@@ -1,5 +1,4 @@
 ﻿using Application.DTOs;
-using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
@@ -11,7 +10,6 @@ using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
 using Application.Models;
 using Application.Wrappers;
-using AutoMapper;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -26,15 +24,13 @@ namespace WebAPI.Controllers.v1.Operacion
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
         const int estatusVencido = (int)Application.Enums.EstatusMuestreo.PendienteDeEnvioAprobacionFinal;
         const int aprobacionSistema = (int)Application.Enums.TipoAprobacion.Sistema;
 
-        public Resultados(IConfiguration configuration, IWebHostEnvironment env, IMapper mapper)
+        public Resultados(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _env = env;
-            _mapper = mapper;
         }
 
         [HttpPost]
@@ -513,7 +509,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ParametrosMuestreo")]
-        public async Task<IActionResult> Get(int usuario, int estatus, int anio, string? filter, int page, int pageSize, string? order)
+        public async Task<IActionResult> Get(int usuario, int estatus, string? filter, int page, int pageSize, string? order)
         {
             var filters = new List<Filter>();
 
@@ -537,7 +533,6 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 UserId = usuario,
                 Estatus = estatus,
-                Anio = anio,
                 Filter = filters,
                 Page = page,
                 PageSize = pageSize,
@@ -547,7 +542,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetDistinctValuesParametro")]
-        public async Task<IActionResult> Get(int usuario, string parametro, int estatus, int anio, string? filter = "")
+        public async Task<IActionResult> Get(int usuario, string parametro, int estatus, string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -556,7 +551,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro=parametro, Estatus = estatus, Anio = anio, Filter =  filters }));
+            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro=parametro, Estatus = estatus, Filter =  filters }));
         }
 
         [HttpGet("ValidarResultadosPorReglas")]

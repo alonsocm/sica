@@ -244,9 +244,9 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int estatusId, int anio)
+        public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int estatusId)
         {
-            var muestreos = _dbContext.Muestreo.AsQueryable().Where(x => (anio == 0 ? null : anio) == null || anio == x.AnioOperacion);
+            var muestreos = _dbContext.Muestreo.AsQueryable();
             var usuario = await _dbContext.Usuario.Where(t => t.Id == userId).FirstOrDefaultAsync();
 
             if (usuario?.DireccionLocalId != null)
