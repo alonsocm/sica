@@ -282,6 +282,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
             secondSpecialFilter: '',
             selectedData: '',
             pinned: false,
+            parameter: true,
           };
           this.columns.push(columna);
           this.paramTotalOrdenados.push(columna);
@@ -550,24 +551,45 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
-        .subscribe({
-          next: (response: any) => {
-            column.data = response.data.map((register: any) => {
-              let item: Item = {
-                value: register,
-                checked: true,
-              };
-              return item;
-            });
+      if (column.parameter) {
+        this.formatoService
+          .getDistinctValuesParameterByFilter(column.name, this.cadena)
+          .subscribe({
+            next: (response: any) => {
+              column.data = response.data.map((register: any) => {
+                let item: Item = {
+                  value: register,
+                  checked: true,
+                };
+                return item;
+              });
 
-            column.filteredData = column.data;
-            this.ordenarAscedente(column.filteredData);
-            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-          },
-          error: (error) => {},
-        });
+              column.filteredData = column.data;
+              this.ordenarAscedente(column.filteredData);
+              this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+            },
+            error: (error) => {},
+          });
+      } else {
+        this.muestreoService
+          .getDistinctValuesFromColumn(column.name, this.cadena)
+          .subscribe({
+            next: (response: any) => {
+              column.data = response.data.map((register: any) => {
+                let item: Item = {
+                  value: register,
+                  checked: true,
+                };
+                return item;
+              });
+
+              column.filteredData = column.data;
+              this.ordenarAscedente(column.filteredData);
+              this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+            },
+            error: (error) => {},
+          });
+      }
     }
 
     if (esFiltroEspecial) {
