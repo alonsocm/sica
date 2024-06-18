@@ -550,6 +550,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
+      this.showFilterSpinner = true;
       if (column.parameter) {
         this.formatoService
           .getDistinctValuesParameterByFilter(column.name, this.cadena)
@@ -566,6 +567,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
               column.filteredData = column.data;
               this.ordenarAscedente(column.filteredData);
               this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+              this.showFilterSpinner = false;
             },
             error: (error) => {},
           });
@@ -585,6 +587,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
               column.filteredData = column.data;
               this.ordenarAscedente(column.filteredData);
               this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+              this.showFilterSpinner = false;
             },
             error: (error) => {},
           });
