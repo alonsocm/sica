@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Resultados.Comands
 {
-    public class DeleteResultadosByIdCommand: IRequest<Response<bool>>
+    public class DeleteResultadosByIdCommand : IRequest<Response<bool>>
     {
         public List<long> lstResultadosId { get; set; }
     }
@@ -25,13 +25,10 @@ namespace Application.Features.Operacion.Resultados.Comands
             _resultadoRepository = resultadoRepository;
         }
         public async Task<Response<bool>> Handle(DeleteResultadosByIdCommand request, CancellationToken cancellationToken)
-        {            
-            var resultados = await _resultadoRepository.ObtenerElementosPorCriterioAsync(r => request.lstResultadosId.Contains(r.Id));
-            foreach (var resultado in resultados)
-            { _resultadoRepository.Eliminar(resultado); }
-
+        {
+            foreach (var idResultado in request.lstResultadosId)
+            { _resultadoRepository.Eliminar(x => x.Id == idResultado); }
             return new Response<bool> { Succeded = true };
         }
     }
-
 }

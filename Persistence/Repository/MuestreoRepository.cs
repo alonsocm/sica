@@ -242,7 +242,7 @@ namespace Persistence.Repository
             var muestreos = await (from m in _dbContext.Muestreo
                                    join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
                                    join resMuestreo in _dbContext.ResultadoMuestreo on m.Id equals resMuestreo.MuestreoId
-                                   join costo in _dbContext.ParametrosCostos on resMuestreo.ParametroId equals costo.ParametroId
+                                   //join costo in _dbContext.ParametrosCostos on resMuestreo.ParametroId equals costo.ParametroId
                                    where m.EstatusId == estatusId
                                    select new AcumuladosResultadoDto
                                    {
@@ -271,7 +271,7 @@ namespace Persistence.Repository
                                        TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString() ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
-                                       costoParametro = costo.Precio,
+                                       //costoParametro = costo.Precio,
                                        NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty,
                                        fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,

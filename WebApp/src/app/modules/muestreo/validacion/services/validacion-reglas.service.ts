@@ -107,6 +107,12 @@ export class ValidacionReglasService {
     const options = { body: resultados };
     return this.http.delete(environment.apiUrl + '/Resultados', options);
   }
+
+  deleteResultadosByMuestreoId(lstMuestreosId: Array<number>): Observable<any> {
+    const options = { body: lstMuestreosId };
+    return this.http.delete(environment.apiUrl + '/Resultados/DeleteByMuestreoId', options);
+  }
+
 }
 
 

@@ -829,5 +829,9 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new DeleteResultadosByFilterCommand { Filters = filters, estatusId = estatusId }));
         }
+
+        [HttpDelete("DeleteByMuestreoId")]
+        public async Task<IActionResult> DeleteByMuestreoId(List<long> lstMuestreosId)
+        { return Ok(await Mediator.Send(new DeleteResultadosByMuestreoIdCommand { lstMuestreoId = lstMuestreosId })); }
     }
 }

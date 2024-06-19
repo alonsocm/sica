@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Application.Features.Operacion.Resultados.Comands
 {
@@ -40,11 +41,9 @@ namespace Application.Features.Operacion.Resultados.Comands
                 { data = (IEnumerable<DTOs.AcumuladosResultadoDto>)data.AsQueryable().Where(filter); }
             }
 
-            List<long> lstResultadosId = data.Select(x => x.resultadoMuestreoId).Distinct().ToList();
-            var resultados = await _resultadoRepository.ObtenerElementosPorCriterioAsync(r => lstResultadosId.Contains(r.Id));
-            foreach (var resultado in resultados)
-            { _resultadoRepository.Eliminar(resultado); }
-
+            List<long> lstresultados = data.Select(x => x.resultadoMuestreoId).Distinct().ToList();
+            foreach (var idResultado in lstresultados)
+            { _resultadoRepository.Eliminar(x => x.Id == idResultado); }
             return new Response<bool> { Succeded = true };
         }
     }

@@ -655,7 +655,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
   }
 
-  enviarMonitoreos(): void {
+  //Cambiar cuando selecciona todos
+  enviarMonitoreos(): void { 
     //Si todos los registros están seleccionados, vamos a utlizar otra función, donde pasamos el filtro actual
     if (this.allSelected) {
       this.muestreoService
