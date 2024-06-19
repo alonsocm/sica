@@ -32,7 +32,7 @@
       </button>
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
         data-target="#mdlConfirmacion" title="Seleccionar"></button>
-      <button class="btn btn-secondary btn-sm btnAcciones" type="button" (click)="limpiarFiltros()">
+      <button class="btn btn-secondary btn-sm btnAcciones" type="button" (click)="onLimpiarFiltrosClick()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
@@ -152,8 +152,6 @@
                 <div style="height:300px; overflow:scroll; padding:5px">
                   <input class="form-control" placeholder="Buscar" type="text"
                     (input)="onFiltroCabecero($event, columna)" />
-                  <span><i class="bi bi-search"></i></span>
-                  <br />
                   <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
                     (change)="seleccionarAllFiltro(columna);" />
                   <label style="font-size:x-small" (click)="$event.stopPropagation()"
@@ -163,13 +161,13 @@
                   </label>
                   <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
                     <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
-                    <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
+                    <label for="{{columna.name+i}}" style="font-size:xx-small;display: inline;"
                       (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
                   </div>
                 </div>
                 <div class="modal-footer" style="font-size:xx-small;">
-                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
-                    data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
+                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small"
+                    class="btn btn-secondary btn-sm" data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
                     Cancelar
                   </button>
                   <button type="button" class="btn btn-primary btn-sm" style="font-size:xx-small"

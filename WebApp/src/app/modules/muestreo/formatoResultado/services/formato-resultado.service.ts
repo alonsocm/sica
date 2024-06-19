@@ -43,12 +43,15 @@ export class FormatoResultadoService {
     );
   }
 
-
-  getMuestreosParametrosPaginados(page: number, pageSize: number, filter: string,
-    order?: { column: string; type: string }): Observable<Object> {
+  getMuestreosParametrosPaginados(
+    page: number,
+    pageSize: number,
+    filter: string,
+    order?: { column: string; type: string }
+  ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
-        usuario: this.authService.getUser().usuarioId,       
+        usuario: this.authService.getUser().usuarioId,
         estatus: estatusMuestreo.Cargado,
         page,
         pageSize,
@@ -62,12 +65,27 @@ export class FormatoResultadoService {
     );
   }
 
-
-
-
   getCuerpoAgua() {
     return this.http.get<any>(
       environment.apiUrl + '/CuerpoDeAgua/TipoHomologado'
+    );
+  }
+
+  getDistinctValuesParameterByFilter(
+    column: string,
+    filter: string
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        usuario: this.authService.getUser().usuarioId,
+        parametro: column,
+        estatus: estatusMuestreo.Cargado,
+        filter: filter,
+      },
+    });
+    return this.http.get(
+      environment.apiUrl + '/resultados/GetDistinctValuesParametro',
+      { params }
     );
   }
 }

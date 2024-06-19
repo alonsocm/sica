@@ -1,16 +1,7 @@
-import {
-  ElementRef,
-  HostListener,
-  Injectable,
-  ViewChild,
-  ViewChildren,
-} from '@angular/core';
-
+import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from '../../interfaces/filter/item';
-import { MuestreoService } from 'src/app/modules/muestreo/liberacion/services/muestreo.service';
-
 import {
   filtrosEspeciales,
   filtrosEspecialesFecha,
@@ -103,6 +94,7 @@ export class BaseService {
 
   currentHeaderFocus = '';
   isAceptarNotificacion: boolean = false;
+  showFilterSpinner: boolean = false;
 
   mostrarMensaje(mensaje: string, tipo: string): void {
     this.mensajeAlerta = mensaje;
@@ -598,5 +590,9 @@ export class BaseService {
       column.optionFilter === this.filtroEspecialEquals
       ? false
       : true;
+  }
+
+  onLimpiarFiltrosClick() {
+    window.location.reload();
   }
 }

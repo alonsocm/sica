@@ -282,6 +282,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
             secondSpecialFilter: '',
             selectedData: '',
             pinned: false,
+            parameter: true,
           };
           this.columns.push(columna);
           this.paramTotalOrdenados.push(columna);
@@ -309,7 +310,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.muestreos = response.data;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.page = response.totalRecords !== this.totalItems ? 1 : page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
@@ -422,10 +423,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     return this.camposDescarga;
   }
 
-  limpiarFiltros() {
-    this.ngOnInit();
-  }
-
   getValueParam(nombreParametro: string, parametros: any[]) {
     let index = parametros.findIndex(
       (f) => f.claveParametro == nombreParametro
@@ -521,8 +518,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   onPageClick(page: any) {
-    this.consultarMonitoreos();
-    this.page = page;
+    this.consultarMonitoreos(page);
   }
 
   setLeftPosition(columns: Array<Column>) {
@@ -554,24 +550,48 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
-        .subscribe({
-          next: (response: any) => {
-            column.data = response.data.map((register: any) => {
-              let item: Item = {
-                value: register,
-                checked: true,
-              };
-              return item;
-            });
+      this.showFilterSpinner = true;
+      if (column.parameter) {
+        this.formatoService
+          .getDistinctValuesParameterByFilter(column.name, this.cadena)
+          .subscribe({
+            next: (response: any) => {
+              column.data = response.data.map((register: any) => {
+                let item: Item = {
+                  value: register,
+                  checked: true,
+                };
+                return item;
+              });
 
-            column.filteredData = column.data;
-            this.ordenarAscedente(column.filteredData);
-            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-          },
-          error: (error) => {},
-        });
+              column.filteredData = column.data;
+              this.ordenarAscedente(column.filteredData);
+              this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+              this.showFilterSpinner = false;
+            },
+            error: (error) => {},
+          });
+      } else {
+        this.muestreoService
+          .getDistinctValuesFromColumn(column.name, this.cadena)
+          .subscribe({
+            next: (response: any) => {
+              column.data = response.data.map((register: any) => {
+                let item: Item = {
+                  value: register,
+                  checked: true,
+                };
+                return item;
+              });
+
+              column.filteredData = column.data;
+              this.ordenarAscedente(column.filteredData);
+              this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+              this.showFilterSpinner = false;
+            },
+            error: (error) => {},
+          });
+      }
     }
 
     if (esFiltroEspecial) {

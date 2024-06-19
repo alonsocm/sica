@@ -3,7 +3,7 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h6 class="row col">Consulta registro original</h6>
+  <h1 class="row col">Consulta registro original</h1>
   <hr class="red">
   <div class="message-container">
     <app-notification></app-notification>
@@ -16,11 +16,11 @@
       </app-busqueda-columna>
     </div>
     <div class="float-right">
-      <button class="btn btn-secondary mr-1" type="button" (click)="exportarResultados()">
-        <img width="20px" src="./assets/images/site/ionoexel.png" alt="icono de excel" />
+      <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="exportarResultados()">
+        <i class="bi bi-cloud-download"></i>
         Descargar informaci&oacute;n
       </button>
-      <button class="btn btn-secondary" type="button" (click)="this.limpiarFiltros()">
+      <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
@@ -112,7 +112,6 @@
                     aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
                     <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals"
                       style="color: palegreen" class="bi bi-check-square-fill"></i>
-
                     {{leyendaFiltrosEspeciales}}
                   </a>
                   <div id="filters-{{columna.name}}" class="d-none">
@@ -127,24 +126,32 @@
                     </a>
                   </div>
                   <div class="dropdown-divider"></div>
-                  <div style="height:300px; overflow:scroll; padding:5px">
-                    <input class="form-control" placeholder="Buscar" type="text"
-                      (input)="onFiltroCabecero($event, columna)" />
-                    <span><i class="bi bi-search"></i></span>
-                    <br />
-                    <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
-                      (change)="seleccionarAllFiltro(columna);" />
-                    <label style="font-size:x-small" (click)="$event.stopPropagation()"
-                      for="chckAllFiltro{{columna.name}}">
-                      Seleccionar
-                      todos
-                    </label>
-                    <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
-                      <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
-                      <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
-                        (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
+                  <div *ngIf="this.showFilterSpinner then thenBlockFilter else elseBlockFilter"></div>
+                  <ng-template #thenBlockFilter>
+                    <div class="d-flex justify-content-center">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                      </div>
                     </div>
-                  </div>
+                  </ng-template>
+                  <ng-template #elseBlockFilter>
+                    <div style="height:300px; overflow:scroll; padding:5px">
+                      <input class="form-control" placeholder="Buscar" type="text"
+                        (input)="onFiltroCabecero($event, columna)" />
+                      <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
+                        (change)="seleccionarAllFiltro(columna);" />
+                      <label style="font-size:x-small" (click)="$event.stopPropagation()"
+                        for="chckAllFiltro{{columna.name}}">
+                        Seleccionar
+                        todos
+                      </label>
+                      <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
+                        <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
+                        <label for="{{columna.name+i}}" style="font-size:xx-small;text-align:left"
+                          (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
+                      </div>
+                    </div>
+                  </ng-template>
                   <div class="modal-footer" style="font-size:xx-small;">
                     <button id="btnCancelarFiltro" type="button" style="font-size:xx-small" class="btn btn-secondary"
                       data-dismiss="dropdown" (click)="onCancelarFiltroClick()">

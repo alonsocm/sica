@@ -387,7 +387,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
           this.loading = false;
         },
-        error: (error) => { },
+        error: (error) => {
+          this.loading = false;
+        },
       });
   }
 
@@ -522,10 +524,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       return false;
     }
     return evidencias.find((f) => f.sufijo == sufijoEvidencia);
-  }
-
-  limpiarFiltros() {
-    this.ngOnInit();
   }
 
   exportarResultados(): void {
