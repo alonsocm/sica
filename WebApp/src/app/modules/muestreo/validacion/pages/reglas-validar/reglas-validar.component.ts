@@ -41,6 +41,21 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
+        name: 'numeroEntrega',
+        label: 'NÚMERO DE CARGA',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
         name: 'claveSitio',
         label: 'CLAVE SITIO',
         order: 0,
@@ -334,7 +349,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.resultadosMuestreo = response.data;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
 
           this.getPreviousSelected(

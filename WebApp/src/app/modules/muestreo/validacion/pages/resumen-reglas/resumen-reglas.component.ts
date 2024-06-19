@@ -27,7 +27,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
-        name: 'numeroEntrega', label: 'NÚMERO DE ENTREGA', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        name: 'numeroEntrega', label: 'NÚMERO DE CARGA', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [],
         filteredData: [], dataType: 'number', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {

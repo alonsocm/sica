@@ -34,7 +34,7 @@ namespace Persistence.Repository
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
                                        FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        FechaLimiteRevision = m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty,
+                                       NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        Estatus = m.Estatus.Descripcion,
                                        HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
                                        HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
@@ -69,6 +69,7 @@ namespace Persistence.Repository
                                               where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId) && e.LaboratorioSubrogadoId != null
                                               select new { e.LaboratorioSubrogado.Nomenclatura, e.MuestreoId }).Distinct().ToListAsync();
 
+            //Cambiar para los que ahora no tienen resultados
             var fechentrega = await (from e in _dbContext.ResultadoMuestreo
                                      where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
                                      select new { e.FechaEntrega, e.MuestreoId }).Distinct().ToListAsync();
@@ -272,7 +273,7 @@ namespace Persistence.Repository
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        //costoParametro = costo.Precio,
-                                       NumeroEntrega = m.NumeroEntrega.ToString() ?? string.Empty,
+                                       NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
                                        validadoReglas = (m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas) ? true : false,
@@ -321,7 +322,7 @@ namespace Persistence.Repository
                                        muestreoCompletoPorResultados = (resultados.MuestreoCompletoPorResultados == null) ? "SI" : resultados.MuestreoCompletoPorResultados.ToString(),
                                        cumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
                                        anioOperacion = resultados.AnioOperacion ?? 0,
-                                       NumeroEntrega = resultados.NumeroEntrega.ToString() ?? string.Empty,
+                                       NumeroEntrega = resultados.NumeroEntrega.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,
                                        EstatusId = resultados.EstatusId,
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,

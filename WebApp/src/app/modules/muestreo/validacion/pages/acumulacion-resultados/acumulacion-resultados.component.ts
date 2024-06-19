@@ -63,7 +63,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
 
       {
         name: 'numeroEntrega',
-        label: 'N° ENTREGA',
+        label: 'NÚMERO DE CARGA',
         order: 2,
         selectAll: true,
         filtered: false,

@@ -37,6 +37,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.cargaResultados();
+ 
   }
 
   definirColumnas() {
@@ -45,6 +46,22 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       //  name: 'estatus', label: 'ESTATUS', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
       //  dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: ''
       //},
+
+      {
+        name: 'numeroEntrega',
+        label: 'NÚMERO DE CARGA',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
 
       {
         name: 'claveSitio',
@@ -369,6 +386,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.resultadosMuestreo = response.data;
+          console.log(this.resultadosMuestreo);
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(
