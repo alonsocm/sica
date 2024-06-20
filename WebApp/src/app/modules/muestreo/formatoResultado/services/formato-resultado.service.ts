@@ -71,6 +71,24 @@ export class FormatoResultadoService {
     );
   }
 
+  getDistinctValuesFromColumn(
+    column: string,
+    filter: string
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        usuario: this.authService.getUser().usuarioId,
+        estatus: estatusMuestreo.Cargado,
+        column: column,
+        filter: filter,
+      },
+    });
+    return this.http.get(
+      environment.apiUrl + '/resultados/GetDistinctValuesFromColumn',
+      { params }
+    );
+  }
+
   getDistinctValuesParameterByFilter(
     column: string,
     filter: string

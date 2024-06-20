@@ -10,17 +10,43 @@ namespace WebAPI.Shared
 
             if (!string.IsNullOrEmpty(filterString))
             {
-                var arguments = filterString.Split("%");//Primero separamos el filtro, por columna
-                var isParameter = false;
+                var arguments = filterString.Split("%");//Primero separamos el filtro, por columna                
 
                 foreach (var argument in arguments)
                 {
+                    var isParameter = false;
                     string column = string.Empty;
                     string conditional = string.Empty;
                     string value = string.Empty;
                     List<string> values = new();
 
-                    if (argument.Contains('*'))//Buscamos filtro con opciones de texto o número
+                    if (argument.Contains('[') && argument.Contains(']'))
+                    {
+                        isParameter = true;
+
+                        if (argument.Contains('$'))//Con esto identificamos si se trata de un filtro especial
+                        {
+                            var splitedArgument = argument.Replace("[", string.Empty).Replace("]", string.Empty).Split('$');
+                            column = splitedArgument[0];
+                            conditional = splitedArgument[1];
+                            value = splitedArgument[2];
+                        }
+                        else
+                        {
+                            var splitedArgument = argument.Replace("[", string.Empty).Replace("]", string.Empty).Split('*');
+
+                            if (splitedArgument.Length >= 2)
+                            {
+                                column = splitedArgument[0];
+
+                                foreach (var item in splitedArgument.Skip(1))
+                                {
+                                    values.Add(item);
+                                }
+                            }
+                        }
+                    }
+                    else if (argument.Contains('*'))//Buscamos filtro con opciones de texto o número
                     {
                         var splitedArgument = argument.Split("_*");
                         column = splitedArgument[0];
@@ -31,15 +57,6 @@ namespace WebAPI.Shared
                         {
                             throw new Exception($"No fue posible procesar el filtro con el condicional: {conditional} con el valor {value}");
                         }
-
-                    }
-                    else if (argument.Contains('[') && argument.Contains(']'))
-                    {
-                        var splitedArgument = argument.Replace("[", string.Empty).Replace("]", string.Empty).Split('$');
-                        column = splitedArgument[0];
-                        conditional = splitedArgument[1];
-                        value = splitedArgument[2];
-                        isParameter = true;
                     }
                     else
                     {

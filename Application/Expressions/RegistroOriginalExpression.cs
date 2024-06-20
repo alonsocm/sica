@@ -6,6 +6,32 @@ namespace Application.Expressions
 {
     static internal class RegistroOriginalExpression
     {
+        public static List<Expression<Func<RegistroOriginalDto, bool>>> GetExpressionList(List<Filter> filters)
+        {
+            List<Expression<Func<RegistroOriginalDto, bool>>> expressions = new();
+
+            foreach (var filter in filters)
+            {
+                if (!string.IsNullOrEmpty(filter.Conditional))
+                {
+                    expressions.Add(GetExpression(filter));
+                }
+                else
+                {
+                    if (filter.Values != null && filter.Values.Any() && !filter.IsParameter)
+                    {
+                        expressions.Add(GetContainsExpression(filter.Column, filter.Values));
+                    }
+
+                    if (filter.Values != null && filter.Values.Any() && filter.IsParameter)
+                    {
+                        expressions.Add(GetFilterParameterExpression(filter.Column, filter.Values));
+                    }
+                }
+            }
+
+            return expressions;
+        }
         private static Expression<Func<RegistroOriginalDto, bool>> GetExpression(Filter filter)
         {
             if (filter.IsParameter)
@@ -40,27 +66,6 @@ namespace Application.Expressions
                     _ => muestreo => true,
                 };
             }
-        }
-        public static List<Expression<Func<RegistroOriginalDto, bool>>> GetExpressionList(List<Filter> filters)
-        {
-            List<Expression<Func<RegistroOriginalDto, bool>>> expressions = new();
-
-            foreach (var filter in filters)
-            {
-                if (!string.IsNullOrEmpty(filter.Conditional))
-                {
-                    expressions.Add(GetExpression(filter));
-                }
-                else
-                {
-                    if (filter.Values != null && filter.Values.Any())
-                    {
-                        expressions.Add(GetContainsExpression(filter.Column, filter.Values));
-                    }
-                }
-            }
-
-            return expressions;
         }
 
         #region StringExpressions
@@ -310,6 +315,11 @@ namespace Application.Expressions
                 "contains" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && s.Resultado.Contains(value)),
                 "notcontains" => muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && !s.Resultado.Contains(value)),
             };
+        }
+
+        public static Expression<Func<RegistroOriginalDto, bool>> GetFilterParameterExpression(string parameter, List<string> values)
+        {
+            return muestreo => muestreo.Parametros.Any(s => s.ClaveParametro == parameter.ToUpper() && values.Contains(s.Resultado));
         }
     }
 }

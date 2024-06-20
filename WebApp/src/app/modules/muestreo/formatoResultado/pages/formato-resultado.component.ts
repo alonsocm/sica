@@ -573,7 +573,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
             error: (error) => {},
           });
       } else {
-        this.muestreoService
+        this.formatoService
           .getDistinctValuesFromColumn(column.name, this.cadena)
           .subscribe({
             next: (response: any) => {

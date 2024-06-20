@@ -5,6 +5,7 @@ using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
 using Application.Features.Resultados.Comands;
+using Application.Features.Resultados.Queries;
 using Application.Features.ResumenResultados.Queries;
 using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
@@ -539,6 +540,19 @@ namespace WebAPI.Controllers.v1.Operacion
                 //Filter = filters,
                 //OrderBy = orderBy
             }));
+        }
+
+        [HttpGet("GetDistinctValuesFromColumn")]
+        public async Task<IActionResult> Get(int usuario, int estatus, string column, string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { UserId = usuario, Estatus = estatus, Column = column, Filters = filters }));
         }
 
         [HttpGet("GetDistinctValuesParametro")]
