@@ -44,6 +44,10 @@ namespace Application.DTOs
 
         public long resultadoMuestreoId { get; set; }
 
+        public bool cumpleTodosCriterios { get; set; }
+        public bool autorizacionIncompleto { get; set; }
+        public bool autorizacionFechaEntrega { get; set; }
+
 
         public AcumuladosResultadoDto()
         { this.claveUnica = string.Empty;
@@ -79,6 +83,10 @@ namespace Application.DTOs
 
             this.lstParametros = new List<ParametrosDto>();
             this.resultadoMuestreoId = 0;
+            this.cumpleTodosCriterios = false;
+            this.autorizacionIncompleto = false;
+            this.autorizacionFechaEntrega = false;
+
         }
     }
 }
