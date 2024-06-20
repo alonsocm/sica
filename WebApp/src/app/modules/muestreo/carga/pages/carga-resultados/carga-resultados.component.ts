@@ -97,7 +97,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       },
       {
         name: 'numeroEntrega',
-        label: 'NÚMERO CARGA',
+        label: 'NÚMERO DE CARGA',
         order: 4,
         selectAll: true,
         filtered: false,
@@ -653,7 +653,8 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
   }
 
-  enviarMonitoreos(): void {
+  //Cambiar cuando selecciona todos
+  enviarMonitoreos(): void { 
     //Si todos los registros están seleccionados, vamos a utlizar otra función, donde pasamos el filtro actual
     if (this.allSelected) {
       this.muestreoService

@@ -102,7 +102,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     let nombresColumnas: Array<Column> = [
       {
         name: 'noEntrega',
-        label: 'N° ENTREGA',
+        label: 'NÚMERO DE CARGA',
         order: 1,
         selectAll: true,
         filtered: false,

@@ -36,9 +36,11 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
   archivo: any;
 
   ngOnInit(): void {
+
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarMonitoreos();
+  
   }
 
   definirColumnas() {
@@ -61,7 +63,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
 
       {
         name: 'numeroEntrega',
-        label: 'N° ENTREGA',
+        label: 'NÚMERO DE CARGA',
         order: 2,
         selectAll: true,
         filtered: false,
@@ -490,7 +492,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
     pageSize: number = this.NoPage,
     filter: string = this.cadena
   ): void {
-    this.loading = true;
+  
     this.validacionService
       .getResultadosAcumuladosParametrosPaginados(
         estatusMuestreo.AcumulacionResultados,
@@ -512,10 +514,11 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
           this.selectedPage = this.anyUnselected(this.datosAcumualdos)
             ? false
             : true;
-          this.loading = false;
+
+         
         },
         error: (error) => {
-          this.loading = false;
+        
         },
       });
   }
@@ -535,6 +538,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
       .exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
       .subscribe({
         next: (response: any) => {
+          this.loading = true;
           FileService.download(response, 'AcumulacionResultados.xlsx');
           this.loading = false;
         },
@@ -559,8 +563,6 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
     let totalmuestreos = this.Seleccionados(this.datosAcumualdos).filter(
       (x) => x.claveSitio
     );
-    console.log(totalmuestreos);
-
     if (resuladosenviados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -570,16 +572,15 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
       });
     }
 
+    this.loading = true;
     this.validacionService
       .enviarMuestreoaValidar(estatusMuestreo.InicialReglas, resuladosenviados)
       .subscribe({
         next: (response: any) => {
-          console.log(resuladosenviados);
-          this.loading = true;
-          if (response.succeded) {
-            this.loading = false;
-            this.consultarMonitoreos();
+          if (response.succeded) {           
+            
             this.hacerScroll();
+            this.consultarMonitoreos();
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.success,
@@ -597,6 +598,9 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
           });
         },
       });
+
+    this.loading = false;
+    
   }
 
   sort(column: string, type: string) {
@@ -698,10 +702,9 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
     this.page = page;
   }
 
-  eliminarResultados() {
-    console.log(this.allSelected);
+  eliminarResultados() {    
     this.loading = true;
-    if (this.allSelected) {
+    if (this.allSelected) {     
       this.validacionService.deleteResultadosByFilter(estatusMuestreo.AcumulacionResultados, this.cadena).subscribe({
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
@@ -787,8 +790,9 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
     if (this.requiresToRefreshColumnValues(column)) {
       this.muestreoService
         .getDistinctValuesFromColumn(column.name, this.cadena)
-        .subscribe({
+        .subscribe({          
           next: (response: any) => {
+            this.loading = true;
             column.data = response.data.map((register: any) => {
               let item: Item = {
                 value: register,
@@ -800,6 +804,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
             column.filteredData = column.data;
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+            this.loading = false;
           },
           error: (error) => {},
         });

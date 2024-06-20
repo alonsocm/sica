@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ValidacionReglasService } from '../../services/validacion-reglas.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
@@ -17,6 +17,7 @@ import { Item } from 'src/app/interfaces/filter/item';
   styleUrls: ['./reglas-validar.component.css'],
 })
 export class ReglasValidarComponent extends BaseService implements OnInit {
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(
     private validacionService: ValidacionReglasService,
     public muestreoService: MuestreoService,
@@ -31,6 +32,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
   };
+  archivo: any;
   ngOnInit(): void {
     this.definirColumnas();
     this.cargaResultados();
@@ -38,6 +40,21 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
+      {
+        name: 'numeroEntrega',
+        label: 'NÚMERO DE CARGA',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
       {
         name: 'claveSitio',
         label: 'CLAVE SITIO',
@@ -263,22 +280,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-      },
-      {
-        name: 'resultado',
-        label: 'RESULTADO',
-        order: 0,
-        selectAll: true,
-        filtered: false,
-        asc: false,
-        desc: false,
-        data: [],
-        filteredData: [],
-        dataType: 'string',
-        specialFilter: '',
-        secondSpecialFilter: '',
-        selectedData: '',
-      },
+      },      
       {
         name: 'muestreoValidadoPor',
         label: 'MUESTREO VALIDADO POR',
@@ -332,7 +334,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.resultadosMuestreo = response.data;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
 
           this.getPreviousSelected(
@@ -509,8 +511,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     document.getElementById('btnMdlConfirmacion')?.click();
   }
 
-  eliminarResultados() {}
-
   onSelectClick(muestreo: acumuladosMuestreo) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
@@ -576,6 +576,95 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     if (esFiltroEspecial) {
       column.selectAll = false;
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+  }
+
+  eliminarResultados() {
+    this.loading = true;
+    if (this.allSelected) {      
+      this.validacionService.deleteResultadosByFilter(estatusMuestreo.SeleccionadoParaValidar, this.cadena).subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.cargaResultados();
+          this.loading = false;
+          document.getElementById('inputExcelMonitoreos')?.click();
+          this.resetValues();
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Resultados eliminados correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    } else {
+      this.loading = false;
+
+      let ids = this.resultadosFiltradosn.map((s) => s.muestreoId);
+
+      this.validacionService.deleteResultadosByMuestreoId(ids).subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.cargaResultados();
+          this.loading = false;
+          document.getElementById('inputExcelMonitoreos')?.click();
+          this.resetValues();
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Resultados eliminados correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    }
+  }
+
+  private resetValues() {
+    this.resultadosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+  }
+
+  cargarArchivo(event: Event) {
+    this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    this.loading = true;
+    if (this.archivo) {
+      this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+        next: (response: any) => {
+          if (response.data.correcto) {
+            this.loading = false;
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.cargaResultados();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Se sustituyeron los datos correctamente.',
+            });
+          } else {
+            this.loading = false;
+          }
+        },
+        error: (error: any) => {
+          this.loading = false;
+          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
+          this.hacerScroll();
+          FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelMonitoreos);
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
+          });
+        },
+      });
     }
   }
 }
