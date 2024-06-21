@@ -33,6 +33,9 @@ export interface acumuladosMuestreo extends Muestreo {
   cumpleFechaEntrega: boolean;
 
   validacionEvidencias: boolean;
+  cumpleTodosCriterios: boolean;
+  autorizacionIncompleto: boolean;
+  autorizacionFechaEntrega: boolean;
 
   
 }

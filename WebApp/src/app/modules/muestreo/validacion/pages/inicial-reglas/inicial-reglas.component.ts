@@ -20,7 +20,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
   constructor(
-    private validacionService: ValidacionReglasService,  
+    private validacionService: ValidacionReglasService,
     private notificationService: NotificationService,
     public muestreoService: MuestreoService
   ) {
@@ -37,7 +37,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.cargaResultados();
- 
+
   }
 
   definirColumnas() {
@@ -319,8 +319,8 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'reglaValicdacion',
-        label: 'SE CORRE REGLA DE VALIDACIÓN',
+        name: 'cumpleTodosCriterios',
+        label: 'CUMPLE CON TODOS LOS CRITERIOS PARA APLICAR REGLAS (SI/NO)',
         order: 0,
         selectAll: true,
         filtered: false,
@@ -349,8 +349,8 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'cumpleTodosCriterios',
-        label: 'CUMPLE CRITERIOS PARA APLICAR REGLAS (SI/NO)',
+        name: 'autorizacionRegla',
+        label: 'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA',
         order: 0,
         selectAll: true,
         filtered: false,
@@ -363,6 +363,24 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
       },
+
+      {
+        name: 'reglaValicdacion',
+        label: 'SE CORRE REGLA DE VALIDACIÓN',
+        order: 0,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+
+
     ];
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
@@ -441,13 +459,10 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   }
 
   enviaraValidacion(): void {
-    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn).map(
-      (m) => {
-        return m.muestreoId;
-      }
-    );
+    let datosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
+    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0); 
 
-    if (this.resultadosEnviados.length == 0) {
+    if (datosSeleccionados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -455,38 +470,51 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         text: 'Debes de seleccionar al menos un muestreos para enviar a validar',
       });
     }
+    else if (muestreosConResultados.length == 0) {
+     
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debes de seleccionar muestreos que cuenten con resultados para poder ser enviados a la etapa de "Módulo de reglas"',
+      });
+    }
+    else {
 
-    this.validacionService
-      .enviarMuestreoaValidar(
-        estatusMuestreo.SeleccionadoParaValidar,
-        this.resultadosEnviados
-      )
-      .subscribe({
-        next: (response: any) => {
-          this.loading = true;
-          if (response.succeded) {
+      this.resultadosEnviados = muestreosConResultados.map(
+        (m) => { return m.muestreoId; });
+
+      this.validacionService
+        .enviarMuestreoaValidar(
+          estatusMuestreo.SeleccionadoParaValidar,
+          this.resultadosEnviados
+        )
+        .subscribe({
+          next: (response: any) => {
+            this.loading = true;
+            if (response.succeded) {
+              this.loading = false;
+              this.cargaResultados();
+              this.hacerScroll();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.success,
+                text: 'Los muestreos fueron enviados a validar correctamente',
+              });
+            }
+          },
+          error: (response: any) => {
             this.loading = false;
-            this.cargaResultados();
             this.hacerScroll();
             return this.notificationService.updateNotification({
               show: true,
-              type: NotificationType.success,
-              text: 'Los muestreos fueron enviados a validar correctamente',
+              type: NotificationType.danger,
+              text: 'Error al enviar los muestreos a validar',
             });
-          }
-        },
-        error: (response: any) => {
-          this.loading = false;
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.danger,
-            text: 'Error al enviar los muestreos a validar',
-          });
-        },
-      });
+          },
+        });
+    }
   }
-  limpiarFiltros() {}
+  limpiarFiltros() { }
 
   sort(column: string, type: string) {
     this.orderBy = { column, type };
@@ -500,7 +528,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.resultadosMuestreo = response.data;
         },
-        error: (error) => {},
+        error: (error) => { },
       });
   }
 
@@ -508,7 +536,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.deleteFilter(columName);
     this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.cargaResultados();
-  } 
+  }
 
   getPreviousSelected(
     muestreos: Array<acumuladosMuestreo>,
@@ -605,7 +633,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
   eliminarResultados() {
     this.loading = true;
-    if (this.allSelected) {    
+    if (this.allSelected) {
       this.validacionService.deleteResultadosByFilter(estatusMuestreo.InicialReglas, this.cadena).subscribe({
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
@@ -626,9 +654,9 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       });
     } else {
       this.loading = false;
-  
+
       let ids = this.resultadosFiltradosn.map((s) => s.muestreoId);
-      
+
       this.validacionService.deleteResultadosByMuestreoId(ids).subscribe({
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
@@ -686,7 +714,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
           },
-          error: (error) => {},
+          error: (error) => { },
         });
     }
 
@@ -730,4 +758,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       });
     }
   }
+
+  onDownloadTxt() { }
 }

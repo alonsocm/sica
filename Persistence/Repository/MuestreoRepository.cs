@@ -302,8 +302,10 @@ namespace Persistence.Repository
 
         public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId)
         {
+         
             var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas
 
+                                  
                                    select new AcumuladosResultadoDto
                                    {
                                        ClaveSitio = resultados.ClaveSitio,
@@ -332,6 +334,10 @@ namespace Persistence.Repository
 
             foreach (var dato in muestreos)
             {
+
+                string[] valor = { dato.cumpleReglasCondic, dato.muestreoCompletoPorResultados, dato.cumpleFechaEntrega };
+                dato.cumpleTodosCriterios = valor.Contains("NO") ? false : true;
+
                 List<string> datParam = (dato.cumpleReglasCondic == "NO") ? GetParametrosFaltantes(dato.tipoSitioId, dato.tipoCuerpoAguaId, dato.MuestreoId) : new List<string>();
                 dato.Observaciones = (datParam.Count > 0) ? datParam[0] : string.Empty;
                 dato.claveParametro = (datParam.Count > 0) ? datParam[1] : string.Empty;
