@@ -258,8 +258,8 @@ export class BaseService {
     let repetidos = cadenaanterior.filter((x) => x.includes(columnName));
     let indexx = cadenaanterior.indexOf(repetidos.toString());
     cadenaanterior.splice(indexx, 1);
-
     let cadenaAnterior = '';
+
     if (cadenaanterior.length > 0) {
       cadenaanterior.forEach((x) => {
         cadenaAnterior += x.concat('%');
@@ -270,15 +270,50 @@ export class BaseService {
       );
     }
 
+    let nuevoUltimoFiltro = '';
+
     if (cadenaAnterior != '') {
-      let nuevoUltimoFiltro = '';
-      nuevoUltimoFiltro =
-        cadenaAnterior.indexOf('%') != -1
-          ? cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1]
-          : cadenaAnterior.split('_')[0];
+      if (cadenaAnterior.indexOf('%') !== -1) {
+        //Existe más de un filtro
+        let ultimoFiltro =
+          cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1]; // Con esto obtenemos el último elemento de la cadena
+
+        if (ultimoFiltro.indexOf('[') !== -1) {
+          //Existe un filtro de tipo parámetro
+          nuevoUltimoFiltro = ultimoFiltro
+            .replace('[', '')
+            .replace(']', '')
+            .split('*')[0];
+        } else {
+          //No existe filtro de parámetro
+          nuevoUltimoFiltro = ultimoFiltro.split('_')[0];
+        }
+      } else {
+        //Solo es un filtro
+        if (cadenaAnterior.indexOf('[') !== -1) {
+          //Existe un filtro de tipo parámetro
+          nuevoUltimoFiltro = cadenaAnterior
+            .replace('[', '')
+            .replace(']', '')
+            .split('*')[0];
+        } else {
+          //No existe filtro de parámetro
+          nuevoUltimoFiltro = cadenaAnterior.split('_')[0];
+        }
+      }
+
       let indexNuevoUltimoFiltro = this.columns.findIndex(
-        (f) => f.name == nuevoUltimoFiltro.split('_')[0]
+        (f) => f.name == nuevoUltimoFiltro
       );
+
+      //let nuevoUltimoFiltro = '';
+      // nuevoUltimoFiltro =
+      //   cadenaAnterior.indexOf('%') != -1
+      //     ? cadenaAnterior.split('%')[cadenaAnterior.split('%').length - 1]
+      //     : cadenaAnterior.split('_')[0];
+      // let indexNuevoUltimoFiltro = this.columns.findIndex(
+      //   (f) => f.name == nuevoUltimoFiltro.split('_')[0]
+      // );
       this.columns[indexNuevoUltimoFiltro].isLatestFilter = true;
       this.existeFiltrado = this.validarExisteFiltrado();
     }
@@ -434,21 +469,38 @@ export class BaseService {
     }
 
     if (!isFiltroEspecial) {
-      let filtrosSeleccionados = columna.filteredData?.filter((x) => x.checked);
-
+      let valoresSeleccionados = columna.filteredData?.filter((x) => x.checked);
       columna.selectedData = '';
-      filtrosSeleccionados.forEach((x) => {
-        columna.selectedData += x.value.concat('_');
-      });
-      columna.selectedData = columna.selectedData.substring(
-        0,
-        columna.selectedData.lastIndexOf('_')
-      );
 
-      this.cadena =
-        this.cadena != ''
-          ? this.cadena.concat('%' + columna.name + '_' + columna.selectedData)
-          : columna.name.concat('_' + columna.selectedData);
+      if (columna.parameter) {
+        this.cadena = this.cadena != '' ? this.cadena.concat('%[') : '[';
+        this.cadena += columna.name + '*';
+
+        valoresSeleccionados.forEach((x) => {
+          this.cadena += x.value;
+          this.cadena += '*';
+          columna.selectedData += x.value.concat('_');
+        });
+
+        this.cadena = this.cadena.substring(0, this.cadena.lastIndexOf('*'));
+        this.cadena = this.cadena.concat(']');
+      } else {
+        valoresSeleccionados.forEach((x) => {
+          columna.selectedData += x.value.concat('_');
+        });
+
+        columna.selectedData = columna.selectedData.substring(
+          0,
+          columna.selectedData.lastIndexOf('_')
+        );
+
+        this.cadena =
+          this.cadena != ''
+            ? this.cadena.concat(
+                '%' + columna.name + '_' + columna.selectedData
+              )
+            : columna.name.concat('_' + columna.selectedData);
+      }
     } else {
       this.opcionFiltrar = this.obtenerFiltroEspecial(
         this.columnaFiltroEspecial.optionFilter
