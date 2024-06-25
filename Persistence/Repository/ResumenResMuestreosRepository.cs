@@ -270,6 +270,7 @@ namespace Persistence.Repository
             var resultadosMuestreoDto = muestreos.Select(m => new RegistroOriginalDto
             {
                 MuestreoId = m.Id,
+                Anio = m.AnioOperacion != null ? m.AnioOperacion.Value.ToString() : string.Empty,
                 NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
                 ClaveSitioOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio + m.ProgramaMuestreo.DomingoSemanaProgramada.ToString("yyyy"),
                 ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
