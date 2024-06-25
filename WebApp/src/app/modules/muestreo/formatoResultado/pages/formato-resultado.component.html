@@ -181,6 +181,9 @@
           <td class="checkBox-center sticky-td"
             [ngStyle]="{'left.px': this.columns[0].startAt, 'width.px':this.columns[0].width, 'max-width.px':this.columns[0].width, 'min-width.px':this.columns[0].width}">
             {{muestreo.estatus}}</td>
+          <td class="checkBox-center sticky-td"
+            [ngStyle]="{'left.px': this.columns[0].startAt, 'width.px':this.columns[0].width, 'max-width.px':this.columns[0].width, 'min-width.px':this.columns[0].width}">
+            {{muestreo.anio}}</td>
           <td *ngIf="this.esVisibleNumEntrega" class="checkBox-center sticky-td"
             [ngStyle]="{'left.px': this.columns[1].startAt, 'width.px':this.columns[1].width, 'max-width.px':this.columns[1].width, 'min-width.px':this.columns[1].width}">
             {{muestreo.numeroEntrega}}

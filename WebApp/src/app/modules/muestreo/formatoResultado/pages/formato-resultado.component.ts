@@ -87,9 +87,26 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
         width: 50,
       },
       {
+        name: 'anio',
+        label: 'AÑO',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        pinned: true,
+        width: 50,
+      },
+      {
         name: 'noEntregaOCDL',
         label: 'NÚMERO DE CARGA',
-        order: 2,
+        order: 3,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -106,7 +123,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'replica',
         label: 'TUVO REPLICA',
-        order: 3,
+        order: 4,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -123,7 +140,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'claveSitioOriginal',
         label: 'CLAVE SITIO ORIGINAL',
-        order: 4,
+        order: 5,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -140,7 +157,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'claveSitio',
         label: 'CLAVE SITIO',
-        order: 5,
+        order: 6,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -157,7 +174,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'claveMonitoreo',
         label: 'CLAVE MONITOREO',
-        order: 6,
+        order: 7,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -174,7 +191,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'fechaRealizacion',
         label: 'FECHA REALIZACIÓN',
-        order: 7,
+        order: 8,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -191,7 +208,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'laboratorio',
         label: 'LABORATORIO',
-        order: 8,
+        order: 9,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -208,7 +225,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'tipoCuerpoAgua',
         label: 'TIPO CUERPO AGUA ORIGINAL',
-        order: 9,
+        order: 10,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -225,7 +242,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'tipoHomologado',
         label: 'TIPO CUERPO AGUA',
-        order: 10,
+        order: 11,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -242,7 +259,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       {
         name: 'tipoSitio',
         label: 'TIPO SITIO',
-        order: 11,
+        order: 12,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -263,7 +280,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     this.formatoService.getParametros().subscribe({
       next: (result: any) => {
         this.parametrosTotales = result.data;
-        let orderParametro = 11;
+        let orderParametro = 12;
         for (var i = 0; i < this.parametrosTotales.length; i++) {
           orderParametro++;
           let columna: Column = {

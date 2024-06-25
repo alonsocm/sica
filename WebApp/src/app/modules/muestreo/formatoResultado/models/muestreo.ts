@@ -15,4 +15,5 @@ export interface Muestreo extends Row {
   parametros: Array<Parametro>;
   isChecked: boolean;
   estatus: string;
+  anio: string;
 }
