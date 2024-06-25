@@ -244,7 +244,7 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int estatusId)
+        public async Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int? estatusId)
         {
             var muestreos = _dbContext.Muestreo.AsQueryable();
             var usuario = await _dbContext.Usuario.Where(t => t.Id == userId).FirstOrDefaultAsync();
@@ -262,7 +262,12 @@ namespace Persistence.Repository
                                                 || t.EstatusId == estatusExtensionFecha);
             }
 
-            var resultadosMuestreoDto = muestreos.Where(m => m.EstatusId == estatusId).Select(m => new RegistroOriginalDto
+            if (estatusId.HasValue)
+            {
+                muestreos = muestreos.Where(m => m.EstatusId == estatusId);
+            }
+
+            var resultadosMuestreoDto = muestreos.Select(m => new RegistroOriginalDto
             {
                 MuestreoId = m.Id,
                 NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),

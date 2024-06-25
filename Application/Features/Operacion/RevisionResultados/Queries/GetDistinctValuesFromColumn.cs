@@ -10,7 +10,6 @@ namespace Application.Features.Resultados.Queries
     {
         public string Column { get; set; }
         public int UserId { get; set; }
-        public int Estatus { get; set; }
         public List<Filter> Filters { get; set; }
     }
 
@@ -25,7 +24,7 @@ namespace Application.Features.Resultados.Queries
 
         public async Task<Response<IEnumerable<object>>> Handle(GetDistinctValuesFromColumn request, CancellationToken cancellationToken)
         {
-            IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.UserId, request.Estatus)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
+            IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.UserId, null)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
             data = data.AsQueryable();
 
             if (request.Filters.Any())

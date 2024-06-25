@@ -52,7 +52,6 @@ export class FormatoResultadoService {
     const params = new HttpParams({
       fromObject: {
         usuario: this.authService.getUser().usuarioId,
-        estatus: estatusMuestreo.Cargado,
         page,
         pageSize,
         filter,
@@ -78,7 +77,6 @@ export class FormatoResultadoService {
     const params = new HttpParams({
       fromObject: {
         usuario: this.authService.getUser().usuarioId,
-        estatus: estatusMuestreo.Cargado,
         column: column,
         filter: filter,
       },
@@ -97,7 +95,6 @@ export class FormatoResultadoService {
       fromObject: {
         usuario: this.authService.getUser().usuarioId,
         parametro: column,
-        estatus: estatusMuestreo.Cargado,
         filter: filter,
       },
     });

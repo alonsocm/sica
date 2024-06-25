@@ -9,7 +9,6 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
     {
         public int UserId { get; set; }
         public int CuerpoAgua { get; set; }
-        public int Estatus { get; set; }
         public List<Filter> Filter { get; set; }
     }
     public class GetResultadosParametrosQueryHandler : IRequestHandler<GetResultadosParametrosPaginados, PagedResponse<List<RegistroOriginalDto>>>
@@ -23,7 +22,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
 
         public async Task<PagedResponse<List<RegistroOriginalDto>>> Handle(GetResultadosParametrosPaginados request, CancellationToken cancellationToken)
         {
-            IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.UserId, request.Estatus)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
+            IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.UserId, null)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
 
             if (request.Filter.Any())
             {

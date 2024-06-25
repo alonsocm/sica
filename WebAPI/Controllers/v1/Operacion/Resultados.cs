@@ -510,7 +510,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ParametrosMuestreo")]
-        public async Task<IActionResult> Get(int usuario, int estatus, string? filter, int page, int pageSize, string? order)
+        public async Task<IActionResult> Get(int usuario, string? filter, int page, int pageSize, string? order)
         {
             var filters = new List<Filter>();
 
@@ -533,7 +533,6 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetResultadosParametrosPaginados
             {
                 UserId = usuario,
-                Estatus = estatus,
                 Filter = filters,
                 Page = page,
                 PageSize = pageSize,
@@ -543,7 +542,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetDistinctValuesFromColumn")]
-        public async Task<IActionResult> Get(int usuario, int estatus, string column, string? filter = "")
+        public async Task<IActionResult> Get(int usuario, string column, string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -552,11 +551,11 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { UserId = usuario, Estatus = estatus, Column = column, Filters = filters }));
+            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { UserId = usuario, Column = column, Filters = filters }));
         }
 
         [HttpGet("GetDistinctValuesParametro")]
-        public async Task<IActionResult> Get(int usuario, string parametro, int estatus, string? filter = "")
+        public async Task<IActionResult> GetDistinctValuesParametro(int usuario, string parametro, string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -565,7 +564,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro=parametro, Estatus = estatus, Filter =  filters }));
+            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro=parametro, Filter =  filters }));
         }
 
         [HttpGet("ValidarResultadosPorReglas")]
