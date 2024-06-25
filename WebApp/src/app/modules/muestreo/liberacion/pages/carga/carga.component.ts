@@ -1,12 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { NumberService } from 'src/app/shared/services/number.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { MuestreoService } from '../../services/muestreo.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { DatePipe } from '@angular/common';
-const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
+import { Column } from '../../../../../interfaces/filter/column';
+import { Item } from '../../../../../interfaces/filter/item';
+import { Notificacion } from '../../../../../shared/models/notification-model';
+import { NotificationType } from '../../../../../shared/enums/notification-type';
+import { NotificationService } from '../../../../../shared/services/notification.service';
+
 
 @Component({
   selector: 'app-carga',
@@ -22,82 +26,104 @@ export class CargaComponent extends BaseService implements OnInit {
   filtroSitio: string = '';
   fechaActual: string = '';
   @ViewChild('inputArchivoMuestreos') inputArchivoMuestreos:ElementRef = {} as ElementRef;
-  @ViewChild('inputArchivoEvidencias') inputArchivoEvidencias:ElementRef = {} as ElementRef;
+  @ViewChild('inputArchivoEvidencias') inputArchivoEvidencias: ElementRef = {} as ElementRef;
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación',
+    text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?',
+  };
+
+
 
   private definirColumnas() {
-    this.columnas = [
+    let nombresColumnas: Array<Column> = [
       {
-        nombre: 'ocdl',
-        etiqueta: 'OC/DL',
-        orden: 1,
-        filtro: new Filter(),
+        name: 'ocdl',
+        label: 'OC/DL',
+        order: 1,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'claveSitio',
-        etiqueta: 'CLAVE SITIO',
-        orden: 2,
-        filtro: new Filter(),
+        name: 'claveSitio',
+        label: 'CLAVE SITIO',
+        order: 2,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'claveMonitoreo',
-        etiqueta: 'CLAVE MONITOREO',
-        orden: 3,
-        filtro: new Filter(),
+        name: 'claveMonitoreo',
+        label: 'CLAVE MONITOREO',
+        order: 3,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'estado',
-        etiqueta: 'ESTADO',
-        orden: 4,
-        filtro: new Filter(),
+        name: 'estado',
+        label: 'ESTADO',
+        order: 4,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'tipoCuerpoAgua',
-        etiqueta: 'TIPO CUERPO AGUA',
-        orden: 5,
-        filtro: new Filter(),
+        name: 'tipoSitio',
+        label: 'TIPO SITIO',
+        order: 5,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'laboratorio',
-        etiqueta: 'LABORATORIO',
-        orden: 6,
-        filtro: new Filter(),
+        name: 'tipoCuerpoAgua',
+        label: 'TIPO CUERPO AGUA',
+        order: 6,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+      },
+      //Revisar si es correcto el valor
+      {
+        name: 'laboratorio',
+        label: 'LABORATORIO QUE REALIZÓ EL MUESTREO',
+        order: 7,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'fechaRealizacion',
-        etiqueta: 'FECHA REALIZACIÓN',
-        orden: 7,
-        filtro: new Filter(),
+        name: 'fechaRealizacion',
+        label: 'FECHA REALIZACIÓN',
+        order: 8,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'fechaLimiteRevision',
-        etiqueta: 'FECHA LÍMITE REVISIÓN',
-        orden: 8,
-        filtro: new Filter(),
+        name: 'fechaLimiteRevision',
+        label: 'FECHA LÍMITE REVISIÓN',
+        order: 9,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'numeroEntrega',
-        etiqueta: 'N° ENTREGA',
-        orden: 9,
-        filtro: new Filter(),
+        name: 'numeroEntrega',
+        label: 'N° ENTREGA',
+        order: 10,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'estatus',
-        etiqueta: 'ESTATUS',
-        orden: 10,
-        filtro: new Filter(),
+        name: 'estatus',
+        label: 'ESTATUS',
+        order: 11,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+      }, 
+      {
+        name: 'tipoCarga',
+        label: 'TIPO CARGA RESULTADOS',
+        order: 12,
+       selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        nombre: 'tipoCarga',
-        etiqueta: 'TIPO CARGA RESULTADOS',
-        orden: 11,
-        filtro: new Filter(),
+        name: 'replica',
+        label: 'REPLICA',
+        order: 13,
+        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
-    ];
-  }
 
+    ];
+    this.columns = nombresColumnas;
+    this.setHeadersList(this.columns);
+  }
   constructor(
     public numberService: NumberService,
-    private muestreoService: MuestreoService
+    private muestreoService: MuestreoService,
+    private notificationService: NotificationService
   ) {
     super();
   }
@@ -107,20 +133,6 @@ export class CargaComponent extends BaseService implements OnInit {
     this.definirColumnas();
     this.consultarMonitoreos();
   }
-
-  //private consultarMonitoreos(): void {
-  //  this.muestreoService.obtenerMuestreos(true).subscribe({
-  //    next: (response: any) => {
-  //      this.muestreos = response.data;
-  //      this.muestreosFiltrados = this.muestreos;
-  //      this.muestreoService.muestreosSeleccionados =
-  //        this.obtenerSeleccionados();
-  //      this.establecerValoresFiltrosTabla();
-  //    },
-  //    error: (error) => {},
-  //  });
-  //}
-
 
   private consultarMonitoreos(
     page: number = this.page,
@@ -133,7 +145,7 @@ export class CargaComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.muestreos = response.data;
+          this.muestreos = response.data;        
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosFiltrados);
@@ -156,16 +168,6 @@ export class CargaComponent extends BaseService implements OnInit {
       if (muestreoSeleccionado != undefined) {
         f.selected = true;
       }
-    });
-  }
-
-
-  private establecerValoresFiltrosTabla() {
-    this.columnas.forEach((f) => {
-      f.filtro.values = [
-        ...new Set(this.muestreosFiltrados.map((m: any) => m[f.nombre])),
-      ];
-      this.page = 1;
     });
   }
 
@@ -192,37 +194,37 @@ export class CargaComponent extends BaseService implements OnInit {
     let archivos = (event.target as HTMLInputElement).files ?? new FileList();
     let errores = this.validarTamanoArchivos(archivos);
 
-    if (errores !== '') {
-      this.mostrarMensaje(
-        'Se encontraron errores en las evidencias seleccionadas',
-        TIPO_MENSAJE.alerta
-      );
-
+    if (errores !== '') {   
       let archivoErrores = this.generarArchivoDeErrores(errores);
-      return FileService.download(archivoErrores, 'errores.txt');
+      FileService.download(archivoErrores, 'errores.txt');
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Se encontraron errores en las evidencias seleccionadas',
+      });
     }
 
     this.loading = !this.loading;
     this.muestreoService.cargarEvidencias(archivos).subscribe({
       next: (response: any) => {
         this.loading = false;
-        this.consultarMonitoreos();
-        this.mostrarMensaje(
-          'Archivo procesado correctamente.',
-          TIPO_MENSAJE.exito
-        );
+        this.consultarMonitoreos(); 
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.success,
+          text: 'Archivo procesado correctamente',
+        });
       },
       error: (error: any) => {
         this.loading = false;
-        let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-
-        this.mostrarMensaje(
-          'Se encontraron errores en el archivo procesado.',
-          TIPO_MENSAJE.error
-        );
-
+        let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);    
         FileService.download(archivoErrores, 'errores.txt');
         this.hacerScroll();
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.danger,
+          text: 'Se encontraron errores en el archivo procesado.',
+        });
       },
     });
     this.resetInputFile(this.inputArchivoEvidencias);
@@ -234,24 +236,24 @@ export class CargaComponent extends BaseService implements OnInit {
     this.loading = !this.loading;
     this.muestreoService.cargarArchivo(archivo[0], true).subscribe({
       next: (response: any) => {
-        this.loading = false;
-        this.mostrarMensaje(
-          'Archivo procesado correctamente.',
-          TIPO_MENSAJE.exito
-        );
+        this.loading = false;   
         this.consultarMonitoreos();
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.success,
+          text: 'Archivo procesado correctamente.',
+        });
       },
       error: (error: any) => {
         this.loading = false;
         let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-
-        this.mostrarMensaje(
-          'Se encontraron errores en el archivo procesado.',
-          TIPO_MENSAJE.error
-        );
-
         this.hacerScroll();
         FileService.download(archivoErrores, 'errores.txt');
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.danger,
+          text: 'Se encontraron errores en el archivo procesado.',
+        });
       },
     }
     );
@@ -276,28 +278,47 @@ export class CargaComponent extends BaseService implements OnInit {
     this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
   }
 
-  filtrar() {
-    this.muestreosFiltrados = this.muestreos;
-    this.columnas.forEach((columna) => {
-      this.muestreosFiltrados = this.muestreosFiltrados.filter((f: any) => {
-        return columna.filtro.selectedValue == 'Seleccione'
-          ? true
-          : f[columna.nombre] == columna.filtro.selectedValue;
-      });
-    });
+  filtrar(columna: Column, isFiltroEspecial: boolean) {
+    this.existeFiltrado = true;
+    this.cadena = !isFiltroEspecial
+      ? this.obtenerCadena(columna, false)
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
+    this.consultarMonitoreos();
 
-    this.establecerValoresFiltrosTabla();
+    this.columns
+      .filter((x) => x.isLatestFilter)
+      .map((m) => {
+        m.isLatestFilter = false;
+      });
+
+    if (!isFiltroEspecial) {
+      columna.filtered = true;
+      columna.isLatestFilter = true;
+    } else {
+      this.columns
+        .filter((x) => x.name == this.columnaFiltroEspecial.name)
+        .map((m) => {
+          (m.filtered = true),
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
+        });
+    }
+
+    this.esHistorial = true;
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.hideColumnFilter();
   }
 
   enviarMonitoreos(): void {
     let muestreosSeleccionados = this.obtenerSeleccionados();
 
     if (!(muestreosSeleccionados.length > 0)) {
-      this.mostrarMensaje(
-        'Debe seleccionar al menos un monitoreo para enviar',
-        TIPO_MENSAJE.alerta
-      );
-      return this.hacerScroll();
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un monitoreo para enviar',
+      });
     }
 
     //Se comenta ya que la etapa de evidencias cargadas es desde ebaseca
@@ -313,12 +334,13 @@ export class CargaComponent extends BaseService implements OnInit {
     //  return this.hacerScroll();
     //}
 
-    if (this.fechaLimiteRevision == '') {
-      this.mostrarMensaje(
-        'Debe elegir una fecha de revisión',
-        TIPO_MENSAJE.alerta
-      );
-      return this.hacerScroll();
+    if (this.fechaLimiteRevision == '') {   
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe elegir una fecha de revisión',
+      });
     }
     this.loading = true;
     this.muestreoService
@@ -333,13 +355,14 @@ export class CargaComponent extends BaseService implements OnInit {
         next: (response) => {
           this.consultarMonitoreos();
           this.fechaLimiteRevision = '';
-          this.loading = false;
-          this.mostrarMensaje(
-            'Monitoreos enviados correctamente a revisión',
-            TIPO_MENSAJE.exito
-          );
-          this.hacerScroll();
+          this.loading = false;           
           this.seleccionarTodosChck = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Monitoreos enviados correctamente a revisión',
+          });
         },
         error: (error) => {
           this.loading = false;
@@ -351,11 +374,12 @@ export class CargaComponent extends BaseService implements OnInit {
     let muestreosSeleccionados = this.obtenerSeleccionados();
 
     if (muestreosSeleccionados.length === 0) {
-      this.mostrarMensaje(
-        'Debe seleccionar al menos un monitoreo',
-        TIPO_MENSAJE.alerta
-      );
-      return this.hacerScroll();
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un monitoreo',
+      });
     }
 
     this.muestreoService
@@ -370,35 +394,26 @@ export class CargaComponent extends BaseService implements OnInit {
           this.seleccionarTodosChck = false;
           FileService.download(response, 'resultados.xlsx');
         },
-        error: (response: any) => {
-          this.mostrarMensaje(
-            'No fue posible descargar la información',
-            TIPO_MENSAJE.error
-          );
+        error: (response: any) => {     
           this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible descargar la información',
+          });
         },
       });
   }
 
-  limpiarFiltros() {
-    this.columnas.forEach((f) => {
-      f.filtro.selectedValue = 'Seleccione';
-    });
-    this.filtrar();
-    this.filtros.forEach((element: any) => {
-      element.clear();
-    });
-    document.getElementById('dvMessage')?.click();
-  }
-
   confirmarEliminacion() {
     let muestreosSeleccionados = this.obtenerSeleccionados();
-    if (!(muestreosSeleccionados.length > 0)) {
-      this.mostrarMensaje(
-        'Debe seleccionar al menos un monitoreo para eliminar',
-        TIPO_MENSAJE.alerta
-      );
-      return this.hacerScroll();
+    if (!(muestreosSeleccionados.length > 0)) { 
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un monitoreo para eliminar',
+      });
     }
     document.getElementById('btnMdlConfirmacion')?.click();
   }
@@ -407,11 +422,12 @@ export class CargaComponent extends BaseService implements OnInit {
     let muestreosSeleccionados = this.obtenerSeleccionados();
 
     if (!(muestreosSeleccionados.length > 0)) {
-      this.mostrarMensaje(
-        'Debe seleccionar al menos un monitoreo para eliminar',
-        TIPO_MENSAJE.alerta
-      );
-      return this.hacerScroll();
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un monitoreo para eliminar',
+      });
     }
 
     this.loading = true;
@@ -422,17 +438,90 @@ export class CargaComponent extends BaseService implements OnInit {
         document.getElementById('btnCancelarModal')?.click();
         this.consultarMonitoreos();
         this.fechaLimiteRevision = '';
-        this.loading = false;
-        this.mostrarMensaje(
-          'Monitoreos eliminados correctamente',
-          TIPO_MENSAJE.exito
-        );
+        this.loading = false;     
         this.hacerScroll();
         this.seleccionarTodosChck = false;
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.success,
+          text: 'Monitoreos eliminados correctamente',
+        });
       },
       error: (error) => {
         this.loading = false;
       },
     });
+  }
+
+  onFilterIconClick(column: Column) {
+    this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
+
+    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
+    this.filtros = filteredColumns;
+
+    this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    let esFiltroEspecial = this.IsCustomFilter(column);
+
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if (this.requiresToRefreshColumnValues(column)) {
+      this.muestreoService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => { },
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+  }
+
+  sort(column: string, type: string) {
+    this.orderBy = { column, type };
+    this.muestreoService
+      .obtenerMuestreosPaginados(false, this.page, this.NoPage, this.cadena, {
+        column: column,
+        type: type,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.muestreos = response.data;
+        },
+        error: (error) => { },
+      });
+  }
+
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.consultarMonitoreos();
+  }
+
+  pageClic(page: any) {
+    this.consultarMonitoreos(page, this.NoPage, this.cadena);
+    this.page = page;
   }
 }

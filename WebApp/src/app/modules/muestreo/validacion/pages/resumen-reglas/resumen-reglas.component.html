@@ -19,6 +19,16 @@
       <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarLiberacion()">
         <i class="bi bi-send"></i> Enviar a liberación monitoreos
       </button>
+      <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarIncidencia()">
+        <i class="bi bi-send"></i> Enviar a incidencias
+      </button>
+      <input type="file" class="element-hidden" (change)="cargarValidacion($event)" accept=".xls, .xlsx"
+             title="Seleccionar archivo" #inputExcelMonitoreos>
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
+              title="Seleccionar archivo para actualizar las observaciones">
+        <i class="bi bi-cloud-upload"></i>
+        Seleccionar y procesar archivo...
+      </button>
       <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
@@ -176,6 +186,11 @@
           <td>{{dato.fechaEntrega}}</td>
           <td>{{(dato.replica)?"SI":"NO"}}</td>
           <td>{{(dato.cambioResultado)?"SI":"NO"}}</td>
+          <td>SI</td>
+          <td>{{dato.resultadoReglas}}</td>
+          <td>{{dato.costoParametro}}</td>
+          <td></td>
+          <td></td>
         </tr>
         <tr *ngIf="this.datosAcumualdos.length==0">
           <td class="td-center" colspan="22">No se encontraron registros</td>

@@ -180,9 +180,20 @@
           <td>{{dato.observaciones}}</td>
           <td style="text-align:center">{{dato.cumpleFechaEntrega}}</td><!--validar-->
           <td style="text-align:center">{{(dato.cumpleTodosCriterios) ? "SI": "NO"}}</td><!--cumple con todos los criterios-->
-          <td style="text-align:center"><input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.autorizacionIncompleto"></td>
-          <td style="text-align:center"> <input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.autorizacionFechaEntrega"></td>
-          <td></td> <!--se corre regla de validacion-->
+          <td style="text-align:center">
+            <!--{{dato.muestreoCompletoPorResultados}}-->
+            <input type="checkbox" [disabled]="(dato.muestreoCompletoPorResultados=='SI')?true:false" class="cursor-pointer" [(ngModel)]="dato.autorizacionIncompleto">
+          </td>
+          <td style="text-align:center">
+            <!--{{dato.cumpleFechaEntrega}}-->
+            <input type="checkbox" [disabled]="(dato.cumpleFechaEntrega=='SI')?true:false" class="cursor-pointer" [(ngModel)]="dato.autorizacionFechaEntrega">
+          </td>
+         
+          <td style="text-align:center">
+            <!--{{dato.cumpleReglasCondic}}-->
+            {{((dato.muestreoCompletoPorResultados=='SI' || dato.autorizacionIncompleto) && (dato.cumpleFechaEntrega=='SI' || dato.autorizacionFechaEntrega)) ? "SI":"NO" }}
+
+          </td> <!--se corre regla de validacion-->
         </tr>
         <tr *ngIf="this.resultadosMuestreo.length==0">
           <td colspan="21" class="td-center">

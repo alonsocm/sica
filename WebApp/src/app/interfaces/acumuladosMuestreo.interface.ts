@@ -1,3 +1,4 @@
+import { DecimalPipe } from "@angular/common";
 import { Muestreo } from "./Muestreo.interface";
 
 export interface acumuladosMuestreo extends Muestreo {
@@ -30,12 +31,14 @@ export interface acumuladosMuestreo extends Muestreo {
 
   cumpleReglasCondic: boolean;
   observaciones: string;
-  cumpleFechaEntrega: boolean;
+  cumpleFechaEntrega: string;
 
   validacionEvidencias: boolean;
   cumpleTodosCriterios: boolean;
   autorizacionIncompleto: boolean;
   autorizacionFechaEntrega: boolean;
+
+  resultadoReglas: string;
 
   
 }
