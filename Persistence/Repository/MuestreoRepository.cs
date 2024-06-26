@@ -50,7 +50,8 @@ namespace Persistence.Repository
                                        TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
-                                       FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty
+                                       FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty,
+                                       TipoCargaResultados = m.TipoCarga.Descripcion
                                    })
                                    .ToListAsync();
 
@@ -92,7 +93,7 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)
+        public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado, int tipocarga)
         {           
             var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion, s.NoEntrega }).Distinct().ToList();
             var muestreos = (from cm in cargaMuestreos
@@ -107,7 +108,8 @@ namespace Persistence.Repository
                                  ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList),
                                  NumeroEntrega = Convert.ToInt32(cm.NoEntrega),
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
-                                 FechaCarga = DateTime.Now
+                                 FechaCarga = DateTime.Now,
+                                 TipoCargaId = tipocarga
                              }).ToList();
 
             return muestreos;

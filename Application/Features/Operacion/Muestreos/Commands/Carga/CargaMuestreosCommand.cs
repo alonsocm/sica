@@ -18,6 +18,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
         public List<CargaMuestreoDto> Muestreos { get; set; } = new List<CargaMuestreoDto>();
         public bool Validado { get; set; }
         public bool Reemplazar { get; set; }
+        public int tipocarga { get; set; }
     }
 
     public class CargaMasivaMuestreosCommandHandler : IRequestHandler<CargaMuestreosCommand, Response<ResultadoCargaMuestreo>>
@@ -47,7 +48,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
 
             if (!existeCargaPrevia)
             {
-                var muestreos = _repository.ConvertToMuestreosList(request.Muestreos, request.Validado);
+                var muestreos = _repository.ConvertToMuestreosList(request.Muestreos, request.Validado, request.tipocarga);
                 _repository.InsertarRango(muestreos);
                 resultadoCarga.Correcto = true;
             }

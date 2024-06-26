@@ -4,6 +4,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
 import { estatusMuestreo } from '../../../../../shared/enums/estatusMuestreo';
+import { tipoCarga } from '../../../../../shared/enums/tipoCarga';
 import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
@@ -646,7 +647,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     this.loading = true;
     if (this.archivo) {
-      this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+      this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
         next: (response: any) => {
           if (response.data.correcto) {
             this.loading = false;

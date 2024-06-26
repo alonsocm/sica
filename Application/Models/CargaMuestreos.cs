@@ -12,5 +12,6 @@ namespace Application.Models
         public IFormFile Archivo { get; set; }
         public bool Validado { get; set; }
         public bool Reemplazar { get; set; }
+        public int tipocarga { get; set; }
     }
 }

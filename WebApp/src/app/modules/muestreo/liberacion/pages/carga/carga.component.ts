@@ -10,6 +10,7 @@ import { Item } from '../../../../../interfaces/filter/item';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 
 
 @Component({
@@ -145,7 +146,8 @@ export class CargaComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.muestreos = response.data;        
+          this.muestreos = response.data;
+          console.log(this.muestreos);
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosFiltrados);
@@ -234,7 +236,7 @@ export class CargaComponent extends BaseService implements OnInit {
     let archivo = (event.target as HTMLInputElement).files ?? new FileList();
 
     this.loading = !this.loading;
-    this.muestreoService.cargarArchivo(archivo[0], true).subscribe({
+    this.muestreoService.cargarArchivo(archivo[0], true, undefined, tipoCarga.Manual).subscribe({
       next: (response: any) => {
         this.loading = false;   
         this.consultarMonitoreos();
