@@ -43,7 +43,7 @@ public partial class VwResultadosInicialReglas
 
     public int? NumDatosReportados { get; set; }
 
-    public string? MuestreoCompletoPorResultados { get; set; }
+    public string MuestreoCompletoPorResultados { get; set; } = null!;
 
     public string? CumpleConLasReglasCondicionantes { get; set; }
 

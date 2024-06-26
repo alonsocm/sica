@@ -5,10 +5,19 @@ namespace Domain.Entities;
 
 public partial class DireccionLocal
 {
+    /// <summary>
+    /// Identificador principal de tabla Dirección Local
+    /// </summary>
     public long Id { get; set; }
 
+    /// <summary>
+    /// Descripción de Dirección Local
+    /// </summary>
     public string Descripcion { get; set; } = null!;
 
+    /// <summary>
+    /// Campo que indica la clave de la Dirección Local
+    /// </summary>
     public string Clave { get; set; } = null!;
 
     public virtual ICollection<CuencaDireccionesLocales> CuencaDireccionesLocales { get; set; } = new List<CuencaDireccionesLocales>();

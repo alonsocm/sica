@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 namespace Domain.Entities;
 
-public partial class TipoArchivoInformeMensualSupervision
+public partial class TipoCarga
 {
     /// <summary>
-    /// Identificador principal del catálogo TipoArchivoInformeMensualSupervision
+    /// Identificador principal del catalogo TipoCarga
     /// </summary>
     public int Id { get; set; }
 
     /// <summary>
-    /// Campo que describe el tipo de archivo de informe mensual de supervisión
+    /// Descripcion del tipo de carga de archivo ebaseca
     /// </summary>
     public string Descripcion { get; set; } = null!;
+
+    public virtual ICollection<Muestreo> Muestreo { get; set; } = new List<Muestreo>();
 }
