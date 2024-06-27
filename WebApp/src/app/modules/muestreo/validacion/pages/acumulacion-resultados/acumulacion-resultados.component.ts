@@ -61,7 +61,6 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
         secondSpecialFilter: '',
         selectedData: '',
       },
-
       {
         name: 'numeroEntrega',
         label: 'NÚMERO DE CARGA',
@@ -77,7 +76,6 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
         secondSpecialFilter: '',
         selectedData: '',
       },
-
       {
         name: 'claveUnica',
         label: 'CLAVE ÚNICA',

@@ -188,15 +188,13 @@
             <!--{{dato.cumpleFechaEntrega}}-->
             <input type="checkbox" [disabled]="(dato.cumpleFechaEntrega=='SI')?true:false" class="cursor-pointer" [(ngModel)]="dato.autorizacionFechaEntrega">
           </td>
-         
           <td style="text-align:center">
             <!--{{dato.cumpleReglasCondic}}-->
             {{((dato.muestreoCompletoPorResultados=='SI' || dato.autorizacionIncompleto) && (dato.cumpleFechaEntrega=='SI' || dato.autorizacionFechaEntrega)) ? "SI":"NO" }}
-
           </td> <!--se corre regla de validacion-->
         </tr>
         <tr *ngIf="this.resultadosMuestreo.length==0">
-          <td colspan="21" class="td-center">
+          <td colspan="23" class="td-center">
             No se encontraron registros
           </td>
         </tr>

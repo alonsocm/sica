@@ -116,7 +116,6 @@ export class CargaComponent extends BaseService implements OnInit {
         order: 13,
         selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
-
     ];
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);

@@ -44,7 +44,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'numeroEntrega',
         label: 'NÚMERO DE CARGA',
-        order: 2,
+        order: 1,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -59,7 +59,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'claveSitio',
         label: 'CLAVE SITIO',
-        order: 0,
+        order: 2,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -74,7 +74,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'claveMonitoreo',
         label: 'CLAVE MUESTREO',
-        order: 0,
+        order: 3,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -89,7 +89,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'nombreSitio',
         label: 'NOMBRE SITIO',
-        order: 0,
+        order: 4,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -104,7 +104,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'fechaRealizacion',
         label: 'FECHA REALIZACIÓN',
-        order: 0,
+        order: 5,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -119,7 +119,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'fechaProgramada',
         label: 'FECHA PROGRAMADA',
-        order: 0,
+        order: 6,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -134,7 +134,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'laboratorioRealizoMuestreo',
         label: 'LABORATORIO BASE DE DATOS',
-        order: 0,
+        order: 7,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -149,7 +149,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'cuerpoAgua',
         label: 'CUERPO DE AGUA',
-        order: 0,
+        order: 8,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -164,7 +164,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'tipoCuerpoAgua',
         label: 'TIPO CUERPO AGUA',
-        order: 0,
+        order: 9,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -179,7 +179,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'subtipoCuerpoAgua',
         label: 'SUBTIPO CUERPO AGUA',
-        order: 0,
+        order: 10,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -194,7 +194,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'muestreoCompletoPorResultados',
         label: 'MUESTREO COMPLETO POR RESULTADOS',
-        order: 0,
+        order: 11,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -206,11 +206,10 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
       },
-
       {
         name: 'cumpleReglasCondic',
         label: '¿CUMPLE CON LA REGLAS CONDICIONANTES?',
-        order: 0,
+        order: 12,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -225,7 +224,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'cumpleFechaEntrega',
         label: 'CUMPLE CON LA FECHA DE ENTREGA',
-        order: 0,
+        order: 13,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -238,9 +237,9 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'reglaValicdacion',
-        label: 'SE CORRE REGLA DE VALIDACIÓN',
-        order: 0,
+        name: 'cumpleTodosCriterios',
+        label: 'CUMPLE CON TODOS LOS CRITERIOS PARA APLICAR REGLAS (SI/NO)',
+        order: 14,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -255,7 +254,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'autorizacionRegla',
         label: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)',
-        order: 0,
+        order: 15,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -268,9 +267,9 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'cumpleTodosCriterios',
-        label: 'CUMPLE CRITERIOS PARA APLICAR REGLAS',
-        order: 0,
+        name: 'autorizacionRegla',
+        label: 'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA',
+        order: 16,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -281,11 +280,26 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-      },      
+      },
+      {
+        name: 'reglaValicdacion',
+        label: 'SE CORRE REGLA DE VALIDACIÓN',
+        order: 17,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
       {
         name: 'muestreoValidadoPor',
         label: 'MUESTREO VALIDADO POR',
-        order: 0,
+        order: 18,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -300,7 +314,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'porcentajePago',
         label: '% DE PAGO',
-        order: 0,
+        order: 19,
         selectAll: true,
         filtered: false,
         asc: false,

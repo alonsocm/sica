@@ -155,12 +155,10 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
         name: 'costoparametro', label: 'OBSERVACIONES FINAL', order: 32, selectAll: true, filtered: false, asc: false, desc: false, data: [],
         filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       }
-
     ];
 
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
-
   }
 
   consultarMonitoreos(
@@ -172,9 +170,9 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     this.validacionService.getResultadosAcumuladosParametrosPaginados(estatusMuestreo.ValidadoPorReglas, page, pageSize, filter, this.orderBy).subscribe({
       next: (response: any) => {
 
-        this.selectedPage = false;        
+        this.selectedPage = false;
         this.datosAcumualdos = response.data;
-    
+
         this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
         this.totalItems = response.totalRecords;
         this.getPreviousSelected(this.datosAcumualdos, this.resultadosFiltradosn);
@@ -277,6 +275,6 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
   cargarValidacion(event: Event) { }
 
   enviarIncidencia() { }
-  
+
 
 }

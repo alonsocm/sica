@@ -157,7 +157,7 @@
           <td class="td-center">
             <input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.selected" (change)="onSelectClick(dato)"
                    title="Seleccionar">
-          </td>          
+          </td>
           <td>{{dato.numeroEntrega}}</td>
           <td>{{dato.claveSitio}}</td>
           <td>{{dato.claveMonitoreo}}</td>
@@ -171,15 +171,16 @@
           <td>{{dato.muestreoCompletoPorResultados}}</td>
           <td>{{dato.cumpleReglasCondic}}</td>
           <td>{{dato.cumpleFechaEntrega}}</td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td style="text-align:center">{{(dato.cumpleTodosCriterios) ? "SI": "NO"}}</td><!--cumple con todos los criterios-->
+          <td style="text-align:center">{{(dato.autorizacionIncompleto) ? "SI":"NO"}}</td>
+          <td style="text-align:center">{{(dato.autorizacionFechaEntrega)?"SI":"NO"}}</td>
+          <td style="text-align:center"> {{((dato.muestreoCompletoPorResultados=='SI' || dato.autorizacionIncompleto) && (dato.cumpleFechaEntrega=='SI' || dato.autorizacionFechaEntrega)) ? "SI":"NO" }}</td> <!--se corre regla de validacion-->
+          <td></td> <!--muestreo validado por-->
+          <td></td> <!--porcentaje de pago-->
 
-          <td></td>
-          <td></td>
         </tr>
         <tr *ngIf="this.resultadosMuestreo.length==0">
-          <td colspan="21" class="td-center">
+          <td colspan="20" class="td-center">
             No se encontraron registros
           </td>
         </tr>
