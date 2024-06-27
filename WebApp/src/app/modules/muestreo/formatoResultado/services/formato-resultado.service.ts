@@ -10,14 +10,13 @@ import { Observable } from 'rxjs';
 export class FormatoResultadoService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  exportarResultadosExcel(muestreos: Array<any> = [], esAdmin: boolean) {
-    var tipoExcel = 'resultado';
+  exportarRegistrosExcel(muestreos: Array<number> = [], filter = '') {
     return this.http.post(
       environment.apiUrl +
-        '/Resultados/ExportarExcelResulatdosSECAIA?tipoExcel=' +
-        tipoExcel +
-        '&admin=' +
-        esAdmin,
+        '/Resultados/ExportConsultaRegistroOriginal?usuario=' +
+        this.authService.getUser().usuarioId +
+        '&filter=' +
+        filter,
       muestreos,
       { responseType: 'blob' }
     );

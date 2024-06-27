@@ -377,21 +377,26 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
   }
 
   exportarResultados(): void {
-    let muestreosSeleccionados = this.obtenerSeleccionadosDescarga();
-    if (
-      muestreosSeleccionados.length === 0 &&
-      this.muestreosSeleccionados.length == 0
-    ) {
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un monitoreo',
+        text: 'No hay información seleccionada para descargar',
+      });
+    }
+
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
       });
     }
 
     this.formatoService
-      .exportarResultadosExcel(muestreosSeleccionados, this.esVisibleNumEntrega)
+      .exportarRegistrosExcel(registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
           this.muestreosSeleccionados = this.muestreosSeleccionados.map((m) => {
