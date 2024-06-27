@@ -5,6 +5,7 @@ import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 import { Subscription } from 'rxjs';
 import { NotificationService } from 'src/app/shared/services/notification.service';
@@ -412,7 +413,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.loading = true;
 
       this.muestreoService
-        .cargarArchivo(this.archivo[0], false, this.reemplazarResultados)
+        .cargarArchivo(this.archivo[0], false, this.reemplazarResultados, tipoCarga.Automatico)
         .subscribe({
           next: (response: any) => {
             if (response.data.correcto) {
@@ -457,7 +458,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   sustituirResultados() {
     this.loading = true;
-    this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+    this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
       next: (response: any) => {
         if (response.data.correcto) {
           this.loading = false;

@@ -18,6 +18,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
         public List<CargaMuestreoDto> Muestreos { get; set; } = new List<CargaMuestreoDto>();
         public bool Validado { get; set; }
         public bool Reemplazar { get; set; }
+        public int tipocarga { get; set; }
     }
 
     public class CargaMasivaMuestreosCommandHandler : IRequestHandler<CargaMuestreosCommand, Response<ResultadoCargaMuestreo>>
@@ -47,15 +48,22 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
 
             if (!existeCargaPrevia)
             {
-                var muestreos = _repository.ConvertToMuestreosList(request.Muestreos, request.Validado);
+                var muestreos = _repository.ConvertToMuestreosList(request.Muestreos, request.Validado, request.tipocarga);
                 _repository.InsertarRango(muestreos);
                 resultadoCarga.Correcto = true;
             }
             else if (existeCargaPrevia && request.Reemplazar)
             {
                 var resultadosNoEncontrados = _resultadosRepository.ActualizarValorResultado(request.Muestreos);
-                var resultados = _repository.GenerarResultados(resultadosNoEncontrados.ToList());
-                _resultadosRepository.InsertarRango(resultados);
+                if (resultadosNoEncontrados.Item2.Count > 0) {
+                    var muestreos = _repository.ConvertToMuestreosList(resultadosNoEncontrados.Item2, request.Validado, request.tipocarga);
+                    _repository.InsertarRango(muestreos); }
+                if (resultadosNoEncontrados.Item1.Count > 0)
+                {
+                    var resultados = _repository.GenerarResultados(resultadosNoEncontrados.Item1.ToList());
+                    _resultadosRepository.InsertarRango(resultados);
+                }
+            
                 resultadoCarga.Correcto = true;
             }
 

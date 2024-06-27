@@ -4,6 +4,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
 import { estatusMuestreo } from '../../../../../shared/enums/estatusMuestreo';
+import { tipoCarga } from '../../../../../shared/enums/tipoCarga';
 import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
@@ -43,7 +44,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'numeroEntrega',
         label: 'NÚMERO DE CARGA',
-        order: 2,
+        order: 1,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -58,7 +59,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'claveSitio',
         label: 'CLAVE SITIO',
-        order: 0,
+        order: 2,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -73,7 +74,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'claveMonitoreo',
         label: 'CLAVE MUESTREO',
-        order: 0,
+        order: 3,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -88,7 +89,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'nombreSitio',
         label: 'NOMBRE SITIO',
-        order: 0,
+        order: 4,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -103,7 +104,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'fechaRealizacion',
         label: 'FECHA REALIZACIÓN',
-        order: 0,
+        order: 5,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -118,7 +119,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'fechaProgramada',
         label: 'FECHA PROGRAMADA',
-        order: 0,
+        order: 6,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -133,7 +134,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'laboratorioRealizoMuestreo',
         label: 'LABORATORIO BASE DE DATOS',
-        order: 0,
+        order: 7,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -148,7 +149,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'cuerpoAgua',
         label: 'CUERPO DE AGUA',
-        order: 0,
+        order: 8,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -163,7 +164,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'tipoCuerpoAgua',
         label: 'TIPO CUERPO AGUA',
-        order: 0,
+        order: 9,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -178,7 +179,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'subtipoCuerpoAgua',
         label: 'SUBTIPO CUERPO AGUA',
-        order: 0,
+        order: 10,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -193,7 +194,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'muestreoCompletoPorResultados',
         label: 'MUESTREO COMPLETO POR RESULTADOS',
-        order: 0,
+        order: 11,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -205,11 +206,10 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
       },
-
       {
         name: 'cumpleReglasCondic',
         label: '¿CUMPLE CON LA REGLAS CONDICIONANTES?',
-        order: 0,
+        order: 12,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -224,7 +224,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'cumpleFechaEntrega',
         label: 'CUMPLE CON LA FECHA DE ENTREGA',
-        order: 0,
+        order: 13,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -237,9 +237,9 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'reglaValicdacion',
-        label: 'SE CORRE REGLA DE VALIDACIÓN',
-        order: 0,
+        name: 'cumpleTodosCriterios',
+        label: 'CUMPLE CON TODOS LOS CRITERIOS PARA APLICAR REGLAS (SI/NO)',
+        order: 14,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -254,7 +254,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'autorizacionRegla',
         label: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)',
-        order: 0,
+        order: 15,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -267,9 +267,9 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'cumpleTodosCriterios',
-        label: 'CUMPLE CRITERIOS PARA APLICAR REGLAS',
-        order: 0,
+        name: 'autorizacionRegla',
+        label: 'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA',
+        order: 16,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -280,11 +280,26 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-      },      
+      },
+      {
+        name: 'reglaValicdacion',
+        label: 'SE CORRE REGLA DE VALIDACIÓN',
+        order: 17,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
       {
         name: 'muestreoValidadoPor',
         label: 'MUESTREO VALIDADO POR',
-        order: 0,
+        order: 18,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -299,7 +314,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'porcentajePago',
         label: '% DE PAGO',
-        order: 0,
+        order: 19,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -404,34 +419,43 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   aplicarReglas(): void {
-    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn).map(
-      (m) => {
-        return m.muestreoId;
-      }
-    );
-    if (this.resultadosEnviados.length == 0) {
-      this.mostrarMensaje(
-        'Debes de seleccionar al menos un muestreo para aplicar las reglas',
-        'warning'
-      );
-      return this.hacerScroll();
-    }
-    this.loading = true;
-    this.validacionService
-      .obtenerResultadosValidadosPorReglas(this.resultadosEnviados)
-      .subscribe({
-        next: (response: any) => {
-          this.mostrarMensaje(
-            'Se aplicaron las reglas de validación correctamente',
-            'success'
-          );
-          this.loading = false;
-          return this.hacerScroll();
-        },
-        error: (error) => {
-          this.loading = false;
-        },
+    let datosSeleccionados = this.Seleccionados(this.resultadosSeleccionados);
+    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0); 
+    if (datosSeleccionados.length == 0) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debes de seleccionar al menos un muestreos para aplicar reglas',
       });
+    }
+    else if (muestreosConResultados.length == 0) {
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debes de seleccionar muestreos que cuenten con resultados para poder aplicar las reglas',
+      });
+    }
+    else {  
+      this.resultadosEnviados = muestreosConResultados.map(
+        (m) => { return m.muestreoId; });
+      this.loading = true;
+      this.validacionService
+        .obtenerResultadosValidadosPorReglas(this.resultadosEnviados)
+        .subscribe({
+          next: (response: any) => {
+            this.mostrarMensaje(
+              'Se aplicaron las reglas de validación correctamente',
+              'success'
+            );
+            this.loading = false;
+            return this.hacerScroll();
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+        });
+    }
   }
 
   sort(column: string, type: string) {
@@ -518,17 +542,17 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
     //Vamos a agregar este registro, a los seleccionados
     if (muestreo.selected) {
-      this.resultadosFiltradosn.push(muestreo);
+      this.resultadosSeleccionados.push(muestreo);
       this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
         ? false
         : true;
     } else {
-      let index = this.resultadosFiltradosn.findIndex(
+      let index = this.resultadosSeleccionados.findIndex(
         (m) => m.muestreoId === muestreo.muestreoId
       );
 
       if (index > -1) {
-        this.resultadosFiltradosn.splice(index, 1);
+        this.resultadosSeleccionados.splice(index, 1);
       }
     }
   }
@@ -637,7 +661,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     this.loading = true;
     if (this.archivo) {
-      this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+      this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
         next: (response: any) => {
           if (response.data.correcto) {
             this.loading = false;
@@ -667,4 +691,5 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       });
     }
   }
+
 }

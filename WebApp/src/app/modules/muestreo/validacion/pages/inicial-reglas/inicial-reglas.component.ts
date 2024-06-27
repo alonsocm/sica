@@ -4,6 +4,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Column } from '../../../../../interfaces/filter/column';
@@ -42,15 +43,10 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
-      //{
-      //  name: 'estatus', label: 'ESTATUS', order: 1, selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [],
-      //  dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: ''
-      //},
-
       {
         name: 'numeroEntrega',
         label: 'NÚMERO DE CARGA',
-        order: 2,
+        order: 1,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -62,11 +58,10 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
       },
-
       {
         name: 'claveSitio',
         label: 'CLAVE SITIO',
-        order: 0,
+        order: 2,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -81,7 +76,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'claveMonitoreo',
         label: 'CLAVE MUESTREO',
-        order: 0,
+        order: 3,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -96,7 +91,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'nombreSitio',
         label: 'NOMBRE SITIO',
-        order: 0,
+        order: 4,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -111,7 +106,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'fechaRealizacion',
         label: 'FECHA REALIZACIÓN',
-        order: 0,
+        order: 5,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -126,7 +121,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'fechaVisifechaProgramadata',
         label: 'FECHA PROGRAMADA',
-        order: 0,
+        order: 6,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -141,7 +136,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'diferenciaDias',
         label: 'DIFERENCIA EN DÍAS',
-        order: 0,
+        order: 7,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -156,7 +151,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'fechaEntregaTeorica',
         label: 'FECHA DE ENTREGA TEORICA',
-        order: 0,
+        order: 8,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -171,7 +166,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'laboratorioRealizoMuestreo',
         label: 'LABORATORIO BASE DE DATOS',
-        order: 0,
+        order: 9,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -186,7 +181,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'cuerpoAgua',
         label: 'CUERPO DE AGUA',
-        order: 0,
+        order: 10,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -201,7 +196,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'tipoCuerpoAgua',
         label: 'TIPO CUERPO AGUA',
-        order: 0,
+        order: 11,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -216,7 +211,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'subtipoCuerpoAgua',
         label: 'SUBTIPO CUERPO AGUA',
-        order: 0,
+        order: 12,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -231,7 +226,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'numParametrosEsperados',
         label: 'NÚMERO DE DATOS ESPERADOS',
-        order: 0,
+        order: 13,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -246,7 +241,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'numParametrosCargados',
         label: 'NÚMERO DE DATOS REPORTADOS',
-        order: 0,
+        order: 14,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -261,7 +256,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'muestreoCompletoPorResultados',
         label: 'MUESTREO COMPLETO POR RESULTADOS',
-        order: 0,
+        order: 15,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -276,7 +271,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'cumpleReglasCondic',
         label: '¿CUMPLE CON LA REGLAS CONDICIONANTES?',
-        order: 0,
+        order: 16,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -291,7 +286,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'Observaciones',
         label: 'OBSERVACIONES CONDICIONANTES',
-        order: 0,
+        order: 17,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -306,7 +301,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'cumpleFechaEntrega',
         label: 'CUMPLE CON LA FECHA DE ENTREGA',
-        order: 0,
+        order: 18,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -321,7 +316,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'cumpleTodosCriterios',
         label: 'CUMPLE CON TODOS LOS CRITERIOS PARA APLICAR REGLAS (SI/NO)',
-        order: 0,
+        order: 19,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -336,7 +331,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'autorizacionRegla',
         label: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)',
-        order: 0,
+        order: 20,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -351,7 +346,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       {
         name: 'autorizacionRegla',
         label: 'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA',
-        order: 0,
+        order: 21,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -363,11 +358,10 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
       },
-
       {
         name: 'reglaValicdacion',
         label: 'SE CORRE REGLA DE VALIDACIÓN',
-        order: 0,
+        order: 22,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -379,8 +373,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         secondSpecialFilter: '',
         selectedData: '',
       },
-
-
     ];
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
@@ -460,7 +452,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
   enviaraValidacion(): void {
     let datosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
-    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0); 
+    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0);
 
     if (datosSeleccionados.length == 0) {
       this.hacerScroll();
@@ -471,7 +463,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       });
     }
     else if (muestreosConResultados.length == 0) {
-     
+
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
@@ -728,7 +720,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     this.loading = true;
     if (this.archivo) {
-      this.muestreoService.cargarArchivo(this.archivo[0], false, true).subscribe({
+      this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
         next: (response: any) => {
           if (response.data.correcto) {
             this.loading = false;

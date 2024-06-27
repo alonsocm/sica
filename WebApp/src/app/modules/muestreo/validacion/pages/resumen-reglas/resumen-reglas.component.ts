@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ValidacionReglasService } from '../../services/validacion-reglas.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
@@ -14,7 +14,8 @@ import { Column } from '../../../../../interfaces/filter/column';
   styleUrls: ['./resumen-reglas.component.css']
 })
 export class ResumenReglasComponent extends BaseService implements OnInit {
-
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
   constructor(private validacionService: ValidacionReglasService) { super(); }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
 
@@ -133,12 +134,31 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       {
         name: 'cambioResultado', label: 'CAMBIO DE RESULTADO', order: 27, selectAll: true, filtered: false, asc: false, desc: false, data: [],
         filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+      },
+      {
+        name: 'validoreglas', label: 'VALIDADO POR REGLAS', order: 28, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+      },
+      {
+        name: 'observacionesReglas', label: 'OBSERVACIONES REGLAS', order: 29, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+      },
+      {
+        name: 'costoparametro', label: 'COSTO DE PARÁMETRO', order: 30, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'number', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+      },
+      {
+        name: 'costoparametro', label: 'VALIDACIÓN FINAL', order: 31, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+      },
+      {
+        name: 'costoparametro', label: 'OBSERVACIONES FINAL', order: 32, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       }
     ];
 
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
-
   }
 
   consultarMonitoreos(
@@ -152,6 +172,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
         this.selectedPage = false;
         this.datosAcumualdos = response.data;
+
         this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
         this.totalItems = response.totalRecords;
         this.getPreviousSelected(this.datosAcumualdos, this.resultadosFiltradosn);
@@ -249,7 +270,11 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  enviarLiberacion() { }  
-  
+  enviarLiberacion() { }
+
+  cargarValidacion(event: Event) { }
+
+  enviarIncidencia() { }
+
 
 }

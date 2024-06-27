@@ -5,8 +5,14 @@ namespace Domain.Entities;
 
 public partial class ProgramaAnio
 {
+    /// <summary>
+    /// Identificador del catálogo ProgramaAnio
+    /// </summary>
     public long Id { get; set; }
 
+    /// <summary>
+    /// Campo que describe el año
+    /// </summary>
     public string Anio { get; set; } = null!;
 
     public virtual ICollection<Directorio> Directorio { get; set; } = new List<Directorio>();

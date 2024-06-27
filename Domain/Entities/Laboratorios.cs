@@ -5,10 +5,19 @@ namespace Domain.Entities;
 
 public partial class Laboratorios
 {
+    /// <summary>
+    /// Identificador de catálogo de Laboratorios
+    /// </summary>
     public long Id { get; set; }
 
+    /// <summary>
+    /// Campo que describe el laboratorio
+    /// </summary>
     public string? Descripcion { get; set; }
 
+    /// <summary>
+    /// Campo que describe la nomenclatura del laboratorio
+    /// </summary>
     public string? Nomenclatura { get; set; }
 
     public virtual ICollection<AvisoRealizacion> AvisoRealizacion { get; set; } = new List<AvisoRealizacion>();

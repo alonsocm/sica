@@ -50,7 +50,8 @@ namespace Persistence.Repository
                                        TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
-                                       FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty
+                                       FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty,
+                                       TipoCargaResultados = m.TipoCarga.Descripcion
                                    })
                                    .ToListAsync();
 
@@ -92,7 +93,7 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado)
+        public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado, int tipocarga)
         {           
             var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion, s.NoEntrega }).Distinct().ToList();
             var muestreos = (from cm in cargaMuestreos
@@ -107,7 +108,8 @@ namespace Persistence.Repository
                                  ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList),
                                  NumeroEntrega = Convert.ToInt32(cm.NoEntrega),
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
-                                 FechaCarga = DateTime.Now
+                                 FechaCarga = DateTime.Now,
+                                 TipoCargaId = tipocarga
                              }).ToList();
 
             return muestreos;
@@ -273,6 +275,7 @@ namespace Persistence.Repository
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        //costoParametro = costo.Precio,
+                                       costoParametro = _dbContext.ParametrosCostos.Where(x => x.ParametroId.Equals(resMuestreo.ParametroId)).Select(y => y.Precio).FirstOrDefault(),
                                        NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
@@ -302,10 +305,10 @@ namespace Persistence.Repository
 
         public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId)
         {
-         
+
             var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas
 
-                                  
+
                                    select new AcumuladosResultadoDto
                                    {
                                        ClaveSitio = resultados.ClaveSitio,
@@ -321,7 +324,8 @@ namespace Persistence.Repository
                                        SubTipoCuerpoAgua = resultados.SubtipoCuerpoDeAgua,
                                        numParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
                                        numParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
-                                       muestreoCompletoPorResultados = (resultados.MuestreoCompletoPorResultados == null) ? "SI" : resultados.MuestreoCompletoPorResultados.ToString(),
+                                       //muestreoCompletoPorResultados = (resultados.MuestreoCompletoPorResultados == null) ? "SI" : resultados.MuestreoCompletoPorResultados.ToString(),
+                                       muestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
                                        cumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
                                        anioOperacion = resultados.AnioOperacion ?? 0,
                                        NumeroEntrega = resultados.NumeroEntrega.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
@@ -329,7 +333,7 @@ namespace Persistence.Repository
                                        EstatusId = resultados.EstatusId,
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
-                                       cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI"
+                                       cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI",
                                    }).Where(x => x.EstatusId == estatusId).ToListAsync();
 
             foreach (var dato in muestreos)

@@ -59,12 +59,15 @@ export class MuestreoService {
   cargarArchivo(
     archivo: File,
     validado: boolean,
-    reemplazar: boolean = false
+    reemplazar: boolean = false,
+    tipocarga: number
+
   ): Observable<any> {
     const formData = new FormData();
     formData.append('archivo', archivo, archivo.name);
     formData.append('validado', validado.toString());
     formData.append('reemplazar', reemplazar.toString());
+    formData.append('tipocarga', tipocarga.toString());
     return this.http.post(environment.apiUrl + '/muestreos', formData);
   }
 
