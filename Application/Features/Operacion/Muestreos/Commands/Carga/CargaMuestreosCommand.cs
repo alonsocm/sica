@@ -55,8 +55,15 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
             else if (existeCargaPrevia && request.Reemplazar)
             {
                 var resultadosNoEncontrados = _resultadosRepository.ActualizarValorResultado(request.Muestreos);
-                var resultados = _repository.GenerarResultados(resultadosNoEncontrados.ToList());
-                _resultadosRepository.InsertarRango(resultados);
+                if (resultadosNoEncontrados.Item2.Count > 0) {
+                    var muestreos = _repository.ConvertToMuestreosList(resultadosNoEncontrados.Item2, request.Validado, request.tipocarga);
+                    _repository.InsertarRango(muestreos); }
+                if (resultadosNoEncontrados.Item1.Count > 0)
+                {
+                    var resultados = _repository.GenerarResultados(resultadosNoEncontrados.Item1.ToList());
+                    _resultadosRepository.InsertarRango(resultados);
+                }
+            
                 resultadoCarga.Correcto = true;
             }
 

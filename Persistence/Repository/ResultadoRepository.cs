@@ -116,37 +116,53 @@ namespace Persistence.Repository
             });
         }
 
-        public List<CargaMuestreoDto> ActualizarValorResultado(List<CargaMuestreoDto> muestreosDto)
+        public (List<CargaMuestreoDto>, List<CargaMuestreoDto>) ActualizarValorResultado(List<CargaMuestreoDto> muestreosDto)
         {
             var resultadosNoEncontrados = new List<CargaMuestreoDto>();
+            var resultadosNuevos = new List<CargaMuestreoDto>();
             long idMuestreo = 0;
-           
+            List<string> muestreosDistinct = muestreosDto.Select(x => x.Muestreo).Distinct().ToList();
 
-            foreach (var muestreo in muestreosDto.Select(x => x.Muestreo).Distinct())
+            if (muestreosDistinct.Count > 0)
             {
-                long progMuestreoId = _dbContext.VwClaveMuestreo.Where(x => x.ClaveMuestreo == muestreo).Select(x => x.ProgramaMuestreoId).FirstOrDefault();
-                idMuestreo = _dbContext.Muestreo.Where(x => x.ProgramaMuestreoId == progMuestreoId).Select(x => x.Id).FirstOrDefault();
-                
-                var updateMuestreo = _dbContext.Muestreo.Where(x => x.Id == idMuestreo).ExecuteUpdate(s => s.SetProperty(e => e.HoraInicio, TimeSpan.Parse(muestreosDto[0].HoraInicioMuestreo))
-                                    .SetProperty(s => s.HoraFin, TimeSpan.Parse(muestreosDto[0].HoraFinMuestreo))
-                                    //.SetProperty(s => s.EstatusId, (int)Application.Enums.EstatusMuestreo.Cargado)
-                                    .SetProperty(s => s.FechaRealVisita, Convert.ToDateTime(muestreosDto[0].FechaRealVisita)));          
+                foreach (var muestreo in muestreosDistinct)
+                {
+                    long progMuestreoId = _dbContext.VwClaveMuestreo.Where(x => x.ClaveMuestreo == muestreo).Select(x => x.ProgramaMuestreoId).FirstOrDefault();
+                    idMuestreo = _dbContext.Muestreo.Where(x => x.ProgramaMuestreoId == progMuestreoId).Select(x => x.Id).FirstOrDefault();
+
+                    if (idMuestreo != 0)
+                    {
+                        var updateMuestreo = _dbContext.Muestreo.Where(x => x.Id == idMuestreo).ExecuteUpdate(s => s.SetProperty(e => e.HoraInicio, TimeSpan.Parse(muestreosDto[0].HoraInicioMuestreo))
+                                            .SetProperty(s => s.HoraFin, TimeSpan.Parse(muestreosDto[0].HoraFinMuestreo))
+                                            //.SetProperty(s => s.EstatusId, (int)Application.Enums.EstatusMuestreo.Cargado)
+                                            .SetProperty(s => s.FechaRealVisita, Convert.ToDateTime(muestreosDto[0].FechaRealVisita)));
+                    }
+                    else
+                    {
+                        List<CargaMuestreoDto> resultadosMuestreo = new List<CargaMuestreoDto>();
+                        resultadosMuestreo = muestreosDto.Where(x => x.Muestreo == muestreo).ToList();
+                        resultadosNuevos.AddRange(resultadosMuestreo);
+                        muestreosDto.RemoveAll(x => x.Muestreo.Equals(muestreo));
+                    }
+                }
             }
 
-            muestreosDto.ForEach(resultadoDto =>
+            if (muestreosDto.Count > 0)
             {
-                var resultadoMuestreo = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado));
-
-                if (resultadoMuestreo.ToList().Count > 0)
+                muestreosDto.ForEach(resultadoDto =>
                 {
-                    var resultado = resultadoMuestreo.ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado)
-                                                           .SetProperty(x => x.ObservacionLaboratorio, resultadoDto.ObservacionesLaboratorio)
-                                                           .SetProperty(s => s.FechaEntrega, DateTime.Parse(resultadoDto.FechaEntrega))
-                                                           .SetProperty(s => s.LaboratorioSubrogadoId, _dbContext.Laboratorios.Where(x => x.Nomenclatura == resultadoDto.LaboratorioSubrogado).FirstOrDefault().Id));
-                }
-                else { resultadosNoEncontrados.Add(resultadoDto); }
-            });
-            return (resultadosNoEncontrados);
+                    var resultadoMuestreo = _dbContext.ResultadoMuestreo.Where(x => x.IdResultadoLaboratorio == Convert.ToInt64(resultadoDto.IdResultado));
+                    if (resultadoMuestreo.ToList().Count > 0)
+                    {
+                        var resultado = resultadoMuestreo.ExecuteUpdate(s => s.SetProperty(e => e.Resultado, resultadoDto.Resultado)
+                                                               .SetProperty(x => x.ObservacionLaboratorio, resultadoDto.ObservacionesLaboratorio)
+                                                               .SetProperty(s => s.FechaEntrega, DateTime.Parse(resultadoDto.FechaEntrega))
+                                                               .SetProperty(s => s.LaboratorioSubrogadoId, _dbContext.Laboratorios.Where(x => x.Nomenclatura == resultadoDto.LaboratorioSubrogado).FirstOrDefault().Id));
+                    }
+                    else { resultadosNoEncontrados.Add(resultadoDto); }
+                });
+            }
+            return (resultadosNoEncontrados, resultadosNuevos);
         }
 
         public async Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorPeriodo(int periodo)
