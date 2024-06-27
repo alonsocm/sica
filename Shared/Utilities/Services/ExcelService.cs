@@ -4,6 +4,7 @@ using Application.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.DataValidation;
 using OfficeOpenXml.Style;
+using System.Drawing;
 
 namespace Shared.Utilities.Services
 {
@@ -244,6 +245,77 @@ namespace Shared.Utilities.Services
                 // Save the workbook to the specified file path
                 package.SaveAs(new FileInfo(filePath));
             }
+        }
+
+        public static void ExportConsultaRegistroOriginalExcel(List<RegistroOriginalDto> registros, List<ParametrosDto> parametros, string filePath)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using var package = new ExcelPackage();
+            // Add a new worksheet to the empty workbook
+            var worksheet = package.Workbook.Worksheets.Add("Registro original");
+
+            worksheet.Cells[1, 1].Value = "ESTATUS";
+            worksheet.Cells[1, 2].Value = "AÑO";
+            worksheet.Cells[1, 3].Value = "NÚMERO DE CARGA";
+            worksheet.Cells[1, 4].Value = "TUVO REPLICA";
+            worksheet.Cells[1, 5].Value = "CLAVE SITIO ORIGINAL";
+            worksheet.Cells[1, 6].Value = "CLAVE SITIO";
+            worksheet.Cells[1, 7].Value = "CLAVE MONITOREO";
+            worksheet.Cells[1, 8].Value = "FECHA REALIZACIÓN";
+            worksheet.Cells[1, 9].Value = "LABORATORIO";
+            worksheet.Cells[1, 10].Value = "TIPO CUERPO AGUA ORIGINAL";
+            worksheet.Cells[1, 11].Value = "TIPO CUERPO AGUA";
+            worksheet.Cells[1, 12].Value = "TIPO SITIO";
+
+            int inicioParametros = 13;
+
+            foreach (var parametro in parametros)
+            {
+                worksheet.Cells[1, inicioParametros].Value = parametro.ClaveParametro;
+                inicioParametros++;
+            }
+
+            var fila = 2;
+
+            for (int i = 0; i < registros.Count; i++)
+            {
+                worksheet.Cells[fila, 1].Value = registros[i].Estatus;
+                worksheet.Cells[fila, 2].Value = registros[i].Anio;
+                worksheet.Cells[fila, 3].Value = registros[i].NumeroEntrega;
+                worksheet.Cells[fila, 4].Value = "NO";
+                worksheet.Cells[fila, 5].Value = registros[i].ClaveSitioOriginal;
+                worksheet.Cells[fila, 6].Value = registros[i].ClaveSitio;
+                worksheet.Cells[fila, 7].Value = registros[i].ClaveMonitoreo;
+                worksheet.Cells[fila, 8].Value = registros[i].FechaRealizacion;
+                worksheet.Cells[fila, 9].Value = registros[i].Laboratorio;
+                worksheet.Cells[fila, 10].Value = registros[i].TipoCuerpoAgua;
+                worksheet.Cells[fila, 11].Value = registros[i].TipoHomologado;
+                worksheet.Cells[fila, 12].Value = registros[i].TipoSitio;
+
+                foreach (var parametro in registros[i].Parametros)
+                {
+                    //Buscamos la celda del parámetro
+                    // Usa LINQ para buscar el valor en todas las celdas
+                    var query = from cell in worksheet.Cells[1, 1, 1, parametros.Count + inicioParametros]
+                                where cell.Value?.ToString().Contains(parametro.ClaveParametro) == true
+                                select cell;
+
+                    var parameterCell = query.FirstOrDefault();
+                    var column = parameterCell?.Start.Column;
+
+                    worksheet.Cells[fila, column.Value].Value = parametro.Resultado;
+                }
+
+                fila++;
+            }
+
+            worksheet.Cells[1, 1, 1, parametros.Count + inicioParametros].Style.Font.Bold = true;
+            worksheet.Cells[1, 1, 1, parametros.Count + inicioParametros].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+            worksheet.Cells[1, 1, 1, parametros.Count + inicioParametros].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            worksheet.Cells[1, 1, 1, parametros.Count + inicioParametros].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#B7DEE8"));
+            // Save the workbook to the specified file path
+            package.SaveAs(new FileInfo(filePath));
         }
     }
 }
