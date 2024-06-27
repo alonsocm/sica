@@ -102,6 +102,16 @@ public partial class Muestreo
 
     public int TipoCargaId { get; set; }
 
+    /// <summary>
+    /// Campo que indica si fue autorizado el muestreo estando incompletos los resultados del muestreo
+    /// </summary>
+    public bool AutorizacionIncompleto { get; set; }
+
+    /// <summary>
+    /// Campo que indica si se autorizo ya que la fecha de entrega no se cumplio
+    /// </summary>
+    public bool AutorizacionFechaEntrega { get; set; }
+
     public virtual EstatusMuestreo Estatus { get; set; } = null!;
 
     public virtual EstatusMuestreo? EstatusOcdlNavigation { get; set; }

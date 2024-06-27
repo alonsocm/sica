@@ -48,7 +48,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }    
+    public virtual DbSet<Directorio> Directorio { get; set; }
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -136,7 +136,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
 
-    public virtual DbSet<Sitio> Sitio { get; set; }    
+    public virtual DbSet<Sitio> Sitio { get; set; }
 
     public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; }
 
@@ -164,7 +164,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }    
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -198,7 +198,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }  
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
@@ -207,7 +207,7 @@ public partial class SicaContext : DbContext
     {
         modelBuilder.Entity<Accion>(entity =>
         {
-            entity.Property(e => e.Id).HasComment("Identificador de Acción");
+            entity.Property(e => e.Id).HasComment("Identificador principal del catálogo Acción");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -218,10 +218,10 @@ public partial class SicaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_AccionSubrogado");
 
-            entity.Property(e => e.Id).HasComment("Identificador principal de la tabla ");
+            entity.Property(e => e.Id).HasComment("Identificador principal del catálogo AccionLaboratorio ");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
-                .HasComment("Campo que describe la subrogación");
+                .HasComment("Campo que describe el significado para las opciones NA y NRL");
             entity.Property(e => e.LoSubroga)
                 .HasMaxLength(10)
                 .HasComment("Campo que describe si subroga");
@@ -250,7 +250,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.FechaAprobRechazo)
                 .HasComment("Fecha de aprobación o rechazo")
                 .HasColumnType("datetime");
-            entity.Property(e => e.ResultadoMuestreoId).HasComment("Identificador de llave foránea ResultadoMuestreo");
+            entity.Property(e => e.ResultadoMuestreoId).HasComment("Identificador de llave foránea que hace referencia a la tabla de ResultadoMuestreo");
             entity.Property(e => e.UsuarioRevisionId).HasComment("Identificador de llave foránea de usuario que realizo la aprobación/rechazo");
 
             entity.HasOne(d => d.ResultadoMuestreo).WithMany(p => p.AprobacionResultadoMuestreo)
@@ -373,7 +373,7 @@ public partial class SicaContext : DbContext
         {
             entity.ToTable("ClasificacionCriterio", "cat");
 
-            entity.Property(e => e.Id).HasComment("Identificador principal de catalogo de clasificaciones de criterio");
+            entity.Property(e => e.Id).HasComment("Identificador principal de catálogo de clasificaciones de criterio");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .HasComment("Descripción de la clasificación del criterio");
@@ -413,7 +413,7 @@ public partial class SicaContext : DbContext
             entity.ToTable("CriteriosSupervisionMuestreo", "cat");
 
             entity.Property(e => e.Id).HasComment("Identificador principal de catalogo de criterios de supervisión de muestreo");
-            entity.Property(e => e.ClasificacionCriterioId).HasComment("Llave foránea que hace relación al catalogo de clasificación de criterios");
+            entity.Property(e => e.ClasificacionCriterioId).HasComment("Llave foránea que hace relación al catálogo de ClasificacionCriterios");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(250)
                 .HasComment("Descripción del criterio de muestreo");
@@ -435,7 +435,7 @@ public partial class SicaContext : DbContext
 
             entity.HasIndex(e => e.OcuencaId, "IX_CuencaDireccionesLocales_OCuencaId");
 
-            entity.Property(e => e.Id).HasComment("Identificador de  Cuenca Direcciones Locales");
+            entity.Property(e => e.Id).HasComment("Identificador principal de catálogo CuencaDireccionesLocales donde describe la relación entre las Cuencas y Direcciones Locales");
             entity.Property(e => e.Activo).HasComment("Campo que indica si se encuentra activo el registro");
             entity.Property(e => e.DlocalId)
                 .HasComment("Llave foránea que hace referencia al catálogo de Direccones Locales")
@@ -456,7 +456,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<CuerpoAgua>(entity =>
         {
-            entity.Property(e => e.Id).HasComment("Identificador de  Cuerpo Agua");
+            entity.Property(e => e.Id).HasComment("Identificador prinicpal del catálogo CuerpoAgua");
             entity.Property(e => e.Activo).HasComment("Estatus de  Cuerpo Agua");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(150)
@@ -1022,6 +1022,8 @@ public partial class SicaContext : DbContext
 
             entity.Property(e => e.Id).HasComment("Identificador  de Muestreo");
             entity.Property(e => e.AnioOperacion).HasComment("Campo que indica el año de operación");
+            entity.Property(e => e.AutorizacionFechaEntrega).HasComment("Campo que indica si se autorizo ya que la fecha de entrega no se cumplio");
+            entity.Property(e => e.AutorizacionIncompleto).HasComment("Campo que indica si fue autorizado el muestreo estando incompletos los resultados del muestreo");
             entity.Property(e => e.EstatusId).HasComment("Llave foránea que hace referencia al catálogo de Estatus, indicando el estatus del muestreo");
             entity.Property(e => e.EstatusOcdl)
                 .HasComment("Campo que indica el estatus referente a revisión de OCDL")
@@ -2063,8 +2065,8 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });        
-
+        });
+        
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasIndex(e => e.CuencaId, "IX_Usuario_CuencaId");
@@ -2615,8 +2617,8 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });       
-
+        });
+       
         OnModelCreatingPartial(modelBuilder);
     }
 
