@@ -254,50 +254,8 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetPuntosMuestreo { claveMuestreo = claveMuestreo }));
         }
 
-        [HttpPost("ExportarCargaResultadosEbaseca")]
-        public IActionResult CargaResultadosEbaseca(List<MuestreoDto> muestreos)
-        {
-            List<CargaResultadosEbaseca> muestreosExcel = new();
-
-            muestreos.ForEach(muestreo =>
-                muestreosExcel.Add(new CargaResultadosEbaseca
-                {
-                    Estatus = muestreo.Estatus,
-                    EvidenciasCompletas = (muestreo.Evidencias.Count > 0) ? "SI" : "NO",
-                    NumeroCarga = muestreo.NumeroEntrega,
-                    ClaveNOSEC = muestreo.ClaveSitio,
-                    Clave5K = string.Empty,
-                    ClaveMonitoreo = muestreo.ClaveMonitoreo,
-                    TipoSitio = muestreo.TipoSitio,
-                    NombreSitio = muestreo.NombreSitio,
-                    OCDL = muestreo.OCDL,
-                    TipoCuerpoAgua = muestreo.TipoCuerpoAgua,
-                    SubtipoCuerpoAgua = muestreo.SubTipoCuerpoAgua,
-                    ProgramaAnual = muestreo.ProgramaAnual,
-                    Laboratorio = muestreo.Laboratorio,
-                    LaboratorioSubrogado = muestreo.LaboratorioSubrogado,
-                    FechaProgramacion = muestreo.FechaProgramada,
-                    FechaRealizacion = muestreo.FechaRealizacion,
-                    HoraInicioMuestreo = muestreo.HoraInicio,
-                    HoraFinMuestreo = muestreo.HoraFin,
-                    FechaCargaSica = muestreo.FechaCarga,
-                    FechaEntrega = muestreo.FechaEntregaMuestreo
-
-                }
-            ));
-
-            var plantilla = new Plantilla(_configuration, _env);
-            string templatePath = plantilla.ObtenerRutaPlantilla("CargaResultadosEbaseca");
-            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
-
-            ExcelService.ExportToExcel(muestreosExcel, fileInfo, true);
-            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
-
-            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
-        }
-
-        [HttpGet("ExportarEbasecaExcel")]
-        public async Task<IActionResult> Post(bool esLiberacion, string? filter)
+        [HttpPost("ExportarEbasecaExcel")]
+        public IActionResult Post([FromQuery] bool esLiberacion, [FromQuery] string? filter, [FromBody] List<long> muestreos)
         {
             var filters = new List<Filter>();
 
@@ -306,7 +264,16 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            var data = await Mediator.Send(new GetMuestreosExcel() { EsLiberacion=esLiberacion, Filter = filters });
+            var data = Mediator.Send(new GetMuestreosPaginados
+            {
+                EsLiberacion = esLiberacion,
+                Filter = filters
+            }).Result.Data;
+
+            if (muestreos != null && muestreos.Any())
+            {
+                data = data.Where(x => muestreos.Contains(x.MuestreoId)).ToList();
+            }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("CargaResultadosEbaseca");

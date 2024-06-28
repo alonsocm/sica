@@ -61,7 +61,6 @@ export class MuestreoService {
     validado: boolean,
     reemplazar: boolean = false,
     tipocarga: number
-
   ): Observable<any> {
     const formData = new FormData();
     formData.append('archivo', archivo, archivo.name);
@@ -180,12 +179,17 @@ export class MuestreoService {
     );
   }
 
-  exportAllEbaseca(esLiberacion: boolean, filter: string): Observable<Blob> {
-    return this.http.get(
+  exportAllEbaseca(
+    esLiberacion: boolean,
+    filter: string,
+    muestreos: Array<number>
+  ): Observable<Blob> {
+    return this.http.post(
       environment.apiUrl +
         '/Muestreos/ExportarEbasecaExcel?esLiberacion=' +
         esLiberacion +
         (filter.length == 0 ? '' : '&filter=' + filter),
+      muestreos,
       { responseType: 'blob' }
     );
   }

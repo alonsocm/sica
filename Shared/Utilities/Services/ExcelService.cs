@@ -107,7 +107,7 @@ namespace Shared.Utilities.Services
 
         }
 
-        public static void ExportToExcel<T>(List<T> data, FileInfo fileInfo, bool esPlantilla = false, string nombreHoja = "ebaseca")
+        public static void ExportToExcel<T>(IEnumerable<T> data, FileInfo fileInfo, bool esPlantilla = false, string nombreHoja = "ebaseca")
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using var pck = new ExcelPackage(fileInfo);
