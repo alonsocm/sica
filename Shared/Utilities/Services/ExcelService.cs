@@ -115,6 +115,70 @@ namespace Shared.Utilities.Services
             var range = sheet.Cells[esPlantilla ? "A2" : "A1"].LoadFromCollection(data, !esPlantilla);
             pck.Save();
         }
+
+        public static void ExportCargaResultadosValidadosExcel(IEnumerable<MuestreoDto> data, string filePath)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var package = new ExcelPackage();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Resultados validados");
+
+            worksheet.Cells[1, 1].Value = "ESTATUS";
+            worksheet.Cells[1, 2].Value = "ES REPLICA";
+            worksheet.Cells[1, 3].Value = "EVIDENCIAS COMPLETAS";
+            worksheet.Cells[1, 4].Value = "NÚMERO DE CARGA";
+            worksheet.Cells[1, 5].Value = "CLAVE NOSEC";
+            worksheet.Cells[1, 6].Value = "CLAVE 5K";
+            worksheet.Cells[1, 7].Value = "CLAVE MONITOREO";
+            worksheet.Cells[1, 8].Value = "TIPO SITIO";
+            worksheet.Cells[1, 9].Value = "SITIO";
+            worksheet.Cells[1, 10].Value = "OC/DL";
+            worksheet.Cells[1, 11].Value = "TIPO CUERPO AGUA";
+            worksheet.Cells[1, 12].Value = "SUBTIPO CUERPO AGUA";
+            worksheet.Cells[1, 13].Value = "PROGRAMA ANUAL";
+            worksheet.Cells[1, 14].Value = "LABORATORIO";
+            worksheet.Cells[1, 15].Value = "LABORATORIO SUBROGADO";
+            worksheet.Cells[1, 16].Value = "FECHA REALIZACIÓN";
+            worksheet.Cells[1, 17].Value = "FECHA PROGRAMACIÓN";
+            worksheet.Cells[1, 18].Value = "HORA INICIO MUESTREO";
+            worksheet.Cells[1, 19].Value = "HORA FIN MUESTREO";
+            worksheet.Cells[1, 20].Value = "FECHA CARGA SICA";
+            worksheet.Cells[1, 21].Value = "FECHA ENTREGA";
+
+            var fila = 2;
+
+            foreach (var registro in data)
+            {
+                worksheet.Cells[fila, 1].Value = registro.Estatus;
+                worksheet.Cells[fila, 2].Value = "NO";
+                worksheet.Cells[fila, 3].Value = registro.Evidencias.Count > 1 ? "SI" : "NO";
+                worksheet.Cells[fila, 4].Value = registro.NumeroEntrega;
+                worksheet.Cells[fila, 5].Value = registro.ClaveSitio;
+                worksheet.Cells[fila, 6].Value = "CLAVE 5K";
+                worksheet.Cells[fila, 7].Value = registro.ClaveMonitoreo;
+                worksheet.Cells[fila, 8].Value = registro.TipoSitio;
+                worksheet.Cells[fila, 9].Value = registro.NombreSitio;
+                worksheet.Cells[fila, 10].Value = registro.OCDL;
+                worksheet.Cells[fila, 11].Value = registro.TipoCuerpoAgua;
+                worksheet.Cells[fila, 12].Value = registro.SubTipoCuerpoAgua;
+                worksheet.Cells[fila, 13].Value = registro.ProgramaAnual;
+                worksheet.Cells[fila, 14].Value = registro.Laboratorio;
+                worksheet.Cells[fila, 15].Value = registro.LaboratorioSubrogado;
+                worksheet.Cells[fila, 16].Value = registro.FechaRealizacion;
+                worksheet.Cells[fila, 17].Value = registro.FechaProgramada;
+                worksheet.Cells[fila, 18].Value = registro.HoraInicio;
+                worksheet.Cells[fila, 19].Value = registro.HoraFin;
+                worksheet.Cells[fila, 20].Value = registro.FechaCarga;
+                worksheet.Cells[fila, 21].Value = registro.FechaEntregaMuestreo;
+            }
+
+            worksheet.Cells[1, 1, 1, 21].Style.Font.Bold = true;
+            worksheet.Cells[1, 1, 1, 21].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+            worksheet.Cells[1, 1, 1, 21].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            worksheet.Cells[1, 1, 1, 21].Style.Fill.BackgroundColor.SetColor(ColorTranslator.FromHtml("#B7DEE8"));
+
+            package.SaveAs(new FileInfo(filePath));
+        }
+
         public static void ExportToExcelTwoSheets<T>(List<T> dataSheet1, List<TabResumenExcel> dataSheet2, List<TabResumenExcel> dataSheet3, FileInfo fileInfo, bool bandera, bool esPlantilla)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

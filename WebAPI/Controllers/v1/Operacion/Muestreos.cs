@@ -279,7 +279,7 @@ namespace WebAPI.Controllers.v1.Operacion
             string templatePath = plantilla.ObtenerRutaPlantilla("CargaResultadosEbaseca");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
 
-            ExcelService.ExportToExcel(data, fileInfo, true);
+            ExcelService.ExportCargaResultadosValidadosExcel(data, fileInfo.FullName);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
