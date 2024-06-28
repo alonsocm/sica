@@ -3,11 +3,10 @@ using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using System.Linq;
 
 namespace Application.Features.Muestreos.Queries
 {
-    public class GetMuestreosPaginados : IRequest<PagedResponse<List<MuestreoDto>>>
+    public class GetMuestreosPaginados : IRequest<PagedResponse<IEnumerable<MuestreoDto>>>
     {
         public bool EsLiberacion { get; set; }
         public int Page { get; set; }
@@ -16,7 +15,7 @@ namespace Application.Features.Muestreos.Queries
         public OrderBy? OrderBy { get; set; }
     }
 
-    public class GetMuestreosHandler : IRequestHandler<GetMuestreosPaginados, PagedResponse<List<MuestreoDto>>>
+    public class GetMuestreosHandler : IRequestHandler<GetMuestreosPaginados, PagedResponse<IEnumerable<MuestreoDto>>>
     {
         private readonly IMuestreoRepository _repositoryAsync;
 
@@ -25,7 +24,7 @@ namespace Application.Features.Muestreos.Queries
             _repositoryAsync = repositoryAsync;
         }
 
-        public async Task<PagedResponse<List<MuestreoDto>>> Handle(GetMuestreosPaginados request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<MuestreoDto>>> Handle(GetMuestreosPaginados request, CancellationToken cancellationToken)
         {
             var estatus = new List<long>();
 
@@ -63,10 +62,11 @@ namespace Application.Features.Muestreos.Queries
                         var dataFinal = data;
                         dataFinal = dataFinal.AsQueryable().Where(filter);
                         lstMuestreo.AddRange(dataFinal);
-
                     }
                     else
-                    { data = data.AsQueryable().Where(filter); }
+                    {
+                        data = data.AsQueryable().Where(filter);
+                    }
                 }
                 data = (lstMuestreo.Count > 0) ? lstMuestreo.AsQueryable() : data;
             }
@@ -83,7 +83,7 @@ namespace Application.Features.Muestreos.Queries
                 }
             }
 
-            return PagedResponse<MuestreoDto>.CreatePagedReponse(data.ToList(), request.Page, request.PageSize);
+            return PagedResponse<MuestreoDto>.CreatePagedReponse(data, request.Page, request.PageSize);
         }
     }
 }

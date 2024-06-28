@@ -1,28 +1,21 @@
 ﻿using Application.DTOs;
 using Application.Expressions;
-using Application.Features.ResumenResultados.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Resultados.Queries
 {
-    public class GetResultadosMuestreoEstatusMuestreoPaginadosQuery : IRequest<PagedResponse<List<AcumuladosResultadoDto>>>
+    public class GetResultadosMuestreoEstatusMuestreoPaginadosQuery : IRequest<PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
         public int estatusId { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
         public OrderBy? OrderBy { get; set; }
-
     }
 
-    public class GetResultadosMuestreoEstatusMuestreoQueryHandler : IRequestHandler<GetResultadosMuestreoEstatusMuestreoPaginadosQuery, PagedResponse<List<AcumuladosResultadoDto>>>
+    public class GetResultadosMuestreoEstatusMuestreoQueryHandler : IRequestHandler<GetResultadosMuestreoEstatusMuestreoPaginadosQuery, PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
         private readonly IMuestreoRepository _repositoryAsync;
 
@@ -30,7 +23,8 @@ namespace Application.Features.Operacion.Resultados.Queries
         {
             _repositoryAsync = repository;
         }
-        public async Task<PagedResponse<List<AcumuladosResultadoDto>>> Handle(GetResultadosMuestreoEstatusMuestreoPaginadosQuery request, CancellationToken cancellationToken)
+
+        public async Task<PagedResponse<IEnumerable<AcumuladosResultadoDto>>> Handle(GetResultadosMuestreoEstatusMuestreoPaginadosQuery request, CancellationToken cancellationToken)
         {
             var data = await _repositoryAsync.GetResultadosMuestreoEstatusMuestreoAsync(request.estatusId);
             data = data.AsQueryable();
@@ -38,7 +32,7 @@ namespace Application.Features.Operacion.Resultados.Queries
             if (request.Filter.Any())
             {
                 var expressions = MuestreoExpression.GetExpressionList(request.Filter);
-                List<AcumuladosResultadoDto> lstMuestreo = new List<AcumuladosResultadoDto>();
+                List<AcumuladosResultadoDto> lstMuestreo = new();
 
                 foreach (var filter in expressions)
                 {
@@ -47,13 +41,16 @@ namespace Application.Features.Operacion.Resultados.Queries
                         var dataFinal = data;
                         dataFinal = (IEnumerable<AcumuladosResultadoDto>)dataFinal.AsQueryable().Where(filter);
                         lstMuestreo.AddRange(dataFinal);
-
                     }
                     else
-                    { data = (IEnumerable<AcumuladosResultadoDto>)data.AsQueryable().Where(filter); }
+                    {
+                        data = (IEnumerable<AcumuladosResultadoDto>)data.AsQueryable().Where(filter);
+                    }
                 }
+
                 data = (lstMuestreo.Count > 0) ? lstMuestreo.AsQueryable() : data;
             }
+
             if (request.OrderBy != null)
             {
                 if (request.OrderBy.Type == "asc")
@@ -70,8 +67,8 @@ namespace Application.Features.Operacion.Resultados.Queries
             {
                 throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
             }
-            
-            return PagedResponse<AcumuladosResultadoDto>.CreatePagedReponse(data.ToList(), request.Page, request.PageSize);
+
+            return PagedResponse<AcumuladosResultadoDto>.CreatePagedReponse(data, request.Page, request.PageSize);
         }
     }
 }

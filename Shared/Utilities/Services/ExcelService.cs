@@ -247,7 +247,7 @@ namespace Shared.Utilities.Services
             }
         }
 
-        public static void ExportConsultaRegistroOriginalExcel(List<RegistroOriginalDto> registros, List<ParametrosDto> parametros, string filePath)
+        public static void ExportConsultaRegistroOriginalExcel(IEnumerable<RegistroOriginalDto> registros, List<ParametrosDto> parametros, string filePath)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -278,22 +278,22 @@ namespace Shared.Utilities.Services
 
             var fila = 2;
 
-            for (int i = 0; i < registros.Count; i++)
+            foreach (var registro in registros)
             {
-                worksheet.Cells[fila, 1].Value = registros[i].Estatus;
-                worksheet.Cells[fila, 2].Value = registros[i].Anio;
-                worksheet.Cells[fila, 3].Value = registros[i].NumeroEntrega;
+                worksheet.Cells[fila, 1].Value = registro.Estatus;
+                worksheet.Cells[fila, 2].Value = registro.Anio;
+                worksheet.Cells[fila, 3].Value = registro.NumeroEntrega;
                 worksheet.Cells[fila, 4].Value = "NO";
-                worksheet.Cells[fila, 5].Value = registros[i].ClaveSitioOriginal;
-                worksheet.Cells[fila, 6].Value = registros[i].ClaveSitio;
-                worksheet.Cells[fila, 7].Value = registros[i].ClaveMonitoreo;
-                worksheet.Cells[fila, 8].Value = registros[i].FechaRealizacion;
-                worksheet.Cells[fila, 9].Value = registros[i].Laboratorio;
-                worksheet.Cells[fila, 10].Value = registros[i].TipoCuerpoAgua;
-                worksheet.Cells[fila, 11].Value = registros[i].TipoHomologado;
-                worksheet.Cells[fila, 12].Value = registros[i].TipoSitio;
+                worksheet.Cells[fila, 5].Value = registro.ClaveSitioOriginal;
+                worksheet.Cells[fila, 6].Value = registro.ClaveSitio;
+                worksheet.Cells[fila, 7].Value = registro.ClaveMonitoreo;
+                worksheet.Cells[fila, 8].Value = registro.FechaRealizacion;
+                worksheet.Cells[fila, 9].Value = registro.Laboratorio;
+                worksheet.Cells[fila, 10].Value = registro.TipoCuerpoAgua;
+                worksheet.Cells[fila, 11].Value = registro.TipoHomologado;
+                worksheet.Cells[fila, 12].Value = registro.TipoSitio;
 
-                foreach (var parametro in registros[i].Parametros)
+                foreach (var parametro in registro.Parametros)
                 {
                     //Buscamos la celda del parámetro
                     // Usa LINQ para buscar el valor en todas las celdas

@@ -5,13 +5,13 @@ using Application.Wrappers;
 using MediatR;
 namespace Application.Features.Operacion.RevisionResultados.Queries
 {
-    public class GetResultadosParametrosPaginados : Pagination, IRequest<PagedResponse<List<RegistroOriginalDto>>>
+    public class GetResultadosParametrosPaginados : Pagination, IRequest<PagedResponse<IEnumerable<RegistroOriginalDto>>>
     {
         public int UserId { get; set; }
         public int CuerpoAgua { get; set; }
         public List<Filter> Filter { get; set; }
     }
-    public class GetResultadosParametrosQueryHandler : IRequestHandler<GetResultadosParametrosPaginados, PagedResponse<List<RegistroOriginalDto>>>
+    public class GetResultadosParametrosQueryHandler : IRequestHandler<GetResultadosParametrosPaginados, PagedResponse<IEnumerable<RegistroOriginalDto>>>
     {
         private readonly IResumenResRepository _repositoryAsync;
 
@@ -20,7 +20,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
             _repositoryAsync = repository;
         }
 
-        public async Task<PagedResponse<List<RegistroOriginalDto>>> Handle(GetResultadosParametrosPaginados request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<RegistroOriginalDto>>> Handle(GetResultadosParametrosPaginados request, CancellationToken cancellationToken)
         {
             IEnumerable<RegistroOriginalDto> data = await _repositoryAsync.GetResumenResultadosTemp(request.UserId, null)??throw new KeyNotFoundException($"No se encontraron datos asociados a resultados revisados");
 
@@ -34,7 +34,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
                 }
             }
 
-            PagedResponse<List<RegistroOriginalDto>> response = PagedResponse<RegistroOriginalDto>.CreatePagedReponse(data.ToList(), request.Page, request.PageSize);
+            PagedResponse<IEnumerable<RegistroOriginalDto>> response = PagedResponse<RegistroOriginalDto>.CreatePagedReponse(data, request.Page, request.PageSize);
             return response;
         }
     }
