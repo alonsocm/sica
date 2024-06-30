@@ -95,7 +95,7 @@ namespace Persistence.Repository
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado, int tipocarga)
         {           
-            var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion, s.NoEntrega }).Distinct().ToList();
+            var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion, s.NoCarga }).Distinct().ToList();
             var muestreos = (from cm in cargaMuestreos
                              join vcm in _dbContext.VwClaveMuestreo on cm.Muestreo equals vcm.ClaveMuestreo
                              select new Muestreo
@@ -106,7 +106,7 @@ namespace Persistence.Repository
                                  HoraFin = TimeSpan.Parse(cm.HoraFinMuestreo),
                                  EstatusId = validado ? (int)Application.Enums.EstatusMuestreo.NoEnviado : (int)Application.Enums.EstatusMuestreo.Cargado,
                                  ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList),
-                                 NumeroEntrega = Convert.ToInt32(cm.NoEntrega),
+                                 NumeroCarga = Convert.ToInt32(cm.NoCarga),
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
                                  FechaCarga = DateTime.Now,
                                  TipoCargaId = tipocarga
@@ -334,6 +334,7 @@ namespace Persistence.Repository
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
                                        cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI",
+                                       
                                    }).Where(x => x.EstatusId == estatusId).ToListAsync();
 
             foreach (var dato in muestreos)

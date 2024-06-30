@@ -699,7 +699,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
   pageClic(page: any) {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
-  }
+  } 
 
   eliminarResultados() {    
     this.loading = true;

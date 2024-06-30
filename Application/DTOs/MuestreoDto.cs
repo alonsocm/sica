@@ -41,6 +41,11 @@
         public string? FechaEntregaMuestreo { get; set; }
         public string FechaCargaEvidencias { get; set; }
 
+        public bool autorizacionIncompleto { get; set; }
+        public bool autorizacionFechaEntrega { get; set; }
+        public string correReglaValidacion { get; set; }
+
+
         public MuestreoDto()
         {
             DiaProgramado = string.Empty;
@@ -72,6 +77,15 @@
             SubTipoCuerpoAgua = string.Empty;
             FechaEntregaMuestreo = string.Empty;
             FechaCargaEvidencias = string.Empty;
+            autorizacionIncompleto = false;
+            autorizacionFechaEntrega=false;
+            correReglaValidacion = string.Empty;
+            FechaProgramada = string.Empty;
+            TipoCuerpoAgua = string.Empty;
+            ClaveMonitoreo = string.Empty;
+            NombreSitio = string.Empty;
+            ClaveSitio = string.Empty;
+            FechaRealizacion = string.Empty;
         }
     }
 }

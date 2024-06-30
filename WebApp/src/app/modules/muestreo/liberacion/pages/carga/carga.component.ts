@@ -131,7 +131,7 @@ export class CargaComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.fechaActual = new DatePipe("en-US").transform(Date.now(), 'yyyy-MM-dd')??'';
     this.definirColumnas();
-    this.consultarMonitoreos();
+    this.consultarMonitoreos(); 
   }
 
   private consultarMonitoreos(
@@ -430,28 +430,37 @@ export class CargaComponent extends BaseService implements OnInit {
         text: 'Debe seleccionar al menos un monitoreo para eliminar',
       });
     }
-
-    this.loading = true;
-    let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
-
-    this.muestreoService.eliminarMuestreos(muestreosEliminar).subscribe({
-      next: (response) => {
-        document.getElementById('btnCancelarModal')?.click();
-        this.consultarMonitoreos();
-        this.fechaLimiteRevision = '';
-        this.loading = false;     
-        this.hacerScroll();
-        this.seleccionarTodosChck = false;
-        return this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.success,
-          text: 'Monitoreos eliminados correctamente',
-        });
-      },
-      error: (error) => {
-        this.loading = false;
-      },
-    });
+    
+    let muestreosAutomaticos = muestreosSeleccionados.filter(x => x.tipoCargaResultados == "Automático");
+    if (muestreosAutomaticos.length > 0) {
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar monitoreos cargados "Manualmente"',
+      });
+    }
+    else {
+      this.loading = true;
+      let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
+      this.muestreoService.eliminarMuestreos(muestreosEliminar).subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.consultarMonitoreos();
+          this.fechaLimiteRevision = '';
+          this.loading = false;
+          this.hacerScroll();
+          this.seleccionarTodosChck = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Monitoreos eliminados correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    }
   }
 
   onFilterIconClick(column: Column) {
@@ -524,5 +533,12 @@ export class CargaComponent extends BaseService implements OnInit {
   pageClic(page: any) {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
+  }
+  asignarFechaLimite() {
+    return this.notificationService.updateNotification({
+      show: true,
+      type: NotificationType.success,
+      text: 'Se asigno la fecha límite correctamente',
+    });
   }
 }

@@ -11,6 +11,7 @@ import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { Item } from 'src/app/interfaces/filter/item';
+import { Muestreo } from '../../../../../interfaces/Muestreo.interface';
 
 @Component({
   selector: 'app-inicial-reglas',
@@ -28,7 +29,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     super();
   }
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
-  resultadosEnviados: Array<number> = [];
+  resultadosEnviados: Array<any> = [];
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
@@ -471,15 +472,17 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       });
     }
     else {
+      let lstMuestreos = muestreosConResultados.map(
+        (m) =>
+          <Muestreo>{
+            estatusId: estatusMuestreo.SeleccionadoParaValidar,       
+            autorizacionIncompleto: m.autorizacionIncompleto,
+            autorizacionFechaEntrega: m.autorizacionFechaEntrega,
+            muestreoId: m.muestreoId
+          }
+      );
 
-      this.resultadosEnviados = muestreosConResultados.map(
-        (m) => { return m.muestreoId; });
-
-      this.validacionService
-        .enviarMuestreoaValidar(
-          estatusMuestreo.SeleccionadoParaValidar,
-          this.resultadosEnviados
-        )
+      this.muestreoService.actualizarMuestreos(lstMuestreos)
         .subscribe({
           next: (response: any) => {
             this.loading = true;
@@ -752,4 +755,10 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   }
 
   onDownloadTxt() { }
+
+  validarCorreRegla(muestreo: acumuladosMuestreo): boolean { 
+
+    return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? false : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? true : false)
+
+  }
 }

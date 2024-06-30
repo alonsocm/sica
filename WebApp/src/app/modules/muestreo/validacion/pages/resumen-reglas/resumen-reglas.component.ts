@@ -2,10 +2,11 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ValidacionReglasService } from '../../services/validacion-reglas.service';
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { Filter } from 'src/app/interfaces/filtro.interface';
 import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interface';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
 import { Column } from '../../../../../interfaces/filter/column';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from '../../../../../shared/enums/notification-type';
 
 
 @Component({
@@ -16,12 +17,14 @@ import { Column } from '../../../../../interfaces/filter/column';
 export class ResumenReglasComponent extends BaseService implements OnInit {
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
-  constructor(private validacionService: ValidacionReglasService) { super(); }
+  constructor(private validacionService: ValidacionReglasService,
+    private notificationService: NotificationService) { super(); }
   datosAcumualdos: Array<acumuladosMuestreo> = [];
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarMonitoreos();
+  
 
   }
 
@@ -148,11 +151,11 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
         filteredData: [], dataType: 'number', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        name: 'costoparametro', label: 'VALIDACIÓN FINAL', order: 31, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        name: 'validacionfinal', label: 'VALIDACIÓN FINAL', order: 31, selectAll: true, filtered: false, asc: false, desc: false, data: [],
         filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       },
       {
-        name: 'costoparametro', label: 'OBSERVACIONES FINAL', order: 32, selectAll: true, filtered: false, asc: false, desc: false, data: [],
+        name: 'observacionfinal', label: 'OBSERVACIÓN FINAL', order: 32, selectAll: true, filtered: false, asc: false, desc: false, data: [],
         filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
       }
     ];
@@ -270,11 +273,37 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  enviarLiberacion() { }
+  enviarLiberacion() {
+
+    //return this.notificationService.updateNotification({
+    //  show: true,
+    //  type: NotificationType.warning,
+    //  text: 'Debe seleccionar resultados con "Validación final" en "ok"',
+    //});
+
+    return this.notificationService.updateNotification({
+      show: true,
+      type: NotificationType.success,
+      text: 'Se realizó la liberación de monitoreos exitosamente',
+    });
+  }
 
   cargarValidacion(event: Event) { }
 
-  enviarIncidencia() { }
+  enviarIncidencia() {
+    //return this.notificationService.updateNotification({
+    //  show: true,
+    //  type: NotificationType.warning,
+    //  text: 'Para ser enviados a incidencia, la "Validación final" de los resultados debe de ser diferente de "OK"',
+    //});
+
+    return this.notificationService.updateNotification({
+      show: true,
+      type: NotificationType.success,
+      text: 'Se realizó el envío a incidencias exitosamente',
+    });
+
+  }
 
 
 }

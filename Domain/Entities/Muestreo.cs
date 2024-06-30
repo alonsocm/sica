@@ -49,6 +49,10 @@ public partial class Muestreo
     /// Campo que indica el número de entrega
     /// </summary>
     public int? NumeroEntrega { get; set; }
+    public int? NumeroCarga { get; set; }
+
+
+    
 
     /// <summary>
     /// Llave foránea que hace referencia al catálogo de Estatus, indicando el estatus del muestreo

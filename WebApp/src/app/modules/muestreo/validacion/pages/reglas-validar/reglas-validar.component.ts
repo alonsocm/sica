@@ -368,6 +368,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
           this.loading = false;
         },
       });
+
   }
 
   getPreviousSelected(
@@ -386,12 +387,13 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   onDownload(): void {
-    if (this.resultadosFiltradosn.length == 0) {
-      this.mostrarMensaje(
-        'No hay información existente para descargar',
-        'warning'
-      );
-      return this.hacerScroll();
+    if (this.resultadosFiltradosn.length == 0) {  
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay información existente para descargar',
+      });
     }
 
     this.loading = true;
@@ -436,20 +438,33 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         text: 'Debes de seleccionar muestreos que cuenten con resultados para poder aplicar las reglas',
       });
     }
-    else {  
+    
+    else {
+
+      ////Validacion para aplicar reglas debe de ser si en correr regla y haber sido validado por el area de supervisión
+      //let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.dato.correReglaValidacion == "NO");
+      //if (resultadosNoAplicaRegla.length > 0) {
+      //  return this.notificationService.updateNotification({
+      //    show: true,
+      //    type: NotificationType.warning,
+      //    text: 'Debes de seleccionar muestreos que se encuentre validados por el área de Supervisión de muestreo y ser aprobado para correr la regla',
+      //  });
+      //}
+
       this.resultadosEnviados = muestreosConResultados.map(
         (m) => { return m.muestreoId; });
       this.loading = true;
       this.validacionService
         .obtenerResultadosValidadosPorReglas(this.resultadosEnviados)
         .subscribe({
-          next: (response: any) => {
-            this.mostrarMensaje(
-              'Se aplicaron las reglas de validación correctamente',
-              'success'
-            );
+          next: (response: any) => {          
             this.loading = false;
-            return this.hacerScroll();
+            this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Se aplicaron las reglas de validación correctamente',
+            });
           },
           error: (error) => {
             this.loading = false;

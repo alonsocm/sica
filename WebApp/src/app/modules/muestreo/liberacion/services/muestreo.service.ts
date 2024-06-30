@@ -233,4 +233,10 @@ export class MuestreoService {
       environment.apiUrl + '/Muestreos/obtenerTotalesAdministracion'
     );
   }
+
+  actualizarMuestreos(muestreos: any): Observable<Object> {
+    return this.http.put(environment.apiUrl + '/muestreos/ActualizarMuestreos', muestreos);
+  }
+
+  
 }

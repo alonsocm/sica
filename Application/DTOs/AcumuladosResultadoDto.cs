@@ -48,6 +48,9 @@ namespace Application.DTOs
         public bool autorizacionIncompleto { get; set; }
         public bool autorizacionFechaEntrega { get; set; }
 
+        public string validacionFinal { get; set; }
+        public string observacionFinal { get; set; }
+
 
         public AcumuladosResultadoDto()
         { this.claveUnica = string.Empty;
@@ -86,6 +89,8 @@ namespace Application.DTOs
             this.cumpleTodosCriterios = false;
             this.autorizacionIncompleto = false;
             this.autorizacionFechaEntrega = false;
+            this.validacionFinal = string.Empty;
+            this.observacionFinal = string.Empty;
 
         }
     }

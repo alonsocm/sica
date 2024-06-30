@@ -33,6 +33,9 @@ export interface Muestreo extends Row {
   estatusId: number;
   fechaEntregaMuestreo: string;
   fechaCargaEvidencias: string;
+  autorizacionIncompleto: boolean;
+  autorizacionFechaEntrega: boolean;
+  correReglaValidacion: boolean;
 }
 
 export interface Evidencia {

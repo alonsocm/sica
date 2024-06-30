@@ -182,15 +182,15 @@
           <td style="text-align:center">{{(dato.cumpleTodosCriterios) ? "SI": "NO"}}</td><!--cumple con todos los criterios-->
           <td style="text-align:center">
             <!--{{dato.muestreoCompletoPorResultados}}-->
-            <input type="checkbox" [disabled]="(dato.muestreoCompletoPorResultados=='SI')?true:false" class="cursor-pointer" [(ngModel)]="dato.autorizacionIncompleto">
-          </td>
+            <input type="checkbox" (change)="validarCorreRegla(dato);" [disabled]="(dato.muestreoCompletoPorResultados=='SI')?true:false" class="cursor-pointer" [(ngModel)]="dato.autorizacionIncompleto">
+
+
           <td style="text-align:center">
             <!--{{dato.cumpleFechaEntrega}}-->
-            <input type="checkbox" [disabled]="(dato.cumpleFechaEntrega=='SI')?true:false" class="cursor-pointer" [(ngModel)]="dato.autorizacionFechaEntrega">
+            <input type="checkbox" (change)="validarCorreRegla(dato);" [disabled]="(dato.cumpleFechaEntrega=='SI')?true:false" class="cursor-pointer" [(ngModel)]="dato.autorizacionFechaEntrega">
           </td>
           <td style="text-align:center">
-            <!--{{dato.cumpleReglasCondic}}-->
-            {{((dato.muestreoCompletoPorResultados=='SI' || dato.autorizacionIncompleto) && (dato.cumpleFechaEntrega=='SI' || dato.autorizacionFechaEntrega)) ? "SI":"NO" }}
+            {{(dato.muestreoCompletoPorResultados=='SI' && dato.cumpleFechaEntrega=='SI' && dato.cumpleReglasCondic=='SI')?"SI" : ((validarCorreRegla(dato)) ? "SI":"NO")  }}
           </td> <!--se corre regla de validacion-->
         </tr>
         <tr *ngIf="this.resultadosMuestreo.length==0">

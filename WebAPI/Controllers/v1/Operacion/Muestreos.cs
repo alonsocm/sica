@@ -8,6 +8,7 @@ using Application.Features.Operacion.Muestreos.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
+using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -246,6 +247,13 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new ActualizarEstatusMuestreos { EstatusId = datos.Status, Filters = filters }));
         }
+
+        [HttpPut("ActualizarMuestreos")]
+        public async Task<IActionResult> ActualizarMuestreos(List<MuestreoDto> request)
+        {return Ok(await Mediator.Send(new ActualizarMuestreoCommand { lstMuestreos = request }));}
+
+
+       
 
 
         [HttpGet("obtenerPuntosPorMuestreo")]
