@@ -19,27 +19,31 @@
         public bool HasNextPage => Page * PageSize < TotalRecords;
         public bool HasPreviousPage => Page > 1;
 
-        public static PagedResponse<List<T>> CreatePagedReponse(List<T> data, int page, int pageSize)
+        public static PagedResponse<IEnumerable<T>> CreatePagedReponse(IEnumerable<T> data, int page, int pageSize)
         {
-            page = page < 1 ? 1 : page;
-            pageSize = pageSize > 30 ? 10 : pageSize;
-            var totalRecords = data.Count;
-            var totalPages = (double)totalRecords / pageSize;
-            int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
             var items = data;
 
-            if (totalRecords > pageSize)
+            if (page >= 1)
             {
-                items = data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                var totalRecords = data.Count();
+                var totalPages = (double)totalRecords / pageSize;
+                int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+                if (totalRecords > pageSize)
+                {
+                    items = data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                }
+
+                return new PagedResponse<IEnumerable<T>>(items, page, pageSize)
+                {
+                    TotalPages = roundedTotalPages,
+                    TotalRecords = totalRecords
+                };
             }
-
-            var response = new PagedResponse<List<T>>(items, page, pageSize)
+            else
             {
-                TotalPages = roundedTotalPages,
-                TotalRecords = totalRecords
-            };
-
-            return response;
+                return new PagedResponse<IEnumerable<T>>(items, page, pageSize);
+            }
         }
     }
 }

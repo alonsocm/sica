@@ -292,7 +292,7 @@ namespace Persistence.Repository
                                   Resultado = s.Resultado,
                                   Descripcion=s.Parametro.Descripcion,
                                   Orden= Convert.ToInt32(s.Parametro.Orden)
-                              }).ToList()
+                              })
             });
 
             return resultadosMuestreoDto;

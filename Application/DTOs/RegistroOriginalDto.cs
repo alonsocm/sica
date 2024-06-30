@@ -17,7 +17,7 @@ namespace Application.DTOs
         public string TipoHomologado { get; set; }
         public string TipoSitio { get; set; }
         public int EstatusId { get; set; }
-        public IList<ParametroDto> Parametros { get; set; }
+        public IEnumerable<ParametroDto> Parametros { get; set; }
 
         public string Estatus { get; set; }
     }

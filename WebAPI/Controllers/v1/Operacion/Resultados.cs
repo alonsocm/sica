@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
@@ -847,5 +848,37 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpDelete("DeleteByMuestreoId")]
         public async Task<IActionResult> DeleteByMuestreoId(List<long> lstMuestreosId)
         { return Ok(await Mediator.Send(new DeleteResultadosByMuestreoIdCommand { lstMuestreoId = lstMuestreosId })); }
+
+        [HttpPost("ExportConsultaRegistroOriginal")]
+        public async Task<IActionResult> ExportConsultaRegistroOriginal([FromQuery] int usuario, List<long>? muestreos, [FromQuery] string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var data = Mediator.Send(new GetResultadosParametrosPaginados
+            {
+                UserId = usuario,
+                Filter = filters
+            }).Result.Data;
+
+            var parametros = Mediator.Send(new GetAllParametros()).Result.Data;
+
+            if (muestreos != null && muestreos.Any())
+            {
+                data = data.Where(x => muestreos.Contains(x.MuestreoId)).ToList();
+            }
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ResultadosSustituidos");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            ExcelService.ExportConsultaRegistroOriginalExcel(data, parametros, fileInfo.FullName);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+        }
     }
 }

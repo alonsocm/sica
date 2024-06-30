@@ -3,30 +3,19 @@ using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Resultados.Queries
 {
- 
-    public class GetResultadosporMuestreoPaginadosQuery : IRequest<PagedResponse<List<AcumuladosResultadoDto>>>
+    public class GetResultadosporMuestreoPaginadosQuery : IRequest<PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
-    
         public int estatusId { get; set; }
         public int page { get; set; }
         public int pageSize { get; set; }
-        public List<Filter> Filter { get; set; } 
+        public List<Filter> Filter { get; set; }
         public OrderBy? OrderBy { get; set; }
-     
-           
-
-
     }
 
-    public class GetResultadosporMuestreoQueryHandler : IRequestHandler<GetResultadosporMuestreoPaginadosQuery, PagedResponse<List<AcumuladosResultadoDto>>>
+    public class GetResultadosporMuestreoQueryHandler : IRequestHandler<GetResultadosporMuestreoPaginadosQuery, PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
         private readonly IMuestreoRepository _repositoryAsync;
 
@@ -36,10 +25,11 @@ namespace Application.Features.Operacion.Resultados.Queries
 
         }
 
-        public async Task<PagedResponse<List<AcumuladosResultadoDto>>> Handle(GetResultadosporMuestreoPaginadosQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<AcumuladosResultadoDto>>> Handle(GetResultadosporMuestreoPaginadosQuery request, CancellationToken cancellationToken)
         {
             var data = await _repositoryAsync.GetResultadosporMuestreoAsync(request.estatusId);
             data = data.AsQueryable();
+
             if (request.Filter.Any())
             {
                 var expressions = MuestreoExpression.GetExpressionList(request.Filter);
@@ -55,10 +45,13 @@ namespace Application.Features.Operacion.Resultados.Queries
 
                     }
                     else
-                    { data = (IEnumerable<AcumuladosResultadoDto>)data.AsQueryable().Where(filter); }
+                    {
+                        data = (IEnumerable<AcumuladosResultadoDto>)data.AsQueryable().Where(filter);
+                    }
                 }
                 data = (lstMuestreo.Count > 0) ? lstMuestreo.AsQueryable() : data;
             }
+
             if (request.OrderBy != null)
             {
                 if (request.OrderBy.Type == "asc")
@@ -71,12 +64,12 @@ namespace Application.Features.Operacion.Resultados.Queries
                 }
             }
 
-            if(data == null)
-
+            if (data == null)
             {
                 throw new KeyNotFoundException($"No se encontraron datos asociados a GetResultadosporMuestreoAsync");
-            }            
-            return PagedResponse<AcumuladosResultadoDto>.CreatePagedReponse(data.ToList(), request.page, request.pageSize);
+            }
+
+            return PagedResponse<AcumuladosResultadoDto>.CreatePagedReponse(data, request.page, request.pageSize);
         }
     }
 }

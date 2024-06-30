@@ -64,7 +64,16 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         name: 'estatus',
         label: 'ESTATUS',
         order: 1,
-        selectAll: true, filtered: false, asc: false, desc: false, data: [], filteredData: [], dataType: 'string', specialFilter: '', secondSpecialFilter: '', selectedData: '',
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
       },
       {
         name: 'esreplica',
@@ -413,7 +422,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       this.loading = true;
 
       this.muestreoService
-        .cargarArchivo(this.archivo[0], false, this.reemplazarResultados, tipoCarga.Automatico)
+        .cargarArchivo(
+          this.archivo[0],
+          false,
+          this.reemplazarResultados,
+          tipoCarga.Automatico
+        )
         .subscribe({
           next: (response: any) => {
             if (response.data.correcto) {
@@ -458,34 +472,36 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   sustituirResultados() {
     this.loading = true;
-    this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
-      next: (response: any) => {
-        if (response.data.correcto) {
+    this.muestreoService
+      .cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico)
+      .subscribe({
+        next: (response: any) => {
+          if (response.data.correcto) {
+            this.loading = false;
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.consultarMonitoreos();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Se sustituyeron los datos correctamente.',
+            });
+          } else {
+            this.loading = false;
+          }
+        },
+        error: (error: any) => {
           this.loading = false;
+          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
+          this.hacerScroll();
+          FileService.download(archivoErrores, 'errores.txt');
           this.resetInputFile(this.inputExcelMonitoreos);
-          this.consultarMonitoreos();
           return this.notificationService.updateNotification({
             show: true,
-            type: NotificationType.success,
-            text: 'Se sustituyeron los datos correctamente.',
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
           });
-        } else {
-          this.loading = false;
-        }
-      },
-      error: (error: any) => {
-        this.loading = false;
-        let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-        this.hacerScroll();
-        FileService.download(archivoErrores, 'errores.txt');
-        this.resetInputFile(this.inputExcelMonitoreos);
-        return this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.danger,
-          text: 'Se encontraron errores en el archivo procesado.',
-        });
-      },
-    });
+        },
+      });
   }
 
   //se puede simplificar
@@ -538,9 +554,17 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     }
 
     this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
 
-    if (this.allSelected) {
-      this.muestreoService.exportAllEbaseca(false, this.cadena).subscribe({
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.muestreoService
+      .exportAllEbaseca(false, this.cadena, registrosSeleccionados)
+      .subscribe({
         next: (response: any) => {
           FileService.download(response, 'CargaResultadosEbaseca.xlsx');
           this.resetValues();
@@ -557,27 +581,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           });
         },
       });
-    } else {
-      this.muestreoService
-        .exportarCargaResultadosEbaseca(this.muestreosSeleccionados)
-        .subscribe({
-          next: (response: any) => {
-            FileService.download(response, 'CargaResultadosEbaseca.xlsx');
-            this.resetValues();
-            this.unselectMuestreos();
-            this.loading = false;
-          },
-          error: (response: any) => {
-            this.loading = false;
-            this.hacerScroll();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.danger,
-              text: 'No fue posible descargar la información',
-            });
-          },
-        });
-    }
   }
 
   private unselectMuestreos() {
@@ -655,7 +658,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   //Cambiar cuando selecciona todos
-  enviarMonitoreos(): void { 
+  enviarMonitoreos(): void {
     //Si todos los registros están seleccionados, vamos a utlizar otra función, donde pasamos el filtro actual
     if (this.allSelected) {
       this.muestreoService
@@ -766,7 +769,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.muestreos = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
@@ -857,7 +860,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
           },
-          error: (error) => { },
+          error: (error) => {},
         });
     }
 
