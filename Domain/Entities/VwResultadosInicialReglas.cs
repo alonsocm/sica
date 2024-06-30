@@ -15,6 +15,10 @@ public partial class VwResultadosInicialReglas
 
     public int EstatusId { get; set; }
 
+    public bool AutorizacionIncompleto { get; set; }
+
+    public bool AutorizacionFechaEntrega { get; set; }
+
     public string ClaveSitio { get; set; } = null!;
 
     public string ClaveMuestreo { get; set; } = null!;

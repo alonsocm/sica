@@ -161,6 +161,16 @@ public partial class ResultadoMuestreo
     /// </summary>
     public string? ResultadoSustituidoPorLaboratorio { get; set; }
 
+    /// <summary>
+    /// Campo que describe si aprueba la validación final que se realiza despues de haber aplicado las reglas
+    /// </summary>
+    public bool? ValidacionFinal { get; set; }
+
+    /// <summary>
+    /// Campo que describe las observaciones de validación final que se realiza despues de haber aplicado las reglas
+    /// </summary>
+    public string? ObservacionFinal { get; set; }
+
     public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = new List<AprobacionResultadoMuestreo>();
 
     public virtual EstatusMuestreo? EstatusResultadoNavigation { get; set; }

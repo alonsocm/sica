@@ -48,7 +48,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }
+    public virtual DbSet<Directorio> Directorio { get; set; }    
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -136,7 +136,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
 
-    public virtual DbSet<Sitio> Sitio { get; set; }
+    public virtual DbSet<Sitio> Sitio { get; set; }    
 
     public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; }
 
@@ -164,7 +164,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }    
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -550,7 +550,7 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
         });
-        
+     
         modelBuilder.Entity<Emergencia>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
@@ -1053,7 +1053,8 @@ public partial class SicaContext : DbContext
                 .HasColumnName("FechaRevisionSECAIA");
             entity.Property(e => e.HoraFin).HasComment("Campo que describe la hora fin, proviene de ebseca");
             entity.Property(e => e.HoraInicio).HasComment("Campo que indica la hora de inicio proviene de ebaseca");
-            entity.Property(e => e.NumeroEntrega).HasComment("Campo que indica el número de entrega");
+            entity.Property(e => e.NumeroCarga).HasComment("Campo que indica el número de carga al que pertenece el muestreo al ser cargado desde ebaseca");
+            entity.Property(e => e.NumeroEntrega).HasComment("Campo que indica el numero de entrega, este es consecutivo cada vez que se envie un bloque de muestreos a liberación despues de haber sido aplicado las reglas y haber tenido una validación final en \"OK\"");
             entity.Property(e => e.ProgramaMuestreoId).HasComment("Llave foránea que hace referencia a la tabla tabla de ProgramaMuestreo");
             entity.Property(e => e.TipoAprobacionId).HasComment("Llave foránea que hace relación al catálogo de TipoAprobacion");
             entity.Property(e => e.UsuarioRevisionOcdlid)
@@ -1695,7 +1696,7 @@ public partial class SicaContext : DbContext
                 .HasComment("Campo que indica la fecha del estatus final")
                 .HasColumnType("datetime");
             entity.Property(e => e.FechaObservacionSrenameca)
-                .HasComment("Campo que indica la fecha en la que se realizaron las observaciones por parte de SRENAMECA")
+                .HasComment("Campo q eu indica la fecha en la que se realizaron las observaciones por parte de SRENAMECA")
                 .HasColumnType("datetime")
                 .HasColumnName("FechaObservacionSRENAMECA");
             entity.Property(e => e.FechaReplicaLaboratorio)
@@ -1705,6 +1706,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.LaboratorioId).HasComment("Llave foránea que hace referencia al catalogo de Laboratorio");
             entity.Property(e => e.LaboratorioSubrogadoId).HasComment("Llave foránea que hace referencia al catalogo de LaboratorioSubrogado");
             entity.Property(e => e.MuestreoId).HasComment("Llave foránea que hace relación a la Tabla de muestreo");
+            entity.Property(e => e.ObservacionFinal).HasComment("Campo que describe las observaciones de validación final que se realiza despues de haber aplicado las reglas");
             entity.Property(e => e.ObservacionLaboratorio)
                 .IsUnicode(false)
                 .HasComment("Campo que describe las observaciones por parte del laboratorio");
@@ -1752,6 +1754,7 @@ public partial class SicaContext : DbContext
                 .HasComment("Campo que describe el resultado sustituido por limite");
             entity.Property(e => e.SeAceptaRechazoSiNo).HasComment("Campo que describe si se acepta el rechazo");
             entity.Property(e => e.SeApruebaResultadoReplica).HasComment("Campo que describe si se aprueba el resultado de replica");
+            entity.Property(e => e.ValidacionFinal).HasComment("Campo que describe si aprueba la validación final que se realiza despues de haber aplicado las reglas");
 
             entity.HasOne(d => d.EstatusResultadoNavigation).WithMany(p => p.ResultadoMuestreo)
                 .HasForeignKey(d => d.EstatusResultado)
@@ -1856,8 +1859,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
-        });
-        
+        });        
+
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador principal se la tabla SubGrupoAnalitico");
@@ -2065,8 +2068,8 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });
-        
+        });        
+
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasIndex(e => e.CuencaId, "IX_Usuario_CuencaId");
@@ -2617,8 +2620,8 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });
-       
+        });       
+
         OnModelCreatingPartial(modelBuilder);
     }
 

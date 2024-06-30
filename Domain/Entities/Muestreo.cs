@@ -46,13 +46,9 @@ public partial class Muestreo
     public int? AnioOperacion { get; set; }
 
     /// <summary>
-    /// Campo que indica el número de entrega
+    /// Campo que indica el número de carga al que pertenece el muestreo al ser cargado desde ebaseca
     /// </summary>
-    public int? NumeroEntrega { get; set; }
     public int? NumeroCarga { get; set; }
-
-
-    
 
     /// <summary>
     /// Llave foránea que hace referencia al catálogo de Estatus, indicando el estatus del muestreo
@@ -115,6 +111,11 @@ public partial class Muestreo
     /// Campo que indica si se autorizo ya que la fecha de entrega no se cumplio
     /// </summary>
     public bool AutorizacionFechaEntrega { get; set; }
+
+    /// <summary>
+    /// Campo que indica el numero de entrega, este es consecutivo cada vez que se envie un bloque de muestreos a liberación despues de haber sido aplicado las reglas y haber tenido una validación final en &quot;OK&quot;
+    /// </summary>
+    public int? NumeroEntrega { get; set; }
 
     public virtual EstatusMuestreo Estatus { get; set; } = null!;
 
