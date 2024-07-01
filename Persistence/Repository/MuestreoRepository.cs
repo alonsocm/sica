@@ -334,6 +334,8 @@ namespace Persistence.Repository
                                        tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        tipoSitioId = resultados.TipoSitioId,
                                        cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI",
+                                       autorizacionIncompleto=resultados.AutorizacionIncompleto,
+                                       autorizacionFechaEntrega=resultados.AutorizacionFechaEntrega
                                        
                                    }).Where(x => x.EstatusId == estatusId).ToListAsync();
 
