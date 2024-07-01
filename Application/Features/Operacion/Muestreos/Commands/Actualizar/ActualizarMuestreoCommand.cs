@@ -28,8 +28,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
         }
 
         public async Task<Response<bool>> Handle(ActualizarMuestreoCommand request, CancellationToken cancellationToken)
-        {
-            List<Muestreo> lstMuestreosActualizar = new List<Muestreo>();
+        {           
             foreach (var muestreos in request.lstMuestreos)
             {
                 Muestreo muestreo = _muestreoRepository.ObtenerElementoPorIdAsync(muestreos.MuestreoId).Result;
@@ -37,10 +36,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
                 muestreo.AutorizacionIncompleto = muestreos.autorizacionIncompleto;
                 muestreo.AutorizacionFechaEntrega = muestreos.autorizacionFechaEntrega;
                 _muestreoRepository.Actualizar(muestreo);
-                //lstMuestreosActualizar.Add(muestreo);
-
             }
-
           
             return new Response<bool>(true);
         }

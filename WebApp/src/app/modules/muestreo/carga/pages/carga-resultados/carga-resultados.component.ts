@@ -710,7 +710,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       }
 
       this.muestreoService
-        .enviarMuestreoaAcumulados(
+        .enviarMuestreoaSiguienteEtapa(
           estatusMuestreo.AcumulacionResultados,
           this.resultadosEnviados
         )

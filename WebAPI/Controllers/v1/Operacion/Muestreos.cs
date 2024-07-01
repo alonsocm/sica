@@ -4,6 +4,7 @@ using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
+using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Muestreos.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
@@ -171,7 +172,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPut]
         public async Task<IActionResult> Put(List<MuestreoRevisionDto> request)
         {
-            return Ok(await Mediator.Send(new EnvioRevisionMuestreosCommand { Muestreos = request }));
+            return Ok(await Mediator.Send(new AsignarFechaLimiteCommand { Muestreos = request }));
         }
 
         [HttpDelete]
@@ -251,10 +252,6 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPut("ActualizarMuestreos")]
         public async Task<IActionResult> ActualizarMuestreos(List<MuestreoDto> request)
         {return Ok(await Mediator.Send(new ActualizarMuestreoCommand { lstMuestreos = request }));}
-
-
-       
-
 
         [HttpGet("obtenerPuntosPorMuestreo")]
         public async Task<IActionResult> obtenerPuntosPorMuestreo(string claveMuestreo)

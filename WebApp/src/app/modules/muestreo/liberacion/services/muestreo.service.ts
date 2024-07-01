@@ -135,7 +135,7 @@ export class MuestreoService {
     );
   }
 
-  enviarMuestreosRevision(muestreos: any): Observable<Object> {
+  asignarFechaLimite(muestreos: any): Observable<Object> {
     return this.http.put(environment.apiUrl + '/muestreos', muestreos);
   }
 
@@ -194,7 +194,7 @@ export class MuestreoService {
     );
   }
 
-  enviarMuestreoaAcumulados(estatusId: number, muestreos: Array<number>) {
+  enviarMuestreoaSiguienteEtapa(estatusId: number, muestreos: Array<number>) {
     let datos = { estatusId: estatusId, muestreos: muestreos };
     return this.http.put(
       environment.apiUrl + '/Muestreos/cambioEstatusMuestreos',
@@ -241,6 +241,5 @@ export class MuestreoService {
   actualizarMuestreos(muestreos: any): Observable<Object> {
     return this.http.put(environment.apiUrl + '/muestreos/ActualizarMuestreos', muestreos);
   }
-
   
 }

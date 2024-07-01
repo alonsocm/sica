@@ -11,6 +11,7 @@ import { Notificacion } from '../../../../../shared/models/notification-model';
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
+import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 
 
 @Component({
@@ -333,42 +334,42 @@ export class CargaComponent extends BaseService implements OnInit {
     //    TIPO_MENSAJE.alerta
     //  );
     //  return this.hacerScroll();
-    //}
+    //}   
 
-    if (this.fechaLimiteRevision == '') {   
+    else if (muestreosSeleccionados.filter(x => x.fechaLimiteRevision == "").length > 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe elegir una fecha de revisión',
+        text: 'Los monitoreos enviados a revisión deben de contar con fecha límite de revisión',
       });
+    } else {
+      this.loading = true;
+      this.muestreoService
+        .enviarMuestreoaSiguienteEtapa(
+          estatusMuestreo.Enviado,
+          muestreosSeleccionados.map((m) => {
+            return m.muestreoId;
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            this.consultarMonitoreos();
+            this.fechaLimiteRevision = '';
+            this.loading = false;
+            this.seleccionarTodosChck = false;
+            this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Monitoreos enviados correctamente a revisión',
+            });
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+        });
     }
-    this.loading = true;
-    this.muestreoService
-      .enviarMuestreosRevision(
-        muestreosSeleccionados.map((s) => ({
-          muestreoId: s.muestreoId,
-          claveMonitoreo: s.claveMonitoreo,
-          fechaRevision: this.fechaLimiteRevision,
-        }))
-      )
-      .subscribe({
-        next: (response) => {
-          this.consultarMonitoreos();
-          this.fechaLimiteRevision = '';
-          this.loading = false;           
-          this.seleccionarTodosChck = false;
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Monitoreos enviados correctamente a revisión',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
   }
 
   exportarResultados(): void {
@@ -535,10 +536,49 @@ export class CargaComponent extends BaseService implements OnInit {
     this.page = page;
   }
   asignarFechaLimite() {
-    return this.notificationService.updateNotification({
-      show: true,
-      type: NotificationType.success,
-      text: 'Se asigno la fecha límite correctamente',
-    });
+    let muestreosSeleccionados = this.obtenerSeleccionados();
+    if (!(muestreosSeleccionados.length > 0)) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un monitoreo para asignar la fecha límite',
+      });
+    }
+    else if (this.fechaLimiteRevision == "") {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'La fecha límite se encuentra vacía',
+      });
+    }
+    else {
+      this.loading = true;
+      this.muestreoService
+        .asignarFechaLimite(
+          muestreosSeleccionados.map((s) => ({
+            muestreoId: s.muestreoId,
+            fechaRevision: this.fechaLimiteRevision         
+          }))
+        )
+        .subscribe({
+          next: (response) => {
+            this.consultarMonitoreos();
+            this.fechaLimiteRevision = '';
+            this.loading = false;
+            this.seleccionarTodosChck = false;
+            this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Se asigno la fecha límite correctamente',
+            });
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+        });
+    }    
   }
 }
