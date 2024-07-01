@@ -169,6 +169,7 @@ namespace Shared.Utilities.Services
                 worksheet.Cells[fila, 19].Value = registro.HoraFin;
                 worksheet.Cells[fila, 20].Value = registro.FechaCarga;
                 worksheet.Cells[fila, 21].Value = registro.FechaEntregaMuestreo;
+                fila++;
             }
 
             worksheet.Cells[1, 1, 1, 21].Style.Font.Bold = true;
