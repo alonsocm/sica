@@ -593,14 +593,18 @@ export class BaseService {
       }
     });
 
+    this.showOrHideSelectAllOption();
+
+    //this.getSummary();
+  }
+
+  public showOrHideSelectAllOption() {
     if (this.selectAllOption && !this.selectedPage) {
       this.selectAllOption = false;
       this.allSelected = false;
     } else if (!this.selectAllOption && this.selectedPage) {
       this.selectAllOption = true;
     }
-
-    //this.getSummary();
   }
 
   anyUnselected(muestreos: Array<any>) {
