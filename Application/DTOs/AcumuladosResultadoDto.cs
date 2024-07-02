@@ -1,96 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTOs
+﻿namespace Application.DTOs
 {
-    public class AcumuladosResultadoDto :MuestreoDto
+    public class AcumuladosResultadoDto : MuestreoDto
     {
-       
-        public string claveUnica { get; set; }
+
+        public string ClaveUnica { get; set; }
         public string SubTipoCuerpoAgua { get; set; }
-        public string laboratorioRealizoMuestreo { get; set; }
-        public string grupoParametro { get; set; }
-        public string subGrupo { get; set; }
-        public string claveParametro { get; set; }
-        public string parametro { get; set; }
-        public string? unidadMedida { get; set; }
-        public string resultado { get; set; }
-        public string zonaEstrategica { get; set; }
-        public long idResultadoLaboratorio { get; set; }
-        public string fechaEntrega { get; set; }
-        public string nuevoResultadoReplica { get; set; }
-        public bool replica { get; set; }
-        public bool cambioResultado { get; set; }
-        public int diferenciaDias { get; set; }
-        public string fechaEntregaTeorica { get; set; }
-        public int numParametrosEsperados { get; set; }
-        public int numParametrosCargados { get; set; }
-        public string muestreoCompletoPorResultados { get; set; }           
-        public bool validadoReglas { get; set; }       
-        public decimal costoParametro { get; set; }
-        public int anioOperacion { get; set; }
-        public string cumpleReglasCondic { get; set; }
-
-        public long tipoCuerpoAguaId { get; set; }
-        public long tipoSitioId { get; set; }
-
-        public string cumpleFechaEntrega { get; set; }
-        public string resultadoReglas { get; set; }
-
-        public List<ParametrosDto> lstParametros { get; set; }
-
-        public long resultadoMuestreoId { get; set; }
-
-        public bool cumpleTodosCriterios { get; set; }
-        public bool autorizacionIncompleto { get; set; }
-        public bool autorizacionFechaEntrega { get; set; }
-
-        public string validacionFinal { get; set; }
-        public string observacionFinal { get; set; }
-
+        public string LaboratorioRealizoMuestreo { get; set; }
+        public string GrupoParametro { get; set; }
+        public string SubGrupo { get; set; }
+        public string ClaveParametro { get; set; }
+        public string Parametro { get; set; }
+        public string? UnidadMedida { get; set; }
+        public string Resultado { get; set; }
+        public string ZonaEstrategica { get; set; }
+        public long IdResultadoLaboratorio { get; set; }
+        public string FechaEntrega { get; set; }
+        public string NuevoResultadoReplica { get; set; }
+        public bool Replica { get; set; }
+        public bool CambioResultado { get; set; }
+        public int DiferenciaDias { get; set; }
+        public string FechaEntregaTeorica { get; set; }
+        public int NumParametrosEsperados { get; set; }
+        public int NumParametrosCargados { get; set; }
+        public string MuestreoCompletoPorResultados { get; set; }
+        public bool ValidadoReglas { get; set; }
+        public decimal CostoParametro { get; set; }
+        public int AnioOperacion { get; set; }
+        public string CumpleReglasCondic { get; set; }
+        public long TipoCuerpoAguaId { get; set; }
+        public long TipoSitioId { get; set; }
+        public string CumpleFechaEntrega { get; set; }
+        public string ResultadoReglas { get; set; }
+        public List<ParametrosDto> LstParametros { get; set; }
+        public long ResultadoMuestreoId { get; set; }
+        public bool CumpleTodosCriterios { get; set; }
+        public bool AutorizacionIncompleto { get; set; }
+        public bool AutorizacionFechaEntrega { get; set; }
+        public string ValidacionFinal { get; set; }
+        public string ObservacionFinal { get; set; }
 
         public AcumuladosResultadoDto()
-        { this.claveUnica = string.Empty;
+        {
+            this.ClaveUnica = string.Empty;
             this.SubTipoCuerpoAgua = string.Empty;
-            this.laboratorioRealizoMuestreo = string.Empty;
-            this.subGrupo = string.Empty;
-            this.claveParametro = string.Empty;
-            this.parametro = string.Empty;
-            this.unidadMedida = string.Empty;
-            this.resultado = string.Empty;
-            this.zonaEstrategica = string.Empty;
-            this.grupoParametro = string.Empty;
-            this.idResultadoLaboratorio = 0;
-            this.fechaEntrega = string.Empty;
-            this.nuevoResultadoReplica = string.Empty;
-            this.replica = false;
-            this.cambioResultado = false;
-            this.diferenciaDias = 0;
-            this.fechaEntregaTeorica = string.Empty;
-            this.numParametrosEsperados = 0;
-            this.numParametrosCargados = 0;
-            this.muestreoCompletoPorResultados = string.Empty;
-            this.validadoReglas = false;
-            this.costoParametro = 0;
-            this.anioOperacion = 0;
-            this.cumpleReglasCondic = string.Empty;
+            this.LaboratorioRealizoMuestreo = string.Empty;
+            this.SubGrupo = string.Empty;
+            this.ClaveParametro = string.Empty;
+            this.Parametro = string.Empty;
+            this.UnidadMedida = string.Empty;
+            this.Resultado = string.Empty;
+            this.ZonaEstrategica = string.Empty;
+            this.GrupoParametro = string.Empty;
+            this.IdResultadoLaboratorio = 0;
+            this.FechaEntrega = string.Empty;
+            this.NuevoResultadoReplica = string.Empty;
+            this.Replica = false;
+            this.CambioResultado = false;
+            this.DiferenciaDias = 0;
+            this.FechaEntregaTeorica = string.Empty;
+            this.NumParametrosEsperados = 0;
+            this.NumParametrosCargados = 0;
+            this.MuestreoCompletoPorResultados = string.Empty;
+            this.ValidadoReglas = false;
+            this.CostoParametro = 0;
+            this.AnioOperacion = 0;
+            this.CumpleReglasCondic = string.Empty;
 
-            this.tipoCuerpoAguaId = 0;
-            this.tipoSitioId = 0;
+            this.TipoCuerpoAguaId = 0;
+            this.TipoSitioId = 0;
 
-            this.cumpleFechaEntrega = string.Empty;
-            this.resultadoReglas = string.Empty;
+            this.CumpleFechaEntrega = string.Empty;
+            this.ResultadoReglas = string.Empty;
 
-            this.lstParametros = new List<ParametrosDto>();
-            this.resultadoMuestreoId = 0;
-            this.cumpleTodosCriterios = false;
-            this.autorizacionIncompleto = false;
-            this.autorizacionFechaEntrega = false;
-            this.validacionFinal = string.Empty;
-            this.observacionFinal = string.Empty;
+            this.LstParametros = new List<ParametrosDto>();
+            this.ResultadoMuestreoId = 0;
+            this.CumpleTodosCriterios = false;
+            this.AutorizacionIncompleto = false;
+            this.AutorizacionFechaEntrega = false;
+            this.ValidacionFinal = string.Empty;
+            this.ObservacionFinal = string.Empty;
 
         }
     }

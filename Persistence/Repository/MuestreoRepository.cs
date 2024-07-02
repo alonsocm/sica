@@ -250,7 +250,7 @@ namespace Persistence.Repository
                                    select new AcumuladosResultadoDto
                                    {
                                        MuestreoId = m.Id,
-                                       claveUnica = $"{vpm.ClaveMuestreo}{resMuestreo.Parametro.ClaveParametro}",
+                                       ClaveUnica = $"{vpm.ClaveMuestreo}{resMuestreo.Parametro.ClaveParametro}",
                                        ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
                                        ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                        NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
@@ -261,27 +261,27 @@ namespace Persistence.Repository
                                        TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
                                        SubTipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion,
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
-                                       laboratorioRealizoMuestreo = resMuestreo.Laboratorio.Nomenclatura ?? string.Empty,
+                                       LaboratorioRealizoMuestreo = resMuestreo.Laboratorio.Nomenclatura ?? string.Empty,
                                        LaboratorioSubrogado = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
-                                       grupoParametro = resMuestreo.Parametro.GrupoParametro.Descripcion,
-                                       subGrupo = resMuestreo.Parametro.IdSubgrupoNavigation.Descripcion,
-                                       claveParametro = resMuestreo.Parametro.ClaveParametro,
-                                       parametro = resMuestreo.Parametro.Descripcion,
-                                       unidadMedida = resMuestreo.Parametro.IdUnidadMedidaNavigation.Descripcion,
-                                       resultado = resMuestreo.Resultado,
+                                       GrupoParametro = resMuestreo.Parametro.GrupoParametro.Descripcion,
+                                       SubGrupo = resMuestreo.Parametro.IdSubgrupoNavigation.Descripcion,
+                                       ClaveParametro = resMuestreo.Parametro.ClaveParametro,
+                                       Parametro = resMuestreo.Parametro.Descripcion,
+                                       UnidadMedida = resMuestreo.Parametro.IdUnidadMedidaNavigation.Descripcion,
+                                       Resultado = resMuestreo.Resultado,
                                        ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,
                                        Estatus = m.Estatus.Descripcion,
                                        TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString() ?? string.Empty,
                                        DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        //costoParametro = costo.Precio,
-                                       costoParametro = _dbContext.ParametrosCostos.Where(x => x.ParametroId.Equals(resMuestreo.ParametroId)).Select(y => y.Precio).FirstOrDefault(),
+                                       CostoParametro = _dbContext.ParametrosCostos.Where(x => x.ParametroId.Equals(resMuestreo.ParametroId)).Select(y => y.Precio).FirstOrDefault(),
                                        NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
-                                       fechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       idResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
-                                       validadoReglas = (m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas) ? true : false,
-                                       resultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty,
-                                       resultadoMuestreoId = resMuestreo.Id
+                                       FechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
+                                       IdResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
+                                       ValidadoReglas = (m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas) ? true : false,
+                                       ResultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty,
+                                       ResultadoMuestreoId = resMuestreo.Id
 
 
                                    }).ToListAsync();
@@ -316,38 +316,38 @@ namespace Persistence.Repository
                                        NombreSitio = resultados.NombreSitio,
                                        FechaRealizacion = resultados.FechaRealizacion.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        FechaProgramada = resultados.FechaProgramada.ToString("dd/MM/yyyy"),
-                                       diferenciaDias = Convert.ToInt32(resultados.DiferenciaEnDias.ToString()),
-                                       fechaEntregaTeorica = resultados.FechaEntregaTeorica.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       laboratorioRealizoMuestreo = resultados.Laboratorio ?? string.Empty,
+                                       DiferenciaDias = Convert.ToInt32(resultados.DiferenciaEnDias.ToString()),
+                                       FechaEntregaTeorica = resultados.FechaEntregaTeorica.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                                       LaboratorioRealizoMuestreo = resultados.Laboratorio ?? string.Empty,
                                        CuerpoAgua = resultados.CuerpoDeAgua,
                                        TipoCuerpoAgua = resultados.TipoCuerpoAgua,
                                        SubTipoCuerpoAgua = resultados.SubtipoCuerpoDeAgua,
-                                       numParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
-                                       numParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
+                                       NumParametrosEsperados = Convert.ToInt32(resultados.NumDatosEsperados),
+                                       NumParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
                                        //muestreoCompletoPorResultados = (resultados.MuestreoCompletoPorResultados == null) ? "SI" : resultados.MuestreoCompletoPorResultados.ToString(),
-                                       muestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
-                                       cumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
-                                       anioOperacion = resultados.AnioOperacion ?? 0,
+                                       MuestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
+                                       CumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
+                                       AnioOperacion = resultados.AnioOperacion ?? 0,
                                        NumeroEntrega = resultados.NumeroEntrega.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,
                                        EstatusId = resultados.EstatusId,
-                                       tipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
-                                       tipoSitioId = resultados.TipoSitioId,
-                                       cumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI",
-                                       autorizacionIncompleto=resultados.AutorizacionIncompleto,
-                                       autorizacionFechaEntrega=resultados.AutorizacionFechaEntrega
+                                       TipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
+                                       TipoSitioId = resultados.TipoSitioId,
+                                       CumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI",
+                                       AutorizacionIncompleto=resultados.AutorizacionIncompleto,
+                                       AutorizacionFechaEntrega=resultados.AutorizacionFechaEntrega
                                        
                                    }).Where(x => x.EstatusId == estatusId).ToListAsync();
 
             foreach (var dato in muestreos)
             {
 
-                string[] valor = { dato.cumpleReglasCondic, dato.muestreoCompletoPorResultados, dato.cumpleFechaEntrega };
-                dato.cumpleTodosCriterios = valor.Contains("NO") ? false : true;
+                string[] valor = { dato.CumpleReglasCondic, dato.MuestreoCompletoPorResultados, dato.CumpleFechaEntrega };
+                dato.CumpleTodosCriterios = valor.Contains("NO") ? false : true;
 
-                List<string> datParam = (dato.cumpleReglasCondic == "NO") ? GetParametrosFaltantes(dato.tipoSitioId, dato.tipoCuerpoAguaId, dato.MuestreoId) : new List<string>();
+                List<string> datParam = (dato.CumpleReglasCondic == "NO") ? GetParametrosFaltantes(dato.TipoSitioId, dato.TipoCuerpoAguaId, dato.MuestreoId) : new List<string>();
                 dato.Observaciones = (datParam.Count > 0) ? datParam[0] : string.Empty;
-                dato.claveParametro = (datParam.Count > 0) ? datParam[1] : string.Empty;
+                dato.ClaveParametro = (datParam.Count > 0) ? datParam[1] : string.Empty;
             }
             return muestreos.ToList();
         }

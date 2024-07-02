@@ -41,7 +41,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                 { data = (IEnumerable<DTOs.AcumuladosResultadoDto>)data.AsQueryable().Where(filter); }
             }
 
-            List<long> lstresultados = data.Select(x => x.resultadoMuestreoId).Distinct().ToList();
+            List<long> lstresultados = data.Select(x => x.ResultadoMuestreoId).Distinct().ToList();
             foreach (var idResultado in lstresultados)
             { _resultadoRepository.Eliminar(x => x.Id == idResultado); }
             return new Response<bool> { Succeded = true };
