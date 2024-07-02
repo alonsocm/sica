@@ -659,7 +659,7 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 AcumuladosResultadosExcel resultadosAcumulados = new()
                 {
-                    claveUnica = dato.claveUnica,
+                    claveUnica = dato.ClaveUnica,
                     claveMonitoreo = dato.ClaveMonitoreo,
                     claveSitio = dato.ClaveSitio,
                     nombreSitio = dato.NombreSitio,
@@ -671,20 +671,20 @@ namespace WebAPI.Controllers.v1.Operacion
                     tipoCuerpoAgua = dato.TipoCuerpoAgua,
                     subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
                     laboratorio = dato.Laboratorio,
-                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
+                    laboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
                     laboratorioSubrogado = dato.LaboratorioSubrogado,
-                    grupoParametro = dato.grupoParametro,
-                    subGrupo = dato.subGrupo,
-                    claveParametro = dato.claveParametro,
-                    parametro = dato.parametro,
-                    unidadMedida = dato.unidadMedida ?? string.Empty,
-                    resultado = dato.resultado,
-                    nuevoResultadoReplica = dato.nuevoResultadoReplica,
+                    grupoParametro = dato.GrupoParametro,
+                    subGrupo = dato.SubGrupo,
+                    claveParametro = dato.ClaveParametro,
+                    parametro = dato.Parametro,
+                    unidadMedida = dato.UnidadMedida ?? string.Empty,
+                    resultado = dato.Resultado,
+                    nuevoResultadoReplica = dato.NuevoResultadoReplica,
                     programaAnual = dato.ProgramaAnual,
-                    idResultadoLaboratorio = dato.idResultadoLaboratorio,
-                    fechaEntrega = dato.fechaEntrega,
-                    replica = (dato.replica) ? "SI" : "NO",
-                    cambioResultado = (dato.cambioResultado) ? "SI" : "NO"
+                    idResultadoLaboratorio = dato.IdResultadoLaboratorio,
+                    fechaEntrega = dato.FechaEntrega,
+                    replica = (dato.Replica) ? "SI" : "NO",
+                    cambioResultado = (dato.CambioResultado) ? "SI" : "NO"
 
                 };
 
@@ -712,17 +712,17 @@ namespace WebAPI.Controllers.v1.Operacion
                     nombreSitio = dato.NombreSitio,
                     fechaRealizacion = dato.FechaRealizacion,
                     fechaProgramada = dato.FechaProgramada,
-                    diferenciaDias = dato.diferenciaDias,
-                    fechaEntregaTeorica = dato.fechaEntregaTeorica,
-                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
+                    diferenciaDias = dato.DiferenciaDias,
+                    fechaEntregaTeorica = dato.FechaEntregaTeorica,
+                    laboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
                     cuerpoAgua = dato.CuerpoAgua,
                     tipoCuerpoAgua = dato.TipoCuerpoAgua,
                     subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    numParametrosEsperados = dato.numParametrosEsperados,
-                    numParametrosCargados = dato.numParametrosCargados,
-                    muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados,
-                    cumpleReglasCond = dato.cumpleReglasCondic,
-                    observaciones = dato.claveParametro
+                    numParametrosEsperados = dato.NumParametrosEsperados,
+                    numParametrosCargados = dato.NumParametrosCargados,
+                    muestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados,
+                    cumpleReglasCond = dato.CumpleReglasCondic,
+                    observaciones = dato.ClaveParametro
                 };
 
                 lstmuestreosExcel.Add(resultadosaValidar);
@@ -749,11 +749,11 @@ namespace WebAPI.Controllers.v1.Operacion
                     nombreSitio = dato.NombreSitio,
                     fechaRealizacion = dato.FechaRealizacion,
                     fechaProgramada = dato.FechaProgramada,
-                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
+                    laboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
                     cuerpoAgua = dato.CuerpoAgua,
                     tipoCuerpoAgua = dato.TipoCuerpoAgua,
                     subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados
+                    muestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados
                 };
 
                 lstmuestreosExcel.Add(resultadosValidados);
@@ -768,53 +768,33 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("exportExcelResumenResultados")]
-        public IActionResult ExportExcelResumenResultados(List<AcumuladosResultadoDto> muestreos)
+        public IActionResult ExportExcelResumenResultados([FromQuery] int estatus, List<long>? resultados, [FromQuery] string? filter = "")
         {
-            List<ResumenResultadosExcel> lstmuestreosExcel = new();
-            foreach (var dato in muestreos)
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                ResumenResultadosExcel resultadosAcumulados = new()
-                {
-                    numeroEntrega = dato.NumeroEntrega,
-                    claveUnica = dato.claveUnica,
-                    claveMonitoreo = dato.ClaveMonitoreo,
-                    claveSitio = dato.ClaveSitio,
-                    nombreSitio = dato.NombreSitio,
-                    fechaProgramada = dato.FechaProgramada,
-                    fechaRealizacion = dato.FechaRealizacion,
-                    horaInicio = dato.HoraInicio,
-                    horaFin = dato.HoraFin,
-                    zonaEstrategica = dato.zonaEstrategica,
-                    tipoCuerpoAgua = dato.TipoCuerpoAgua,
-                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    laboratorio = dato.Laboratorio,
-                    laboratorioRealizoMuestreo = dato.laboratorioRealizoMuestreo,
-                    laboratorioSubrogado = dato.LaboratorioSubrogado,
-                    grupoParametro = dato.grupoParametro,
-                    subGrupo = dato.subGrupo,
-                    claveParametro = dato.claveParametro,
-                    parametro = dato.parametro,
-                    unidadMedida = dato.unidadMedida ?? string.Empty,
-                    resultado = dato.resultado,
-                    nuevoResultadoReplica = dato.nuevoResultadoReplica,
-                    programaAnual = dato.ProgramaAnual,
-                    idResultadoLaboratorio = dato.idResultadoLaboratorio,
-                    fechaEntrega = dato.fechaEntrega,
-                    replica = (dato.replica) ? "SI" : "NO",
-                    cambioResultado = (dato.cambioResultado) ? "SI" : "NO",
-                    validadoReglas = (dato.validadoReglas) ? "SI" : "NO",
-                    observacionesReglas = dato.resultadoReglas,
-                    costoParametro = dato.costoParametro,
+                filters = QueryParam.GetFilters(filter);
+            }
 
+            var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            {
+                estatusId = estatus,
+                Filter = filters
+            }).Result.Data;
 
-                };
-                lstmuestreosExcel.Add(resultadosAcumulados);
+            var parametros = Mediator.Send(new GetAllParametros()).Result.Data;
+
+            if (resultados != null && resultados.Any())
+            {
+                data = data.Where(x => resultados.Contains(x.ResultadoMuestreoId)).ToList();
             }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("ResumenResultados");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
-            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+
+            ExcelService.ExportToExcelResumenValidacionReglasResultado(data, fileInfo);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }

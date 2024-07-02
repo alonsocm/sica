@@ -333,7 +333,7 @@ namespace WebAPI.Controllers.v1.Operacion
             muestreos.ForEach(resultado =>
                 muestreosExcel.Add(new ResultadosAdministracionExcel
                 {
-                    ClaveUnica = resultado.claveUnica,
+                    ClaveUnica = resultado.ClaveUnica,
                     ClaveMonitoreo = resultado.ClaveMonitoreo,
                     ClaveSitio = resultado.ClaveSitio,
                     NombreSitio = resultado.NombreSitio,
@@ -341,13 +341,13 @@ namespace WebAPI.Controllers.v1.Operacion
                     TipoCuerpoAgua = resultado.TipoCuerpoAgua,
                     SubTipoCuerpoAgua = resultado.SubTipoCuerpoAgua,
                     FechaRealizacion = resultado.FechaRealizacion,
-                    GrupoParametro = resultado.grupoParametro,
-                    Parametro = resultado.parametro,
-                    UnidadMedida = resultado.unidadMedida ?? string.Empty,
-                    Resultado = resultado.resultado,
-                    NuevoResultadoReplica = resultado.nuevoResultadoReplica,
-                    Replica = resultado.replica.ToString(),
-                    CambioResultado = resultado.cambioResultado.ToString()
+                    GrupoParametro = resultado.GrupoParametro,
+                    Parametro = resultado.Parametro,
+                    UnidadMedida = resultado.UnidadMedida ?? string.Empty,
+                    Resultado = resultado.Resultado,
+                    NuevoResultadoReplica = resultado.NuevoResultadoReplica,
+                    Replica = resultado.Replica.ToString(),
+                    CambioResultado = resultado.CambioResultado.ToString()
 
 
                 }

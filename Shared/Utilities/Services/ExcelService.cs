@@ -116,6 +116,53 @@ namespace Shared.Utilities.Services
             pck.Save();
         }
 
+        public static void ExportToExcelResumenValidacionReglasResultado(IEnumerable<AcumuladosResultadoDto> data, FileInfo fileInfo)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var pck = new ExcelPackage(fileInfo);
+            ExcelWorksheet worksheet = pck.Workbook.Worksheets[0];
+
+            var fila = 2;
+
+            foreach (var registro in data)
+            {
+                worksheet.Cells[fila, 1].Value = registro.NumeroEntrega;
+                worksheet.Cells[fila, 2].Value = registro.ClaveUnica;
+                worksheet.Cells[fila, 3].Value = registro.ClaveMonitoreo;
+                worksheet.Cells[fila, 4].Value = registro.ClaveSitio;
+                worksheet.Cells[fila, 5].Value = registro.NombreSitio;
+                worksheet.Cells[fila, 6].Value = registro.FechaProgramada;
+                worksheet.Cells[fila, 7].Value = registro.FechaRealizacion;
+                worksheet.Cells[fila, 8].Value = registro.HoraInicio;
+                worksheet.Cells[fila, 9].Value = registro.HoraFin;
+                worksheet.Cells[fila, 10].Value = registro.ZonaEstrategica;
+                worksheet.Cells[fila, 11].Value = registro.TipoCuerpoAgua;
+                worksheet.Cells[fila, 12].Value = registro.SubTipoCuerpoAgua;
+                worksheet.Cells[fila, 13].Value = registro.Laboratorio;
+                worksheet.Cells[fila, 14].Value = registro.LaboratorioRealizoMuestreo;
+                worksheet.Cells[fila, 15].Value = registro.LaboratorioSubrogado;
+                worksheet.Cells[fila, 16].Value = registro.GrupoParametro;
+                worksheet.Cells[fila, 17].Value = registro.SubGrupo;
+                worksheet.Cells[fila, 18].Value = registro.ClaveParametro;
+                worksheet.Cells[fila, 19].Value = registro.Parametro;
+                worksheet.Cells[fila, 20].Value = registro.UnidadMedida;
+                worksheet.Cells[fila, 21].Value = registro.Resultado;
+                worksheet.Cells[fila, 22].Value = registro.NuevoResultadoReplica;
+                worksheet.Cells[fila, 23].Value = registro.ProgramaAnual;
+                worksheet.Cells[fila, 24].Value = registro.IdResultadoLaboratorio;
+                worksheet.Cells[fila, 25].Value = registro.FechaEntrega;
+                worksheet.Cells[fila, 26].Value = registro.Replica ? "SI" : "NO";
+                worksheet.Cells[fila, 27].Value = "SI";
+                worksheet.Cells[fila, 28].Value = registro.ResultadoReglas;
+                worksheet.Cells[fila, 29].Value = registro.CostoParametro;
+                worksheet.Cells[fila, 30].Value = "NO";
+                worksheet.Cells[fila, 31].Value = registro.ObservacionFinal;
+                fila++;
+            }
+
+            pck.SaveAs(fileInfo);
+        }
+
         public static void ExportCargaResultadosValidadosExcel(IEnumerable<MuestreoDto> data, string filePath)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
