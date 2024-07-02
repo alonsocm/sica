@@ -33,8 +33,8 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
             {
                 Muestreo muestreo = _muestreoRepository.ObtenerElementoPorIdAsync(muestreos.MuestreoId).Result;
                 muestreo.EstatusId = muestreos.EstatusId;
-                muestreo.AutorizacionIncompleto = muestreos.autorizacionIncompleto;
-                muestreo.AutorizacionFechaEntrega = muestreos.autorizacionFechaEntrega;
+                muestreo.AutorizacionIncompleto = muestreos.AutorizacionIncompleto;
+                muestreo.AutorizacionFechaEntrega = muestreos.AutorizacionFechaEntrega;
                 _muestreoRepository.Actualizar(muestreo);
             }
           

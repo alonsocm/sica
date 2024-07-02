@@ -34,7 +34,6 @@
         public List<ParametrosDto> LstParametros { get; set; }
         public long ResultadoMuestreoId { get; set; }
         public bool CumpleTodosCriterios { get; set; }
-        public bool AutorizacionIncompleto { get; set; }
         public bool AutorizacionFechaEntrega { get; set; }
         public string ValidacionFinal { get; set; }
         public string ObservacionFinal { get; set; }
@@ -75,7 +74,6 @@
             this.LstParametros = new List<ParametrosDto>();
             this.ResultadoMuestreoId = 0;
             this.CumpleTodosCriterios = false;
-            this.AutorizacionIncompleto = false;
             this.AutorizacionFechaEntrega = false;
             this.ValidacionFinal = string.Empty;
             this.ObservacionFinal = string.Empty;
