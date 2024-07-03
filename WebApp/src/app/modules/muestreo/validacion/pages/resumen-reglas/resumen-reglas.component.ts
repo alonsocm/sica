@@ -9,6 +9,8 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { Item } from 'src/app/interfaces/filter/item';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-resumen-reglas',
@@ -18,12 +20,19 @@ import { Item } from 'src/app/interfaces/filter/item';
 export class ResumenReglasComponent extends BaseService implements OnInit {
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
+  filtroHistorialServiceSub: Subscription;
   constructor(
+    private filtroHistorialService: FiltroHistorialService,
     public muestreoService: MuestreoService,
     private validacionService: ValidacionReglasService,
     private notificationService: NotificationService
   ) {
     super();
+    this.filtroHistorialServiceSub =
+      this.filtroHistorialService.columnName.subscribe((columnName) => {
+        this.deleteFilter(columnName);
+        this.consultarMonitoreos();
+      });
   }
   registros: Array<acumuladosMuestreo> = []; //Contiene los registros consultados a la API*/
   registrosSeleccionados: Array<acumuladosMuestreo> = []; //Contiene los registros que se van seleccionando*/
@@ -701,7 +710,11 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       });
   }
 
-  onDeleteFilterClick(columna: string) {}
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.consultarMonitoreos();
+  }
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
     this.existeFiltrado = true;
@@ -787,5 +800,9 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       type: NotificationType.success,
       text: 'Se realizó el envío a incidencias exitosamente',
     });
+  }
+
+  ngOnDestroy() {
+    this.filtroHistorialServiceSub.unsubscribe();
   }
 }
