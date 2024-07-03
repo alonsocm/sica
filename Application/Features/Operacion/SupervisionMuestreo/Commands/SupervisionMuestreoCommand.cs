@@ -78,7 +78,7 @@ namespace Application.Features.Operacion.SupervisionMuestreo.Commands
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Ya se encuentra la clave de muestreo registrada"); ;
+                throw new ApplicationException(ex.Message); ;
             }
             return new Response<RespuestaSupervisionDto>(respuesta);
         }

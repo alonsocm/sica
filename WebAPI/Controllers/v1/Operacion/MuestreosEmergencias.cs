@@ -5,8 +5,6 @@ namespace WebAPI.Controllers.v1.Operacion
 {
     public class MuestreosEmergencias : BaseApiController
     {
-        private readonly IConfiguration _configuration;
-
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] List<int> anios)
         {
