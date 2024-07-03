@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { acumuladosMuestreo } from '../../../../interfaces/acumuladosMuestreo.interface';
+import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 
 @Injectable({
   providedIn: 'root',
@@ -166,6 +167,24 @@ export class ValidacionReglasService {
     return this.http.delete(
       environment.apiUrl + '/Resultados/DeleteByMuestreoId',
       options
+    );
+  }
+
+  getDistinctValuesFromColumn(
+    column: string,
+    filter: string
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        estatusId: estatusMuestreo.ValidadoPorReglas,
+        column: column,
+        filter: filter,
+      },
+    });
+    return this.http.get(
+      environment.apiUrl +
+        '/resultados/GetColumnValuesResultadosAcumuladosParametros',
+      { params }
     );
   }
 }

@@ -621,6 +621,37 @@ namespace WebAPI.Controllers.v1.Operacion
 
         }
 
+        [HttpGet("GetColumnValuesResultadosAcumuladosParametros")]
+        public IActionResult GetColumnValuesResultadosAcumuladosParametros(int estatusId, string column, string? filter = "", string? order = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+            var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            {
+                estatusId = estatusId,
+                Filter = filters,
+                OrderBy = orderBy
+            }).Result.Data;
+
+            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
+        }
+
         [HttpGet("ResultadosporMuestreo")]
         public async Task<IActionResult> GetResultadosporMuestreoAsync(int estatusId, int page, int pageSize, string? filter = "", string? order = "")
         {
