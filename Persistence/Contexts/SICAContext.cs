@@ -136,7 +136,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
 
-    public virtual DbSet<Sitio> Sitio { get; set; }    
+    public virtual DbSet<Sitio> Sitio { get; set; }   
 
     public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; }
 
@@ -164,7 +164,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }   
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }    
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -200,8 +200,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
-    
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -551,8 +551,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.PuestoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
-        });        
-
+        });
+        
         modelBuilder.Entity<Emergencia>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
@@ -1024,6 +1024,7 @@ public partial class SicaContext : DbContext
 
             entity.Property(e => e.Id).HasComment("Identificador  de Muestreo");
             entity.Property(e => e.AnioOperacion).HasComment("Campo que indica el año de operación");
+            entity.Property(e => e.AutorizacionCondicionantes).HasComment("Autorizacion cuando no cumple con los resultados de condicionantes, esta autorizacion se realiza en la pantalla de módulo de reglas donde se autorizara en dado caso para aplicar las reglas ");
             entity.Property(e => e.AutorizacionFechaEntrega).HasComment("Campo que indica si se autorizo ya que la fecha de entrega no se cumplio");
             entity.Property(e => e.AutorizacionIncompleto).HasComment("Campo que indica si fue autorizado el muestreo estando incompletos los resultados del muestreo");
             entity.Property(e => e.EstatusId).HasComment("Llave foránea que hace referencia al catálogo de Estatus, indicando el estatus del muestreo");

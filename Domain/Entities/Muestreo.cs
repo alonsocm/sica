@@ -117,6 +117,11 @@ public partial class Muestreo
     /// </summary>
     public int? NumeroEntrega { get; set; }
 
+    /// <summary>
+    /// Autorizacion cuando no cumple con los resultados de condicionantes, esta autorizacion se realiza en la pantalla de módulo de reglas donde se autorizara en dado caso para aplicar las reglas 
+    /// </summary>
+    public bool AutorizacionCondicionantes { get; set; }
+
     public virtual EstatusMuestreo Estatus { get; set; } = null!;
 
     public virtual EstatusMuestreo? EstatusOcdlNavigation { get; set; }
