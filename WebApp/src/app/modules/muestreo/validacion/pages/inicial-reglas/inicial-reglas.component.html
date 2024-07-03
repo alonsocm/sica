@@ -29,8 +29,8 @@
       <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
-      <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="onDownloadTxt()">
-        <i class="bi bi-file-earmark-text"></i> Descargar errores de carga
+      <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="onDownloadNoCumpleFechaEntrega()" title="Descarga los muestreos que no cumplieron con la fecha de entrega">
+        <i class="bi bi-file-earmark-text"></i> Descargar fecha de entrega
       </button>
       <button class="btn btn-secondary btn-sm" (click)="this.limpiarFiltros()">
         <i class="bi bi-funnel"></i>
@@ -177,7 +177,7 @@
           <td style="text-align:center">{{dato.numParametrosCargados}}</td>
           <td style="text-align:center">{{dato.muestreoCompletoPorResultados}}</td><!--validar-->
           <td style="text-align:center">{{dato.cumpleReglasCondic}}</td><!--validar-->
-          <td>{{dato.observaciones}}</td>
+          <td>{{dato.claveParametro}}</td>
           <td style="text-align:center">{{dato.cumpleFechaEntrega}}</td><!--validar-->
           <td style="text-align:center">{{(dato.cumpleTodosCriterios) ? "SI": "NO"}}</td><!--cumple con todos los criterios-->
           <td style="text-align:center">

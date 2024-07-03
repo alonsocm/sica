@@ -28,6 +28,11 @@ namespace Application.Models
         public string muestreoCompletoPorResultados { get; set; }
         public string cumpleReglasCond { get; set; }
         public string observaciones { get; set; }
+        public string cumpleFechaEntrega { get; set; }
+        public string cumpleTodosCriteriosAplicarReglas { get; set; }
+        public string autorizacionIncompleto { get; set; }
+        public string autorizacionFechaEntrega { get; set; }
+        public string correReglaValidacion { get; set; }
 
         public ResultadosValidarExcel()
         {
@@ -47,10 +52,11 @@ namespace Application.Models
             this.muestreoCompletoPorResultados = string.Empty;
             this.cumpleReglasCond = string.Empty;
             this.observaciones = string.Empty;
+            this.cumpleFechaEntrega = string.Empty;
+            this.cumpleTodosCriteriosAplicarReglas = string.Empty;
+            this.autorizacionIncompleto = string.Empty;
+            this.autorizacionFechaEntrega = string.Empty;
+            this.correReglaValidacion = string.Empty;
         }
     }
-
-    
-
-
 }

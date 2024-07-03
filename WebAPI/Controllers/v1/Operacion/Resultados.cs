@@ -1,10 +1,12 @@
 ﻿using Application.DTOs;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
+using Application.Features.Muestreos.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
+using Application.Features.Operacion.ValidacionEvidencias.Queries;
 using Application.Features.Resultados.Comands;
 using Application.Features.Resultados.Queries;
 using Application.Features.ResumenResultados.Queries;
@@ -12,9 +14,11 @@ using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
 using Application.Models;
 using Application.Wrappers;
+using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
+using System.Linq;
 using System.Reflection;
 using WebAPI.Shared;
 
@@ -552,7 +556,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { UserId = usuario, Column = column, Filters = filters }));
+            return Ok(await Mediator.Send(new Application.Features.Resultados.Queries.GetDistinctValuesFromColumn { UserId = usuario, Column = column, Filters = filters }));
         }
 
         [HttpGet("GetDistinctValuesParametro")]
@@ -565,7 +569,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro=parametro, Filter =  filters }));
+            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro = parametro, Filter = filters }));
         }
 
         [HttpGet("ValidarResultadosPorReglas")]
@@ -722,9 +726,13 @@ namespace WebAPI.Controllers.v1.Operacion
                     numParametrosCargados = dato.numParametrosCargados,
                     muestreoCompletoPorResultados = dato.muestreoCompletoPorResultados,
                     cumpleReglasCond = dato.cumpleReglasCondic,
-                    observaciones = dato.claveParametro
+                    observaciones = dato.claveParametro,
+                    cumpleFechaEntrega = dato.cumpleFechaEntrega,
+                    cumpleTodosCriteriosAplicarReglas = (dato.cumpleTodosCriterios) ? "SI" : "NO",
+                    autorizacionIncompleto = (dato.autorizacionIncompleto) ? "SI" : "NO",
+                    autorizacionFechaEntrega = (dato.autorizacionFechaEntrega) ? "SI" : "NO",
+                    correReglaValidacion = dato.correReglaValidacion
                 };
-
                 lstmuestreosExcel.Add(resultadosaValidar);
             }
 
@@ -880,5 +888,24 @@ namespace WebAPI.Controllers.v1.Operacion
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
+
+
+        [HttpPost("obtenerResultadosNoCumplenFechaEntrega")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> obtenerResultadosNoCumplenFechaEntrega(List<long> muestreosId)
+        {
+            //var parametros = new GetVwResultadosNoCumplenFechaEntregaQuery { muestreosId = muestreosId };
+
+            var parametros = Mediator.Send(new GetVwResultadosNoCumplenFechaEntregaQuery{muestreosId = muestreosId}).Result.Data;
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ParametrosNoCumplenFechaEntrega");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            ExcelService.ExportToExcel(parametros.Select(x => new { x.ClaveMuestreo, x.FechaEntrega, x.FechaMaxima, x.ClaveParametro }), fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+
+        }
+
     }
 }
