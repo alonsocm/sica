@@ -241,5 +241,9 @@ export class MuestreoService {
   actualizarMuestreos(muestreos: any): Observable<Object> {
     return this.http.put(environment.apiUrl + '/muestreos/ActualizarMuestreos', muestreos);
   }
+
+  obtenerResultadosNoCumplenFechaEntrega(muestreosId: Array<number> = []) {
+    return this.http.post(environment.apiUrl + '/Resultados/obtenerResultadosNoCumplenFechaEntrega', muestreosId, { responseType: 'blob' });
+  }  
   
 }

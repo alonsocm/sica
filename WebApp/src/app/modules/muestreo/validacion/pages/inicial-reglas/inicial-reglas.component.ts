@@ -331,7 +331,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       },
       {
         name: 'autorizacionRegla',
-        label: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI)',
+        label: 'AUTORIZACIÓN DE REGLAS CUANDO ESTE INCOMPLETO (SI/NO)',
         order: 20,
         selectAll: true,
         filtered: false,
@@ -346,7 +346,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       },
       {
         name: 'autorizacionRegla',
-        label: 'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA',
+        label: 'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA (SI/NO)',
         order: 21,
         selectAll: true,
         filtered: false,
@@ -425,14 +425,15 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       });
     }
     this.loading = true;
-
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
+    console.log(this.resultadosEnviados);
+    this.resultadosEnviados
+      .map((s) => {
+        s.correReglaValidacion = (s.correReglaValidacion) ? "SI" : "NO";
+      });
+
     this.validacionService
-      .exportExcelResultadosaValidar(
-        this.resultadosEnviados.length > 0
-          ? this.resultadosEnviados
-          : this.resultadosFiltradosn
-      )
+      .exportExcelResultadosaValidar(this.resultadosEnviados)
       .subscribe({
         next: (response: any) => {
           this.loading = true;
@@ -475,7 +476,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       let lstMuestreos = muestreosConResultados.map(
         (m) =>
           <Muestreo>{
-            estatusId: estatusMuestreo.SeleccionadoParaValidar,       
+            estatusId: estatusMuestreo.SeleccionadoParaValidar,
             autorizacionIncompleto: m.autorizacionIncompleto,
             autorizacionFechaEntrega: m.autorizacionFechaEntrega,
             muestreoId: m.muestreoId
@@ -509,6 +510,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         });
     }
   }
+
   limpiarFiltros() { }
 
   sort(column: string, type: string) {
@@ -754,9 +756,52 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     }
   }
 
-  onDownloadTxt() { }
+  onDownloadNoCumpleFechaEntrega(): void {
+    if (this.resultadosFiltradosn.length == 0) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No existe selección para la descarga de muestreos que no cumplen con la fecha de entrega',
+      });
 
-  validarCorreRegla(muestreo: acumuladosMuestreo): boolean { 
+    }
+    else {
+      let filtrdosNoCumplen = this.resultadosFiltradosn.filter(x => x.cumpleFechaEntrega == "SI");
+      if (filtrdosNoCumplen.length == this.resultadosFiltradosn.length) {
+        this.hacerScroll();
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.warning,
+          text: 'Los muestreos seleccionados si cumplen con la fecha de entrega, no es necesaria la descarga ',
+        });
+
+      }
+      else {
+        this.loading = true;
+        this.muestreoService
+          .obtenerResultadosNoCumplenFechaEntrega(this.resultadosFiltradosn.map((s) => s.muestreoId))
+          .subscribe({
+            next: (response: any) => {
+              this.loading = true;
+              FileService.download(response, 'ParametrosNoCumplenFechaEntrega.xlsx');
+              this.loading = false;
+            },
+            error: (response: any) => {
+              this.loading = false;
+              this.hacerScroll();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.danger,
+                text: 'No fue posible descargar la información',
+              });
+            },
+          });
+      }
+    }
+  }
+
+  validarCorreRegla(muestreo: acumuladosMuestreo): boolean {
 
     return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? false : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? true : false)
 

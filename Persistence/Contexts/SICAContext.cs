@@ -164,7 +164,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }    
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }   
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -192,14 +192,16 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwResultadosInicialReglas> VwResultadosInicialReglas { get; set; }
 
+    public virtual DbSet<VwResultadosNoCumplenFechaEntrega> VwResultadosNoCumplenFechaEntrega { get; set; }
+
     public virtual DbSet<VwSitios> VwSitios { get; set; }
 
     public virtual DbSet<VwValidacionEvidenciaRealizada> VwValidacionEvidenciaRealizada { get; set; }
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
-
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -549,8 +551,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.PuestoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
-        });
-     
+        });        
+
         modelBuilder.Entity<Emergencia>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
@@ -1696,7 +1698,7 @@ public partial class SicaContext : DbContext
                 .HasComment("Campo que indica la fecha del estatus final")
                 .HasColumnType("datetime");
             entity.Property(e => e.FechaObservacionSrenameca)
-                .HasComment("Campo q eu indica la fecha en la que se realizaron las observaciones por parte de SRENAMECA")
+                .HasComment("Campo que indica la fecha en la que se realizaron las observaciones por parte de SRENAMECA")
                 .HasColumnType("datetime")
                 .HasColumnName("FechaObservacionSRENAMECA");
             entity.Property(e => e.FechaReplicaLaboratorio)
@@ -1859,8 +1861,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
-        });        
-
+        });
+        
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador principal se la tabla SubGrupoAnalitico");
@@ -2068,8 +2070,8 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });        
-
+        });
+        
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasIndex(e => e.CuencaId, "IX_Usuario_CuencaId");
@@ -2476,6 +2478,21 @@ public partial class SicaContext : DbContext
                 .HasColumnName("Tipo cuerpo agua");
         });
 
+        modelBuilder.Entity<VwResultadosNoCumplenFechaEntrega>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_ResultadosNoCumplenFechaEntrega");
+
+            entity.Property(e => e.ClaveMuestreo).HasMaxLength(100);
+            entity.Property(e => e.ClaveParametro).HasMaxLength(30);
+            entity.Property(e => e.FechaEntrega).HasColumnType("datetime");
+            entity.Property(e => e.FechaMaxima)
+                .HasColumnType("date")
+                .HasColumnName("Fecha Maxima");
+            entity.Property(e => e.FechaRealVisita).HasColumnType("date");
+        });
+
         modelBuilder.Entity<VwSitios>(entity =>
         {
             entity
@@ -2620,8 +2637,8 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });       
-
+        });
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

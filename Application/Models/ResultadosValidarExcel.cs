@@ -1,56 +1,52 @@
-﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Models
+﻿namespace Application.Models
 {
     public class ResultadosValidarExcel
     {
-
-        public string claveSitio { get; set; }
-        public string claveMonitoreo { get; set; }
-        public string nombreSitio { get; set; }
-        public string fechaRealizacion { get; set; }
-        public string fechaProgramada { get; set; }
-        public int diferenciaDias { get; set; }
-        public string fechaEntregaTeorica { get; set; }
-        public string laboratorioRealizoMuestreo { get; set; }
-        public string cuerpoAgua { get; set; }
-        public string tipoCuerpoAgua { get; set; }
-        public string subTipoCuerpoAgua { get; set; }
-        public int numParametrosEsperados { get; set; }
-        public int numParametrosCargados { get; set; }
-        public string muestreoCompletoPorResultados { get; set; }
-        public string cumpleReglasCond { get; set; }
-        public string observaciones { get; set; }
+        public string ClaveSitio { get; set; }
+        public string ClaveMonitoreo { get; set; }
+        public string NombreSitio { get; set; }
+        public string FechaRealizacion { get; set; }
+        public string FechaProgramada { get; set; }
+        public int DiferenciaDias { get; set; }
+        public string FechaEntregaTeorica { get; set; }
+        public string LaboratorioRealizoMuestreo { get; set; }
+        public string CuerpoAgua { get; set; }
+        public string TipoCuerpoAgua { get; set; }
+        public string SubTipoCuerpoAgua { get; set; }
+        public int NumParametrosEsperados { get; set; }
+        public int NumParametrosCargados { get; set; }
+        public string MuestreoCompletoPorResultados { get; set; }
+        public string CumpleReglasCond { get; set; }
+        public string Observaciones { get; set; }
+        public string CumpleFechaEntrega { get; set; }
+        public string CumpleTodosCriteriosAplicarReglas { get; set; }
+        public string AutorizacionIncompleto { get; set; }
+        public string AutorizacionFechaEntrega { get; set; }
+        public string CorreReglaValidacion { get; set; }
 
         public ResultadosValidarExcel()
         {
-            this.claveSitio = string.Empty;
-            this.claveMonitoreo = string.Empty;
-            this.nombreSitio = string.Empty;
-            this.fechaRealizacion = string.Empty;
-            this.fechaProgramada = string.Empty;
-            this.diferenciaDias = 0;
-            this.fechaEntregaTeorica = string.Empty;
-            this.laboratorioRealizoMuestreo = string.Empty;
-            this.cuerpoAgua = string.Empty;
-            this.tipoCuerpoAgua = string.Empty;
-            this.subTipoCuerpoAgua = string.Empty;
-            this.numParametrosEsperados = 0;
-            this.numParametrosCargados = 0;
-            this.muestreoCompletoPorResultados = string.Empty;
-            this.cumpleReglasCond = string.Empty;
-            this.observaciones = string.Empty;
+            this.ClaveSitio = string.Empty;
+            this.ClaveMonitoreo = string.Empty;
+            this.NombreSitio = string.Empty;
+            this.FechaRealizacion = string.Empty;
+            this.FechaProgramada = string.Empty;
+            this.DiferenciaDias = 0;
+            this.FechaEntregaTeorica = string.Empty;
+            this.LaboratorioRealizoMuestreo = string.Empty;
+            this.CuerpoAgua = string.Empty;
+            this.TipoCuerpoAgua = string.Empty;
+            this.SubTipoCuerpoAgua = string.Empty;
+            this.NumParametrosEsperados = 0;
+            this.NumParametrosCargados = 0;
+            this.MuestreoCompletoPorResultados = string.Empty;
+            this.CumpleReglasCond = string.Empty;
+            this.Observaciones = string.Empty;
+            this.CumpleFechaEntrega = string.Empty;
+            this.CumpleTodosCriteriosAplicarReglas = string.Empty;
+            this.AutorizacionIncompleto = string.Empty;
+            this.AutorizacionFechaEntrega = string.Empty;
+            this.CorreReglaValidacion = string.Empty;
         }
     }
-
-    
-
-
 }

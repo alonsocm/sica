@@ -6,7 +6,6 @@ using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
 using Application.Features.Resultados.Comands;
-using Application.Features.Resultados.Queries;
 using Application.Features.ResumenResultados.Queries;
 using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
@@ -552,7 +551,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { UserId = usuario, Column = column, Filters = filters }));
+            return Ok(await Mediator.Send(new Application.Features.Resultados.Queries.GetDistinctValuesFromColumn { UserId = usuario, Column = column, Filters = filters }));
         }
 
         [HttpGet("GetDistinctValuesParametro")]
@@ -565,7 +564,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro=parametro, Filter =  filters }));
+            return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro = parametro, Filter = filters }));
         }
 
         [HttpGet("ValidarResultadosPorReglas")]
@@ -738,24 +737,28 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 ResultadosValidarExcel resultadosaValidar = new()
                 {
-                    claveSitio = dato.ClaveSitio,
-                    claveMonitoreo = dato.ClaveMonitoreo,
-                    nombreSitio = dato.NombreSitio,
-                    fechaRealizacion = dato.FechaRealizacion,
-                    fechaProgramada = dato.FechaProgramada,
-                    diferenciaDias = dato.DiferenciaDias,
-                    fechaEntregaTeorica = dato.FechaEntregaTeorica,
-                    laboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
-                    cuerpoAgua = dato.CuerpoAgua,
-                    tipoCuerpoAgua = dato.TipoCuerpoAgua,
-                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    numParametrosEsperados = dato.NumParametrosEsperados,
-                    numParametrosCargados = dato.NumParametrosCargados,
-                    muestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados,
-                    cumpleReglasCond = dato.CumpleReglasCondic,
-                    observaciones = dato.ClaveParametro
+                    ClaveSitio = dato.ClaveSitio,
+                    ClaveMonitoreo = dato.ClaveMonitoreo,
+                    NombreSitio = dato.NombreSitio,
+                    FechaRealizacion = dato.FechaRealizacion,
+                    FechaProgramada = dato.FechaProgramada,
+                    DiferenciaDias = dato.DiferenciaDias,
+                    FechaEntregaTeorica = dato.FechaEntregaTeorica,
+                    LaboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
+                    CuerpoAgua = dato.CuerpoAgua,
+                    TipoCuerpoAgua = dato.TipoCuerpoAgua,
+                    SubTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
+                    NumParametrosEsperados = dato.NumParametrosEsperados,
+                    NumParametrosCargados = dato.NumParametrosCargados,
+                    MuestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados,
+                    CumpleReglasCond = dato.CumpleReglasCondic,
+                    Observaciones = dato.ClaveParametro,
+                    CumpleFechaEntrega = dato.CumpleFechaEntrega,
+                    CumpleTodosCriteriosAplicarReglas = dato.CumpleTodosCriterios ? "SI" : "NO",
+                    AutorizacionIncompleto = dato.AutorizacionIncompleto ? "SI" : "NO",
+                    AutorizacionFechaEntrega = dato.AutorizacionFechaEntrega ? "SI" : "NO",
+                    CorreReglaValidacion = dato.CorreReglaValidacion
                 };
-
                 lstmuestreosExcel.Add(resultadosaValidar);
             }
 
@@ -891,5 +894,24 @@ namespace WebAPI.Controllers.v1.Operacion
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
+
+
+        [HttpPost("obtenerResultadosNoCumplenFechaEntrega")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> obtenerResultadosNoCumplenFechaEntrega(List<long> muestreosId)
+        {
+            //var parametros = new GetVwResultadosNoCumplenFechaEntregaQuery { muestreosId = muestreosId };
+
+            var parametros = Mediator.Send(new GetVwResultadosNoCumplenFechaEntregaQuery { muestreosId = muestreosId }).Result.Data;
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ParametrosNoCumplenFechaEntrega");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            ExcelService.ExportToExcel(parametros.Select(x => new { x.ClaveMuestreo, x.FechaEntrega, x.FechaMaxima, x.ClaveParametro }), fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
+
+        }
+
     }
 }
