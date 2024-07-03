@@ -778,16 +778,16 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 ResultadosValidadosExcel resultadosValidados = new()
                 {
-                    claveSitio = dato.ClaveSitio,
-                    claveMonitoreo = dato.ClaveMonitoreo,
-                    nombreSitio = dato.NombreSitio,
-                    fechaRealizacion = dato.FechaRealizacion,
-                    fechaProgramada = dato.FechaProgramada,
-                    laboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
-                    cuerpoAgua = dato.CuerpoAgua,
-                    tipoCuerpoAgua = dato.TipoCuerpoAgua,
-                    subTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    muestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados
+                    ClaveSitio = dato.ClaveSitio,
+                    ClaveMonitoreo = dato.ClaveMonitoreo,
+                    NombreSitio = dato.NombreSitio,
+                    FechaRealizacion = dato.FechaRealizacion,
+                    FechaProgramada = dato.FechaProgramada,
+                    LaboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
+                    CuerpoAgua = dato.CuerpoAgua,
+                    TipoCuerpoAgua = dato.TipoCuerpoAgua,
+                    SubTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
+                    MuestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados
                 };
 
                 lstmuestreosExcel.Add(resultadosValidados);

@@ -1,38 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Models
+﻿namespace Application.Models
 {
     public class ResultadosValidadosExcel
     {
-        public string claveSitio { get; set; }
-        public string claveMonitoreo { get; set; }
-        public string nombreSitio { get; set; }
-        public string fechaRealizacion { get; set; }
-        public string fechaProgramada { get; set; }                
-        public string laboratorioRealizoMuestreo { get; set; }
-        public string cuerpoAgua { get; set; }
-        public string tipoCuerpoAgua { get; set; }
-        public string subTipoCuerpoAgua { get; set; }       
-        public string muestreoCompletoPorResultados { get; set; }
+        public string ClaveSitio { get; set; }
+        public string ClaveMonitoreo { get; set; }
+        public string NombreSitio { get; set; }
+        public string FechaRealizacion { get; set; }
+        public string FechaProgramada { get; set; }
+        public string LaboratorioRealizoMuestreo { get; set; }
+        public string CuerpoAgua { get; set; }
+        public string TipoCuerpoAgua { get; set; }
+        public string SubTipoCuerpoAgua { get; set; }
+        public string MuestreoCompletoPorResultados { get; set; }
 
         public ResultadosValidadosExcel()
         {
-            this.claveSitio = string.Empty;
-            this.claveMonitoreo = string.Empty;
-            this.nombreSitio = string.Empty;
-            this.fechaRealizacion = string.Empty;
-            this.fechaProgramada = string.Empty;            
-            this.laboratorioRealizoMuestreo = string.Empty;
-            this.cuerpoAgua = string.Empty;
-            this.tipoCuerpoAgua = string.Empty;
-            this.subTipoCuerpoAgua = string.Empty;            
-            this.muestreoCompletoPorResultados = string.Empty;
+            ClaveSitio = string.Empty;
+            ClaveMonitoreo = string.Empty;
+            NombreSitio = string.Empty;
+            FechaRealizacion = string.Empty;
+            FechaProgramada = string.Empty;
+            LaboratorioRealizoMuestreo = string.Empty;
+            CuerpoAgua = string.Empty;
+            TipoCuerpoAgua = string.Empty;
+            SubTipoCuerpoAgua = string.Empty;
+            MuestreoCompletoPorResultados = string.Empty;
         }
     }
-  
 }
