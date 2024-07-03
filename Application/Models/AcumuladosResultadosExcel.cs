@@ -2,62 +2,60 @@
 {
     public class AcumuladosResultadosExcel
     {
-        public string claveUnica { get; set; }
-        public string claveMonitoreo { get; set; }
-        public string claveSitio { get; set; }
-        public string nombreSitio { get; set; }
-        public string fechaProgramada { get; set; }
-        public string fechaRealizacion { get; set; }
-        public string horaInicio { get; set; }
-        public string horaFin { get; set; }
-        public string tipoSitio { get; set; }
-        public string tipoCuerpoAgua { get; set; }
-        public string subTipoCuerpoAgua { get; set; }
-        public string laboratorio { get; set; }
-        public string laboratorioRealizoMuestreo { get; set; }
-        public string laboratorioSubrogado { get; set; }
-        public string grupoParametro { get; set; }
-        public string subGrupo { get; set; }
-        public string claveParametro { get; set; }
-        public string parametro { get; set; }
-        public string unidadMedida { get; set; }
-        public string resultado { get; set; }
-        public string nuevoResultadoReplica { get; set; }
-        public string programaAnual { get; set; }
-        public long idResultadoLaboratorio { get; set; }
-        public string fechaEntrega { get; set; }
-        public string replica { get; set; }
-        public string cambioResultado { get; set; }
+        public string ClaveUnica { get; set; }
+        public string ClaveMonitoreo { get; set; }
+        public string ClaveSitio { get; set; }
+        public string NombreSitio { get; set; }
+        public string FechaProgramada { get; set; }
+        public string FechaRealizacion { get; set; }
+        public string HoraInicio { get; set; }
+        public string HoraFin { get; set; }
+        public string TipoSitio { get; set; }
+        public string TipoCuerpoAgua { get; set; }
+        public string SubTipoCuerpoAgua { get; set; }
+        public string Laboratorio { get; set; }
+        public string LaboratorioRealizoMuestreo { get; set; }
+        public string LaboratorioSubrogado { get; set; }
+        public string GrupoParametro { get; set; }
+        public string SubGrupo { get; set; }
+        public string ClaveParametro { get; set; }
+        public string Parametro { get; set; }
+        public string UnidadMedida { get; set; }
+        public string Resultado { get; set; }
+        public string NuevoResultadoReplica { get; set; }
+        public string ProgramaAnual { get; set; }
+        public long IdResultadoLaboratorio { get; set; }
+        public string FechaEntrega { get; set; }
+        public string Replica { get; set; }
+        public string CambioResultado { get; set; }
         public AcumuladosResultadosExcel()
         {
-            this.claveUnica = string.Empty;
-            this.claveMonitoreo = string.Empty;
-            this.claveSitio = string.Empty;
-            this.nombreSitio = string.Empty;
-            this.fechaProgramada = string.Empty;
-            this.fechaRealizacion = string.Empty;
-            this.horaInicio = string.Empty;
-            this.horaFin = string.Empty;
-            this.tipoSitio = string.Empty;
-            this.tipoCuerpoAgua = string.Empty;
-            this.subTipoCuerpoAgua = string.Empty;
-            this.laboratorio = string.Empty;
-            this.laboratorioRealizoMuestreo = string.Empty;
-            this.laboratorioSubrogado = string.Empty;
-            this.grupoParametro = string.Empty;
-            this.subGrupo = string.Empty;
-            this.claveParametro = string.Empty;
-            this.parametro = string.Empty;
-            this.unidadMedida = string.Empty;
-            this.resultado = string.Empty;
-            this.nuevoResultadoReplica = string.Empty;
-            this.programaAnual = string.Empty;
-            this.idResultadoLaboratorio = 0;
-            this.fechaEntrega = string.Empty;
-            this.replica = string.Empty;
-            this.cambioResultado = string.Empty;
-
+            ClaveUnica = string.Empty;
+            ClaveMonitoreo = string.Empty;
+            ClaveSitio = string.Empty;
+            NombreSitio = string.Empty;
+            FechaProgramada = string.Empty;
+            FechaRealizacion = string.Empty;
+            HoraInicio = string.Empty;
+            HoraFin = string.Empty;
+            TipoSitio = string.Empty;
+            TipoCuerpoAgua = string.Empty;
+            SubTipoCuerpoAgua = string.Empty;
+            Laboratorio = string.Empty;
+            LaboratorioRealizoMuestreo = string.Empty;
+            LaboratorioSubrogado = string.Empty;
+            GrupoParametro = string.Empty;
+            SubGrupo = string.Empty;
+            ClaveParametro = string.Empty;
+            Parametro = string.Empty;
+            UnidadMedida = string.Empty;
+            Resultado = string.Empty;
+            NuevoResultadoReplica = string.Empty;
+            ProgramaAnual = string.Empty;
+            IdResultadoLaboratorio = 0;
+            FechaEntrega = string.Empty;
+            Replica = string.Empty;
+            CambioResultado = string.Empty;
         }
-
     }
 }
