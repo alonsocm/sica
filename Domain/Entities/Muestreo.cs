@@ -48,7 +48,7 @@ public partial class Muestreo
     /// <summary>
     /// Campo que indica el número de carga al que pertenece el muestreo al ser cargado desde ebaseca
     /// </summary>
-    public int? NumeroCarga { get; set; }
+    public string? NumeroCarga { get; set; }
 
     /// <summary>
     /// Llave foránea que hace referencia al catálogo de Estatus, indicando el estatus del muestreo

@@ -48,7 +48,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }    
+    public virtual DbSet<Directorio> Directorio { get; set; }   
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -136,7 +136,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
 
-    public virtual DbSet<Sitio> Sitio { get; set; }   
+    public virtual DbSet<Sitio> Sitio { get; set; }
 
     public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; }
 
@@ -164,7 +164,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }    
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -1056,7 +1056,9 @@ public partial class SicaContext : DbContext
                 .HasColumnName("FechaRevisionSECAIA");
             entity.Property(e => e.HoraFin).HasComment("Campo que describe la hora fin, proviene de ebseca");
             entity.Property(e => e.HoraInicio).HasComment("Campo que indica la hora de inicio proviene de ebaseca");
-            entity.Property(e => e.NumeroCarga).HasComment("Campo que indica el número de carga al que pertenece el muestreo al ser cargado desde ebaseca");
+            entity.Property(e => e.NumeroCarga)
+                .HasMaxLength(10)
+                .HasComment("Campo que indica el número de carga al que pertenece el muestreo al ser cargado desde ebaseca");
             entity.Property(e => e.NumeroEntrega).HasComment("Campo que indica el numero de entrega, este es consecutivo cada vez que se envie un bloque de muestreos a liberación despues de haber sido aplicado las reglas y haber tenido una validación final en \"OK\"");
             entity.Property(e => e.ProgramaMuestreoId).HasComment("Llave foránea que hace referencia a la tabla tabla de ProgramaMuestreo");
             entity.Property(e => e.TipoAprobacionId).HasComment("Llave foránea que hace relación al catálogo de TipoAprobacion");
@@ -2071,8 +2073,8 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });
-        
+        });        
+
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasIndex(e => e.CuencaId, "IX_Usuario_CuencaId");
@@ -2638,8 +2640,8 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });
-        
+        });        
+
         OnModelCreatingPartial(modelBuilder);
     }
 
