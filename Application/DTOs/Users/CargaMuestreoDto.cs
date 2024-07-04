@@ -32,8 +32,10 @@
         public string? AnioOperacion { get; set; }
         public string? IdResultado { get; set; }
         public string FechaEntrega { get; set; }
-        public string NoCarga { get; set; }
-        public int? NoEntrega { get; set; }
+        public string NoCarga { get; set; } 
+        public string? NoEntrega { get; set; }
         public int Linea { get; set; }
+
+       
     }
 }

@@ -27,16 +27,16 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
 
         public async Task<Response<ResultadoCargaMuestreo>> Handle(CargaMuestreosCommand request, CancellationToken cancellationToken)
         {
-            var numeroEntrega = Convert.ToInt32(request.Muestreos.Select(m => m.NoEntrega).Distinct().FirstOrDefault());
+            var numeroCarga = Convert.ToInt32(request.Muestreos.Select(m => m.NoCarga).Distinct().FirstOrDefault());
             var anio = Convert.ToInt32(request.Muestreos.Select(m => m.AnioOperacion).Distinct().FirstOrDefault());
-            var existeCargaPrevia = await ExisteNumeroEntrega(numeroEntrega, anio);
+            var existeCargaPrevia = await ExisteNumeroEntrega(numeroCarga, anio);
 
             var resultadoCarga = new ResultadoCargaMuestreo
             {
                 Correcto = false,
                 ExisteCarga = true,
                 Anio = anio,
-                NumeroEntrega = numeroEntrega,
+                NumeroCarga = numeroCarga,
             };
 
             if (!existeCargaPrevia)

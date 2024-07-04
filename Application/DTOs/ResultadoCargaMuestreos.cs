@@ -10,7 +10,7 @@ namespace Application.DTOs
     {
         public bool Correcto { get; set; }
         public bool ExisteCarga { get; set; }
-        public int NumeroEntrega { get; set; }
+        public int NumeroCarga { get; set; }
         public int Anio { get; set; }
     }
 }

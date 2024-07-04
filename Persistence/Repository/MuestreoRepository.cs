@@ -106,7 +106,7 @@ namespace Persistence.Repository
                                  HoraFin = TimeSpan.Parse(cm.HoraFinMuestreo),
                                  EstatusId = validado ? (int)Application.Enums.EstatusMuestreo.NoEnviado : (int)Application.Enums.EstatusMuestreo.Cargado,
                                  ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList),
-                                 NumeroCarga = Convert.ToInt32(cm.NoCarga),
+                                 NumeroCarga = cm.NoCarga,
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
                                  FechaCarga = DateTime.Now,
                                  TipoCargaId = tipocarga

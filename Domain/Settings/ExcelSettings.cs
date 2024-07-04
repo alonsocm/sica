@@ -4,7 +4,7 @@
     {
         public static List<KeyValuePair<string, string>> keyValues = new()
         {
-            new KeyValuePair<string, string>("No. Entrega","NoEntrega"),
+            new KeyValuePair<string, string>("No.Carga","NoCarga"),
             new KeyValuePair<string, string>("Selecciona","Id"),
             new KeyValuePair<string, string>("Muestreo","Muestreo"),
             new KeyValuePair<string, string>("Clave CONALAB","ClaveConalab"),
@@ -35,6 +35,8 @@
             new KeyValuePair<string, string>("AnioOperacion","AnioOperacion"),
             new KeyValuePair<string, string>("IdResultado","IdResultado"),
             new KeyValuePair<string, string>("FechaEntrega","FechaEntrega"),
+            new KeyValuePair<string, string>("NoEntrega","NoEntrega"),
+
         };
     }
 
