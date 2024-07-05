@@ -36,6 +36,7 @@ export interface Muestreo extends Row {
   autorizacionIncompleto: boolean;
   autorizacionFechaEntrega: boolean;
   correReglaValidacion: boolean;
+  autorizacionCondicionantes: boolean;
 }
 
 export interface Evidencia {

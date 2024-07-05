@@ -282,9 +282,24 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
+        name: 'autorizacionCondicionantes',
+        label: 'AUTORIZACIÓN CUANDO NO CUMPLE REGLAS CONDICIONANTES',
+        order: 17,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
         name: 'reglaValicdacion',
         label: 'SE CORRE REGLA DE VALIDACIÓN',
-        order: 17,
+        order: 18,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -299,7 +314,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'muestreoValidadoPor',
         label: 'MUESTREO VALIDADO POR',
-        order: 18,
+        order: 19,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -314,7 +329,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       {
         name: 'porcentajePago',
         label: '% DE PAGO',
-        order: 19,
+        order: 20,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -349,6 +364,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.resultadosMuestreo = response.data;
+          console.log(this.resultadosMuestreo);
            this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
 
@@ -705,6 +721,10 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
         },
       });
     }
+  }
+
+  validarCorreReglaAutorizaciones(muestreo: acumuladosMuestreo) {
+    return muestreo.correReglaValidacion = ((muestreo.cumpleReglasCondic == "SI" || muestreo.autorizacionCondicionantes) && (muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? true : false;
   }
 
 }

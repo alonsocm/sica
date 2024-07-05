@@ -801,9 +801,5 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     }
   }
 
-  validarCorreRegla(muestreo: acumuladosMuestreo): boolean {
-
-    return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? false : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? true : false)
-
-  }
+ 
 }

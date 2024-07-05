@@ -1,6 +1,7 @@
 import { ElementRef, Injectable, ViewChild, ViewChildren } from '@angular/core';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { Column } from 'src/app/interfaces/filter/column';
+import { acumuladosMuestreo } from '../../interfaces/acumuladosMuestreo.interface';
 import { Item } from '../../interfaces/filter/item';
 import {
   filtrosEspeciales,
@@ -376,8 +377,8 @@ export class BaseService {
         m.checked = esFiltroEspecial
           ? false
           : column.selectedData.includes(m.value)
-          ? true
-          : false;
+            ? true
+            : false;
       });
   }
 
@@ -463,8 +464,8 @@ export class BaseService {
       this.cadena =
         this.cadena.indexOf('%') != -1
           ? this.deleteFilter(
-              !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
-            )
+            !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
+          )
           : '';
     }
 
@@ -497,8 +498,8 @@ export class BaseService {
         this.cadena =
           this.cadena != ''
             ? this.cadena.concat(
-                '%' + columna.name + '_' + columna.selectedData
-              )
+              '%' + columna.name + '_' + columna.selectedData
+            )
             : columna.name.concat('_' + columna.selectedData);
       }
     } else {
@@ -650,5 +651,9 @@ export class BaseService {
 
   onLimpiarFiltrosClick() {
     window.location.reload();
+  }
+
+  validarCorreRegla(muestreo: acumuladosMuestreo): boolean {
+    return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? false : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? true : false)
   }
 }
