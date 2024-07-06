@@ -210,4 +210,16 @@
             new KeyValuePair<string, string>("FechaReprogramación", "FechaReprogramacion"),
         };
     }
+
+    public static class ExcelResumenValidacionReglasSettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("Clave Muestreo","ClaveMuestreo"),
+            new KeyValuePair<string, string>("Clave Parámetro","ClaveParametro"),
+            new KeyValuePair<string, string>("Validación final","ValidacionFinal"),
+        };
+
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
+    }
 }

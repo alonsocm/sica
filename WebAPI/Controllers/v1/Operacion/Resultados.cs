@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
+using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
@@ -12,6 +13,7 @@ using Application.Features.Validados.Queries;
 using Application.Models;
 using Application.Wrappers;
 using Domain.Settings;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
 using System.Reflection;
@@ -910,8 +912,35 @@ namespace WebAPI.Controllers.v1.Operacion
             ExcelService.ExportToExcel(parametros.Select(x => new { x.ClaveMuestreo, x.FechaEntrega, x.FechaMaxima, x.ClaveParametro }), fileInfo, true);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
-
         }
 
+        [HttpPost("CargaObservacionesResumenValidacionReglas")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> CargaObservacionesResumenValidacionReglas(IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = ExcelResumenValidacionReglasSettings.KeyValues;
+
+            var registros = ExcelService.Import<ResumenValidacionReglasExcel>(fileInfo, "ResumenValidacionReglas_Resulta");
+
+            if (!registros.Any())
+            {
+                throw new ValidationException("El archivo no contiene registros");
+            }
+
+            return Ok(await Mediator.Send(new CargaObservacionesResumenValidacionReglasCommand { Resultados = registros }));
+        }
     }
 }

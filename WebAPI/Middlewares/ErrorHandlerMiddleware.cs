@@ -1,4 +1,5 @@
 ﻿using Application.Wrappers;
+using FluentValidation;
 using System.Net;
 using System.Text.Json;
 
@@ -27,17 +28,19 @@ namespace WebAPI.Middlewares
                 switch (error)
                 {
                     case Application.Exceptions.ApiException e:
-                        //custom application error
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     case Application.Exceptions.ValidationException e:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         responseModel.Errors = e.Errors;
-                        //custom application error
                         break;
                     case KeyNotFoundException e:
                         response.StatusCode  = (int)HttpStatusCode.NotFound;
-                        //not found error
+                        responseModel.Message = e.Message;
+                        break;
+                    case ValidationException e:
+                        response.StatusCode  = (int)HttpStatusCode.BadRequest;
+                        responseModel.Message = e.Message;
                         break;
                     default:
                         response.StatusCode  = (int)HttpStatusCode.InternalServerError;
