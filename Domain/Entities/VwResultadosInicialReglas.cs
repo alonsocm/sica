@@ -52,4 +52,8 @@ public partial class VwResultadosInicialReglas
     public string? CumpleConLasReglasCondicionantes { get; set; }
 
     public int? NumFechasNoCumplidas { get; set; }
+
+    public int? PorcentajePago { get; set; }
+
+    public string UsuarioValido { get; set; } = null!;
 }
