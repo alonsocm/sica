@@ -363,8 +363,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.resultadosMuestreo = response.data;
-          console.log(this.resultadosMuestreo);
+          this.resultadosMuestreo = response.data;      
            this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
 
@@ -458,14 +457,16 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     else {
 
       ////Validacion para aplicar reglas debe de ser si en correr regla y haber sido validado por el area de supervisión
-      //let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.dato.correReglaValidacion == "NO");
-      //if (resultadosNoAplicaRegla.length > 0) {
-      //  return this.notificationService.updateNotification({
-      //    show: true,
-      //    type: NotificationType.warning,
-      //    text: 'Debes de seleccionar muestreos que se encuentre validados por el área de Supervisión de muestreo y ser aprobado para correr la regla',
-      //  });
-      //}
+      
+      let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
+      let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == "");
+      if (resultadosNoAplicaRegla.length > 0 || novalidadoMuestreo.length > 0) {
+        return this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.warning,
+          text: 'Debes de seleccionar muestreos que se encuentre validados por el área de Supervisión de muestreo y ser aprobado para correr la regla',
+        });
+      }
 
       this.resultadosEnviados = muestreosConResultados.map(
         (m) => { return m.muestreoId; });

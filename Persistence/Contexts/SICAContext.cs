@@ -48,7 +48,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }   
+    public virtual DbSet<Directorio> Directorio { get; set; }
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -200,8 +200,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
-
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -552,7 +552,7 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
         });
-        
+       
         modelBuilder.Entity<Emergencia>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
@@ -1864,8 +1864,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
-        });
-        
+        });        
+
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador principal se la tabla SubGrupoAnalitico");
@@ -2073,8 +2073,8 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });        
-
+        });
+       
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasIndex(e => e.CuencaId, "IX_Usuario_CuencaId");
@@ -2479,6 +2479,10 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.TipoCuerpoAgua)
                 .HasMaxLength(50)
                 .HasColumnName("Tipo cuerpo agua");
+            entity.Property(e => e.UsuarioValido)
+                .HasMaxLength(252)
+                .IsUnicode(false)
+                .HasColumnName("Usuario Valido");
         });
 
         modelBuilder.Entity<VwResultadosNoCumplenFechaEntrega>(entity =>
@@ -2640,8 +2644,8 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });        
-
+        });
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

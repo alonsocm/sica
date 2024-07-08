@@ -45,6 +45,9 @@
         public bool AutorizacionFechaEntrega { get; set; }
         public string CorreReglaValidacion { get; set; }
 
+        public string UsuarioValido { get; set; }
+        public string PorcentajePago { get; set; }
+
 
         public MuestreoDto()
         {
@@ -86,6 +89,8 @@
             NombreSitio = string.Empty;
             ClaveSitio = string.Empty;
             FechaRealizacion = string.Empty;
+            PorcentajePago = string.Empty;
+            UsuarioValido = string.Empty;
         }
     }
 }
