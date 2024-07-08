@@ -2,6 +2,7 @@
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
+using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
@@ -941,6 +942,19 @@ namespace WebAPI.Controllers.v1.Operacion
             }
 
             return Ok(await Mediator.Send(new CargaObservacionesResumenValidacionReglasCommand { Resultados = registros }));
+        }
+
+        [HttpPost("Liberar")]
+        public async Task<IActionResult> Liberar(List<long>? resultados, [FromQuery] string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new LiberarCommand { Muestreos = resultados, Filters = filters }));
         }
     }
 }
