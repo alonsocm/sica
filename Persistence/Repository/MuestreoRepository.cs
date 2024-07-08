@@ -335,8 +335,10 @@ namespace Persistence.Repository
                                        TipoSitioId = resultados.TipoSitioId,
                                        CumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI",
                                        AutorizacionIncompleto=resultados.AutorizacionIncompleto,
-                                       AutorizacionFechaEntrega=resultados.AutorizacionFechaEntrega
-                                       
+                                       AutorizacionFechaEntrega=resultados.AutorizacionFechaEntrega,
+                                       UsuarioValido = resultados.UsuarioValido,
+                                       PorcentajePago  = resultados.PorcentajePago.ToString() ?? string.Empty
+
                                    }).Where(x => x.EstatusId == estatusId).ToListAsync();
 
             foreach (var dato in muestreos)

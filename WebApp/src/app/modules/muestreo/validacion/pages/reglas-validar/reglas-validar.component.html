@@ -180,8 +180,8 @@
           <td style="text-align:center">
             {{(validarCorreReglaAutorizaciones(dato))? "SI":"NO"}}
           </td> <!--se corre regla de validacion-->
-          <td></td> <!--muestreo validado por-->
-          <td></td> <!--porcentaje de pago-->
+          <td>{{dato.usuarioValido}}</td> <!--muestreo validado por-->
+          <td>{{dato.porcentajePago}}</td> <!--porcentaje de pago-->
 
         </tr>
         <tr *ngIf="this.resultadosMuestreo.length==0">
