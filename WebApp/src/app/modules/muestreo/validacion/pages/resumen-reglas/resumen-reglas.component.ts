@@ -774,17 +774,54 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
   }
 
   enviarLiberacion() {
-    //return this.notificationService.updateNotification({
-    //  show: true,
-    //  type: NotificationType.warning,
-    //  text: 'Debe seleccionar resultados con "Validación final" en "ok"',
-    //});
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay registros seleccionados para liberar',
+      });
+    }
 
-    return this.notificationService.updateNotification({
-      show: true,
-      type: NotificationType.success,
-      text: 'Se realizó la liberación de monitoreos exitosamente',
-    });
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.validacionService
+      .liberar(registrosSeleccionados, this.cadena)
+      .subscribe({
+        next: (response: any) => {
+          this.consultarMonitoreos();
+          this.loading = false;
+          this.resetValues();
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Se realizó la liberación correctamente',
+          });
+        },
+        error: (response: any) => {
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Ocurrió un error al realizar la liberación',
+          });
+        },
+      });
+  }
+
+  private resetValues() {
+    this.registrosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
   }
 
   cargarValidacionFinal(event: Event) {

@@ -198,4 +198,11 @@ export class ValidacionReglasService {
       formData
     );
   }
+
+  liberar(muestreos: Array<number> = [], filter = '') {
+    return this.http.post(
+      environment.apiUrl + '/Resultados/Liberar?' + 'filter=' + filter,
+      muestreos
+    );
+  }
 }
