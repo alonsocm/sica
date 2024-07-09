@@ -22,7 +22,7 @@
       <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarIncidencia()">
         <i class="bi bi-send-exclamation"></i> Enviar a incidencias
       </button>
-      <input type="file" class="element-hidden" (change)="cargarValidacion($event)" accept=".xls, .xlsx"
+      <input type="file" class="element-hidden" (change)="cargarValidacionFinal($event)" accept=".xls, .xlsx"
         title="Seleccionar archivo" #inputExcelMonitoreos>
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
         title="Seleccionar archivo para actualizar las observaciones">

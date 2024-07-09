@@ -36,6 +36,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
   }
   registros: Array<acumuladosMuestreo> = []; //Contiene los registros consultados a la API*/
   registrosSeleccionados: Array<acumuladosMuestreo> = []; //Contiene los registros que se van seleccionando*/
+  archivo: any;
 
   ngOnInit(): void {
     this.definirColumnas();
@@ -786,7 +787,36 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     });
   }
 
-  cargarValidacion(event: Event) {}
+  cargarValidacionFinal(event: Event) {
+    this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    if (this.archivo) {
+      this.loading = true;
+
+      this.validacionService.cargarArchivo(this.archivo[0]).subscribe({
+        next: (response: any) => {
+          if (response.data) {
+            this.loading = false;
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.consultarMonitoreos();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Archivo procesado correctamente.',
+            });
+          }
+        },
+        error: (error: any) => {
+          this.loading = false;
+          this.resetInputFile(this.inputExcelMonitoreos);
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
+          });
+        },
+      });
+    }
+  }
 
   enviarIncidencia() {
     //return this.notificationService.updateNotification({

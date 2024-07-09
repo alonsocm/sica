@@ -187,4 +187,15 @@ export class ValidacionReglasService {
       { params }
     );
   }
+
+  cargarArchivo(archivo: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+
+    return this.http.post(
+      environment.apiUrl +
+        '/Resultados/CargaObservacionesResumenValidacionReglas',
+      formData
+    );
+  }
 }
