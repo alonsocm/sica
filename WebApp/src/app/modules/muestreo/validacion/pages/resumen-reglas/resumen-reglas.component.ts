@@ -549,7 +549,6 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.registros = response.data;
-
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.registros, this.registrosSeleccionados);
@@ -856,17 +855,48 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
   }
 
   enviarIncidencia() {
-    //return this.notificationService.updateNotification({
-    //  show: true,
-    //  type: NotificationType.warning,
-    //  text: 'Para ser enviados a incidencia, la "Validación final" de los resultados debe de ser diferente de "OK"',
-    //});
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay registros seleccionados para enviar a incidencias',
+      });
+    }
 
-    return this.notificationService.updateNotification({
-      show: true,
-      type: NotificationType.success,
-      text: 'Se realizó el envío a incidencias exitosamente',
-    });
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.validacionService
+      .enviarIncidencias(registrosSeleccionados, this.cadena)
+      .subscribe({
+        next: (response: any) => {
+          this.resetValues();
+          this.resetInputFile(this.inputExcelMonitoreos);
+          this.consultarMonitoreos();
+          this.hacerScroll();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Se enviaron los registros a incidencias',
+          });
+        },
+        error: (response: any) => {
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: response.error.Message,
+          });
+        },
+      });
   }
 
   ngOnDestroy() {

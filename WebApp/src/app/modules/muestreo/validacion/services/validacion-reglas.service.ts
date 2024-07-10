@@ -205,4 +205,14 @@ export class ValidacionReglasService {
       muestreos
     );
   }
+
+  enviarIncidencias(muestreos: Array<number> = [], filter = '') {
+    return this.http.post(
+      environment.apiUrl +
+        '/Resultados/EnviarIncidencias?' +
+        'filter=' +
+        filter,
+      muestreos
+    );
+  }
 }
