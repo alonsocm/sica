@@ -945,7 +945,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("Liberar")]
-        public async Task<IActionResult> Liberar(List<long>? resultados, [FromQuery] string? filter = "")
+        public async Task<IActionResult> Liberar(List<long>? muestreos, [FromQuery] string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -954,7 +954,20 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new LiberarCommand { Muestreos = resultados, Filters = filters }));
+            return Ok(await Mediator.Send(new LiberarCommand { Muestreos = muestreos, Filters = filters }));
+        }
+
+        [HttpPost("EnviarIncidencias")]
+        public async Task<IActionResult> EnviarIncidencias(List<long>? muestreos, [FromQuery] string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new EnviarIncidenciasCommand { Muestreos = muestreos, Filters = filters }));
         }
     }
 }

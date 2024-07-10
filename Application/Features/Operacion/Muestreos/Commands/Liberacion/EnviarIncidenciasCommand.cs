@@ -70,7 +70,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
                 }
                 else
                 {
-                    muestreo.EstatusId = (int)EstatusMuestreo.NoEnviado;
+                    muestreo.EstatusId = (int)EstatusMuestreo.EnviadoIncidencia;
                     _muestreoRepository.Actualizar(muestreo);
                 }
             }
