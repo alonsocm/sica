@@ -32,6 +32,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
                 if (registro != null)
                 {
                     registro.ValidacionFinal = resultado.ValidacionFinal.Trim().ToUpper() == "OK";
+                    registro.ObservacionFinal = resultado.ObservacionFinal;
                     _resultadosRepository.Actualizar(registro);
                 }
             }
