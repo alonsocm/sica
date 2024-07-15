@@ -31,6 +31,7 @@
         ValidadoPorReglas = 27,
         SeleccionadoParaValidar = 28,
         AcumulacionResultados = 29,
-        InicialReglas = 30
+        InicialReglas = 30,
+        EnviadoIncidencia = 31,
     }
 }

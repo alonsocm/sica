@@ -187,4 +187,32 @@ export class ValidacionReglasService {
       { params }
     );
   }
+
+  cargarArchivo(archivo: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+
+    return this.http.post(
+      environment.apiUrl +
+        '/Resultados/CargaObservacionesResumenValidacionReglas',
+      formData
+    );
+  }
+
+  liberar(muestreos: Array<number> = [], filter = '') {
+    return this.http.post(
+      environment.apiUrl + '/Resultados/Liberar?' + 'filter=' + filter,
+      muestreos
+    );
+  }
+
+  enviarIncidencias(muestreos: Array<number> = [], filter = '') {
+    return this.http.post(
+      environment.apiUrl +
+        '/Resultados/EnviarIncidencias?' +
+        'filter=' +
+        filter,
+      muestreos
+    );
+  }
 }

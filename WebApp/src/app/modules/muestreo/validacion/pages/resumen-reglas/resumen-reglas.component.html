@@ -17,12 +17,12 @@
     </div>
     <div class="float-right">
       <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarLiberacion()">
-        <i class="bi bi-send"></i> Enviar a liberación monitoreos
+        <i class="bi bi-send"></i> Enviar a liberación
       </button>
       <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarIncidencia()">
         <i class="bi bi-send-exclamation"></i> Enviar a incidencias
       </button>
-      <input type="file" class="element-hidden" (change)="cargarValidacion($event)" accept=".xls, .xlsx"
+      <input type="file" class="element-hidden" (change)="cargarValidacionFinal($event)" accept=".xls, .xlsx"
         title="Seleccionar archivo" #inputExcelMonitoreos>
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
         title="Seleccionar archivo para actualizar las observaciones">
@@ -191,8 +191,7 @@
           <td>SI</td>
           <td>{{dato.resultadoReglas}}</td>
           <td>{{dato.costoParametro}}</td>
-          <td>NO</td>
-          <!--{{dato.validacionFinal}}-->
+          <td>{{dato.validacionFinal}}</td>
           <td>{{dato.observacionFinal}}</td>
         </tr>
         <tr *ngIf="this.registros.length==0">

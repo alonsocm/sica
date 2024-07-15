@@ -2,7 +2,6 @@
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
-using Application.Models;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
@@ -94,7 +93,7 @@ namespace Persistence.Repository
         }
 
         public List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado, int tipocarga)
-        {           
+        {
             var cargaMuestreos = cargaMuestreoDtoList.Select(s => new { s.Muestreo, s.Claveconagua, s.TipoCuerpoAgua, s.FechaRealVisita, s.HoraInicioMuestreo, s.HoraFinMuestreo, s.AnioOperacion, s.NoCarga }).Distinct().ToList();
             var muestreos = (from cm in cargaMuestreos
                              join vcm in _dbContext.VwClaveMuestreo on cm.Muestreo equals vcm.ClaveMuestreo
@@ -144,7 +143,7 @@ namespace Persistence.Repository
         public List<ResultadoMuestreo> GenerarResultados(List<CargaMuestreoDto> cargaMuestreoDto)
         {
             var laboratorios = _dbContext.Laboratorios.ToList();
-            var parametros = _dbContext.ParametrosGrupo.ToList();           
+            var parametros = _dbContext.ParametrosGrupo.ToList();
 
             var resultados = (from cm in cargaMuestreoDto
                               join vcm in _dbContext.VwClaveMuestreo on cm.Muestreo equals vcm.ClaveMuestreo
@@ -152,9 +151,9 @@ namespace Persistence.Repository
                               join p in parametros on cm.ClaveParametro equals p.ClaveParametro
                               join l in laboratorios on cm.LaboratorioRealizoMuestreo equals l.Nomenclatura
                               join ls in laboratorios on cm.LaboratorioSubrogado equals ls.Nomenclatura into lsg
-                             
+
                               from laboratorioSubrogado in lsg.DefaultIfEmpty()
-                            
+
                               select new ResultadoMuestreo
                               {
                                   MuestreoId = ms.Id,
@@ -278,12 +277,11 @@ namespace Persistence.Repository
                                        CostoParametro = _dbContext.ParametrosCostos.Where(x => x.ParametroId.Equals(resMuestreo.ParametroId)).Select(y => y.Precio).FirstOrDefault(),
                                        NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        FechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       IdResultadoLaboratorio = (long)resMuestreo.IdResultadoLaboratorio,
-                                       ValidadoReglas = (m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas) ? true : false,
+                                       IdResultadoLaboratorio = resMuestreo.IdResultadoLaboratorio,
+                                       ValidadoReglas = m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas,
                                        ResultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty,
-                                       ResultadoMuestreoId = resMuestreo.Id
-
-
+                                       ResultadoMuestreoId = resMuestreo.Id,
+                                       ValidacionFinal = resMuestreo.ValidacionFinal == null ? string.Empty : resMuestreo.ValidacionFinal.Value ? "OK" : "NO",
                                    }).ToListAsync();
 
             var evidencias = await (from e in _dbContext.EvidenciaMuestreo
