@@ -1,11 +1,17 @@
-﻿using Application.DTOs.Users;
+﻿using Application.DTOs;
+using Application.DTOs.Users;
 using Application.Features.Authenticate.Commands.AuthenticateCommand;
 using Application.Features.Authenticate.Commands.RegisterCommand;
+using Application.Features.Muestreos.Queries;
+using Application.Features.Seguridad.Usuarios.Queries;
 using Application.Features.Sitios.Queries.GetSitioById;
 using Application.Features.Usuarios.Commands;
 using Application.Features.Usuarios.Queries;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Shared;
+using GetDistinctValuesFromColumn = Application.Features.Seguridad.Usuarios.Queries.GetDistinctValuesFromColumn;
 
 namespace WebAPI.Controllers.v1.Seguridad
 {
@@ -68,6 +74,43 @@ namespace WebAPI.Controllers.v1.Seguridad
             return Ok(await Mediator.Send(new GetAllUsersQuery()));
         }
 
+        //AllUsersPaginados se cambiara para traer los usuarios paginados
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] bool esLiberacion, int page, int pageSize, string? filter = "", string? order = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+            return Ok(await Mediator.Send(new GetMuestreosPaginados
+            {
+                EsLiberacion = esLiberacion,
+                Page = page,
+                PageSize = pageSize,
+                Filter = filters,
+                OrderBy = orderBy
+            }));
+        }
+
+
+
+
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
@@ -88,10 +131,22 @@ namespace WebAPI.Controllers.v1.Seguridad
 
         private async Task<bool>IsExist(string username)
         {
-           var usrs = await Mediator.Send(new GetAllUsersQuery());
-            usrs.Data.Find(x => x.UserName == username.ToLower());
+            var usrs = await Mediator.Send(new GetAllUsersQuery());            
+            return usrs.Data.Where(x => x.UserName == username.ToLower()).ToList().Any();
+        }
 
-            return usrs.Data.Any();
+
+        [HttpGet("GetDistinctValuesFromColumn")]
+        public async Task<IActionResult> Get(string column, string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
         }
     }
 }

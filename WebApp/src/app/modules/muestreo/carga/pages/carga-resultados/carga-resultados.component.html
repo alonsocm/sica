@@ -14,7 +14,7 @@
         (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
       </app-busqueda-columna>
     </div>
-    <div class="float-right">
+    <div class="float-right"> 
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
         title="Seleccionar archivo" #inputExcelMonitoreos>
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"

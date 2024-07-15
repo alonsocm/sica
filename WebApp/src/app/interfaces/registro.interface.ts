@@ -1,12 +1,13 @@
 export interface Usuario {
-  Id: number,
-  Activo: boolean,
-  UserName: string, 
-  Nombre: string,
-  ApellidoPaterno: string,
-  ApellidoMaterno: string,
-  Email: string,
-  PerfilId: number ,
-  CuencaId: number |null,
-  DireccionLocalId: number |null
-}
+  id: number,
+  activo: boolean,
+  userName: string, 
+  nombre: string,
+  apellidoPaterno: string,
+  apellidoMaterno: string,
+  email: string,
+  perfilId: number,
+  cuencaId: number |null,
+  direccionLocalId: number | null,
+  nombrePerfil: string|null
+}      

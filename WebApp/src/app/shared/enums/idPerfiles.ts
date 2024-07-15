@@ -1,0 +1,14 @@
+export enum idPerfiles {
+  ADMINISTRADOR = 1,
+  SECAIA1 = 2,
+  SECAIA2 = 3,
+  SECAIA3 = 4,
+  SECAIA4 = 5,
+  SRENAMECA1 = 6,
+  SRENAMECA2 = 7,
+  OC = 8,
+  DL = 9,
+  VISTA = 10,
+  EXTERNO = 11,
+  SUPERVISORDECAMPO = 12
+}
