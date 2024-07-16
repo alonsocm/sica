@@ -275,7 +275,7 @@ namespace Persistence.Repository
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        //costoParametro = costo.Precio,
                                        CostoParametro = _dbContext.ParametrosCostos.Where(x => x.ParametroId.Equals(resMuestreo.ParametroId)).Select(y => y.Precio).FirstOrDefault(),
-                                       NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
+                                       NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        FechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        IdResultadoLaboratorio = resMuestreo.IdResultadoLaboratorio,
                                        ValidadoReglas = m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas,
