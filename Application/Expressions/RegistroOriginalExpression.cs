@@ -73,7 +73,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega == value,
+                "numerocarga" => muestreo => muestreo.NumeroCarga == value,
                 "clavesitiooriginal" => muestreo => muestreo.ClaveSitioOriginal == value,
                 "clavesitio" => muestreo => muestreo.ClaveSitio == value,
                 "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo == value,
@@ -89,7 +89,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => value.Contains(muestreo.NumeroEntrega),
+                "numerocarga" => muestreo => value.Contains(muestreo.NumeroCarga),
                 "clavesitiooriginal" => muestreo => value.Contains(muestreo.ClaveSitioOriginal),
                 "clavesitio" => muestreo => value.Contains(muestreo.ClaveSitio),
                 "clavemonitoreo" => muestreo => value.Contains(muestreo.ClaveMonitoreo),
@@ -105,7 +105,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega.Contains(value),
+                "numerocarga" => muestreo => muestreo.NumeroCarga.Contains(value),
                 "clavesitiooriginal" => muestreo => muestreo.ClaveSitioOriginal.Contains(value),
                 "clavesitio" => muestreo => muestreo.ClaveSitio.Contains(value),
                 "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo.Contains(value),
@@ -121,7 +121,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => !muestreo.NumeroEntrega.Contains(value),
+                "numerocarga" => muestreo => !muestreo.NumeroCarga.Contains(value),
                 "clavesitiooriginal" => muestreo => !muestreo.ClaveSitioOriginal.Contains(value),
                 "clavesitio" => muestreo => !muestreo.ClaveSitio.Contains(value),
                 "clavemonitoreo" => muestreo => !muestreo.ClaveMonitoreo.Contains(value),
@@ -137,7 +137,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega != value,
+                "numeroentrega" => muestreo => muestreo.NumeroCarga != value,
                 "clavesitiooriginal" => muestreo => muestreo.ClaveSitioOriginal != value,
                 "clavesitio" => muestreo => muestreo.ClaveSitio != value,
                 "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo != value,
@@ -153,7 +153,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega.StartsWith(value),
+                "numerocarga" => muestreo => muestreo.NumeroCarga.StartsWith(value),
                 "clavesitiooriginal" => muestreo => muestreo.ClaveSitioOriginal.StartsWith(value),
                 "clavesitio" => muestreo => muestreo.ClaveSitio.StartsWith(value),
                 "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo.StartsWith(value),
@@ -169,7 +169,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => !muestreo.NumeroEntrega.StartsWith(value),
+                "numerocarga" => muestreo => !muestreo.NumeroCarga.StartsWith(value),
                 "clavesitiooriginal" => muestreo => !muestreo.ClaveSitioOriginal.StartsWith(value),
                 "clavesitio" => muestreo => !muestreo.ClaveSitio.StartsWith(value),
                 "clavemonitoreo" => muestreo => !muestreo.ClaveMonitoreo.StartsWith(value),
@@ -185,7 +185,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega.EndsWith(value),
+                "numerocarga" => muestreo => muestreo.NumeroCarga.EndsWith(value),
                 "clavesitiooriginal" => muestreo => muestreo.ClaveSitioOriginal.EndsWith(value),
                 "clavesitio" => muestreo => muestreo.ClaveSitio.EndsWith(value),
                 "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo.EndsWith(value),
@@ -201,7 +201,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => !muestreo.NumeroEntrega.EndsWith(value),
+                "numerocarga" => muestreo => !muestreo.NumeroCarga.EndsWith(value),
                 "clavesitiooriginal" => muestreo => !muestreo.ClaveSitioOriginal.EndsWith(value),
                 "clavesitio" => muestreo => !muestreo.ClaveSitio.EndsWith(value),
                 "clavemonitoreo" => muestreo => !muestreo.ClaveMonitoreo.EndsWith(value),
@@ -220,7 +220,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) > value,
+                "numerocarga" => muestreo => Convert.ToInt64(muestreo.NumeroCarga) > value,
                 _ => muestreo => true
             };
         }
@@ -228,7 +228,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) >= value,
+                "numerocarga" => muestreo => Convert.ToInt64(muestreo.NumeroCarga) >= value,
                 _ => muestreo => true
             };
         }
@@ -236,7 +236,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) < value,
+                "numerocarga" => muestreo => Convert.ToInt64(muestreo.NumeroCarga) < value,
                 _ => muestreo => true
             };
         }
@@ -244,7 +244,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => Convert.ToInt64(muestreo.NumeroEntrega) <= value,
+                "numerocarga" => muestreo => Convert.ToInt64(muestreo.NumeroCarga) <= value,
                 _ => muestreo => true
             };
         }
@@ -290,7 +290,7 @@ namespace Application.Expressions
         {
             return column.ToLower() switch
             {
-                "numeroentrega" => muestreo => muestreo.NumeroEntrega,
+                "numerocarga" => muestreo => muestreo.NumeroCarga,
                 "clavesitio" => muestreo => muestreo.ClaveSitio,
                 "clavemonitoreo" => muestreo => muestreo.ClaveMonitoreo,
                 "tipositio" => muestreo => muestreo.TipoSitio,

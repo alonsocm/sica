@@ -16,6 +16,7 @@ export interface Muestreo extends Row {
   fechaRealizacion: string;
   fechaLimiteRevision: string;
   numeroEntrega: string;
+  numeroCarga: string;
   estatus: string;
   tipoCargaResultados: string;
   isChecked: boolean;

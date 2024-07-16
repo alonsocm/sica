@@ -326,8 +326,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.muestreos = response.data;
-          console.log(this.muestreos);
+          this.muestreos = response.data;        
           this.page = response.totalRecords !== this.totalItems ? 1 : page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
@@ -427,7 +426,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     if (selec.length > 0) {
       for (var i = 0; i < selec.length; i++) {
         let campodes = {
-          noEntregaOCDL: selec[i].numeroEntrega,
+          noEntregaOCDL: selec[i].numeroCarga,
           claveSitioOriginal: selec[i].claveSitioOriginal,
           claveSitio: selec[i].claveSitio,
           claveMonitoreo: selec[i].claveMonitoreo,

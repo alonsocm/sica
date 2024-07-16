@@ -394,7 +394,7 @@ namespace Shared.Utilities.Services
             {
                 worksheet.Cells[fila, 1].Value = registro.Estatus;
                 worksheet.Cells[fila, 2].Value = registro.Anio;
-                worksheet.Cells[fila, 3].Value = registro.NumeroEntrega;
+                worksheet.Cells[fila, 3].Value = registro.NumeroCarga;
                 worksheet.Cells[fila, 4].Value = "NO";
                 worksheet.Cells[fila, 5].Value = registro.ClaveSitioOriginal;
                 worksheet.Cells[fila, 6].Value = registro.ClaveSitio;

@@ -33,7 +33,7 @@ namespace Persistence.Repository
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
                                        FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        FechaLimiteRevision = m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
+                                       NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        Estatus = m.Estatus.Descripcion,
                                        HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
                                        HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
@@ -282,6 +282,7 @@ namespace Persistence.Repository
                                        ResultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty,
                                        ResultadoMuestreoId = resMuestreo.Id,
                                        ValidacionFinal = resMuestreo.ValidacionFinal == null ? string.Empty : resMuestreo.ValidacionFinal.Value ? "OK" : "NO",
+                                       ObservacionFinal = resMuestreo.ObservacionFinal ?? string.Empty
                                    }).ToListAsync();
 
             var evidencias = await (from e in _dbContext.EvidenciaMuestreo
