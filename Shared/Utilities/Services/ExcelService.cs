@@ -198,7 +198,7 @@ namespace Shared.Utilities.Services
                 worksheet.Cells[fila, 1].Value = registro.Estatus;
                 worksheet.Cells[fila, 2].Value = "NO";
                 worksheet.Cells[fila, 3].Value = registro.Evidencias.Count > 1 ? "SI" : "NO";
-                worksheet.Cells[fila, 4].Value = registro.NumeroEntrega;
+                worksheet.Cells[fila, 4].Value = registro.NumeroCarga + '-' + registro.ProgramaAnual;
                 worksheet.Cells[fila, 5].Value = registro.ClaveSitio;
                 worksheet.Cells[fila, 6].Value = "CLAVE 5K";
                 worksheet.Cells[fila, 7].Value = registro.ClaveMonitoreo;

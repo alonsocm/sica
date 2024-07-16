@@ -327,7 +327,7 @@ namespace Persistence.Repository
                                        MuestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
                                        CumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
                                        AnioOperacion = resultados.AnioOperacion ?? 0,
-                                       NumeroEntrega = resultados.NumeroEntrega.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
+                                       NumeroCarga = resultados.NumeroCarga.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,
                                        EstatusId = resultados.EstatusId,
                                        TipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
