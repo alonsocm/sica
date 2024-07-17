@@ -28,5 +28,13 @@ namespace Persistence.Repository
 
             return parametros;
         }
+
+        public IEnumerable<GrupoParametroDTO> GetGruposParametros()
+        {
+            var grupos = from p in _dbContext.GrupoParametro
+                         select new GrupoParametroDTO { Id = p.Id, Descripcion = p.Descripcion };
+
+            return grupos;
+        }
     }
 }

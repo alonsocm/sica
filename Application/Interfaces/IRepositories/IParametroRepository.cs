@@ -6,5 +6,6 @@ namespace Application.Interfaces.IRepositories
     public interface IParametroRepository : IRepository<ParametrosGrupo>
     {
         public IEnumerable<ParametroDTO> GetParametros();
+        public IEnumerable<GrupoParametroDTO> GetGruposParametros();
     }
 }

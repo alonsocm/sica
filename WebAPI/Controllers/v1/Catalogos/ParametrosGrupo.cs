@@ -1,4 +1,5 @@
-﻿using Application.Features.Catalogos.ParametrosGrupo.Commands;
+﻿using Application.Features.Catalogos.GrupoParametro.Queries;
+using Application.Features.Catalogos.ParametrosGrupo.Commands;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,5 +49,12 @@ namespace WebAPI.Controllers.v1.Catalogos
         {
             return Ok(await Mediator.Send(new DeleteParametro { ParametroId = parametroId }));
         }
+
+        [HttpGet("GetGruposParametros")]
+        public async Task<IActionResult> GetGruposParametros()
+        {
+            return Ok(await Mediator.Send(new GetGrupoParametro()));
+        }
+
     }
 }
