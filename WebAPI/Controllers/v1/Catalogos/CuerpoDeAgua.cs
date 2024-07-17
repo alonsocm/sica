@@ -10,7 +10,7 @@ namespace WebAPI.Controllers.v1.Catalogos
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await Mediator.Send(new GetTipoCuerpoAguaQuery()));
+            return Ok(await Mediator.Send(new GetTipoCuerpoAguaQuery1()));
         }
 
         [HttpGet("TipoHomologado")]

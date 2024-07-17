@@ -46,7 +46,7 @@ namespace Application.Mappings
             CreateMap<SupervisionMuestreo, SupervisionMuestreoDto>();
             CreateMap<Laboratorios, LaboratoriosDto>();
             CreateMap<EvidenciaSupervisionMuestreo, EvidenciaSupervisionDto>();
-            CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>();
+            CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>().ForMember(x => x.TipoHomologadoDescripcion,o =>  o.MapFrom(src => src.TipoHomologado.Descripcion));
             CreateMap<VwValidacionEviencias, vwValidacionEvienciasDto>();
 
             CreateMap<VwValidacionEvidenciaRealizada, EventualidadesMuestreoAprobados>();
