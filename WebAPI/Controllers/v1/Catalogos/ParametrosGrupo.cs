@@ -1,6 +1,7 @@
 ﻿using Application.Features.Catalogos.GrupoParametro.Queries;
 using Application.Features.Catalogos.ParametrosGrupo.Commands;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
+using Application.Features.Catalogos.UnidadMedida.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers.v1.Catalogos
@@ -56,5 +57,16 @@ namespace WebAPI.Controllers.v1.Catalogos
             return Ok(await Mediator.Send(new GetGrupoParametro()));
         }
 
+        [HttpGet("GetUnidadesMedida")]
+        public async Task<IActionResult> GetUnidadesMedida()
+        {
+            return Ok(await Mediator.Send(new GetUnidadesMedida()));
+        }
+
+        [HttpGet("GetSubGrupoAnalitico")]
+        public async Task<IActionResult> GetSubGrupoAnalitico()
+        {
+            return Ok(await Mediator.Send(new GetSubGrupoAnalitico()));
+        }
     }
 }

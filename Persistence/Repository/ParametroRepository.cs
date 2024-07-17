@@ -36,5 +36,21 @@ namespace Persistence.Repository
 
             return grupos;
         }
+
+        public IEnumerable<UnidadMedidaDTO> GetUnidadesMedida()
+        {
+            var unidadesMedida = from p in _dbContext.UnidadMedida
+                                 select new UnidadMedidaDTO { Id = (int)p.Id, Descripcion = p.Descripcion };
+
+            return unidadesMedida;
+        }
+
+        public IEnumerable<SubGrupoAnaliticoDTO> GetSubGrupoAnalitico()
+        {
+            var subGrupos = from p in _dbContext.SubgrupoAnalitico
+                            select new SubGrupoAnaliticoDTO { Id = (int)p.Id, Descripcion = p.Descripcion };
+
+            return subGrupos;
+        }
     }
 }

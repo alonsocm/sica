@@ -7,5 +7,7 @@ namespace Application.Interfaces.IRepositories
     {
         public IEnumerable<ParametroDTO> GetParametros();
         public IEnumerable<GrupoParametroDTO> GetGruposParametros();
+        public IEnumerable<SubGrupoAnaliticoDTO> GetSubGrupoAnalitico();
+        public IEnumerable<UnidadMedidaDTO> GetUnidadesMedida();
     }
 }
