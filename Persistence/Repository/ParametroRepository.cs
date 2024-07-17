@@ -1,11 +1,7 @@
-﻿using Application.Interfaces.IRepositories;
+﻿using Application.DTOs.Catalogos;
+using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Repository
 {
@@ -13,6 +9,24 @@ namespace Persistence.Repository
     {
         public ParametroRepository(SicaContext dbContext) : base(dbContext)
         {
+        }
+
+        public IEnumerable<ParametroDTO> GetParametros()
+        {
+            var parametros = from p in _dbContext.ParametrosGrupo
+                             select new ParametroDTO
+                             {
+                                 Id = (int)p.Id,
+                                 Clave = p.ClaveParametro,
+                                 Descripcion = p.Descripcion,
+                                 UnidadMedida = p.IdUnidadMedidaNavigation == null ? string.Empty : p.IdUnidadMedidaNavigation.Descripcion,
+                                 Grupo = p.GrupoParametro == null ? string.Empty : p.GrupoParametro.Descripcion,
+                                 SubGrupo = p.IdSubgrupoNavigation == null ? string.Empty : p.IdSubgrupoNavigation.Descripcion,
+                                 ParametroPadre = p.ParametroPadre == null ? string.Empty : p.ParametroPadre.ClaveParametro,
+                                 Orden = (int)p.Orden
+                             };
+
+            return parametros;
         }
     }
 }
