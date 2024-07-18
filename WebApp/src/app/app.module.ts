@@ -64,6 +64,7 @@ import { HistorialComponent } from './shared/filtro/historial/historial.componen
 import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.component';
 import { ColumnResizeDirective } from './column-resize.directive';
 import { NotificacionEmergenteComponent } from './shared/notificacion-emergente/notificacion-emergente.component';
+import { ParametrosComponent } from './modules/catalogos/parametros/pages/parametros.component';
 import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.component';
 
 
@@ -121,6 +122,8 @@ import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.compone
     HistorialComponent,
     AutofiltroComponent,
     ColumnResizeDirective,
+    NotificacionEmergenteComponent,
+    ParametrosComponent,
     NotificacionEmergenteComponent,  
     SitiosComponent,
   ],

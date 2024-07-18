@@ -5,11 +5,13 @@ using MediatR;
 
 namespace Application.Features.Catalogos.ParametrosGrupo.Queries
 {
-    public class ParametrosQuery : IRequest<Response<IEnumerable<ParametroDTO>>>
+    public class ParametrosQuery : IRequest<PagedResponse<IEnumerable<ParametroDTO>>>
     {
+        public int Page { get; set; }
+        public int PageSize { get; set; }
     }
 
-    public class ParametrosQueryHandler : IRequestHandler<ParametrosQuery, Response<IEnumerable<ParametroDTO>>>
+    public class ParametrosQueryHandler : IRequestHandler<ParametrosQuery, PagedResponse<IEnumerable<ParametroDTO>>>
     {
         private readonly IParametroRepository _repository;
 
@@ -18,10 +20,11 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Queries
             _repository = repository;
         }
 
-        public async Task<Response<IEnumerable<ParametroDTO>>> Handle(ParametrosQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<ParametroDTO>>> Handle(ParametrosQuery request, CancellationToken cancellationToken)
         {
-            var parametros = _repository.GetParametros();
-            return new Response<IEnumerable<ParametroDTO>>(parametros);
+            var data = _repository.GetParametros();
+
+            return PagedResponse<ParametroDTO>.CreatePagedReponse(data, request.Page, request.PageSize);
         }
     }
 }
