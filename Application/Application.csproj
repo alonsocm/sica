@@ -27,6 +27,8 @@
 
   <ItemGroup>
     <Folder Include="Features\Catalogos\Perfiles\Commands\" />
+    <Folder Include="Features\Catalogos\TiposCuerpoAgua\Commands\DeleteTipoCuerpoAguaCommand\" />
+    <Folder Include="Features\Catalogos\TiposCuerpoAgua\Commands\UpdateTipoCuerpoAguaCommand\" />
     <Folder Include="Features\Operacion\MuestreosEmergencias\Commands\" />
     <Folder Include="Features\Seguridad\Usuarios\Commands\AuthenticateUsuario\" />
   </ItemGroup>

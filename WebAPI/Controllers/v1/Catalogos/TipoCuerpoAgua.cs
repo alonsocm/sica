@@ -1,7 +1,8 @@
 ﻿using Application.Features.Catalogos.CuerpoDeAgua.Queries;
-using Application.Features.Catalogos.TipoCuerpoDeAgua.Queries;
-using Application.Features.Catalogos.TiposCuerpoAgua.Commands.UpdateTipoCuerpoAguaCommand;
+using Application.Features.Catalogos.TiposCuerpoAgua.Queries.AllTiposCuerpoAgua;
+using Application.Features.Catalogos.TiposCuerpoAgua.Queries.IdTiposCuerpoAgua;
 using Application.Features.Sitios.Commands.UpdateSitioCommand;
+using Application.Features.Sitios.Queries.GetSitioById;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPI.Controllers.v1.Catalogos
 {
     [ApiVersion("1.0")]
-    [ApiController]
     public class TipoCuerpoAgua : BaseApiController
     {
         [HttpGet]
@@ -17,16 +17,10 @@ namespace WebAPI.Controllers.v1.Catalogos
         {
             return Ok(await Mediator.Send(new GetTipoCuerpoAguaQuery()));
         }
-
-
-
-        [HttpPut]
-        public async Task<ActionResult> Put(int id, UpdateTipoCuerpoAguaCommand command)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(long id)
         {
-            if (id != command.Id)
-                return BadRequest();
-
-            return Ok(await Mediator.Send(command));
+            return Ok(await Mediator.Send(new GetTipoCuerpoAguaQueryId { Id = id })); ;
         }
     }
 }
