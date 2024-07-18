@@ -42,7 +42,7 @@ import { MapMuestreoComponent } from './modules/muestreo/calculo/map-muestreo/ma
 import { RutaTrackComponent } from './modules/muestreo/calculo/ruta-track/ruta-track.component';
 import { ValidacionEvidenciasComponent } from './modules/muestreo/validacion-evidencias/pages/validacion-evidencias.component';
 import { AdministracionMuestreoComponent } from './modules/muestreo/administracion/pages/administracion-muestreo/administracion-muestreo.component';
-import { ParametrosComponent } from './modules/catalogos/parametros/parametros.component';
+import { ParametrosComponent } from './modules/catalogos/parametros/pages/parametros.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
