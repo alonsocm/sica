@@ -1,227 +1,282 @@
 <router-outlet name="menu"></router-outlet>
-<div class="container">
-  <h3>Administración de Usuarios</h3>
+<div *ngIf="loading">
+  <app-loading></app-loading>
+</div>
+<div class="container-fluid">
+  <h1>Administración de Usuarios</h1>
   <hr class="red" />
-  <div>
+  <div class="message-container">
+    <app-notification></app-notification>
+  </div>
 
+  <app-historial></app-historial>
 
-    <div class="form-group row">
-      <label for="Nombre" class="col-m-2 col-form-label">Nombre:</label>
-      <div class="col-lg-3">
-        <ng-autocomplete [data]="Usuarios"
-                         [searchKeyword]="keyword"
-                         (inputChanged)='onChangeSearch($event)'
-                         (selected)='selectEvent($event)'
-                         [itemTemplate]="itemTemplate"
-                         placeholder="Ingresar nombre">
-        </ng-autocomplete>
-      </div>
-      <label for="Perfil" class="col-m-2 col-form-label">Perfil:</label>
-      <div class="col-lg-3">
-        <ng-autocomplete [data]="perfiles"
-                         [searchKeyword]="keywordP"
-                         (inputChanged)='onChangeSearch1($event)'
-                         (selected)='selectEvent1($event)'
-                        [itemTemplate]="perfilTemplate"
-                         placeholder="Ingresar Perfil">
-        </ng-autocomplete>
-      </div>
-
-      <ng-template #itemTemplate let-item>
-        <a [innerHTML]="item.nombre"> <input type="checkbox" />   </a>
-      </ng-template>   
-
-      <ng-template #perfilTemplate let-item>
-        <a [innerHTML]="item.nombre"></a>
-      </ng-template>
-
-      <!--<ng-template #notFoundTemplate let-notFound>
-    <div [innerHTML]="notFound"></div>
-  </ng-template>-->
-    </div>
-    <br />
-
-
-
-    <br />
-    <!--ALERTAS  DE LAS ACCIONES AGREGAR, EDITAR,CAMBIO DE ESTADO-->
-    <div class="alert alert-success" role="alert" id="add-success">
-      <strong>¡Felicidades!</strong>
-      Usuario registrado exitosamente
-    </div>
-    <div class="alert alert-success" role="alert" id="update-success">
-      <strong>¡Felicidades!</strong>
-      Usuario actualizado exitosmente
-    </div>
-    <div class="alert alert-success" role="alert" id="change-success">
-      <strong>¡Felicidades!</strong>
-      Se a cambiado el estatus del usuario
-    </div>
-    <div class="alert alert-danger" role="alert" id="error-danger">
-      <strong>¡Atención!</strong>
-      El username ya se encuentra registrado
-    </div>
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary btn-xs pull-right" data-toggle="modal" title="Agregar" data-target="#modalregistro" (click)="RegistrarUsuario()">
+  <div class="clearfix">
+    <button type="button" class="btn btn-primary pull-right" data-toggle="modal" title="Agregar" data-target="#modalregistro" (click)="RegistrarUsuario()">
       <i class="bi bi-person-plus-fill pull-right" data-toggle="modal" data-target="#modalregistro"></i>
     </button>
-    <table id="tablaUsuarios" class="table table-striped table-bordered dataTable" style="padding-top:15px;">
-      <thead>
+  </div>
+
+  <div class="dvTable">
+    <table id="tablaUsuarios" style="width:100%; height:100%; text-align:center" class="table-bordered table-hover">
+      <thead class="thead-sticky">
         <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Usuario</th>
-          <th>Correo</th>
-          <th>Perfil</th>
-          <th>Estatus</th>
-          <th>Opciones</th>
+          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+              class="no-border-bottom th-resize"
+              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+            {{columna.label}}
+          </th>
+
         </tr>
+        <tr>
+          <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
+            <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
+                      title="Filtros" aria-expanded="false" (click)="onFilterIconClick(columna)">
+                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                   class="bi bi-caret-down-fill"></i>
+                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                   class="bi bi-arrow-down"></i>
+                <i [(ngModel)]="columna.desc"
+                   *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                   class="bi bi-arrow-up"></i>
+              </button>
+
+              <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
+
+                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
+                     class="bi bi-sort-alpha-down"></i>
+                  Ordenar de A a Z
+                </a>
+                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
+                     class="bi bi-sort-alpha-down-alt"></i>
+                  Ordenar de Z a A
+                </a>
+                <hr class="dropdown-divider">
+                <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
+                  <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
+                </a>
+                <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
+                  <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals"
+                     style="color: palegreen" class="bi bi-check-square-fill"></i>
+
+                  {{leyendaFiltrosEspeciales}}
+                </a>
+                <div id="filters-{{columna.name}}" class="d-none">
+                  <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
+                     (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal"
+                     data-target="#mdlFiltro">
+                    <i id="imgFiltroEspecializado"
+                       *ngIf="(nombre == this.filtroEspecializado && columna.optionFilter != null && columna.secondOptionFilter != '') || nombre === columna.optionFilter && columna.optionFilter != this.filtroEspecialEquals && columna.secondOptionFilter ==''"
+                       class="bi bi-check-lg"></i>
+                    {{nombre}} ...
+                    <div *ngIf="this.indicesopcionesFiltros.includes(indice)" class="dropdown-divider"></div>
+                  </a>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div style="height:300px; overflow:scroll; padding:5px">
+                  <input class="form-control" placeholder="Buscar" type="text"
+                         (input)="onFiltroCabecero($event, columna)" />
+                  <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
+                         (change)="seleccionarAllFiltro(columna);" />
+                  <label style="font-size:x-small;" (click)="$event.stopPropagation()"
+                         for="chckAllFiltro{{columna.name}}">
+                    Seleccionar
+                    todos
+                  </label>
+                  <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
+                    <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
+                    <label for="{{columna.name+i}}" style="font-size:xx-small; display: inline;"
+                           (click)="$event.stopPropagation()">&nbsp;{{ (columna.name == "Activo") ? ((dato.value) ? "Activo" :"Inactivo") : dato.value }}</label>
+
+                    
+                  </div>
+                </div>
+                <div class="modal-footer" style="font-size:xx-small;">
+                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small"
+                          class="btn btn-secondary btn-sm" data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
+                    Cancelar
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" style="font-size:xx-small"
+                          data-dismiss="dropdown" (click)="filtrar(columna,false);">
+                    Aceptar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </th>
+        </tr>
+
       </thead>
       <tbody>
-        <tr *ngFor="let users of Usuarios2 | paginate: { itemsPerPage:10, currentPage: page };let indice=index  ">
+        <tr *ngFor="let users of Usuarios2 | paginate: { itemsPerPage:20, currentPage: page };let indice=index">
           <td>{{indice+1}}</td>
-          <td>{{users.nombre}}</td>
+          <td>{{users.nombre + ' ' + users.apellidoPaterno + ' ' + users.apellidoMaterno}}</td>
           <td>{{users.userName}}</td>
           <td>{{users.email}}</td>
           <td>{{users.nombrePerfil}}</td>
-          <td *ngIf="users.activo==true; else falso">Activo</td>
+          <td>{{(users.activo) ? "Activo" : "Inactivo"}} </td>
           <td>
-            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" title="Editar" data-target="#modalregistro" (click)="UpdateUser(users)">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" title="Editar" data-target="#modalregistro" (click)="UpdateUser(users);">
               <i class="bi bi-file-person"></i>
             </button>&nbsp;
-            <button type="button" class="btn btn-secondary btn-xs" data-toggle="modal" title="Estatus" data-target="#modalstatus" (click)="ChangeStatus(users)">
-              <i class="bi bi-power" style="font-weight: 500; " [ngStyle]="{'color' : users.activo == true ? 'green': 'red' }"></i>
+            <button type="button" class="btn btn-secondary btn-xs" data-toggle="modal" title="Estatus" data-target="#mdlConfirmacion" (click)="UpdateEstatusUser(users)">
+              <i class="bi bi-power" style="font-weight: 500;" [ngStyle]="{'color' : users.activo == true ? 'green': 'red' }"></i>
             </button>
-
           </td>
+        </tr>
+        <tr *ngIf="this.Usuarios2.length==0">
+          <td class="td-center" colspan="7">No se encontraron registros</td>
         </tr>
       </tbody>
     </table>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+    <div class="col-md-2">
+      <p class="total-items">
+        Registros por página: <span class="badge text-bg-primary">{{this.Usuarios2.length}}</span>
+      </p>
+    </div>
+    <div class="col-md-3">
+      <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
+    </div>
+  </div>
+  <hr />
+  <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
+                  [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
 
+
+
+
+  <div>
+    <!--ALERTAS  DE LAS ACCIONES AGREGAR, EDITAR,CAMBIO DE ESTADO-->
+    <!-- 
+    <div class="alert alert-danger" role="alert" id="error-danger">
+      <strong>¡Atención!</strong>
+      El username ya se encuentra registrado
+    </div>-->    
     <!--Template para el cambio de estado-->
     <ng-template #falso><td>Inactivo</td></ng-template>
-
-    <!--Controlador de la paginacion-->
-    <pagination-controls (pageChange)="page= $event"
-                         previousLabel="Anterior"
-                         nextLabel="Siguiente"></pagination-controls>
   </div>
 
-    <!--MODAL AGREGAR EDITAR USUARIO-->
-    <div class="modal fade modal-dialog-centered" id="modalregistro" data-backdrop="static">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title2">{{modalTitle}}</h4>
+  <!--MODAL AGREGAR EDITAR USUARIO-->
+  <div class="modal fade modal-dialog-centered" id="modalregistro" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title2">{{modalTitle}}</h4>
+        </div>   
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Perfil:</label>
+            <div class="col-sm-8">
+              <select id="dropPerfil" selectet class="form-control obligatorio" [(ngModel)]="this.usuario.perfilId">
+                <option value="0">--Seleccione--</option>
+                <option *ngFor="let perfil of perfiles" [ngValue]="perfil.id">
+                  {{perfil.nombre}}
+                </option>
+              </select>
+              <span class="text-danger ml-2 " *ngIf="this.usuario.perfilId==0">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
           </div>
-          <div class="modal-body">
-            <form [formGroup]="registro" class="form-horizontal" style="padding-top:15px;">
-
-              <div class="form-group">
-                <label class="col-sm-3 control-label">Perfil:</label>
-                <div class="col-sm-9">
-                  <select class="form-control" formControlName="perfil">
-                    <option [ngValue]="null">--Seleccione--</option>
-                    <option *ngFor="let perfil of perfiles" [ngValue]="perfil.id">
-                      {{perfil.nombre}}
-                    </option>
-                  </select>
-                  <span class="text-danger ml-2 " *ngIf="registro.get('perfil')?.hasError('required') && registro.get('perfil')?.touched">
-                    Campo <strong>requerido</strong>
-                  </span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 control-label">Nombre del usuario:</label>
-                <div class="col-sm-9">
-                  <input class="form-control" [attr.disabled]="editar? true : null" placeholder="Nombre del usuario" onkeypress="return ValidarCaracteres(event);" formControlName="usuario" />
-                  <span class="text-danger ml-2 " *ngIf="registro.get('usuario')?.hasError('required') && registro.get('usuario')?.touched ">
-                    Campo <strong>requerido</strong>
-                  </span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 control-label">Usuario de red:</label>
-                <div class="col-sm-9">
-                  <input class="form-control" [attr.disabled]="editar? true : null " placeholder="Usuario de red" onkeypress="return ValidarCaracteres(event);" formControlName="userRed" />
-                  <span class="text-danger ml-2 " *ngIf="registro.get('userRed')?.hasError('required') && registro.get('userRed')?.touched ">
-                    Campo <strong>requerido</strong>
-                  </span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-3 control-label">Correo electrónico:</label>
-                <div class="col-sm-9">
-                  <input class="form-control" [attr.disabled]="editar? true : null" placeholder="Correo electrónico" type="email" ngModel pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" formControlName="email" #email />
-                  <span class="text-danger ml-2 " *ngIf="registro.get('email')?.hasError('required') && registro.get('email')?.touched">
-                    Campo <strong>requerido</strong>
-                  </span>
-
-                  <span class="text-danger ml-2 " *ngIf="registro.get('email')?.invalid && registro.get('email')?.touched">
-                    Formato <strong>incorrecto</strong>
-                  </span>
-
-                </div>
-              </div>
-
-              <div class="form-group" *ngIf="registro.get('perfil')?.value ==8">
-                <label class="col-sm-3 control-label">Organismo de Cuenca:</label>
-                <div class="col-sm-9">
-                  <select class="form-control" *ngIf="registro.get('perfil')?.value ==8" formControlName="organismoCuenca">
-                    <option [ngValue]="null">--Seleccione--</option>
-                    <option *ngFor="let cuenca of organismoCuenca" [ngValue]="cuenca.id">
-                      {{cuenca.descripcion}}
-                    </option>
-                  </select>
-                  <span class="text-danger ml-2 " *ngIf="registro.get('organismoCuenca')?.hasError('required') && registro.get('organismoCuenca')?.touched">
-                    Campo <strong>requerido</strong>
-                  </span>
-
-                </div>
-              </div>
-              <div class="form-group" *ngIf="registro.get('perfil')?.value ==9 ">
-                <label class="col-sm-3 control-label">Dirección Local:</label>
-                <div class="col-sm-9">
-                  <select class="form-control" *ngIf="registro.get('perfil')?.value ==9 " formControlName="direccionL">
-                    <option [ngValue]="null">--Seleccione--</option>
-                    <option *ngFor="let direccion of direccionL" [ngValue]="direccion.id">
-                      {{direccion.descripcion}}
-                    </option>
-                  </select>
-                  <span class="text-danger ml-2 " *ngIf="registro.get('direccionL')?.hasError('required') && registro.get('direccionL')?.touched">
-                    Campo <strong>requerido</strong>
-                  </span>
-                </div>
-              </div>
-
-              <button (click)="Cancelar()" class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
-              <button (click)="AddUser()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" [disabled]="registro.invalid" type="button">Registrar</button>
-              <button (click)="Update()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" [disabled]="registro.invalid" type="button">Actualizar</button>
-            </form>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Nombre del usuario:</label>
+            <div class="col-sm-8">
+              <input id="txtNombre" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Nombre del usuario" (keypress)="validarCaracteres($event)" [(ngModel)]="this.usuario.nombre" />
+              <span class="text-danger ml-2 " *ngIf="this.usuario.nombre==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
           </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    <!-- Modal Cambio Status-->
-    <div class="modal fade modal-dialog-centered" id="modalstatus" data-bs-backdrop="static">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title fs-5" id="staticBackdropLabel">{{modalTitle}}</h4>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Apellido paterno:</label>
+            <div class="col-sm-8">
+              <input id="txtNombre" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Apellido paterno" (keypress)="validarCaracteres($event)" [(ngModel)]="this.usuario.apellidoPaterno" />
+              <span class="text-danger ml-2 " *ngIf="this.usuario.apellidoPaterno==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
           </div>
-          <div class="modal-body">
-            <p>¿Quiere cambiar el estado del perfil?</p>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Apellido materno:</label>
+            <div class="col-sm-8">
+              <input id="txtNombre" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Apellido materno" (keypress)="validarCaracteres($event)" [(ngModel)]="this.usuario.apellidoMaterno" />
+              <span class="text-danger ml-2 " *ngIf="this.usuario.apellidoMaterno==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button (click)="Change()" type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Usuario de red:</label>
+            <div class="col-sm-8">
+              <input id="txtUsuario" class="form-control obligatorio" [attr.disabled]="editar? true : null " placeholder="Usuario de red" (keypress)="validarCaracteres($event)" [(ngModel)]="this.usuario.userName" />
+              <span class="text-danger ml-2 " *ngIf="this.usuario.userName==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
           </div>
+          <div class="form-group">
+            <label class="col-sm-4 control-label">Correo electrónico:</label>
+            <div class="col-sm-8">
+              <input id="txtCorreo" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Correo electrónico" type="email" (input)="validarFormatoCorreo($event)" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" #email [(ngModel)]="this.usuario.email" />
+              <span class="text-danger ml-2 " *ngIf="this.usuario.email==''">
+                Campo <strong>requerido</strong>
+              </span>
+              <span class="text-danger ml-2 " *ngIf="!this.correctoFormatoEmail && !this.editar">
+                Formato <strong>incorrecto</strong>
+              </span>
+
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="this.usuario.perfilId==idPerfilOC">
+            <label class="col-sm-4 control-label">Organismo de Cuenca:</label>
+            <div class="col-sm-8">
+              <select id="dropOrganismoCuenca" class="form-control obligatorio" *ngIf="this.usuario.perfilId==8" [(ngModel)]="this.usuario.cuencaId">
+                <option [ngValue]="null">--Seleccione--</option>
+                <option *ngFor="let cuenca of organismoCuenca" [ngValue]="cuenca.id">
+                  {{cuenca.descripcion}}
+                </option>
+              </select>
+              <span class="text-danger ml-2 " *ngIf="this.usuario.cuencaId==0">
+                Campo <strong>requerido</strong>
+              </span>
+
+            </div>
+          </div>
+          <div class="form-group" *ngIf="this.usuario.perfilId == idPerfilDL">
+            <label class="col-sm-4 control-label">Dirección Local:</label>
+            <div class="col-sm-8">
+              <select id="dropDireccionLocal" class="form-control obligatorio" *ngIf="this.usuario.perfilId==9" [(ngModel)]="this.usuario.direccionLocalId">
+                <option [ngValue]="null">--Seleccione--</option>
+                <option *ngFor="let direccion of direccionL" [ngValue]="direccion.id">
+                  {{direccion.descripcion}}
+                </option>
+              </select>
+              <span class="text-danger ml-2" *ngIf="this.usuario.direccionLocalId==0">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
+          </div>
+
+          <button (click)="Cancelar()" class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+          <button (click)="AddUser()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
+          <button (click)="Update()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
         </div>
-      </div>
-    </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
 
-
-
-    <div class="container">
-
-    </div>
+  <app-notificacion-emergente [notificacion]="this.notificacion" (changed)="this.Change();"></app-notificacion-emergente>
+</div>

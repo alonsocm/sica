@@ -12,9 +12,10 @@ export class NavRootComponent implements OnInit {
   public paginas: any[] = [];
   public paginasRoot: any[] = [];
   public usuario: any;
-
+  public paginaAdminUsuario: any;
+ 
   constructor(private http: HttpClient, private authService: AuthService) {}
-
+  
   mostrar(idPagina: number) {
     let hijo = document.getElementById('elemento-hijo' + idPagina);
     if (hijo != null) {
@@ -43,7 +44,9 @@ export class NavRootComponent implements OnInit {
     .get<any>(environment.apiUrl + '/paginas/' + idPerfil)
     .subscribe((response) => {
       this.paginas = response.data;
-      this.paginasRoot = this.paginas.filter((f) => f.idPaginaPadre == null);
+      const idPaginaAdministradorUsuarios: number = 28;
+      this.paginaAdminUsuario = this.paginas.filter((f) => f.id == idPaginaAdministradorUsuarios);
+      this.paginasRoot = this.paginas.filter((f) => f.idPaginaPadre == null && f.id != idPaginaAdministradorUsuarios);
       });
   }
 }

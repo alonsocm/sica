@@ -20,5 +20,14 @@ namespace Application.DTOs.Users
         public long? DireccionLocalId { get; set; }
         public long PerfilId { get; set; }
         public string NombrePerfil { get; set; }
+
+        public string NombreCompleto { get;  set; }
+
+        public UserDto()
+        {
+            NombreCompleto = this.Nombre + ' ' + this.ApellidoPaterno + ' ' + this.ApellidoMaterno;
+        }
     }
+
+    
 }

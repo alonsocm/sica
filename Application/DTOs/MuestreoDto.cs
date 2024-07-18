@@ -12,6 +12,7 @@
         public string FechaRealizacion { get; set; }
         public string FechaLimiteRevision { get; set; }
         public string NumeroEntrega { get; set; }
+        public string NumeroCarga { get; set; }
         public string Estatus { get; set; }
         public string? TipoCargaResultados { get; set; }
         public string HoraInicio { get; set; }
@@ -62,6 +63,7 @@
             HoraCargaEvidencias = string.Empty;
             NumeroCargaEvidencias = string.Empty;
             NumeroEntrega = string.Empty;
+            NumeroCarga = string.Empty;
             Observaciones = string.Empty;
             DireccionLocal = string.Empty;
             Estatus = string.Empty;

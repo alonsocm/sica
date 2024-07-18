@@ -8,7 +8,7 @@ export interface Muestreo extends Row {
   claveMonitoreo: string;
   fechaRealizacion: string;
   laboratorio: string;
-  numeroEntrega: string;
+  numeroCarga: string;
   tipoCuerpoAgua: string;
   tipoHomologado: string;
   tipoSitio: string;

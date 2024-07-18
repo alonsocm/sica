@@ -11,6 +11,7 @@ using AutoMapper;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
 using Application.Specifications;
+using Application.Expressions;
 
 namespace Application.Features.Usuarios.Queries
 {
@@ -32,7 +33,8 @@ namespace Application.Features.Usuarios.Queries
         public async Task<Response<List<UserDto>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
             var usuarios = await _repository.ListAsync(new UsuariosPerfilesSpec(), cancellationToken);
-            var userDto = _mapper.Map<List<UserDto>>(usuarios);
+            var userDto = _mapper.Map<List<UserDto>>(usuarios);        
+
             return new Response<List<UserDto>>(userDto);
         }
     }

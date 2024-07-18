@@ -11,7 +11,7 @@ public partial class VwResultadosInicialReglas
 
     public int? AnioOperacion { get; set; }
 
-    public int? NumeroEntrega { get; set; }
+    public string? NumeroCarga { get; set; }
 
     public int EstatusId { get; set; }
 
@@ -55,5 +55,5 @@ public partial class VwResultadosInicialReglas
 
     public int? PorcentajePago { get; set; }
 
-    public string UsuarioValido { get; set; } = null!;
+    public string? UsuarioValido { get; set; }
 }

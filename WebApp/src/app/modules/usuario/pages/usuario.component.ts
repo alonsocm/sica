@@ -1,255 +1,400 @@
-import { Component, Input, NgModule, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { Usuario } from '../../../interfaces/registro.interface';
-import { Respuesta } from '../../../interfaces/respuesta.interface';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
-import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
-
-
+import { Column } from '../../../interfaces/filter/column';
+import { BaseService } from '../../../shared/services/base.service';
+import { MuestreoService } from '../../muestreo/liberacion/services/muestreo.service';
+import { Item } from '../../../interfaces/filter/item';
+import { Notificacion } from '../../../shared/models/notification-model';
+import { NotificationService } from '../../../shared/services/notification.service';
+import { NotificationType } from '../../../shared/enums/notification-type';
+import { idPerfiles } from 'src/app/shared/enums/idPerfiles';
 
 @Component({
   selector: 'app-usuario',
   templateUrl: './usuario.component.html',
-  styleUrls: ['./usuario.component.css'] 
+  styleUrls: ['./usuario.component.css']
 })
-export class UsuarioComponent implements OnInit {
-  
-  public page: number | undefined ;
-  registro: FormGroup; 
-  errorMessage: any;
-  public keyword = "nombre";
-  public keywordP = "nombre";
-
-  @Input() respuesta: Respuesta={
-    succeded:false,
-    message: '',
-    errors:'',
-    data:[]    
-  }
-
-  public usuario!: Usuario;
+export class UsuarioComponent extends BaseService implements OnInit {
+  notificacion: Notificacion = {
+    title: 'Cambiar estatus',
+    text: '¿Está seguro de cambiar el estatus del usuario ?',
+  };
+  correctoFormatoEmail: boolean = false;
+  public usuario: Usuario = {
+    id: 0,
+    nombre: '',
+    activo: false,
+    userName: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
+    email: '',
+    perfilId: 0,
+    cuencaId: null,
+    direccionLocalId: null,
+    nombrePerfil: ''
+  };
   public perfiles: any[] = [];
   public organismoCuenca: any[] = [];
   public direccionL: any[] = [];
-  public Usuarios: any[] = [];
-  public Usuarios2: any[] =[];
-  public UsuarioId: number = 0;
-  public active: boolean = false;
+  public Usuarios2: Usuario[] = [];
+  idPerfilOC: number = idPerfiles.OC;
+  idPerfilDL: number = idPerfiles.DL;
 
-  constructor(private http: HttpClient, private router: Router,
-    private fb: FormBuilder, private userService: UserService) {
-
-    this.registro = this.fb.group({     
-      usuario: ['', Validators.required],
-      userRed: ['', Validators.required],     
-      email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]],
-      perfil: [[null], Validators.required],
-      organismoCuenca: [null],
-      direccionL: [null],
-    });   
-
+  constructor(
+    private userService: UserService,
+    public muestreoService: MuestreoService,
+    private notificationService: NotificationService) {
+    super();
   }
   //Propiedades Modal
   modalTitle: string = "";
   editar: boolean = false;
-  
+
+  definirColumnas() {
+    let nombresColumnas: Array<Column> = [
+      {
+        name: 'numero',
+        label: 'N°',
+        order: 1,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'number',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
+        name: 'NombreCompleto',
+        label: 'NOMBRE',
+        order: 2,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
+        name: 'username',
+        label: 'USUARIO',
+        order: 3,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
+        name: 'email',
+        label: 'CORREO',
+        order: 4,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
+        name: 'NombrePerfil',
+        label: 'PERFIL',
+        order: 5,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'number',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
+        name: 'Activo',
+        label: 'ESTATUS',
+        order: 6,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'number',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
+        name: 'opcion',
+        label: 'OPCIONES',
+        order: 7,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+    ];
+    this.columns = nombresColumnas;
+    this.setHeadersList(this.columns);
+  }
+
   ngOnInit() {
+    this.definirColumnas();
     this.setDefaults();
+    this.obtenerUsuarios();
+    this.cargarCombos();
+  }
 
-
-    this.userService.getAllusers().subscribe(result => {          
-      this.Usuarios = result.data;
-      this.Usuarios2 = result.data;    
+  obtenerUsuarios() {
+    this.userService.getAllusers().subscribe(result => {
+      this.Usuarios2 = result.data;
     }, error => console.error(error));
+  }
 
+  cargarCombos() {
     this.userService.getPerfiles().subscribe(result => {
-      
-      this.perfiles = result.data;
-      console.log("perfil combo");
-      console.log(this.perfiles);
+      this.perfiles = result.data;     
     }, error => console.error(error));
 
     this.userService.getDLocales().subscribe(direcciones => {
-        this.direccionL = direcciones.data;       
-      }, error => console.log(error));
+      this.direccionL = direcciones.data;
+    }, error => console.log(error));
 
     this.userService.getCuencas().subscribe(result => {
-      this.organismoCuenca = result.data;    
+      this.organismoCuenca = result.data;
     }, error => console.error(error));
-    
   }
 
-
-  //Variables para los cambios de estado del buscador
-  onChangeSearch(val: string='') {  
-      this.Usuarios2 = this.Usuarios.filter(x => x.nombre.toLowerCase().indexOf(val.toLowerCase()) !==-1);            
-  }
-  selectEvent(item: any) {  
-    this.Usuarios2 = this.Usuarios.filter(x => x.nombre == item.nombre);
-  }
-  onChangeSearch1(val: string = '') {
-    this.Usuarios2 = this.Usuarios.filter(x => x.nombrePerfil.toLowerCase().indexOf(val.toLowerCase()) !== -1);
-  }
-  selectEvent1(item: any) {
-    this.Usuarios2 = this.Usuarios.filter(x => x.nombrePerfil == item.nombre);
+  setDefaults() {   
   }
 
- 
-  setDefaults() {
-    this.registro.get("perfil")?.patchValue(null);
-    this.registro.get("organismoCuenca")?.patchValue(null);
-    this.registro.get("direccionL")?.patchValue(null);   
-  }
-
-
-  RegistrarUsuario() {   
+  RegistrarUsuario() {
     this.modalTitle = "Registrar Usuario";
     this.editar = false;
-    
   }
 
-  AddUser() { 
-    const valor = this.registro.value;
-    this.usuario = {
-      Id:0,
-      Activo: true,
-      UserName: valor.userRed,
-      Nombre: valor.usuario,
-      ApellidoPaterno: valor.usuario,
-      ApellidoMaterno: valor.usuario,
-      Email: valor.email,
-      PerfilId: valor.perfil ,
-      CuencaId: valor.organismoCuenca,
-      DireccionLocalId: valor.direccionL
-    };   
-    this.userService.adduser(this.usuario).subscribe({
-      next: (response) => {
-        var showAdd = document.getElementById('add-success');
-        if (showAdd) {
+  validarObligatorios(): boolean {
+    let obligatoriosRegistro: any[] = [this.usuario.nombre, this.usuario.perfilId, this.usuario.userName, this.usuario.email];
+    if (this.usuario.perfilId == this.idPerfilOC) { obligatoriosRegistro.push(this.usuario.cuencaId); }
+    else if (this.usuario.perfilId == this.idPerfilDL) { obligatoriosRegistro.push(this.usuario.direccionLocalId); }
+    return (obligatoriosRegistro.includes("") || obligatoriosRegistro.includes(0)) ? false : true;
+  }
 
-          showAdd.style.display = "block";
-
-          this.ngOnInit();
-        }
-        setTimeout(function () {
-          if (showAdd) {
-            showAdd.style.display = "none";
+  AddUser() {
+    if (!this.validarObligatorios()) {
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe de llenar todos los campos obligatorios para su registro',
+      });
+    }
+    else {
+      this.userService.adduser(this.usuario).subscribe({
+        next: (response: any) => {       
+          this.loading = true;
+          if (response.succeded) {
+            this.obtenerUsuarios();
+            this.loading = false;
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Usuario registrado exitosamente',
+            });
           }
-        }, 2500);
-      },
-      error: (error) => {
-        var showAdd = document.getElementById('error-danger');
-        if (showAdd) {
-
-          showAdd.style.display = "block";
-          
         }
-        setTimeout(function () {
-          if (showAdd) {
-            showAdd.style.display = "none";
-          }
-        }, 2500);
+      });
+    }
+  }
 
+  Update() {
+    this.userService.update(this.usuario.id, this.usuario).subscribe({
+      next: (response: any) => {
+        this.loading = true;
+        if (response.succeded) {
+          this.obtenerUsuarios();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Usuario actualizado exitosamente',
+          });
+        }
       }
-
     });
+
   }
 
-
-  Update() {  
-    const valor = this.registro.value;  
-    this.usuario = {
-      Id: this.UsuarioId,
-      Activo: this.active,
-      UserName: valor.userRed,
-      Nombre: valor.usuario,
-      ApellidoPaterno: valor.usuario,
-      ApellidoMaterno: valor.usuario,
-      Email: valor.email,
-      PerfilId: valor.perfil,
-      CuencaId: valor.perfil ==8 ? valor.organismoCuenca : null,
-      DireccionLocalId: valor.perfil ==9 ? valor.direccionL : null
-    };
-    
-    this.userService.update(this.usuario.Id, this.usuario).subscribe(
-      
-    response => {
-        var showUpdate = document.getElementById('update-success');
-        if (showUpdate) {
-
-            showUpdate.style.display = "block";
-            this.ngOnInit();
-        }
-        setTimeout(function () {
-          if (showUpdate) {
-            showUpdate.style.display = "none";
-          }
-        }, 2500);
-      } 
-
-    );
-  }
-
-  UpdateUser(users: any) {
-    
+  UpdateUser(users: Usuario) {
+    this.usuario = users;
     this.modalTitle = "Actualizar Usuario";
-    this.editar = true;   
-    this.registro = this.fb.group({
-      usuario: users.nombre,
-      userRed: users.userName,
-      email: users.email,
-      perfil: users.perfilId,
-      organismoCuenca: users.cuencaId,
-      direccionL: users.direccionLocalId
-    });
-    this.UsuarioId = users.id;
-    this.active = users.activo;  
+    this.editar = true;
   }
 
-  ChangeStatus(users: any) {
-    this.modalTitle = "Cambiar Estatus";  
-    this.usuario = {
-      Id: users.id,
-      Activo: (users.activo ==true)? false: true,
-      UserName: users.userRed,
-      Nombre: users.usuario,
-      ApellidoPaterno: users.usuario,
-      ApellidoMaterno: users.usuario,
-      Email: users.email,
-      PerfilId: users.perfilId,
-      CuencaId: users.organismoCuenca,
-      DireccionLocalId: users.direccionL
-    };
+  UpdateEstatusUser(users: Usuario) {
+    this.usuario = users;
+    this.usuario.activo = !users.activo;
+
   }
 
   Change() {
-
-    this.userService.update(this.usuario.Id, this.usuario).subscribe(
-
-      response => {
-        var showUpdate = document.getElementById('change-success');
-        if (showUpdate) {
-
-          showUpdate.style.display = "block";
-          this.ngOnInit();
+    this.userService.update(this.usuario.id, this.usuario).subscribe({
+      next: (response: any) => {       
+        this.loading = true;
+        if (response.succeded) {
+          this.obtenerUsuarios();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Se a cambiado el estatus del usuario correctamente',
+          });
         }
-        setTimeout(function () {
-          if (showUpdate) {
-            showUpdate.style.display = "none";
-          }
-        }, 2500);
       }
-
-    );
+    });
   }
 
   Cancelar() {
-    this.registro.reset();
   }
-  
-}
 
+  onFilterIconClick(column: Column) {
+    this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
+
+    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
+    this.filtros = filteredColumns;
+
+    this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    let esFiltroEspecial = this.IsCustomFilter(column);
+
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if (this.requiresToRefreshColumnValues(column)) {
+      this.userService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {           
+            column.data = response.data.map((register: any) => {              
+              let item: Item = {           
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;          
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => { },
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+  }
+
+  sort(column: string, type: string) {
+    this.orderBy = { column, type };
+
+    //this.muestreoService
+    //  .obtenerMuestreosPaginados(false, this.page, this.NoPage, this.cadena, {
+    //    column: column,
+    //    type: type,
+    //  })
+    //  .subscribe({
+    //    next: (response: any) => {
+    //      this.muestreos = response.data;
+    //    },
+    //    error: (error) => { },
+    //  });
+  }
+
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.obtenerUsuarios();
+  }
+
+  filtrar(columna: Column, isFiltroEspecial: boolean) {
+    this.existeFiltrado = true;
+    this.cadena = !isFiltroEspecial
+      ? this.obtenerCadena(columna, false)
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
+    this.obtenerUsuarios();
+
+    this.columns
+      .filter((x) => x.isLatestFilter)
+      .map((m) => {
+        m.isLatestFilter = false;
+      });
+
+    if (!isFiltroEspecial) {
+      columna.filtered = true;
+      columna.isLatestFilter = true;
+    } else {
+      this.columns
+        .filter((x) => x.name == this.columnaFiltroEspecial.name)
+        .map((m) => {
+          (m.filtered = true),
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
+        });
+    }
+
+    this.esHistorial = true;
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.hideColumnFilter();
+  }
+
+  pageClic(page: any) {
+    /* this.consultarMonitoreos(page, this.NoPage, this.cadena);*/
+    this.page = page;
+  }
+
+  validarCaracteres(evento: any): void {
+    const pattern: RegExp = /^([a-zA-ZÀ-ÿ_\u00f1\u00d1\s])$/;
+    if (!pattern.test(evento.key)) {
+      evento.preventDefault();
+    }
+  }
+
+  validarFormatoCorreo(evento: any): void {
+    const pattern: RegExp = /^([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3})$/;
+    this.correctoFormatoEmail = (pattern.test(evento.target.value)) ? true : false;
+  }
+}
 

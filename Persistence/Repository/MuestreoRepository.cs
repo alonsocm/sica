@@ -33,7 +33,7 @@ namespace Persistence.Repository
                                        Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
                                        FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        FechaLimiteRevision = m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
+                                       NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        Estatus = m.Estatus.Descripcion,
                                        HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
                                        HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
@@ -275,13 +275,14 @@ namespace Persistence.Repository
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        //costoParametro = costo.Precio,
                                        CostoParametro = _dbContext.ParametrosCostos.Where(x => x.ParametroId.Equals(resMuestreo.ParametroId)).Select(y => y.Precio).FirstOrDefault(),
-                                       NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion ?? string.Empty,
+                                       NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        FechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        IdResultadoLaboratorio = resMuestreo.IdResultadoLaboratorio,
                                        ValidadoReglas = m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas,
                                        ResultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty,
                                        ResultadoMuestreoId = resMuestreo.Id,
                                        ValidacionFinal = resMuestreo.ValidacionFinal == null ? string.Empty : resMuestreo.ValidacionFinal.Value ? "OK" : "NO",
+                                       ObservacionFinal = resMuestreo.ObservacionFinal ?? string.Empty
                                    }).ToListAsync();
 
             var evidencias = await (from e in _dbContext.EvidenciaMuestreo
@@ -326,7 +327,7 @@ namespace Persistence.Repository
                                        MuestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
                                        CumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
                                        AnioOperacion = resultados.AnioOperacion ?? 0,
-                                       NumeroEntrega = resultados.NumeroEntrega.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
+                                       NumeroCarga = resultados.NumeroCarga.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,
                                        EstatusId = resultados.EstatusId,
                                        TipoCuerpoAguaId = resultados.TipoCuerpoAguaId,

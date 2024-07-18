@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Data } from '@angular/router';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -23,6 +24,29 @@ export class UserService {
     return this.http.get<any>(environment.apiUrl + '/Usuarios/AllUsers');
   }
 
+  getAllusersPaginados(
+    esLiberacion: boolean,
+    page: number,
+    pageSize: number,
+    filter: string,
+    order?: { column: string; type: string }
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        esLiberacion: esLiberacion,
+        page: page,
+        pageSize: pageSize,
+        filter: filter,
+        order: order != null ? order.column + '_' + order.type : '',
+      },
+    });
+    return this.http.get(environment.apiUrl + '/Usuarios/AllUsers', { params });
+  }
+
+
+
+
+
   getPerfiles() {
     return this.http.get<any>(environment.apiUrl + '/Perfiles');
   }
@@ -35,4 +59,21 @@ export class UserService {
 
     return this.http.get<any>(environment.apiUrl + '/DireccionesLocales' );
   }
+
+  getDistinctValuesFromColumn(
+    column: string,
+    filter: string
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        column: column,
+        filter: filter,
+      },
+    });
+    return this.http.get(
+      environment.apiUrl + '/Usuarios/GetDistinctValuesFromColumn',
+      { params }
+    );
+  }
+
 }

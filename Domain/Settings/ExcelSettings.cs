@@ -218,6 +218,7 @@
             new KeyValuePair<string, string>("Clave Muestreo","ClaveMuestreo"),
             new KeyValuePair<string, string>("Clave Parámetro","ClaveParametro"),
             new KeyValuePair<string, string>("Validación final","ValidacionFinal"),
+            new KeyValuePair<string, string>("Observaciones final","ObservacionFinal"),
         };
 
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
