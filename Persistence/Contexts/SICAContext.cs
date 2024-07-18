@@ -48,7 +48,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }
+    public virtual DbSet<Directorio> Directorio { get; set; }    
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -200,8 +200,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
-
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -552,7 +552,7 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
         });
-        
+       
         modelBuilder.Entity<Emergencia>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
@@ -2645,8 +2645,8 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });       
-
+        });
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

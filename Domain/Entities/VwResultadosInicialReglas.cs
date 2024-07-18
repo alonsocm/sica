@@ -55,5 +55,5 @@ public partial class VwResultadosInicialReglas
 
     public int? PorcentajePago { get; set; }
 
-    public string UsuarioValido { get; set; } = null!;
+    public string? UsuarioValido { get; set; }
 }
