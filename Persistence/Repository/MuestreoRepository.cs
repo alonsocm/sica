@@ -34,6 +34,7 @@ namespace Persistence.Repository
                                        FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        FechaLimiteRevision = m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
                                        NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
+                                       NumeroEntrega = m.NumeroEntrega.ToString(),
                                        Estatus = m.Estatus.Descripcion,
                                        HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
                                        HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,

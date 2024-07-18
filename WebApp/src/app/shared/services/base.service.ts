@@ -87,7 +87,7 @@ export class BaseService {
 
   opcionFiltrar: string = ''; //variable para guardar la opcion a filtrar en filtro especial
   leyendaFiltrosEspeciales: string = ''; //Leyenda para indicar si es filtro de texto/número/fecha
-  numeroEntrega: string = '';
+  numeroCarga: string = '';
   anioOperacion: string = '';
   initialValue: string = '';
 
