@@ -64,6 +64,8 @@ import { HistorialComponent } from './shared/filtro/historial/historial.componen
 import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.component';
 import { ColumnResizeDirective } from './column-resize.directive';
 import { NotificacionEmergenteComponent } from './shared/notificacion-emergente/notificacion-emergente.component';
+import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.component';
+
 
 @NgModule({
   declarations: [
@@ -119,7 +121,8 @@ import { NotificacionEmergenteComponent } from './shared/notificacion-emergente/
     HistorialComponent,
     AutofiltroComponent,
     ColumnResizeDirective,
-    NotificacionEmergenteComponent,
+    NotificacionEmergenteComponent,  
+    SitiosComponent,
   ],
   imports: [
     BrowserModule,
