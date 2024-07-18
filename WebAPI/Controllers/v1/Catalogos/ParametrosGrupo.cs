@@ -11,9 +11,9 @@ namespace WebAPI.Controllers.v1.Catalogos
     public class ParametrosGrupo : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(int page, int pageSize)
         {
-            return Ok(await Mediator.Send(new ParametrosQuery()));
+            return Ok(await Mediator.Send(new ParametrosQuery { Page = page, PageSize = pageSize }));
         }
 
         [HttpPost]

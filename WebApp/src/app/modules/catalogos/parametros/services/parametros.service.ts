@@ -9,7 +9,13 @@ import { environment } from 'src/environments/environment';
 export class ParametrosService {
   constructor(private http: HttpClient) {}
 
-  getParametros(): Observable<Object> {
-    return this.http.get(environment.apiUrl + '/ParametrosGrupo');
+  getParametros(page: number, pageSize: number): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl +
+        '/ParametrosGrupo?page=' +
+        page +
+        '&pageSize=' +
+        pageSize
+    );
   }
 }

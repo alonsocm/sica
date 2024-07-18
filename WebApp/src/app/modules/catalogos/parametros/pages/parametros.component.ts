@@ -108,7 +108,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
   }
 
   getParametros() {
-    this.parametrosService.getParametros().subscribe({
+    this.parametrosService.getParametros(this.page, this.pageSize).subscribe({
       next: (response: any) => {
         this.selectedPage = false;
         this.registros = response.data;
@@ -164,7 +164,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
   sort(column: string, type: string) {
     this.orderBy = { column, type };
-    this.parametrosService.getParametros().subscribe({
+    this.parametrosService.getParametros(this.page, this.pageSize).subscribe({
       next: (response: any) => {
         this.registros = response.data;
       },
@@ -176,5 +176,10 @@ export class ParametrosComponent extends BaseService implements OnInit {
     this.deleteFilter(columName);
     // this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     // this.consultarMonitoreos();
+  }
+
+  pageClic(page: any) {
+    this.page = page;
+    this.getParametros();
   }
 }

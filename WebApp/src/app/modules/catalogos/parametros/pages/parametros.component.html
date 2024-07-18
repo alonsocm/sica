@@ -133,7 +133,7 @@
     </div>
     <div class="row">
         <div class="col-md-3">
-            <pagination-controls previousLabel="Anterior" nextLabel="Siguiente">
+            <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
             </pagination-controls>
         </div>
         <div class="col-md-2">
