@@ -653,7 +653,7 @@ export class BaseService {
     window.location.reload();
   }
 
-  validarCorreRegla(muestreo: acumuladosMuestreo): boolean {
-    return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? false : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? true : false)
+  validarCorreRegla(muestreo: acumuladosMuestreo): string {
+    return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? "NO" : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? "SI" : "NO")
   }
 }
