@@ -36,7 +36,7 @@ export interface Muestreo extends Row {
   fechaCargaEvidencias: string;
   autorizacionIncompleto: boolean;
   autorizacionFechaEntrega: boolean;
-  correReglaValidacion: boolean;
+  correReglaValidacion: string;  
   autorizacionCondicionantes: boolean;
 
   usuarioValido: string;

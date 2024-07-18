@@ -46,7 +46,7 @@
         public bool AutorizacionFechaEntrega { get; set; }
         public string CorreReglaValidacion { get; set; }
 
-        public string UsuarioValido { get; set; }
+        public string? UsuarioValido { get; set; }
         public string PorcentajePago { get; set; }
 
 
@@ -91,8 +91,7 @@
             NombreSitio = string.Empty;
             ClaveSitio = string.Empty;
             FechaRealizacion = string.Empty;
-            PorcentajePago = string.Empty;
-            UsuarioValido = string.Empty;
+            PorcentajePago = string.Empty;            
         }
     }
 }

@@ -126,7 +126,7 @@ namespace Shared.Utilities.Services
 
             foreach (var registro in data)
             {
-                worksheet.Cells[fila, 1].Value = registro.NumeroEntrega;
+                worksheet.Cells[fila, 1].Value = registro.NumeroCarga;
                 worksheet.Cells[fila, 2].Value = registro.ClaveUnica;
                 worksheet.Cells[fila, 3].Value = registro.ClaveMonitoreo;
                 worksheet.Cells[fila, 4].Value = registro.ClaveSitio;

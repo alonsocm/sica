@@ -401,7 +401,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     });
   }
 
-  onDownload(): void {
+  onDownload(): void {   
     if (this.resultadosFiltradosn.length == 0) {  
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -413,12 +413,10 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
     this.loading = true;
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
-    this.validacionService
-      .exportExcelResultadosValidados(
-        this.resultadosEnviados.length > 0
-          ? this.resultadosEnviados
+      this.validacionService
+      .exportExcelResultadosValidados((this.resultadosEnviados.length > 0) ? this.resultadosEnviados
           : this.resultadosFiltradosn
-      )
+    )
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'ResultadosaValidar.xlsx');
@@ -437,8 +435,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
   aplicarReglas(): void {
     let datosSeleccionados = this.Seleccionados(this.resultadosSeleccionados);
-    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0); 
-    if (datosSeleccionados.length == 0) {
+    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0);
+        if (datosSeleccionados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -458,8 +456,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
       ////Validacion para aplicar reglas debe de ser si en correr regla y haber sido validado por el area de supervisión
       
-      let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
-      let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == "");
+          let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
+          let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == null);
       if (resultadosNoAplicaRegla.length > 0 || novalidadoMuestreo.length > 0) {
         return this.notificationService.updateNotification({
           show: true,
@@ -725,7 +723,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   validarCorreReglaAutorizaciones(muestreo: acumuladosMuestreo) {
-    return muestreo.correReglaValidacion = ((muestreo.cumpleReglasCondic == "SI" || muestreo.autorizacionCondicionantes) && (muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? true : false;
+    return muestreo.correReglaValidacion = ((muestreo.cumpleReglasCondic == "SI" || muestreo.autorizacionCondicionantes) && (muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? "SI" : "NO";
   }
 
 }
