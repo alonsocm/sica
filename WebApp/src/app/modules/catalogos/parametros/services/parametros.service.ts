@@ -18,4 +18,12 @@ export class ParametrosService {
         pageSize
     );
   }
+
+  getDistinct(column: string, filter: string): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl +
+        '/ParametrosGrupo/GetDistinctFromColumn?column=' +
+        column
+    );
+  }
 }

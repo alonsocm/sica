@@ -2,7 +2,9 @@
 using Application.Features.Catalogos.ParametrosGrupo.Commands;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.Catalogos.UnidadMedida.Queries;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Catalogos
 {
@@ -49,6 +51,14 @@ namespace WebAPI.Controllers.v1.Catalogos
         public async Task<IActionResult> Delete(int parametroId)
         {
             return Ok(await Mediator.Send(new DeleteParametro { ParametroId = parametroId }));
+        }
+
+        [HttpGet("GetDistinctFromColumn")]
+        public IActionResult GetDistinctFromColumn(string column)
+        {
+            var data = Mediator.Send(new ParametrosQuery()).Result.Data;
+
+            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
         }
 
         [HttpGet("GetGruposParametros")]
