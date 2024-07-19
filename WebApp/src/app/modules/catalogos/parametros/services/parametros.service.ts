@@ -9,13 +9,19 @@ import { environment } from 'src/environments/environment';
 export class ParametrosService {
   constructor(private http: HttpClient) {}
 
-  getParametros(page: number, pageSize: number): Observable<Object> {
+  getParametros(
+    page: number,
+    pageSize: number,
+    filter: string
+  ): Observable<Object> {
     return this.http.get(
       environment.apiUrl +
         '/ParametrosGrupo?page=' +
         page +
         '&pageSize=' +
-        pageSize
+        pageSize +
+        '&filter=' +
+        filter
     );
   }
 
@@ -23,7 +29,9 @@ export class ParametrosService {
     return this.http.get(
       environment.apiUrl +
         '/ParametrosGrupo/GetDistinctFromColumn?column=' +
-        column
+        column +
+        '&filter=' +
+        filter
     );
   }
 }
