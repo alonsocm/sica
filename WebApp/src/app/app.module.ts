@@ -65,6 +65,8 @@ import { AutofiltroComponent } from './shared/filtro/autofiltro/autofiltro.compo
 import { ColumnResizeDirective } from './column-resize.directive';
 import { NotificacionEmergenteComponent } from './shared/notificacion-emergente/notificacion-emergente.component';
 import { ParametrosComponent } from './modules/catalogos/parametros/pages/parametros.component';
+import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.component';
+
 
 @NgModule({
   declarations: [
@@ -122,6 +124,8 @@ import { ParametrosComponent } from './modules/catalogos/parametros/pages/parame
     ColumnResizeDirective,
     NotificacionEmergenteComponent,
     ParametrosComponent,
+    NotificacionEmergenteComponent,  
+    SitiosComponent,
   ],
   imports: [
     BrowserModule,

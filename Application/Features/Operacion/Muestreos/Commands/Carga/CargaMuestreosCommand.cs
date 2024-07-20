@@ -29,7 +29,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
         {
             var numeroCarga = Convert.ToInt32(request.Muestreos.Select(m => m.NoCarga).Distinct().FirstOrDefault());
             var anio = Convert.ToInt32(request.Muestreos.Select(m => m.AnioOperacion).Distinct().FirstOrDefault());
-            var existeCargaPrevia = await ExisteNumeroEntrega(numeroCarga, anio);
+            var existeCargaPrevia = await ExisteNumeroCarga(numeroCarga, anio);
 
             var resultadoCarga = new ResultadoCargaMuestreo
             {
@@ -67,9 +67,9 @@ namespace Application.Features.Operacion.Muestreos.Commands.Carga
             return new Response<ResultadoCargaMuestreo>(resultadoCarga);
         }
 
-        public async Task<bool> ExisteNumeroEntrega(int numeroEntrega, int anio)
+        public async Task<bool> ExisteNumeroCarga(int numeroCarga, int anio)
         {
-            return await _repository.ExisteElementoAsync(w => w.NumeroEntrega == numeroEntrega && w.AnioOperacion == anio);
+            return await _repository.ExisteElementoAsync(w => w.NumeroCarga == numeroCarga.ToString() && w.AnioOperacion == anio);
         }
     }
 }

@@ -441,7 +441,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
               });
             } else {
               this.loading = false;
-              this.numeroEntrega = response.data.numeroEntrega;
+              this.numeroCarga = response.data.numeroCarga;
               this.anioOperacion = response.data.anio;
               document
                 .getElementById('btnMdlConfirmacionActualizacion')
