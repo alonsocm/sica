@@ -5,6 +5,22 @@
     <div class="message-container">
         <app-notification></app-notification>
     </div>
+    <div class="clearfix" style="margin-bottom: 1%;">
+        <!-- <div class="float-lefth col-md-4">
+            <app-busqueda-columna style="width:80%" [esHistorialValor]="this.esHistorial"
+                (mostrandocabecero)="this.cabeceroSeleccionado=$event"
+                (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
+            </app-busqueda-columna>
+        </div> -->
+        <div class="float-right">
+            <button class="btn btn-primary btn-sm mr-1" type="button">
+                <i class="bi bi-plus-lg"></i> Agregar nuevo Parámetro
+            </button>
+            <!-- <button class="btn btn-primary btn-sm mr-1" type="button">
+                <i class="bi bi-send-exclamation"></i> Borrar
+            </button> -->
+        </div>
+    </div>
     <div class="dvTable">
         <table class="table-bordered table-hover">
             <thead class="thead-sticky">
@@ -16,6 +32,8 @@
                         id="{{columna.name}}" class="no-border-bottom th-resize"
                         [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
                         {{columna.label}}
+                    </th>
+                    <th columnResize class="td-center no-border-bottom th-resize">Acciones
                     </th>
                 </tr>
                 <tr>
@@ -112,6 +130,7 @@
                             </div>
                         </div>
                     </th>
+                    <th class="no-border-top td-center"></th>
                 </tr>
             </thead>
             <tbody>
@@ -127,6 +146,14 @@
                     <td>{{registro.subGrupo}}</td>
                     <td>{{registro.unidadMedida}}</td>
                     <td>{{registro.parametroPadre}}</td>
+                    <td>
+                        <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"><i
+                                class="bi bi-pencil-square icon-action"></i>
+                        </button>
+                        <button type="button" class="btn-action btn-danger-action" title="Eliminar"><i
+                                class="bi bi-trash"></i>
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>

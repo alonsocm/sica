@@ -222,7 +222,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
     // this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
-    // this.consultarMonitoreos();
+    this.getParametros();
   }
 
   pageClic(page: any) {
