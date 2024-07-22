@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -75,6 +76,7 @@ namespace Persistence
 
             #region Repositories
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(MyRepositoryAsync<>));
+            services.AddTransient<IRepository<Sitio>, SitioRepository>();
             services.AddTransient<IMuestreoRepository, MuestreoRepository>();
             services.AddTransient<IParametroRepository, ParametroRepository>();
             services.AddTransient<ISitioRepository, SitioRepository>();

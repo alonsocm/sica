@@ -18,8 +18,19 @@ namespace Application.Mappings
 
             #region DTOs
             CreateMap<Sitio, SitioDto>()
-                .ForMember(x => x.Nombre, o => o.MapFrom(src => src.NombreSitio))
-                .ForMember(x => x.Clave, o => o.MapFrom(src => src.ClaveSitio));
+                .ForMember(x => x.NombreSitio, o => o.MapFrom(src => src.NombreSitio))
+                .ForMember(x => x.ClaveSitio, o => o.MapFrom(src => src.ClaveSitio))
+                .ForMember(x => x.Cuenca, o => o.MapFrom(src => src.CuencaDireccionesLocales.Ocuenca.Descripcion))
+                .ForMember(x => x.DireccionLocal, o => o.MapFrom(src => src.CuencaDireccionesLocales.Dlocal.Descripcion))
+                .ForMember(x => x.Estado, o => o.MapFrom(src => src.Estado.Nombre))
+                .ForMember(x => x.Municipio, o => o.MapFrom(src => src.Municipio.Nombre))
+                .ForMember(x => x.CuerpoAgua, o => o.MapFrom(src => src.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion))
+                .ForMember(x => x.TipoCuerpoAgua, o => o.MapFrom(src => src.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion))
+                .ForMember(x => x.subtipoCuerpoAgua, o => o.MapFrom(src => src.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion))
+                .ForMember(x => x.Latitud, o => o.MapFrom(src => src.Latitud))
+                .ForMember(x => x.Longitud, o => o.MapFrom(src => src.Longitud))
+                .ForMember(x => x.Observaciones, o => o.MapFrom(src => src.Observaciones));
+
             CreateMap<Perfil, PerfilDto>();
             CreateMap<DireccionLocal, DireccionLocalDto>();
             CreateMap<Observaciones, ObservacionesDto>();
