@@ -13,9 +13,16 @@ namespace WebAPI.Controllers.v1.Catalogos
     public class ParametrosGrupo : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> Get(int page, int pageSize)
+        public async Task<IActionResult> Get(int page, int pageSize, string? filter)
         {
-            return Ok(await Mediator.Send(new ParametrosQuery { Page = page, PageSize = pageSize }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new ParametrosQuery { Page = page, PageSize = pageSize, Filter = filters }));
         }
 
         [HttpPost]
@@ -54,9 +61,16 @@ namespace WebAPI.Controllers.v1.Catalogos
         }
 
         [HttpGet("GetDistinctFromColumn")]
-        public IActionResult GetDistinctFromColumn(string column)
+        public IActionResult GetDistinctFromColumn(string column, string? filter)
         {
-            var data = Mediator.Send(new ParametrosQuery()).Result.Data;
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var data = Mediator.Send(new ParametrosQuery { Filter = filters }).Result.Data;
 
             return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
         }
