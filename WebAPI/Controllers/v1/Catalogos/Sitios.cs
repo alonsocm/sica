@@ -1,10 +1,15 @@
-﻿using Application.Features.Sitios.Commands.CreateSitioCommand;
+﻿using Application.DTOs;
+using Application.Features.Catalogos.Sitios.Queries;
+using Application.Features.Sitios.Queries;
+using Application.Features.Sitios.Commands.CreateSitioCommand;
 using Application.Features.Sitios.Commands.DeleteSitioCommand;
 using Application.Features.Sitios.Commands.UpdateSitioCommand;
 using Application.Features.Sitios.Queries.GetAllSitios;
 using Application.Features.Sitios.Queries.GetSitioById;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Catalogos
 {
@@ -18,11 +23,35 @@ namespace WebAPI.Controllers.v1.Catalogos
             return Ok(await Mediator.Send(new GetSitioByIdQuery { Id = id }));
         }
 
-        //GET: api/<controller>
-        [HttpGet()]
-        public async Task<IActionResult> Get([FromQuery] GetAllSitiosQuery filter)
+        //GET: api/<controller> Obtiene  los sitios mediante paginación
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] int page, int pageSize, string? filter = "", string? order = "")
         {
-            return Ok(await Mediator.Send(new GetAllSitiosQuery { Nombre = filter.Nombre ?? string.Empty, Clave = filter.Clave ?? string.Empty, Page = filter.Page, PageSize = filter.PageSize }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+            return Ok(await Mediator.Send(new GetAllSitiosPaginadosQuery            {
+               
+                Page = page,
+                PageSize = pageSize,
+                Filter = filters,
+                OrderBy = orderBy
+            }));
         }
 
         //POST api/<controller>
@@ -50,6 +79,19 @@ namespace WebAPI.Controllers.v1.Catalogos
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new DeleteSitioCommand { Id = id }));
+        }
+
+        [HttpGet("GetDistinctValuesFromColumn")]
+        public async Task<IActionResult> Get(string column, string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
         }
     }
 }
