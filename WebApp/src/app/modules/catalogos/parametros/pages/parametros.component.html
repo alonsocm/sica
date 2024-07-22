@@ -14,7 +14,14 @@
         </div> -->
         <div class="float-right">
             <button class="btn btn-primary btn-sm mr-1" type="button">
-                <i class="bi bi-plus-lg"></i> Agregar nuevo Parámetro
+                <i class="bi bi-plus-lg"></i> Nuevo parámetro
+            </button>
+            <button class="btn btn-primary btn-sm mr-1" type="button">
+                <i class="bi bi-filetype-xlsx"></i> Agregar desde archivo
+            </button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
+                <i class="bi bi-funnel"></i>
+                Limpiar filtros
             </button>
             <!-- <button class="btn btn-primary btn-sm mr-1" type="button">
                 <i class="bi bi-send-exclamation"></i> Borrar
@@ -22,26 +29,26 @@
         </div>
     </div>
     <div class="dvTable">
-        <table class="table-bordered table-hover">
+        <table class="table table-bordered table-hover">
             <thead class="thead-sticky">
                 <tr>
-                    <th columnResize class="td-center no-border-bottom th-resize">
+                    <!-- <th columnResize class="td-center no-border-bottom th-resize">
                         &nbsp;SELECCIONAR&nbsp;
-                    </th>
+                    </th> -->
                     <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
                         id="{{columna.name}}" class="no-border-bottom th-resize"
                         [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
                         {{columna.label}}
                     </th>
-                    <th columnResize class="td-center no-border-bottom th-resize">Acciones
+                    <th columnResize class="td-center no-border-bottom th-resize">ACCIONES
                     </th>
                 </tr>
                 <tr>
-                    <th class="no-border-top td-center">
+                    <!-- <th class="no-border-top td-center">
                         <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
                             (change)="onSelectPageClick(this.registros,this.registrosSeleccionados);"
                             title="Selecciona la página actual" />
-                    </th>
+                    </th> -->
                     <th class="no-border-top" *ngFor="let columna of this.columns let i = index"
                         id="filter-{{columna.name}}">
                         <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
@@ -136,10 +143,10 @@
             <tbody>
                 <tr
                     *ngFor="let registro of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
-                    <td class="td-center">
+                    <!-- <td class="td-center">
                         <input type="checkbox" [(ngModel)]="registro.selected" (change)="onSelectClick(registro)"
                             title="Seleccionar">
-                    </td>
+                    </td> -->
                     <td>{{registro.clave}}</td>
                     <td>{{registro.descripcion}}</td>
                     <td>{{registro.grupo}}</td>
