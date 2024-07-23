@@ -66,6 +66,7 @@ import { ColumnResizeDirective } from './column-resize.directive';
 import { NotificacionEmergenteComponent } from './shared/notificacion-emergente/notificacion-emergente.component';
 import { ParametrosComponent } from './modules/catalogos/parametros/pages/parametros.component';
 import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.component';
+import { TipoCuerpoAguaComponent } from './modules/catalogos/tipoCuerpoAgua/pages/tipo-cuerpo-agua/tipo-cuerpo-agua.component';
 
 
 @NgModule({
@@ -125,7 +126,7 @@ import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.compone
     NotificacionEmergenteComponent,
     ParametrosComponent,
     NotificacionEmergenteComponent,  
-    SitiosComponent,
+    SitiosComponent, TipoCuerpoAguaComponent,
   ],
   imports: [
     BrowserModule,

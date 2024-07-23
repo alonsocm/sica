@@ -44,6 +44,7 @@ import { ValidacionEvidenciasComponent } from './modules/muestreo/validacion-evi
 import { AdministracionMuestreoComponent } from './modules/muestreo/administracion/pages/administracion-muestreo/administracion-muestreo.component';
 import { ParametrosComponent } from './modules/catalogos/parametros/pages/parametros.component';
 import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.component';
+import { TipoCuerpoAguaComponent } from './modules/catalogos/tipoCuerpoAgua/pages/tipo-cuerpo-agua/tipo-cuerpo-agua.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -271,10 +272,15 @@ const routes: Routes = [
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
 
-
   {
     path: 'sitios',
     component: SitiosComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+
+  {
+    path: 'tipo-cuerpo-agua',
+    component: TipoCuerpoAguaComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
 
