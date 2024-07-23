@@ -385,12 +385,7 @@ export class UsuarioComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  validarCaracteres(evento: any): void {
-    const pattern: RegExp = /^([a-zA-ZÀ-ÿ_\u00f1\u00d1\s])$/;
-    if (!pattern.test(evento.key)) {
-      evento.preventDefault();
-    }
-  }
+  
 
   validarFormatoCorreo(evento: any): void {
     const pattern: RegExp = /^([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3})$/;

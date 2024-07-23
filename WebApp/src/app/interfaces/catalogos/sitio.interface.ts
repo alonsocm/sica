@@ -13,5 +13,13 @@ export interface Sitio extends Row {
   subtipoCuerpoAgua: string,
   latitud: number,
   longitud: number,
-  observaciones: string
+  observaciones: string,
+
+  cuencaId: number,
+  direccionLocalId: number,
+  estadoId: number,
+  municipioId: number,
+  cuerpoAguaId: number,
+  tipoCuerpoAguaId: number,
+  subtipoCuerpoAguaId: number
 }

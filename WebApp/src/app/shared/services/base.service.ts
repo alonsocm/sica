@@ -656,4 +656,11 @@ export class BaseService {
   validarCorreRegla(muestreo: acumuladosMuestreo): string {
     return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? "NO" : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? "SI" : "NO")
   }
+
+  validarCaracteres(evento: any): void {
+    const pattern: RegExp = /^([a-zA-ZÀ-ÿ_\u00f1\u00d1\s])$/;
+    if (!pattern.test(evento.key)) {
+      evento.preventDefault();
+    }
+  }
 }

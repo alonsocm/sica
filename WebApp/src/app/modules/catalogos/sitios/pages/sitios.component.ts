@@ -14,6 +14,38 @@ import { SitioService } from '../services/sitio.service';
 export class SitiosComponent extends BaseService implements OnInit {
   sitios: Array<Sitio> = []; 
   sitiosSeleccionados: Array<Sitio> = [];
+  public sitioRegistro: Sitio = {
+    id: 0,
+    claveSitio: '',
+    nombreSitio: '',
+    cuenca: '',
+    direccionLocal: '',
+    estado: '',
+    municipio: '',
+    cuerpoAgua: '',
+    tipoCuerpoAgua: '',
+    subtipoCuerpoAgua: '',
+    latitud: 0,
+    longitud: 0,
+    observaciones: '',
+    selected: false,
+    cuencaId: 0,
+    direccionLocalId: 0,
+    estadoId: 0,
+    municipioId: 0,
+    cuerpoAguaId: 0,
+    tipoCuerpoAguaId: 0,
+    subtipoCuerpoAguaId:0
+  };
+  modalTitle: string = '';
+  editar: boolean = false;
+  organismosCuenca: Array<any> = [];
+  direccionesLocales: Array<any> = [];
+  estados: Array<any> = [];
+  municipios: Array<any> = [];
+  cuerposAgua: Array<any> = [];
+  tiposCuerpoAgua: Array<any> = [];
+  subtiposCuerpoAgua: Array<any> = [];
   constructor(public muestreoService: MuestreoService, public sitioService: SitioService) { super(); }
 
   ngOnInit(): void {
@@ -26,7 +58,7 @@ export class SitiosComponent extends BaseService implements OnInit {
     let nombresColumnas: Array<Column> = [
       {
         name: 'claveSitio',
-        label: 'clave sitio',
+        label: 'CLAVE SITIO',
         order: 1,
         selectAll: true,
         filtered: false,
@@ -203,12 +235,16 @@ export class SitiosComponent extends BaseService implements OnInit {
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-      },
+      },      
 
     ];
 
     this.columns = nombresColumnas;
     this.setHeadersList(this.columns);
+  }
+
+  cargarCombos() {
+
   }
 
   public consultarSitios(
@@ -379,4 +415,6 @@ export class SitiosComponent extends BaseService implements OnInit {
   cargarArchivo(event: Event) { }
   RegistrarSitio() { }
 
+  AddSites() { }
+  UpdateSites() { }
 }
