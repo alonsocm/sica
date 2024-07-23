@@ -117,8 +117,7 @@ namespace Persistence
             services.AddTransient<IVwValidacionEvidenciaRealizadaRepository, VwValidacionEvidenciaRealizadaRepository>();
             services.AddTransient<IVwEstatusMuestreosAdministracionRepository, VwEstatusMuestreosAdministracionRepository>();
             services.AddTransient<IVwResultadosNoCumplenFechaEntregaRepository, VwResultadosNoCumplenFechaEntregaRepository>();
-
-
+            services.AddTransient<ITipoCuerpoAguaRepository,TipoCuerpoAguaRepository>();
             #endregion
         }
     }

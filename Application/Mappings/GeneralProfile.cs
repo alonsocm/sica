@@ -51,18 +51,16 @@ namespace Application.Mappings
             CreateMap<Municipio, MunicipioDto>();
             CreateMap<Localidad, LocalidadDto>();
             //CreateMap<AprobacionResultadoMuestreo, AprobacionResultadoMuestreoDto>();
-
             CreateMap<ParametrosGrupo, ParametrosDto>();
             CreateMap<TipoHomologado, TipoHomologadoDto>();
             CreateMap<SupervisionMuestreo, SupervisionMuestreoDto>();
             CreateMap<Laboratorios, LaboratoriosDto>();
             CreateMap<EvidenciaSupervisionMuestreo, EvidenciaSupervisionDto>();
-            CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>();
+            CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>()
+                .ForMember(x => x.TipoHomologadoDescripcion, o => o.MapFrom(src => src.TipoHomologado.Descripcion));
             CreateMap<VwValidacionEviencias, vwValidacionEvienciasDto>();
-
             CreateMap<VwValidacionEvidenciaRealizada, EventualidadesMuestreoAprobados>();
             CreateMap<VwValidacionEvidenciaRealizada, EvidenciasMuestreosAprobados>();
-
             #endregion
         }
     }

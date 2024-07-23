@@ -7,10 +7,10 @@ using MediatR;
 
 namespace Application.Features.Catalogos.CuerpoDeAgua.Queries
 {
-    public class GetTipoCuerpoAguaQuery : IRequest<Response<List<TipoCuerpoAguaDto>>>
+    public class GetTipoCuerpoAguaQuery1 : IRequest<Response<List<TipoCuerpoAguaDto>>>
     {
     }
-    public class GetTipoCuerpoAguaQueryHandler : IRequestHandler<GetTipoCuerpoAguaQuery, Response<List<TipoCuerpoAguaDto>>>
+    public class GetTipoCuerpoAguaQueryHandler : IRequestHandler<GetTipoCuerpoAguaQuery1, Response<List<TipoCuerpoAguaDto>>>
     {
         private readonly IRepositoryAsync<TipoCuerpoAgua> _repository;
         private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace Application.Features.Catalogos.CuerpoDeAgua.Queries
             _mapper = mapper;
         }
 
-        public async Task<Response<List<TipoCuerpoAguaDto>>> Handle(GetTipoCuerpoAguaQuery request, CancellationToken cancellationToken)
+        public async Task<Response<List<TipoCuerpoAguaDto>>> Handle(GetTipoCuerpoAguaQuery1 request, CancellationToken cancellationToken)
         {
             var tiposCuerpoAgua = await _repository.ListAsync(cancellationToken);
             var tipoCuerpoAguaDto = _mapper.Map<List<TipoCuerpoAguaDto>>(tiposCuerpoAgua);
