@@ -21,7 +21,8 @@ namespace WebAPI.Controllers.v1.Catalogos
             return Ok(await Mediator.Send(new GetTipoCuerpoAguaIdQuery { Id = id })); ;
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+
+        public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new DeleteTipoCuerpoAguaCommand { Id = id })); ;
         }

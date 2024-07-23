@@ -23,11 +23,7 @@ namespace Application.Features.TiposCuerpoAgua.Commands.AddTipoCuerpoAguaCommand
         }
         public Task<Response<bool>> Handle(AddTipoCuerpoAguaCommand request, CancellationToken cancellationToken)
         {
-            var duplicadodescripcion = _repository.Equals(request.Descripcion);
-            if (duplicadodescripcion != null)
-            {
-                return Task.FromResult(new Response<bool>(true, "Ya existe un TipoCuerpoAgua con la misma descripción."));
-            }
+
             var tipoCuerpoAgua = new Domain.Entities.TipoCuerpoAgua()
             {
                 Id = request.Id,

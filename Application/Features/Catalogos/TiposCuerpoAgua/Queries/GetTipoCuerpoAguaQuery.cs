@@ -2,7 +2,6 @@
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using AutoMapper;
-using Domain.Entities;
 using MediatR;
 
 
