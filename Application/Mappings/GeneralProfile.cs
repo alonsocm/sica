@@ -47,9 +47,6 @@ namespace Application.Mappings
             CreateMap<EvidenciaSupervisionMuestreo, EvidenciaSupervisionDto>();
             CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>()
                 .ForMember(x => x.TipoHomologadoDescripcion, o => o.MapFrom(src => src.TipoHomologado.Descripcion));
-           
-
-
             CreateMap<VwValidacionEviencias, vwValidacionEvienciasDto>();
             CreateMap<VwValidacionEvidenciaRealizada, EventualidadesMuestreoAprobados>();
             CreateMap<VwValidacionEvidenciaRealizada, EvidenciasMuestreosAprobados>();

@@ -6,7 +6,7 @@ using Domain.Entities;
 using MediatR;
 
 
-namespace Application.Features.Catalogos.TiposCuerpoAgua.Queries.AllTiposCuerpoAgua
+namespace Application.Features.Catalogos.TiposCuerpoAgua.Queries
 {
     public class GetTipoCuerpoAguaQuery : IRequest<Response<IEnumerable<TipoCuerpoAguaDto>>>
     {
