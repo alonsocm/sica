@@ -67,6 +67,8 @@ import { NotificacionEmergenteComponent } from './shared/notificacion-emergente/
 import { ParametrosComponent } from './modules/catalogos/parametros/pages/parametros.component';
 import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.component';
 import { TipoCuerpoAguaComponent } from './modules/catalogos/tipoCuerpoAgua/pages/tipo-cuerpo-agua/tipo-cuerpo-agua.component';
+import { LaboratoriosComponent } from './modules/catalogos/laboratorios/pages/laboratorios.component';
+import { LimiteLaboratoriosComponent } from './modules/catalogos/limitesLaboratorios/pages/limite-laboratorios.component';
 
 
 @NgModule({
@@ -126,7 +128,7 @@ import { TipoCuerpoAguaComponent } from './modules/catalogos/tipoCuerpoAgua/page
     NotificacionEmergenteComponent,
     ParametrosComponent,
     NotificacionEmergenteComponent,  
-    SitiosComponent, TipoCuerpoAguaComponent,
+    SitiosComponent, TipoCuerpoAguaComponent, LaboratoriosComponent, LimiteLaboratoriosComponent,
   ],
   imports: [
     BrowserModule,
