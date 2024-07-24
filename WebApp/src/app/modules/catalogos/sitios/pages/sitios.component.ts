@@ -29,16 +29,19 @@ export class SitiosComponent extends BaseService implements OnInit {
     longitud: 0,
     observaciones: '',
     selected: false,
-    cuencaId: 0,
-    direccionLocalId: 0,
-    estadoId: 0,
-    municipioId: 0,
+    organismoCuencaId: null,
+    direccionLocalId: null,
+    estadoId: null,
+    municipioId: null,
     cuerpoAguaId: 0,
     tipoCuerpoAguaId: 0,
-    subtipoCuerpoAguaId:0
+    subtipoCuerpoAguaId: 0,
+    acuifero: '',
+    acuiferoId: null
   };
   modalTitle: string = '';
   editar: boolean = false;
+  cuencaDireccionesLocales: Array<any> = [];
   organismosCuenca: Array<any> = [];
   direccionesLocales: Array<any> = [];
   estados: Array<any> = [];
@@ -46,12 +49,13 @@ export class SitiosComponent extends BaseService implements OnInit {
   cuerposAgua: Array<any> = [];
   tiposCuerpoAgua: Array<any> = [];
   subtiposCuerpoAgua: Array<any> = [];
+  acuiferos: Array<any> = [];
   constructor(public muestreoService: MuestreoService, public sitioService: SitioService) { super(); }
 
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
-    this.consultarSitios();
+    this.consultarSitios();    
   }
 
   definirColumnas() {
@@ -87,9 +91,24 @@ export class SitiosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
+        name: 'acuifero',
+        label: 'ACUIFERO',
+        order: 3,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+      },
+      {
         name: 'cuenca',
         label: 'ORGANISMO DE CUENCA',
-        order: 3,
+        order: 4,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -104,7 +123,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'direccionLocal',
         label: 'DIRECCIÓN LOCAL',
-        order: 4,
+        order: 5,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -119,7 +138,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'estado',
         label: 'ESTADO',
-        order: 5,
+        order: 6,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -134,7 +153,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'municipio',
         label: 'MUNICIPIO',
-        order: 6,
+        order: 7,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -149,7 +168,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'cuerpoAgua',
         label: 'CUERPO DE AGUA',
-        order: 7,
+        order: 8,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -164,7 +183,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'tipoCuerpoAgua',
         label: 'TIPO CUERPO DE AGUA',
-        order: 8,
+        order: 9,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -179,7 +198,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'subtipoCuerpoAgua',
         label: 'SUBTIPO CUERPO DE AGUA',
-        order: 9,
+        order: 10,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -194,7 +213,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'latitud',
         label: 'LATITUD',
-        order: 10,
+        order: 11,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -209,7 +228,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'longitud',
         label: 'LONGITUD',
-        order: 11,
+        order: 12,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -224,7 +243,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       {
         name: 'observaciones',
         label: 'OBSERVACIONES',
-        order: 12,
+        order: 13,
         selectAll: true,
         filtered: false,
         asc: false,
@@ -235,8 +254,7 @@ export class SitiosComponent extends BaseService implements OnInit {
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-      },      
-
+      },
     ];
 
     this.columns = nombresColumnas;
@@ -244,7 +262,54 @@ export class SitiosComponent extends BaseService implements OnInit {
   }
 
   cargarCombos() {
+    this.sitioService
+      .getCuencasDireccionesLocales()
+      .subscribe({
+        next: (response: any) => {         
+          this.cuencaDireccionesLocales = response;
+          this.organismosCuenca = this.cuencaDireccionesLocales.filter(
+            (thing, i, arr) => arr.findIndex(t => t.organismoCuenca === thing.organismoCuenca) === i
+          );
+        },
+        error: (error) => {         
+        },
+      });
 
+    this.sitioService
+      .getEstados()
+      .subscribe({
+        next: (response: any) => {
+          this.estados = response.data;            
+        },
+        error: (error) => {
+        },
+      });
+
+    this.sitioService
+      .getAcuiferos()
+      .subscribe({
+        next: (response: any) => {        
+          this.acuiferos = response;         
+        },
+        error: (error) => {
+        },
+      });
+  }
+
+  cargaDireccionLocal() {
+    this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.organismoCuencaId == this.sitioRegistro.organismoCuencaId && x.dieccionLocalId != null);
+  }
+
+  cargaMunicipios() { 
+    this.sitioService
+      .getMunicipios((this.sitioRegistro.estadoId == null) ? 0 : this.sitioRegistro.estadoId)
+      .subscribe({
+        next: (response: any) => {
+          this.municipios = response.data;
+        },
+        error: (error) => {
+        },
+      });
   }
 
   public consultarSitios(
@@ -258,9 +323,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.sitios = response.data;
-          console.log("sitios");
-          console.log(this.sitios);
+          this.sitios = response.data;    
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.sitios, this.sitiosSeleccionados);
@@ -287,6 +350,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       }
     });
   }
+
   onSelectClick(muestreo: Sitio) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
@@ -308,6 +372,7 @@ export class SitiosComponent extends BaseService implements OnInit {
 
   
   }
+
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
 
@@ -369,7 +434,6 @@ export class SitiosComponent extends BaseService implements OnInit {
       });
   }
 
-
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
     this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
@@ -413,8 +477,10 @@ export class SitiosComponent extends BaseService implements OnInit {
   }
 
   cargarArchivo(event: Event) { }
+
   RegistrarSitio() { }
 
   AddSites() { }
+
   UpdateSites() { }
 }

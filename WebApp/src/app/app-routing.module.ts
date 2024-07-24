@@ -45,6 +45,8 @@ import { AdministracionMuestreoComponent } from './modules/muestreo/administraci
 import { ParametrosComponent } from './modules/catalogos/parametros/pages/parametros.component';
 import { SitiosComponent } from './modules/catalogos/sitios/pages/sitios.component';
 import { TipoCuerpoAguaComponent } from './modules/catalogos/tipoCuerpoAgua/pages/tipo-cuerpo-agua/tipo-cuerpo-agua.component';
+import { LaboratoriosComponent } from './modules/catalogos/laboratorios/pages/laboratorios.component';
+import { LimiteLaboratoriosComponent } from './modules/catalogos/limitesLaboratorios/pages/limite-laboratorios.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -281,6 +283,17 @@ const routes: Routes = [
   {
     path: 'tipo-cuerpo-agua',
     component: TipoCuerpoAguaComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+
+  {
+    path: 'laboratorios',
+    component: LaboratoriosComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
+  {
+    path: 'limiteLaboratorios',
+    component: LimiteLaboratoriosComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
 

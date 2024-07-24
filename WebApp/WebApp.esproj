@@ -8,7 +8,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\app\modules\catalogos\estados\services\" />
+    <Folder Include="src\app\modules\catalogos\laboratorios\services\" />
+    <Folder Include="src\app\modules\catalogos\limitesLaboratorios\services\" />
     <Folder Include="src\app\modules\catalogos\sitios\services\" />
+    <Folder Include="src\app\modules\catalogos\tipoCuerpoAgua\services\" />
     <Folder Include="src\app\modules\muestreo\administracion\pages\" />
     <Folder Include="src\app\modules\muestreo\aprobacion\replica-diferente\pages\" />
     <Folder Include="src\app\modules\muestreo\aprobacion\replica-diferente\services\" />

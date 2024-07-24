@@ -1,2 +1,162 @@
 <router-outlet name="menu"></router-outlet>
-<p>tipo-cuerpo-agua works!</p>
+<div class="container-fluid">
+    <h1 class="row col">Administración Tipos Cuerpo de Agua</h1>
+    <hr class="red">
+    <div class="message-container">
+        <app-notification></app-notification>
+    </div>     
+    <div class="clearfix" style="margin-bottom: 1%;">
+        <div class="float-right">
+            <button class="btn btn-primary btn-sm mr-1" type="button">
+                <i class="bi bi-plus-lg"></i> Nuevo Tipo Cuerpo Agua
+            </button>
+            <button class="btn btn-primary btn-sm mr-1" type="button">
+                <i class="bi bi-filetype-xlsx"></i> Agregar desde archivo
+            </button>
+            <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
+                <i class="bi bi-funnel"></i>
+                Limpiar filtros
+            </button>
+        </div>
+    </div>
+    <div class="dvTable">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-sticky">
+                <tr>
+                    <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
+                        id="{{columna.name}}" class="no-border-bottom th-resize"
+                        [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+                        {{columna.label}}
+                    </th>
+                    <th columnResize class="td-center no-border-bottom th-resize">ACCIONES
+                    </th>
+                </tr>
+                <tr>
+                    <th class="no-border-top" *ngFor="let columna of this.columns let i = index"
+                        id="filter-{{columna.name}}">
+                        <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
+                            <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown"
+                                aria-haspopup="true" title="Filtros" aria-expanded="false"
+                                (click)="onFilterIconClick(columna);">
+                                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                                    class="bi bi-caret-down-fill"></i>
+                                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                                <i [(ngModel)]="columna.asc"
+                                    *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                                    class="bi bi-arrow-down"></i>
+                                <i [(ngModel)]="columna.desc"
+                                    *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                                    class="bi bi-arrow-up"></i>
+                            </button>
+                            <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
+                                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
+                                        class="bi bi-sort-alpha-down"></i>
+                                    Ordenar de A a Z
+                                </a>
+                                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                                    <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
+                                        class="bi bi-sort-alpha-down-alt"></i>
+                                    Ordenar de Z a A
+                                </a>
+                                <hr class="dropdown-divider">
+                                <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
+                                    <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}"
+                                        class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>
+                                    Eliminar filtro de {{columna.label}}
+                                </a>       
+                                <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
+                                    <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals"
+                                        style="color: palegreen" class="bi bi-check-square-fill"></i>
+    
+                                    {{leyendaFiltrosEspeciales}}
+                                </a>
+    
+                                <div id="filters-{{columna.name}}" class="d-none">
+                                    <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
+                                        (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item"
+                                        data-toggle="modal" data-target="#mdlFiltro">
+                                        <i id="imgFiltroEspecializado"
+                                            *ngIf="(nombre == this.filtroEspecializado && columna.optionFilter != null && columna.secondOptionFilter != '') || nombre === columna.optionFilter && columna.optionFilter != this.filtroEspecialEquals && columna.secondOptionFilter ==''"
+                                            class="bi bi-check-lg"></i>
+                                        {{nombre}} ...
+                                        <div *ngIf="this.indicesopcionesFiltros.includes(indice)"
+                                            class="dropdown-divider"></div>
+                                    </a>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div style="height:300px; overflow:scroll; padding:5px">
+                                    <input class="form-control" placeholder="Buscar" type="text"
+                                        (input)="onFiltroCabecero($event, columna)" />
+                                    <input type="checkbox" id="chckAllFiltro{{columna.name}}"
+                                        [(ngModel)]="columna.selectAll" (change)="seleccionarAllFiltro(columna);" />
+                                    <label style="font-size:x-small" (click)="$event.stopPropagation()"
+                                        for="chckAllFiltro{{columna.name}}">
+                                        Seleccionar
+                                        todos
+                                    </label>
+                                    <div style="height:min-content"
+                                        *ngFor="let dato of columna.filteredData; index as i">
+                                        <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked"
+                                            class="check chkdata" />
+                                        <label for="{{columna.name+i}}" style="font-size:xx-small;display: inline;"
+                                            (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="font-size:xx-small;">
+                                    <button id="btnCancelarFiltro" type="button" style="font-size:xx-small"
+                                        class="btn btn-secondary btn-sm" data-dismiss="dropdown"
+                                        (click)="onCancelarFiltroClick()">
+                                        Cancelar
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" style="font-size:xx-small"
+                                        (click)="filtrar(columna,false);" data-dismiss="dropdown">
+                                        Aceptar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </th>
+                    <th class="no-border-top td-center"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr                
+                    *ngFor="let registro of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
+                    <td>{{registro.id}}</td>
+                    <td>{{registro.descripcion}}</td>                    
+                    <td>{{registro.tipoHomologadoDescripcion}}</td>
+                    <td>{{registro.activo}}</td>
+                    <td>{{registro.frecuencia}}</td>
+                    <td>{{registro.evidenciaEsperada}}</td>
+                    <td>{{registro.tiempoMinimoMuestreo}}</td>
+                    <td>
+                        <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"><i
+                                class="bi bi-pencil-square icon-action"></i>
+                        </button>
+                        <button type="button" class="btn-action btn-danger-action" title="Eliminar"><i
+                                class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
+        </div>
+        <div class="col-md-2">
+            <p class="total-items">Registros por página: <span
+                    class="badge text-bg-primary">{{this.registros.length}}</span>
+            </p>
+        </div>
+        <div class="col-md-3">
+            <p class="total-items">
+                Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span>
+            </p>
+        </div>
+    </div> 
+</div>
