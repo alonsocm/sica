@@ -31,8 +31,8 @@ namespace Application.Features.Catalogos.CuencaDireccionesLocales.Queries
 
         public async Task<IEnumerable<CuencaDireccionesLocalesDto>> Handle(GetAllCuencaDireccionLocalQuery request, CancellationToken cancellationToken)
         {
-            var sitios = await _repositoryAsync.ListAsync(new CuencaDireccionLocalSpecification(), cancellationToken);
-            return _mapper.Map<IEnumerable<CuencaDireccionesLocalesDto>>(sitios);
+            var cuencasDirecciones = await _repositoryAsync.ListAsync(new CuencaDireccionLocalSpecification(), cancellationToken);
+            return _mapper.Map<IEnumerable<CuencaDireccionesLocalesDto>>(cuencasDirecciones);
            
         }
     }

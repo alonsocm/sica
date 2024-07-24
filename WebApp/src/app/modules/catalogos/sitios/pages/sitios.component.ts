@@ -31,8 +31,8 @@ export class SitiosComponent extends BaseService implements OnInit {
     selected: false,
     organismoCuencaId: null,
     direccionLocalId: null,
-    estadoId: 0,
-    municipioId: 0,
+    estadoId: null,
+    municipioId: null,
     cuerpoAguaId: 0,
     tipoCuerpoAguaId: 0,
     subtipoCuerpoAguaId: 0,
@@ -49,13 +49,13 @@ export class SitiosComponent extends BaseService implements OnInit {
   cuerposAgua: Array<any> = [];
   tiposCuerpoAgua: Array<any> = [];
   subtiposCuerpoAgua: Array<any> = [];
+  acuiferos: Array<any> = [];
   constructor(public muestreoService: MuestreoService, public sitioService: SitioService) { super(); }
 
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
-    this.consultarSitios();
-    this.cargarCombos();
+    this.consultarSitios();    
   }
 
   definirColumnas() {
@@ -271,14 +271,45 @@ export class SitiosComponent extends BaseService implements OnInit {
             (thing, i, arr) => arr.findIndex(t => t.organismoCuenca === thing.organismoCuenca) === i
           );
         },
+        error: (error) => {         
+        },
+      });
+
+    this.sitioService
+      .getEstados()
+      .subscribe({
+        next: (response: any) => {
+          this.estados = response.data;            
+        },
         error: (error) => {
-         
+        },
+      });
+
+    this.sitioService
+      .getAcuiferos()
+      .subscribe({
+        next: (response: any) => {        
+          this.acuiferos = response;         
+        },
+        error: (error) => {
         },
       });
   }
 
   cargaDireccionLocal() {
     this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.organismoCuencaId == this.sitioRegistro.organismoCuencaId && x.dieccionLocalId != null);
+  }
+
+  cargaMunicipios() { 
+    this.sitioService
+      .getMunicipios((this.sitioRegistro.estadoId == null) ? 0 : this.sitioRegistro.estadoId)
+      .subscribe({
+        next: (response: any) => {
+          this.municipios = response.data;
+        },
+        error: (error) => {
+        },
+      });
   }
 
   public consultarSitios(
@@ -319,6 +350,7 @@ export class SitiosComponent extends BaseService implements OnInit {
       }
     });
   }
+
   onSelectClick(muestreo: Sitio) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
@@ -340,6 +372,7 @@ export class SitiosComponent extends BaseService implements OnInit {
 
   
   }
+
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
 
@@ -401,7 +434,6 @@ export class SitiosComponent extends BaseService implements OnInit {
       });
   }
 
-
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
     this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
@@ -445,8 +477,10 @@ export class SitiosComponent extends BaseService implements OnInit {
   }
 
   cargarArchivo(event: Event) { }
+
   RegistrarSitio() { }
 
-  AddSites() {  }
+  AddSites() { }
+
   UpdateSites() { }
 }

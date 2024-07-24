@@ -18,8 +18,8 @@ export interface Sitio extends Row {
   acuiferoId: number | null,
   organismoCuencaId: number | null,
   direccionLocalId: number | null,
-  estadoId: number,
-  municipioId: number,
+  estadoId: number | null,
+  municipioId: number | null,
   cuerpoAguaId: number,
   tipoCuerpoAguaId: number,
   subtipoCuerpoAguaId: number

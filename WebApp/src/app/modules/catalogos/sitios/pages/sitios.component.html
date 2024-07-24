@@ -15,7 +15,7 @@
       </app-busqueda-columna>
     </div>-->
     <div class="float-right">
-      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro" (click)="RegistrarSitio()">
+      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro" (click)="cargarCombos()">
         <i class="bi bi-plus-lg"></i> Nuevo sitio
       </button>
 
@@ -239,8 +239,8 @@
             <div class="col-sm-9">
               <select id="dropAcuifero" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.acuiferoId">
                 <option [ngValue]=null>--Seleccione--</option>
-                <option *ngFor="let perfil of cuerposAgua" [ngValue]="perfil.id">
-                  {{perfil.nombre}}
+                <option *ngFor="let acuifero of acuiferos" [ngValue]="acuifero.id">
+                  {{acuifero.descripcion}}
                 </option>
               </select>
               <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.acuiferoId==null">
@@ -280,13 +280,13 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Estado:</label>
             <div class="col-sm-3">
-              <select id="dropEstados" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.estadoId">
-                <option value="0">--Seleccione--</option>
-                <option *ngFor="let perfil of estados" [ngValue]="perfil.id">
-                  {{perfil.nombre}}
+              <select id="dropEstados" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.estadoId" (click)="cargaMunicipios();">
+                <option [ngValue]="null">--Seleccione--</option>
+                <option *ngFor="let estado of estados" [ngValue]="estado.id">
+                  {{estado.nombre}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.estadoId==0">
+              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.estadoId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>
@@ -294,12 +294,12 @@
             <label class="col-sm-3 control-label">Municipio:</label>
             <div class="col-sm-3">
               <select id="dropMunicipios" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.municipioId">
-                <option value="0">--Seleccione--</option>
-                <option *ngFor="let perfil of municipios" [ngValue]="perfil.id">
-                  {{perfil.nombre}}
+                <option [ngValue]="null">--Seleccione--</option>
+                <option *ngFor="let municipio of municipios" [ngValue]="municipio.id">
+                  {{municipio.nombre}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.municipioId==0">
+              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.municipioId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>

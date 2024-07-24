@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Features.Sitios.Commands.CreateSitioCommand;
@@ -17,6 +18,7 @@ namespace Application.Mappings
             #endregion
 
             #region DTOs
+            CreateMap<Acuifero, AcuiferoDto>();
             CreateMap<Sitio, SitioDto>()
                 .ForMember(x => x.NombreSitio, o => o.MapFrom(src => src.NombreSitio))
                 .ForMember(x => x.ClaveSitio, o => o.MapFrom(src => src.ClaveSitio))

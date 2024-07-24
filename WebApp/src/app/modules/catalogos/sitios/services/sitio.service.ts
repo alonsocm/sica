@@ -62,6 +62,30 @@ export class SitioService {
     );
   }
 
+  getEstados(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/Estados', {}
+    );
+  }
+
+
+  getMunicipios(EstadoId: number): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        EstadoId: EstadoId      
+      },
+    });
+    return this.http.get(
+      environment.apiUrl + '/Municipios/MunicipiosByEstadoId', { params }
+    );
+  }
+
+  getAcuiferos(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/Acuiferos', {}
+    );
+  }
+
 
 }
 
