@@ -125,13 +125,12 @@
                 <tr                
                     *ngFor="let registro of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
                     <td>{{registro.id}}</td>
-                    <td>{{registro.descripcion}}</td>
-                    <td>{{registro.tipohomologadoid}}</td>
-                    <td>{{registro.tipoHomologadoIdDescripcion}}</td>
+                    <td>{{registro.descripcion}}</td>                    
+                    <td>{{registro.tipoHomologadoDescripcion}}</td>
                     <td>{{registro.activo}}</td>
-                    <td>{{registro.freuencia}}</td>
-                    <td>{{registro.evidenciaesperada}}</td>
-                    <td>{{registro.tiempominimomuestreo}}</td>
+                    <td>{{registro.frecuencia}}</td>
+                    <td>{{registro.evidenciaEsperada}}</td>
+                    <td>{{registro.tiempoMinimoMuestreo}}</td>
                     <td>
                         <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"><i
                                 class="bi bi-pencil-square icon-action"></i>

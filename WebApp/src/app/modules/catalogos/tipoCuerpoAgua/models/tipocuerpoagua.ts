@@ -3,10 +3,10 @@ import { Row } from 'src/app/modules/muestreo/formatoResultado/models/row';
 export interface tipocuerpoagua extends Row {
   id: number;
   descripcion: string;
-  tipohomologadoid:number;
-  tipoHomologadoIdDescripcion:string;
+  tipoHomologadoId:number;
+  tipoHomologadoDescripcion:string;
   activo:Boolean;
-  freuencia: string;
-  evidenciaesperada:number;
-  tiempominimomuestreo:number;
+  frecuencia: string;
+  evidenciaEsperada:number;
+  tiempoMinimoMuestreo:number;
 }
