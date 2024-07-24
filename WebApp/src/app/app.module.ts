@@ -126,7 +126,8 @@ import { TipoCuerpoAguaComponent } from './modules/catalogos/tipoCuerpoAgua/page
     NotificacionEmergenteComponent,
     ParametrosComponent,
     NotificacionEmergenteComponent,  
-    SitiosComponent, TipoCuerpoAguaComponent,
+    SitiosComponent, 
+    TipoCuerpoAguaComponent,
   ],
   imports: [
     BrowserModule,
