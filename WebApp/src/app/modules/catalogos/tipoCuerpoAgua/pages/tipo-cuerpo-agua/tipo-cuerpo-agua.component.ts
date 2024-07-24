@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from 'src/app/interfaces/filter/item';
-import { tipocuerpoagua } from '../../models/tipocuerpoagua';
+import { TipoCuerpoAgua } from '../../models/tipocuerpoagua';
 import { TipoCuerpoAguaService } from '../../services/tipoCuerpoAgua.service';
 
 @Component({
@@ -12,8 +12,8 @@ import { TipoCuerpoAguaService } from '../../services/tipoCuerpoAgua.service';
 })
 export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
-  registros: Array<tipocuerpoagua> = [];
-  registrosSeleccionados: Array<tipocuerpoagua> = [];
+  registros: Array<TipoCuerpoAgua> = [];
+  registrosSeleccionados: Array<TipoCuerpoAgua> = [];
 
   constructor(private tipocuerpoagua: TipoCuerpoAguaService) {
     super();
@@ -25,9 +25,10 @@ ngOnInit(): void {
 }
 definirColumnas() {
   let columnas: Array<Column> = [
+    
     {
-      name: 'id',
-      label: 'ID',
+      name: 'descripcion',
+      label: 'DESCRIPCIÓN',
       order: 1,
       selectAll: true,
       filtered: false,
@@ -39,22 +40,9 @@ definirColumnas() {
       selectedData: '',
     },
     {
-      name: 'descripcion',
-      label: 'DESCRIPCIÓN',
-      order: 2,
-      selectAll: true,
-      filtered: false,
-      asc: false,
-      desc: false,
-      data: [],
-      filteredData: [],
-      dataType: '',
-      selectedData: '',
-    },
-    {
       name: 'tipoHomologadoIdDescripcion',
-      label: 'TIPO HOMOLOGADO ID DESCRIPCION',
-      order:3,
+      label: 'TIPO HOMOLOGADO',
+      order:2,
       selectAll: true,
       filtered: false,
       asc: false,
@@ -67,7 +55,7 @@ definirColumnas() {
     {
       name: 'activo',
       label: 'ACTIVO',
-      order:4,
+      order:3,
       selectAll: true,
       filtered: false,
       asc: false,
@@ -80,6 +68,19 @@ definirColumnas() {
     {
       name: 'frecuencia',
       label: 'FRECUENCIA',
+      order:4,
+      selectAll: true,
+      filtered: false,
+      asc: false,
+      desc: false,
+      data: [],
+      filteredData: [],
+      dataType: '',
+      selectedData: '',
+    },
+    {
+      name: 'evidenciasEsperadas',
+      label: 'NÚMERO DE EVIDENCIAS ESPERADAS',
       order:5,
       selectAll: true,
       filtered: false,
@@ -91,22 +92,9 @@ definirColumnas() {
       selectedData: '',
     },
     {
-      name: 'evidenciaEsperada',
-      label: 'EVIDENCIA ESPERADA',
-      order:6,
-      selectAll: true,
-      filtered: false,
-      asc: false,
-      desc: false,
-      data: [],
-      filteredData: [],
-      dataType: '',
-      selectedData: '',
-    },
-    {
       name: 'tiempoMinimoMuestreo',
-      label: 'TIEMPO MINIMO DE MUESTREO',
-      order:7,
+      label: 'TIEMPO MÍNIMO DE MUESTREO',
+      order:6,
       selectAll: true,
       filtered: false,
       asc: false,
@@ -138,7 +126,7 @@ getTipoCuerpoAguaQuery() {
       },
     });
 }
-  onSelectClick(registro: tipocuerpoagua) {
+  onSelectClick(registro: TipoCuerpoAgua) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
     if (this.allSelected) this.allSelected = false;
@@ -158,8 +146,8 @@ getTipoCuerpoAguaQuery() {
   }
 
   getPreviousSelected(
-    muestreos: Array<tipocuerpoagua>,
-    muestreosSeleccionados: Array<tipocuerpoagua>
+    muestreos: Array<TipoCuerpoAgua>,
+    muestreosSeleccionados: Array<TipoCuerpoAgua>
   ) {
     muestreos.forEach((f) => {
       let muestreoSeleccionado = muestreosSeleccionados.find(

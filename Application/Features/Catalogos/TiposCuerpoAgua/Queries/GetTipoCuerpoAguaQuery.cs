@@ -24,7 +24,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Queries
         public async Task<Response<IEnumerable<TipoCuerpoAguaDto>>> Handle(GetTipoCuerpoAguaQuery request, CancellationToken cancellationToken)
         {
             var tiposCuerpoAgua = _repository.ObtenerElementoConInclusiones(x => true, i => i.TipoHomologado);
-            var tipoCuerpoAgua = _mapper.Map<IEnumerable<TipoCuerpoAguaDto>>(tiposCuerpoAgua);
+            var tipoCuerpoAgua = _mapper.Map<IEnumerable<TipoCuerpoAguaDto>>(tiposCuerpoAgua.OrderBy(o => o.Descripcion));
             return new Response<IEnumerable<TipoCuerpoAguaDto>>(tipoCuerpoAgua);
         }
     }

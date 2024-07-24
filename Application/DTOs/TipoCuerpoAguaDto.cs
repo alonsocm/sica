@@ -8,7 +8,7 @@
         public string TipoHomologadoDescripcion { get; set; }
         public bool Activo { get; set; }
         public string Frecuencia { get; set; }
-        public int EvidenciaEsperada { get; set; }
+        public int EvidenciasEsperadas { get; set; }
         public int TiempoMinimoMuestreo { get; set; }
     }
 }
