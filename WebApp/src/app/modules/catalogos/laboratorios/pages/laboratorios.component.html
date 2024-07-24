@@ -1,1 +1,199 @@
-<p>laboratorios works!</p>
+<router-outlet name="menu"></router-outlet>
+<div *ngIf="loading">
+  <app-loading></app-loading>
+</div>
+<div class="container-fluid">
+  <h1>Administración Laboratorios</h1>
+  <div class="message-container">
+    <app-notification></app-notification>
+  </div>
+  <div class="clearfix" style="margin-bottom: 1%;">
+    <div class="float-right">
+      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro">
+        <i class="bi bi-plus-lg"></i> Nuevo laboratorio
+      </button>
+
+      <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
+             title="Seleccionar archivo" #inputExcelMonitoreos>
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
+              title="Seleccionar archivo">
+        <i class="bi bi-filetype-xlsx"></i>
+        Agregar desde archivo
+      </button>
+
+      <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
+        <i class="bi bi-funnel"></i>
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+  <app-historial></app-historial>
+  <div class="dvTable">
+    <table class="table-bordered table-hover" style="width:100%">
+      <thead class="thead-sticky">
+        <tr>
+          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
+              id="{{columna.name}}" class="no-border-bottom th-resize"
+              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
+            {{columna.label}}
+          </th>
+          <th columnResize class="td-center no-border-bottom th-resize">
+            ACCIONES
+          </th>
+        </tr>
+        <tr>
+          <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
+            <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
+              <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
+                      title="Filtros" aria-expanded="false" (click)="onFilterIconClick(columna)">
+                <i *ngIf="!columna.filtered && !(this.orderBy.column === columna.name)"
+                   class="bi bi-caret-down-fill"></i>
+                <i *ngIf="columna.filtered" class="bi bi-funnel-fill"></i>
+                <i [(ngModel)]="columna.asc" *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'asc'"
+                   class="bi bi-arrow-down"></i>
+                <i [(ngModel)]="columna.desc"
+                   *ngIf="this.orderBy.column === columna.name && this.orderBy.type === 'desc'"
+                   class="bi bi-arrow-up"></i>
+              </button>
+
+              <div class="dropdown-menu" style="width:250px;" id="dd-menu-{{columna.name}}">
+
+                <a (click)="sort(columna.name, 'asc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'asc') ? 'lightgreen' : 'white'}"
+                     class="bi bi-sort-alpha-down"></i>
+                  Ordenar de A a Z
+                </a>
+                <a (click)="sort(columna.name, 'desc');" class="dropdown-item">
+                  <i [ngStyle]="{'background-color':(this.orderBy.column === columna.name && this.orderBy.type === 'desc') ? 'lightgreen' : 'white'}"
+                     class="bi bi-sort-alpha-down-alt"></i>
+                  Ordenar de Z a A
+                </a>
+                <hr class="dropdown-divider">
+                <a (click)="onDeleteFilterClick(columna.name)" class="dropdown-item">
+                  <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}" class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i> Eliminar filtro de {{columna.label}}
+                </a>
+                <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
+                  <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals"
+                     style="color: palegreen" class="bi bi-check-square-fill"></i>
+
+                  {{leyendaFiltrosEspeciales}}
+                </a>
+                <div id="filters-{{columna.name}}" class="d-none">
+                  <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
+                     (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item" data-toggle="modal"
+                     data-target="#mdlFiltro">
+                    <i id="imgFiltroEspecializado"
+                       *ngIf="(nombre == this.filtroEspecializado && columna.optionFilter != null && columna.secondOptionFilter != '') || nombre === columna.optionFilter && columna.optionFilter != this.filtroEspecialEquals && columna.secondOptionFilter ==''"
+                       class="bi bi-check-lg"></i>
+                    {{nombre}} ...
+                    <div *ngIf="this.indicesopcionesFiltros.includes(indice)" class="dropdown-divider"></div>
+                  </a>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div style="height:300px; overflow:scroll; padding:5px">
+                  <input class="form-control" placeholder="Buscar" type="text"
+                         (input)="onFiltroCabecero($event, columna)" />
+                  <input type="checkbox" id="chckAllFiltro{{columna.name}}" [(ngModel)]="columna.selectAll"
+                         (change)="seleccionarAllFiltro(columna);" />
+                  <label style="font-size:x-small;" (click)="$event.stopPropagation()"
+                         for="chckAllFiltro{{columna.name}}">
+                    Seleccionar
+                    todos
+                  </label>
+                  <div style="height:min-content" *ngFor="let dato of columna.filteredData; index as i">
+                    <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked" class="check chkdata" />
+                    <label for="{{columna.name+i}}" style="font-size:xx-small; display: inline;"
+                           (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
+                  </div>
+                </div>
+                <div class="modal-footer" style="font-size:xx-small;">
+                  <button id="btnCancelarFiltro" type="button" style="font-size:xx-small"
+                          class="btn btn-secondary btn-sm" data-dismiss="dropdown" (click)="onCancelarFiltroClick()">
+                    Cancelar
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" style="font-size:xx-small"
+                          data-dismiss="dropdown" (click)="filtrar(columna,false);">
+                    Aceptar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </th>
+          <th class="no-border-top td-center"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let laboratorio of this.laboratorios | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
+          <td>{{laboratorio.descripcion}}</td>
+          <td>{{laboratorio.nomenclatura}} </td>
+          <td>
+            <button type="button" class="btn-action btn-primary-action mr-1" title="Editar">
+              <i class="bi bi-pencil-square icon-action"></i>
+            </button>
+            <button type="button" class="btn-action btn-danger-action" title="Eliminar">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+
+        </tr>
+        <tr *ngIf="this.laboratorios.length==0">
+          <td class="td-center" colspan="22">No se encontraron registros</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <pagination-controls (pageChange)="pageClic($event)" previousLabel="Anterior" nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+    <div class="col-md-2">
+      <p class="total-items">
+        Registros por página: <span class="badge text-bg-primary">{{this.laboratorios.length}}</span>
+      </p>
+    </div>
+    <div class="col-md-3">
+      <!--<p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>-->
+      <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.laboratorios.length}}</span></p>
+    </div>
+  </div>
+
+  <!--MODAL AGREGAR EDITAR LABORATORIO-->
+  <div class="modal fade modal-dialog-centered" id="modalregistro" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title2">{{modalTitle}}</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Nombre:</label>
+            <div class="col-sm-9">
+              <input id="txtClaveSitio" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Nombre" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.descripcion" />
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.descripcion==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>       
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Nomenclatura:</label>
+            <div class="col-sm-9">
+              <input id="txtNombreSitio" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Nomenclatura" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.nomenclatura" />
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.nomenclatura==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
+          </div>         
+
+          <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+          <button (click)="AddLaboratorio()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
+          <button (click)="UpdateLaboratorio()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+</div>
