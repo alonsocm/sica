@@ -34,4 +34,22 @@ export class ParametrosService {
         filter
     );
   }
+
+  getGrupos(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/ParametrosGrupo/GetGruposParametros'
+    );
+  }
+
+  getSubgrupos(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/ParametrosGrupo/GetSubGrupoAnalitico'
+    );
+  }
+
+  getUnidadesMedida(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/ParametrosGrupo/GetUnidadesMedida'
+    );
+  }
 }

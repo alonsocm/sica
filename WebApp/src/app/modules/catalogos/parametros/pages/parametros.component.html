@@ -154,11 +154,11 @@
                     <td>{{registro.unidadMedida}}</td>
                     <td>{{registro.parametroPadre}}</td>
                     <td>
-                        <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"><i
-                                class="bi bi-pencil-square icon-action"></i>
+                        <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"
+                            (click)="onEditClick()"><i class="bi bi-pencil-square icon-action"></i>
                         </button>
-                        <button type="button" class="btn-action btn-danger-action" title="Eliminar"><i
-                                class="bi bi-trash"></i>
+                        <button type="button" class="btn-action btn-danger-action" title="Eliminar"
+                            (click)="onDeleteClick()"><i class="bi bi-trash"></i>
                         </button>
                     </td>
                 </tr>
@@ -179,6 +179,104 @@
             <p class="total-items">
                 Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span>
             </p>
+        </div>
+    </div>
+</div>
+<button id="btn-confirm-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#confirmModal">
+    Confirmar eliminación
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Esta acción eliminará de forma permanente el parámetro.</p>
+                <p>¿Está seguro de continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="btn-edit-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#editModal">
+    Confirmar eliminación
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModal">Editar parámetro</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="clave">Clave:</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="clave" placeholder="Clave del parámetro" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="descripcion">Descripción:</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" id="descripcion" placeholder="Descripción del parámetro"
+                                type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="grupo">Grupo:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="grupo" placeholder="Grupo del parámetro">
+                                <option *ngFor="let grupo of this.grupos">{{grupo.descripcion}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="subgrupo">Subgrupo:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="subgrupo" placeholder="Subgrupo del parámetro">
+                                <option *ngFor="let subgrupo of this.subgrupos">{{subgrupo.descripcion}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="unidad-medida">Unidad de medida:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="unidad-medida">
+                                <option *ngFor="let unidad of this.unidadesMedida">{{unidad.descripcion}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="parametro-padre">Parámetro padre:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="parametro-padre">
+                                <option>opcion uno</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar cambios</button>
+            </div>
         </div>
     </div>
 </div>

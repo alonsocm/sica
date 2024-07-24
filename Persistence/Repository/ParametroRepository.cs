@@ -20,9 +20,13 @@ namespace Persistence.Repository
                                  Clave = p.ClaveParametro,
                                  Descripcion = p.Descripcion,
                                  UnidadMedida = p.IdUnidadMedidaNavigation == null ? string.Empty : p.IdUnidadMedidaNavigation.Descripcion,
+                                 UnidadMedidaId = p.IdUnidadMedida,
                                  Grupo = p.GrupoParametro == null ? string.Empty : p.GrupoParametro.Descripcion,
+                                 GrupoId = p.GrupoParametroId,
                                  SubGrupo = p.IdSubgrupoNavigation == null ? string.Empty : p.IdSubgrupoNavigation.Descripcion,
+                                 SubgrupoId = p.IdSubgrupo,
                                  ParametroPadre = p.ParametroPadre == null ? string.Empty : p.ParametroPadre.ClaveParametro,
+                                 ParametroPadreId = p.ParametroPadreId,
                                  Orden = (int)p.Orden
                              };
 

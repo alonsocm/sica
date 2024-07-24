@@ -11,8 +11,26 @@ import { Item } from 'src/app/interfaces/filter/item';
   styleUrls: ['./parametros.component.css'],
 })
 export class ParametrosComponent extends BaseService implements OnInit {
+  registro: Parametro = {
+    selected: false,
+    id: 0,
+    clave: '',
+    descripcion: '',
+    unidadMedida: '',
+    unidadMedidaId: 0,
+    grupo: '',
+    grupoId: 0,
+    subGrupo: '',
+    subgrupoId: 0,
+    parametroPadre: '',
+    parametroPadreId: 0,
+    orden: 0,
+  };
   registros: Array<Parametro> = [];
   registrosSeleccionados: Array<Parametro> = [];
+  grupos: any;
+  subgrupos: any;
+  unidadesMedida: any;
 
   constructor(private parametrosService: ParametrosService) {
     super();
@@ -21,6 +39,9 @@ export class ParametrosComponent extends BaseService implements OnInit {
   ngOnInit(): void {
     this.definirColumnas();
     this.getParametros();
+    this.getUnidadesMedida();
+    this.getGrupos();
+    this.getSubgrupos();
   }
 
   definirColumnas() {
@@ -259,5 +280,41 @@ export class ParametrosComponent extends BaseService implements OnInit {
     this.esHistorial = true;
     //this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.hideColumnFilter();
+  }
+
+  onDeleteClick() {
+    //this.supervision = supervision;
+    document.getElementById('btn-confirm-modal')?.click();
+  }
+
+  onEditClick() {
+    document.getElementById('btn-edit-modal')?.click();
+  }
+
+  getGrupos() {
+    this.parametrosService.getGrupos().subscribe({
+      next: (response: any) => {
+        this.grupos = response.data;
+      },
+      error: (error) => {},
+    });
+  }
+
+  getSubgrupos() {
+    this.parametrosService.getSubgrupos().subscribe({
+      next: (response: any) => {
+        this.subgrupos = response.data;
+      },
+      error: (error) => {},
+    });
+  }
+
+  getUnidadesMedida() {
+    this.parametrosService.getUnidadesMedida().subscribe({
+      next: (response: any) => {
+        this.unidadesMedida = response.data;
+      },
+      error: (error) => {},
+    });
   }
 }

@@ -5,8 +5,12 @@ export interface Parametro extends Row {
   clave: string;
   descripcion: string;
   grupo: string;
+  grupoId: number;
   subGrupo: string;
+  subgrupoId: number;
   unidadMedida: string;
+  unidadMedidaId: number;
   orden: number;
   parametroPadre: string;
+  parametroPadreId: number;
 }
