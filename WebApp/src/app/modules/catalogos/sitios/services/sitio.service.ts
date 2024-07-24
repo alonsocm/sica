@@ -56,6 +56,12 @@ export class SitioService {
     );
   }
 
+  getCuencasDireccionesLocales(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/CuencasDireccionesLocales', {} 
+    );
+  }
+
 
 }
 
