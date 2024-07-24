@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Features.Sitios.Commands.CreateSitioCommand;
@@ -17,9 +18,11 @@ namespace Application.Mappings
             #endregion
 
             #region DTOs
+            CreateMap<Acuifero, AcuiferoDto>();
             CreateMap<Sitio, SitioDto>()
                 .ForMember(x => x.NombreSitio, o => o.MapFrom(src => src.NombreSitio))
                 .ForMember(x => x.ClaveSitio, o => o.MapFrom(src => src.ClaveSitio))
+                .ForMember(x => x.Acuifero, o => o.MapFrom(src => src.Acuifero.Descripcion))
                 .ForMember(x => x.Cuenca, o => o.MapFrom(src => src.CuencaDireccionesLocales.Ocuenca.Descripcion))
                 .ForMember(x => x.DireccionLocal, o => o.MapFrom(src => src.CuencaDireccionesLocales.Dlocal.Descripcion))
                 .ForMember(x => x.Estado, o => o.MapFrom(src => src.Estado.Nombre))
@@ -30,6 +33,11 @@ namespace Application.Mappings
                 .ForMember(x => x.Latitud, o => o.MapFrom(src => src.Latitud))
                 .ForMember(x => x.Longitud, o => o.MapFrom(src => src.Longitud))
                 .ForMember(x => x.Observaciones, o => o.MapFrom(src => src.Observaciones));
+            CreateMap<CuencaDireccionesLocales, CuencaDireccionesLocalesDto>()
+                .ForMember(x => x.OrganismoCuenca, o => o.MapFrom(src => src.Ocuenca.Descripcion))
+                .ForMember(x => x.DieccionLocal, o => o.MapFrom(src => src.Dlocal.Descripcion))
+            .ForMember(x => x.OrganismoCuencaId, o => o.MapFrom(src => src.Ocuenca.Id))
+       .ForMember(x => x.DieccionLocalId, o => o.MapFrom(src => src.Dlocal.Id));
 
             CreateMap<Perfil, PerfilDto>();
             CreateMap<DireccionLocal, DireccionLocalDto>();

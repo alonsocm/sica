@@ -11,7 +11,7 @@ namespace Application.DTOs
         public int Id { get; set; }
         public string NombreSitio { get; set; }
         public string ClaveSitio { get; set; }
-
+        public string? Acuifero { get; set; }
         public string Cuenca { get; set; }
         public string? DireccionLocal { get; set; }
         public string Estado { get; set; }
@@ -22,6 +22,7 @@ namespace Application.DTOs
         public string Latitud { get; set; }
         public string Longitud { get; set; }
         public string Observaciones { get; set; }
+
 
     }
 }
