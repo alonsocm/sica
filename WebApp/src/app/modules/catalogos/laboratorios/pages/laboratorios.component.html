@@ -9,7 +9,7 @@
   </div>
   <div class="clearfix" style="margin-bottom: 1%;">
     <div class="float-right">
-      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro">
+      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro" (click)="this.modalTitle='Registro Laboratorio'">
         <i class="bi bi-plus-lg"></i> Nuevo laboratorio
       </button>
 
@@ -127,7 +127,7 @@
         <tr *ngFor="let laboratorio of this.laboratorios | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td>{{laboratorio.descripcion}}</td>
           <td>{{laboratorio.nomenclatura}} </td>
-          <td>
+          <td style="text-align:center">
             <button type="button" class="btn-action btn-primary-action mr-1" title="Editar">
               <i class="bi bi-pencil-square icon-action"></i>
             </button>

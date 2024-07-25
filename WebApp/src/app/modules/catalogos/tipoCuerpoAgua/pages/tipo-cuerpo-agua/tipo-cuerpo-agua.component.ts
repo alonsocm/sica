@@ -28,7 +28,7 @@ definirColumnas() {
     
     {
       name: 'descripcion',
-      label: 'DESCRIPCIÓN',
+      label: 'TIPO CUERPO DE AGUA',
       order: 1,
       selectAll: true,
       filtered: false,
@@ -51,59 +51,7 @@ definirColumnas() {
       filteredData: [],
       dataType: '',
       selectedData: '',
-    },
-    {
-      name: 'activo',
-      label: 'ACTIVO',
-      order:3,
-      selectAll: true,
-      filtered: false,
-      asc: false,
-      desc: false,
-      data: [],
-      filteredData: [],
-      dataType: '',
-      selectedData: '',
-    },
-    {
-      name: 'frecuencia',
-      label: 'FRECUENCIA',
-      order:4,
-      selectAll: true,
-      filtered: false,
-      asc: false,
-      desc: false,
-      data: [],
-      filteredData: [],
-      dataType: '',
-      selectedData: '',
-    },
-    {
-      name: 'evidenciasEsperadas',
-      label: 'NÚMERO DE EVIDENCIAS ESPERADAS',
-      order:5,
-      selectAll: true,
-      filtered: false,
-      asc: false,
-      desc: false,
-      data: [],
-      filteredData: [],
-      dataType: '',
-      selectedData: '',
-    },
-    {
-      name: 'tiempoMinimoMuestreo',
-      label: 'TIEMPO MÍNIMO DE MUESTREO',
-      order:6,
-      selectAll: true,
-      filtered: false,
-      asc: false,
-      desc: false,
-      data: [],
-      filteredData: [],
-      dataType: '',
-      selectedData: '',
-    },
+    }    
   ];
   this.columns = columnas;
 }
@@ -112,7 +60,7 @@ getTipoCuerpoAguaQuery() {
     .getTipoCuerpoAgua(this.page, this.pageSize, this.cadena)
     .subscribe({
       next: (response: any) => {
-        this.selectedPage = false;
+        this.selectedPage = false;        
         this.registros = response.data;
         this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
         this.totalItems = response.totalRecords;

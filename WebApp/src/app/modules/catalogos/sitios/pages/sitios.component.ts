@@ -262,6 +262,7 @@ export class SitiosComponent extends BaseService implements OnInit {
   }
 
   cargarCombos() {
+    this.modalTitle = "Registro Sitio";
     this.sitioService
       .getCuencasDireccionesLocales()
       .subscribe({

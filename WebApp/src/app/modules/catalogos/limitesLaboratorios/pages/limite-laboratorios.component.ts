@@ -118,7 +118,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
       },
       {
         name: 'periodo',
-        label: 'PERIODO',
+        label: 'MES',
         order: 5,
         selectAll: true,
         filtered: false,

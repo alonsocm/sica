@@ -40,7 +40,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
       },
       {
         name: 'descripcion',
-        label: 'DESCRIPCIÓN',
+        label: 'NOMBRE PARÁMETRO',
         order: 2,
         selectAll: true,
         filtered: false,
@@ -53,7 +53,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
       },
       {
         name: 'grupo',
-        label: 'GRUPO',
+        label: 'TIPO DE PARÁMETRO',
         order: 3,
         selectAll: true,
         filtered: false,
@@ -89,20 +89,8 @@ export class ParametrosComponent extends BaseService implements OnInit {
         filteredData: [],
         dataType: '',
         selectedData: '',
-      },
-      {
-        name: 'parametroPadre',
-        label: 'PARÁMETRO PADRE',
-        order: 6,
-        selectAll: true,
-        filtered: false,
-        asc: false,
-        desc: false,
-        data: [],
-        filteredData: [],
-        dataType: '',
-        selectedData: '',
-      },
+      }
+    
     ];
 
     this.columns = columnas;
