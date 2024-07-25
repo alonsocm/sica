@@ -53,7 +53,9 @@ export class EstadoComponent implements OnInit {
     );
   }
 
-  // AddEstado() {}
+  AddEstado() {
+    
+  }
 
   // EditEstado(estado: any) {}
 

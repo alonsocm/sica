@@ -4,10 +4,10 @@
     <hr class="red">
     <div class="message-container">
         <app-notification></app-notification>
-    </div>     
+    </div>
     <div class="clearfix" style="margin-bottom: 1%;">
         <div class="float-right">
-            <button class="btn btn-primary btn-sm mr-1" type="button">
+            <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro">
                 <i class="bi bi-plus-lg"></i> Nuevo Tipo Cuerpo Agua
             </button>
             <button class="btn btn-primary btn-sm mr-1" type="button">
@@ -64,15 +64,15 @@
                                     <i [ngStyle]="{color:(columna.filtered) ? 'red' : 'black'}"
                                         class="bi bi-funnel-fill"></i> <i style="padding:0px" class="bi bi-x"></i>
                                     Eliminar filtro de {{columna.label}}
-                                </a>       
+                                </a>
                                 <a class="dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="true" (click)="onSpecialFiltersClick($event, columna.name)">
                                     <i *ngIf="columna.optionFilter!=null && columna.optionFilter!='' && columna.optionFilter != this.filtroEspecialEquals"
                                         style="color: palegreen" class="bi bi-check-square-fill"></i>
-    
+
                                     {{leyendaFiltrosEspeciales}}
                                 </a>
-    
+
                                 <div id="filters-{{columna.name}}" class="d-none">
                                     <a *ngFor="let nombre of this.opcionesFiltros; let indice=index"
                                         (click)="mostrarModalFiltro(nombre, columna);" class="dropdown-item"
@@ -122,20 +122,22 @@
                 </tr>
             </thead>
             <tbody>
-                <tr                
+                <tr
                     *ngFor="let registro of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
-                    <td>{{registro.descripcion}}</td>                    
+                    <td>{{registro.descripcion}}</td>
                     <td>{{registro.tipoHomologadoDescripcion}}</td>
                     <td>{{registro.activo?'SI':'NO'}}</td>
                     <td>{{registro.frecuencia}}</td>
                     <td>{{registro.evidenciasEsperadas}}</td>
                     <td>{{registro.tiempoMinimoMuestreo}}</td>
                     <td>
-                        <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"><i
-                                class="bi bi-pencil-square icon-action"></i>
+                        <button type="button" class="btn-action btn-primary-action mr-1" title="Editar" title="Editar"
+                            (click)="onEditClick(this.registro.id)">
+                            <i class="bi bi-pencil-square icon-action"></i>
                         </button>
-                        <button type="button" class="btn-action btn-danger-action" title="Eliminar"><i
-                                class="bi bi-trash"></i>
+                        <button type="button" class="btn-action btn-danger-action" data-toggle="modal"
+                            data-target="#modaleliminar" title="Eliminar">
+                            <i class="bi bi-trash"></i>
                         </button>
                     </td>
                 </tr>
@@ -157,5 +159,193 @@
                 Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span>
             </p>
         </div>
-    </div> 
+    </div>
+
+    <div class="modal fade modal-dialog-centered" id="modalregistro" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title2">{{modalTitle}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">DESCRIPCION</label>
+                        <div class="col-sm-9">
+                            <input id="txtdescripcion" class="form-control obligatorio" placeholder="descripcion"
+                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.TipoCuerpoAgua.descripcion" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.descripcion">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">TIPO HOMOLOGADO:</label>
+                        <div class="col-sm-3">
+                            <select id="dropubtipoHomologado" class="form-control obligatorio"
+                            [(ngModel)]="this.TipoCuerpoAgua.tipoHomologadoDescripcion">
+                            </select>
+                            <span class="text-danger ml-2 " *ngIf="this.tipoHomologadoRegistro.id==null">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>                        
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">ACTIVO</label>
+                        <div class="col-sm-9">
+                            <select id="slcActivo" class="form-control obligatorio"
+                                [(ngModel)]="this.TipoCuerpoAgua.activo">
+                                <option value="true">SI</option>
+                                <option value="false">NO</option>
+                            </select>
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.activo">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">FRECUENCIA</label>
+                        <div class="col-sm-9">
+                            <input id="txtFrecuencia" class="form-control obligatorio" placeholder="Frecuencia"
+                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.TipoCuerpoAgua.frecuencia" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.frecuencia">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">EVIDENCIAS ESPERADAS</label>
+                        <div class="col-sm-9">
+                            <input id="txtEvidenciasEsperadas" class="form-control obligatorio"
+                                placeholder="Evidencias Esperadas" (keypress)="this['validarNumeros']($event)"
+                                [(ngModel)]="this.TipoCuerpoAgua.evidenciasEsperadas" type="number" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.evidenciasEsperadas">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">TIEMPO MINIMO DE MUESTREO</label>
+                        <div class="col-sm-9">
+                            <input id="txtTiempoMinimoMuestreo" class="form-control obligatorio"
+                                placeholder="Tiempo Minimo de Muestreo" (keypress)="this['validarNumeros']($event)"
+                                [(ngModel)]="this.TipoCuerpoAgua.tiempoMinimoMuestreo" type="number" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.tiempoMinimoMuestreo">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+                    <button (click)="addTipoCuerpoAgua()" data-dismiss="modal" class="btn btn-primary pull-right ml-2"
+                        type="button">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="btn-edit-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#edit-modal">
+        Confirmar eliminación
+    </button>
+    <div class="modal fade modal-dialog-centered" id="edit-modal" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title2">{{modalTitle}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">DESCRIPCION</label>
+                        <div class="col-sm-9">
+                            <input id="txtdescripcion" class="form-control obligatorio" placeholder="descripcion"
+                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.TipoCuerpoAgua.descripcion" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.descripcion">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">TIPO HOMOLOGADO</label>
+                        <div class="col-sm-9">
+                            <input id="txtClaveSitio" class="form-control obligatorio" placeholder="Nombre"
+                                (keypress)="this['validarNumeros']($event)"
+                                [(ngModel)]="this.TipoCuerpoAgua.tipoHomologadoId" type="number" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.tipoHomologadoId">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">ACTIVO</label>
+                        <div class="col-sm-9">
+                            <select id="slcActivo" class="form-control obligatorio"
+                                [(ngModel)]="this.TipoCuerpoAgua.activo">
+                                <option value="true">SI</option>
+                                <option value="false">NO</option>
+                            </select>
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.activo">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">FRECUENCIA</label>
+                        <div class="col-sm-9">
+                            <input id="txtFrecuencia" class="form-control obligatorio" placeholder="Frecuencia"
+                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.TipoCuerpoAgua.frecuencia" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.frecuencia">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">EVIDENCIAS ESPERADAS</label>
+                        <div class="col-sm-9">
+                            <input id="txtEvidenciasEsperadas" class="form-control obligatorio"
+                                placeholder="Evidencias Esperadas" (keypress)="this['validarNumeros']($event)"
+                                [(ngModel)]="this.TipoCuerpoAgua.evidenciasEsperadas" type="number" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.evidenciasEsperadas">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">TIEMPO MINIMO DE MUESTREO</label>
+                        <div class="col-sm-9">
+                            <input id="txtTiempoMinimoMuestreo" class="form-control obligatorio"
+                                placeholder="Tiempo Minimo de Muestreo" (keypress)="this['validarNumeros']($event)"
+                                [(ngModel)]="this.TipoCuerpoAgua.tiempoMinimoMuestreo" type="number" />
+                            <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.tiempoMinimoMuestreo">
+                                Campo <strong>requerido</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+                    <button (click)="updateTipoCuerpoAgua(this.TipoCuerpoAgua.id)" data-dismiss="modal"
+                        class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-dialog-centered" id="modaleliminar" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title2">{{modalTitle}}</h4>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">ID</label>
+                    <div class="col-sm-9">
+                        <input id="numberId" class="form-control obligatorio" placeholder="Evidencias Esperadas"
+                            (keypress)="this['validarNumeros']($event)" [(ngModel)]="this.TipoCuerpoAgua.id"
+                            type="number" />
+                        <span class="text-danger ml-2 " *ngIf="this.TipoCuerpoAgua.id">
+                            Campo <strong>requerido</strong>
+                        </span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+                <button (click)="deleteTipoCuerpoAgua(this.TipoCuerpoAgua.id)" data-dismiss="modal"
+                    class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Eliminar</button>
+            </div>
+        </div>
+    </div>
 </div>

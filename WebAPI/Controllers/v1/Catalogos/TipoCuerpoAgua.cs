@@ -21,7 +21,6 @@ namespace WebAPI.Controllers.v1.Catalogos
             return Ok(await Mediator.Send(new GetTipoCuerpoAguaIdQuery { Id = id })); ;
         }
         [HttpDelete("{id}")]
-
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new DeleteTipoCuerpoAguaCommand { Id = id })); ;
@@ -31,19 +30,15 @@ namespace WebAPI.Controllers.v1.Catalogos
         {
             return Ok(await Mediator.Send(command));
         }
-        [HttpPut]
-        public async Task<IActionResult> Put(UpdateTipoCuerpoAguaCommand tipoCuerpoAgua)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(long id, UpdateTipoCuerpoAguaCommand tipoCuerpoAgua)
         {
-            return Ok(await Mediator.Send(new UpdateTipoCuerpoAguaCommand
+            if (id != tipoCuerpoAgua.Id)
             {
-                Id = tipoCuerpoAgua.Id,
-                Descripcion = tipoCuerpoAgua.Descripcion,
-                TipoHomologadoId = tipoCuerpoAgua.TipoHomologadoId,
-                Activo = tipoCuerpoAgua.Activo,
-                Frecuencia = tipoCuerpoAgua.Frecuencia,
-                EvidenciaEsperada = tipoCuerpoAgua.EvidenciaEsperada,
-                TiempoMinimoMuestreo = tipoCuerpoAgua.TiempoMinimoMuestreo,
-            }));
+                return BadRequest("El Id no existe.");
+            }
+
+            return Ok(await Mediator.Send(tipoCuerpoAgua));
         }
     }
 }

@@ -9,4 +9,10 @@ export interface TipoCuerpoAgua extends Row {
   frecuencia: string;
   evidenciasEsperadas:number;
   tiempoMinimoMuestreo:number;
+  selected:boolean;
+}
+interface TipoHomologado {
+  id: number;
+  descripcion: string;
+  activo: boolean;
 }

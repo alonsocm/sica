@@ -11,7 +11,7 @@ namespace Application.Features.TiposCuerpoAgua.Commands.AddTipoCuerpoAguaCommand
         public long? TipoHomologadoId { get; set; }
         public bool Activo { get; set; }
         public string Frecuencia { get; set; }
-        public int EvidenciaEsperada { get; set; }
+        public int EvidenciasEsperadas { get; set; }
         public int TiempoMinimoMuestreo { get; set; }
     }
     public class AddTipoCuerpoAguaCommandHandler : IRequestHandler<AddTipoCuerpoAguaCommand, Response<bool>>
@@ -31,7 +31,7 @@ namespace Application.Features.TiposCuerpoAgua.Commands.AddTipoCuerpoAguaCommand
                 TipoHomologadoId = request.TipoHomologadoId,
                 Activo = request.Activo,
                 Frecuencia = request.Frecuencia,
-                EvidenciasEsperadas = request.EvidenciaEsperada,
+                EvidenciasEsperadas = request.EvidenciasEsperadas,
                 TiempoMinimoMuestreo = request.TiempoMinimoMuestreo
             };
             _repository.Insertar(tipoCuerpoAgua);

@@ -4,19 +4,43 @@ import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from 'src/app/interfaces/filter/item';
 import { TipoCuerpoAgua } from '../../models/tipocuerpoagua';
 import { TipoCuerpoAguaService } from '../../services/tipoCuerpoAgua.service';
+import { TipoHomologado } from 'src/app/interfaces/catalogos/tipo-homologado';
+
+
 
 @Component({
   selector: 'app-tipo-cuerpo-agua',
   templateUrl: './tipo-cuerpo-agua.component.html',
   styleUrls: ['./tipo-cuerpo-agua.component.css']
 })
-export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
+export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
+[x: string]: any;
+  
   registros: Array<TipoCuerpoAgua> = [];
   registrosSeleccionados: Array<TipoCuerpoAgua> = [];
+  tipoHomologado:Array<TipoHomologado> = [];
 
+  public tipoHomologadoRegistro: TipoHomologado = {
+    id: 0,
+    descripcion: '',
+    activo: new Blob(),
+  }
+  public TipoCuerpoAgua: TipoCuerpoAgua = {
+    id: 0,
+    descripcion: '',
+    tipoHomologadoId: 0,
+    tipoHomologadoDescripcion: '',
+    activo: true,
+    frecuencia: '',
+    evidenciasEsperadas: 0,
+    tiempoMinimoMuestreo: 0,
+    selected: false
+  };
+  editar: boolean = false;
+  modalTitle: string = '';
   constructor(private tipocuerpoagua: TipoCuerpoAguaService) {
-    super();
+  super();
 }
 
 ngOnInit(): void {
@@ -106,6 +130,83 @@ definirColumnas() {
     },
   ];
   this.columns = columnas;
+}
+
+addTipoCuerpoAgua() {
+  this.tipocuerpoagua.addTipoCuerpoAgua(this.TipoCuerpoAgua).subscribe({
+    next: (data) => {
+      console.log('Tipo cuerpo de agua creado:', data);
+      this.TipoCuerpoAgua = {
+        id: 0,
+        descripcion: '',
+        tipoHomologadoId: 0,
+        tipoHomologadoDescripcion: '',
+        activo: true,
+        frecuencia: '',
+        evidenciasEsperadas: 0,
+        tiempoMinimoMuestreo: 0,
+        selected: false
+      };
+      this.getTipoCuerpoAguaQuery();
+    },
+    error: (error) => {
+      console.error('Error al crear tipo cuerpo de agua:', error);    
+    }
+  });
+}
+onEditClick(id: number){
+  let index = this.registros.findIndex(x => x.id == id);
+  let registro= this.registros[index];
+  this.TipoCuerpoAgua=registro
+  document.getElementById('btn-edit-modal')?.click();
+}
+updateTipoCuerpoAgua(id: number) {
+  this.tipocuerpoagua.updateTipoCuerpoAgua(this.TipoCuerpoAgua.id, this.TipoCuerpoAgua).subscribe({
+    next: (data) => {
+      console.log('Tipo cuerpo de agua actualizado:', data);
+      this.TipoCuerpoAgua = {
+        id: 0,
+        descripcion: '',
+        tipoHomologadoId: 0,
+        tipoHomologadoDescripcion: '',
+        activo: true,
+        frecuencia: '',
+        evidenciasEsperadas: 0,
+        tiempoMinimoMuestreo: 0,
+        selected: false
+      };
+      this.getTipoCuerpoAguaQuery();
+    },
+    error: (error) => {
+      console.error('Error al actualizar tipo cuerpo de agua:', error);
+    }
+  });
+}
+
+deleteTipoCuerpoAgua(id: number) {
+  this.tipocuerpoagua.deleteTipoCuerpoAgua(id).subscribe({
+    next: () => {
+      console.log('Tipo cuerpo de agua eliminado:', id);
+      this.TipoCuerpoAgua = {
+        id: 0,
+        descripcion: '',
+        tipoHomologadoId: 0,
+        tipoHomologadoDescripcion: '',
+        activo: true,
+        frecuencia: '',
+        evidenciasEsperadas: 0,
+        tiempoMinimoMuestreo: 0,
+        selected: false
+      };
+      this.getTipoCuerpoAguaQuery();
+    },
+    error: (error) => {
+      console.error('Error al eliminar tipo cuerpo de agua:', error);
+    }
+  });
+}
+getTipoHomologado() {
+  this.tipoHomologado = this.tipoHomologado.filter(x => x.id == this.TipoCuerpoAgua.tipoHomologadoId);
 }
 getTipoCuerpoAguaQuery() {
   this.tipocuerpoagua
@@ -251,9 +352,13 @@ getTipoCuerpoAguaQuery() {
         });
     }
 
+ 
+
+
     this.esHistorial = true;
     
     this.hideColumnFilter();
   }
+ 
 }
 
