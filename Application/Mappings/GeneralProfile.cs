@@ -18,6 +18,20 @@ namespace Application.Mappings
             #endregion
 
             #region DTOs
+            CreateMap<LimiteParametroLaboratorio, LimitesParametroLaboratorioDto>()
+                .ForMember(x => x.ClaveParametro, o => o.MapFrom(src => src.Parametro.ClaveParametro))
+                .ForMember(x => x.NombreParametro, o => o.MapFrom(src => src.Parametro.Descripcion))
+                .ForMember(x => x.Laboratorio, o => o.MapFrom(src => src.Laboratorio.Nomenclatura))
+                .ForMember(x => x.RealizaLaboratorioMuestreo, o => o.MapFrom(src => src.RealizaLaboratorioMuestreo.Descripcion))
+                .ForMember(x => x.LaboratorioMuestreo, o => o.MapFrom(src => src.LaboratorioMuestreo.Nomenclatura))
+                .ForMember(x => x.Periodo, o => o.MapFrom(src => src.Periodo))
+                .ForMember(x => x.Activo, o => o.MapFrom(src => src.Activo))
+                .ForMember(x => x.LDMaCumplir, o => o.MapFrom(src => src.LdmaCumplir))
+                .ForMember(x => x.LPCaCumplir, o => o.MapFrom(src => src.LpcaCumplir))
+                .ForMember(x => x.LoMuestra, o => o.MapFrom(src => src.LoMuestra))
+                .ForMember(x => x.LoSubroga, o => o.MapFrom(src => src.LoSubroga.Descripcion))
+                .ForMember(x => x.LaboratorioSubrogado, o => o.MapFrom(src => src.LaboratorioSubroga.Nomenclatura))
+                ;
             CreateMap<Acuifero, AcuiferoDto>();
             CreateMap<Sitio, SitioDto>()
                 .ForMember(x => x.NombreSitio, o => o.MapFrom(src => src.NombreSitio))
