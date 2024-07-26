@@ -33,7 +33,7 @@ public partial class LimiteParametroLaboratorio
     /// <summary>
     /// Campo que indica el periodo
     /// </summary>
-    public int? Periodo { get; set; }
+    public int? PeriodoId { get; set; }
 
     /// <summary>
     /// Campo que indica si es activo, es una bandera del histórico
@@ -96,6 +96,8 @@ public partial class LimiteParametroLaboratorio
     public virtual AccionLaboratorio? LoSubroga { get; set; }
 
     public virtual ParametrosGrupo Parametro { get; set; } = null!;
+
+    public virtual Mes? Periodo { get; set; }
 
     public virtual AccionLaboratorio? RealizaLaboratorioMuestreo { get; set; }
 }

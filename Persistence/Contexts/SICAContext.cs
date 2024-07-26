@@ -48,7 +48,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }    
+    public virtual DbSet<Directorio> Directorio { get; set; }  
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -136,7 +136,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
 
-    public virtual DbSet<Sitio> Sitio { get; set; }
+    public virtual DbSet<Sitio> Sitio { get; set; }   
 
     public virtual DbSet<SubgrupoAnalitico> SubgrupoAnalitico { get; set; }
 
@@ -200,8 +200,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
-    
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -551,8 +551,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.PuestoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
-        });
-       
+        });        
+
         modelBuilder.Entity<Emergencia>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
@@ -914,7 +914,7 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(250)
                 .HasComment("Campo que indica el método analítico");
             entity.Property(e => e.ParametroId).HasComment("Llave foránea que hace relación al catálogo de Parámetros indicando el parámetro");
-            entity.Property(e => e.Periodo).HasComment("Campo que indica el periodo");
+            entity.Property(e => e.PeriodoId).HasComment("Llave foranea que hace relación al catalogo de Mes donde describe el periodo ");
             entity.Property(e => e.RealizaLaboratorioMuestreoId).HasComment("Llave foránea que hace relación al catálogo de AccionLaboratorio");
 
             entity.HasOne(d => d.Anio).WithMany(p => p.LimiteParametroLaboratorio)
@@ -943,6 +943,10 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.ParametroId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LimiteParametroLaboratorio_ParametrosGrupo");
+
+            entity.HasOne(d => d.Periodo).WithMany(p => p.LimiteParametroLaboratorio)
+                .HasForeignKey(d => d.PeriodoId)
+                .HasConstraintName("FK_LimiteParametroLaboratorio_Mes");
 
             entity.HasOne(d => d.RealizaLaboratorioMuestreo).WithMany(p => p.LimiteParametroLaboratorioRealizaLaboratorioMuestreo)
                 .HasForeignKey(d => d.RealizaLaboratorioMuestreoId)
@@ -2073,7 +2077,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });        
+        });       
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -2645,8 +2649,8 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });
-        
+        });        
+
         OnModelCreatingPartial(modelBuilder);
     }
 
