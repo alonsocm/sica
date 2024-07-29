@@ -366,7 +366,9 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Observaciones:</label>
             <div class="col-sm-9">
-              <input id="txtObservaciones" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Observaciones" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.observaciones" />
+              <textarea id="txtObservaciones" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Observaciones" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.observaciones">
+               </textarea>
+          
               <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.observaciones==''">
                 Campo <strong>requerido</strong>
               </span>

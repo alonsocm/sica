@@ -16,4 +16,6 @@ public partial class Mes
     public string Descripcion { get; set; } = null!;
 
     public virtual ICollection<InformeMensualSupervision> InformeMensualSupervision { get; set; } = new List<InformeMensualSupervision>();
+
+    public virtual ICollection<LimiteParametroLaboratorio> LimiteParametroLaboratorio { get; set; } = new List<LimiteParametroLaboratorio>();
 }

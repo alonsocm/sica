@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="dvTable">
-        <table class="table table-bordered table-hover">
+        <table class="table-bordered table-hover" style="width:100%">
             <thead class="thead-sticky">
                 <tr>
                     <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
@@ -124,14 +124,9 @@
             <tbody>
                 <tr                
                     *ngFor="let registro of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
-                    <td>{{registro.id}}</td>
                     <td>{{registro.descripcion}}</td>                    
-                    <td>{{registro.tipoHomologadoDescripcion}}</td>
-                    <td>{{registro.activo}}</td>
-                    <td>{{registro.frecuencia}}</td>
-                    <td>{{registro.evidenciaEsperada}}</td>
-                    <td>{{registro.tiempoMinimoMuestreo}}</td>
-                    <td>
+                    <td>{{registro.tipoHomologadoDescripcion}}</td>                 
+                    <td style="text-align:center">
                         <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"><i
                                 class="bi bi-pencil-square icon-action"></i>
                         </button>
@@ -149,9 +144,9 @@
             </pagination-controls>
         </div>
         <div class="col-md-2">
-            <p class="total-items">Registros por página: <span
-                    class="badge text-bg-primary">{{this.registros.length}}</span>
-            </p>
+          <p class="total-items">
+            Registros por página: <span class="badge text-bg-primary">{{this.registros.length}}</span>
+          </p>
         </div>
         <div class="col-md-3">
             <p class="total-items">
