@@ -25,9 +25,7 @@ namespace Persistence.Repository
                                  GrupoId = p.GrupoParametroId,
                                  SubGrupo = p.IdSubgrupoNavigation == null ? string.Empty : p.IdSubgrupoNavigation.Descripcion,
                                  SubgrupoId = p.IdSubgrupo,
-                                 ParametroPadre = p.ParametroPadre == null ? string.Empty : p.ParametroPadre.ClaveParametro,
-                                 ParametroPadreId = p.ParametroPadreId,
-                                 Orden = (int)p.Orden
+                                 Orden = (int)p.Orden == null ? 0 : (int)p.Orden
                              };
 
             return parametros;

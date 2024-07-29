@@ -36,7 +36,7 @@ namespace WebAPI.Controllers.v1.Catalogos
         {
             return Ok(await Mediator.Send(new CreateParametro
             {
-                Clave = parametro.Descripcion,
+                Clave = parametro.Clave,
                 Descripcion = parametro.Descripcion,
                 GrupoId = parametro.GrupoId,
                 SubgrupoId = parametro.SubgrupoId,

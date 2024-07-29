@@ -310,6 +310,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
   }
 
   onAgregarClick() {
+    this.resetRegistro();
     this.parametroForm.reset(this.initialValueForm);
     document.getElementById('btn-edit-modal')?.click();
   }
