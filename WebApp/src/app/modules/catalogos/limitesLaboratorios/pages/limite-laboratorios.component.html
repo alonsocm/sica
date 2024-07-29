@@ -9,7 +9,7 @@
   </div>
   <div class="clearfix" style="margin-bottom: 1%;">
     <div class="float-right">
-      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro">
+      <button class="btn btn-primary btn-sm mr-1" (click)="this.modalTitle='Registro límite laboratorio'" type="button" data-toggle="modal" data-target="#modalregistro">
         <i class="bi bi-plus-lg"></i> Nuevo límite laboratorio
       </button>
 
@@ -129,8 +129,8 @@
           <td>{{limite.nombreParametro}} </td>
           <td>{{limite.realizaLaboratorioMuestreo}} </td>
           <td>{{limite.laboratorioMuestreo}} </td>
-          <td>{{limite.periodo}} </td>
-          <td>{{limite.activo}} </td>
+          <td>{{limite.mes}} </td>
+          <td>{{(limite.activo)?"ACTIVO":"INACTIVO"}} </td>
           <td>{{limite.ldMaCumplir}} </td>
           <td>{{limite.lpCaCumplir}} </td>
           <td>{{limite.loMuestra}} </td>
@@ -140,7 +140,7 @@
           <td>{{limite.ldm}} </td>
           <td>{{limite.lpc}} </td>
           <td>{{limite.anio}} </td>
-          <td>
+          <td style="text-align:center">
             <button type="button" class="btn-action btn-primary-action mr-1" title="Editar">
               <i class="bi bi-pencil-square icon-action"></i>
             </button>
@@ -163,26 +163,28 @@
     </div>
     <div class="col-md-2">
       <p class="total-items">
-        Registros por página: <span class="badge text-bg-primary">{{this.laboratorios.length}}</span>
+        Registros por página: <span class="badge text-bg-primary">{{this.limitesLaboratorio.length}}</span>
       </p>
     </div>
     <div class="col-md-3">
-      <!--<p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>-->
-      <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.laboratorios.length}}</span></p>
+      <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>
+
     </div>
   </div>
 
 
   <!--MODAL AGREGAR EDITAR LIMITE LABORATORIOS-->
-  <div class="modal fade modal-dialog-centered" id="modalregistro" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
+
+  <div class="modal fade"
+       id="modalregistro" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 85%;">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title2">{{modalTitle}}</h4>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label class="col-sm-3 control-label">Clave parámetro:</label>
+            <label class="col-sm-2 control-label">Clave parámetro:</label>
             <div class="col-sm-3">
               <select id="dropClaveParametro" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.parametroId">
                 <option [ngValue]="null">--Seleccione--</option>
@@ -190,14 +192,13 @@
                   {{parametro.claveParametro}}
                 </option>
               </select>
-
               <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.parametroId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>
 
-            <label class="col-sm-3 control-label">Descripción parámetro:</label>
-            <div class="col-sm-3">
+            <label class="col-sm-2 control-label">Nombre parámetro:</label>
+            <div class="col-sm-5">
               <input id="txtNombreParametro" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Descripción parámetro" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.nombreParametro" />
               <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.nombreParametro==''">
                 Campo <strong>requerido</strong>
@@ -205,7 +206,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-3 control-label">Laboratorio:</label>
+            <label class="col-sm-2 control-label">Laboratorio:</label>
             <div class="col-sm-3">
               <select id="dropLaboratorio" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.laboratorioId">
                 <option [ngValue]=null>--Seleccione--</option>
@@ -217,8 +218,8 @@
                 Campo <strong>requerido</strong>
               </span>
             </div>
-            <label class="col-sm-3 control-label">Descripción laboratorio:</label>
-            <div class="col-sm-3">
+            <label class="col-sm-2 control-label">Nombre laboratorio:</label>
+            <div class="col-sm-5">
               <input id="txtLaboratorio" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Descripción laboratorio" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.laboratorio" />
               <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.laboratorio==''">
                 Campo <strong>requerido</strong>
@@ -227,15 +228,20 @@
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Realiza laboratorio muestreo:</label>
+            <label class="col-sm-2 control-label">Realiza laboratorio Muestreo:</label>
             <div class="col-sm-3">
-              <input type="checkbox" />
+              <select id="dropRealizaLabMuestreo" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.realizaLaboratorioMuestreoId">
+                <option [ngValue]=null>--Seleccione--</option>
+                <option *ngFor="let laboratorio of laboratorios" [ngValue]="laboratorio.id">
+                  {{laboratorio.descripcion}}
+                </option>
+              </select>
               <span class="text-danger ml-2">
                 Campo <strong>requerido</strong>
               </span>
             </div>
-            <label class="col-sm-3 control-label">Laboratorio de Muestreo:</label>
-            <div class="col-sm-3">
+            <label class="col-sm-2 control-label">Laboratorio de Muestreo:</label>
+            <div class="col-sm-5">
               <select id="dropMunicipios" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.laboratorioMuestreoId">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let labMuestreo of laboratorioMuestreo" [ngValue]="labMuestreo.id">
@@ -246,60 +252,74 @@
                 Campo <strong>requerido</strong>
               </span>
             </div>
+       
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Nombre laboratorio muestreo:</label>
+            <div class="col-sm-10">
+              <input id="txtLaboratorioMuestreo" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Descripción laboratorio" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.laboratorio" />
+              <span class="text-danger ml-2" *ngIf="this.LaboratorioRegistro.laboratorio==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
+    
           </div>
 
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Periodo:</label>
+            <label class="col-sm-2 control-label">Mes:</label>
             <div class="col-sm-3">
-              <input id="txtLatitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Periodo" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.periodo" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.periodo==0">
+              <input id="txtLatitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Mes" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.mes" />
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.mes==''">
                 Campo <strong>requerido</strong>
               </span>
             </div>
-            <label class="col-sm-3 control-label">Activo:</label>
-            <div class="col-sm-3">
-              <input type="checkbox" />
-              <span class="text-danger ml-2 ">
-                Campo <strong>requerido</strong>
-              </span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">LDM a cumplir:</label>
-            <div class="col-sm-3">
+            <label class="col-sm-2 control-label">LDM a cumplir:</label>
+            <div class="col-sm-5">
               <input id="txtLatitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LDM a cumplir" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.ldMaCumplir" />
               <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.ldMaCumplir==''">
                 Campo <strong>requerido</strong>
               </span>
             </div>
-            <label class="col-sm-3 control-label">LPC a cumplir:</label>
-            <div class="col-sm-3">
-              <input id="txtLatitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC a cumplir" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.lpCaCumplir" />
+    
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">LPC a cumplir:</label>
+            <div class="col-sm-2">
+              <input id="txtlpc" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC a cumplir" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.lpCaCumplir" />
               <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.lpCaCumplir==''">
                 Campo <strong>requerido</strong>
               </span>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Lo muestra:</label>
-            <div class="col-sm-3">
-             <input type="checkbox" />
-              <span class="text-danger ml-2 ">
+            <label class="col-sm-2 control-label">Lo muestra:</label>
+            <div class="col-sm-2">
+              <input class="check" type="checkbox" />
+              <span class="text-danger ml-2">
                 Campo <strong>requerido</strong>
               </span>
             </div>
-            <label class="col-sm-3 control-label">Lo subrroga:</label>
-            <div class="col-sm-3">
-              <input type="checkbox" />
-              <span class="text-danger ml-2 ">
+
+            <label class="col-sm-2 control-label">Lo subrroga:</label>
+            <div class="col-sm-2">
+              <select id="dropLoSubroga" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.loMuestra">
+                <option [ngValue]=null>--Seleccione--</option>
+                <option *ngFor="let laboratorio of laboratorios" [ngValue]="laboratorio.id">
+                  {{laboratorio.descripcion}}
+                </option>
+              </select>
+              <span class="text-danger ml-2">
                 Campo <strong>requerido</strong>
               </span>
             </div>
+
+
           </div>
 
           <div class="form-group">
-            <label class="col-sm-3 control-label">Laboratorio subrrogado:</label>
+
+            <label class="col-sm-2 control-label">Laboratorio subrrogado:</label>
             <div class="col-sm-3">
               <select id="dropLaboratorioSubrogado" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.laboratorioSubrogadoId">
                 <option [ngValue]=null>--Seleccione--</option>
@@ -311,48 +331,66 @@
                 Campo <strong>requerido</strong>
               </span>
             </div>
-
-            <label class="col-sm-3 control-label">Método análitico:</label>
-            <div class="col-sm-3">
-              <input id="txtMetodoAnalitico" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Método análitico" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.metodoAnalitico" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.metodoAnalitico==''">
+            <label class="col-sm-2 control-label">Nombre laboratorio subrrogado:</label>
+            <div class="col-sm-5">
+              <input id="txtLaboratorioMuestreo" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Descripción laboratorio" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.laboratorio" />
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.laboratorio==''">
                 Campo <strong>requerido</strong>
               </span>
             </div>
+
           </div>
 
-          <div class="form-group">
-            <label class="col-sm-2 control-label">LDM:</label>
-            <div class="col-sm-2">
-              <input id="txtLDM" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LDM" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.ldm" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.ldm==''">
-                Campo <strong>requerido</strong>
-              </span>
+       
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Método análitico:</label>
+              <div class="col-sm-3">
+                <input id="txtMetodoAnalitico" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Método análitico" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.metodoAnalitico" />
+                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.metodoAnalitico==''">
+                  Campo <strong>requerido</strong>
+                </span>
+              </div>
+              <label class="col-sm-2 control-label">LDM:</label>
+              <div class="col-sm-5">
+                <input id="txtLDM" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LDM" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.ldm" />
+                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.ldm==''">
+                  Campo <strong>requerido</strong>
+                </span>
+              </div>
+       
             </div>
-            <label class="col-sm-2 control-label">LPC:</label>
-            <div class="col-sm-2">
-              <input id="txtLPC" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.lpc" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.lpc==''">
-                Campo <strong>requerido</strong>
-              </span>
-            </div>
-            <label class="col-sm-2 control-label">Año:</label>
-            <div class="col-sm-2">
-              <input id="txtAnio" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Año" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.AnioId" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.AnioId==null">
-                Campo <strong>requerido</strong>
-              </span>
-            </div>
-          </div>
 
-          <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
-          <button (click)="AddLimites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
-          <button (click)="UpdateLimites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
-        </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">LPC:</label>
+              <div class="col-sm-3">
+                <input id="txtLPC" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.lpc" />
+                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.lpc==''">
+                  Campo <strong>requerido</strong>
+                </span>
+              </div>
+              <label class="col-sm-2 control-label">Año:</label>
+              <div class="col-sm-5">
+                <select id="dropAnios" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.AnioId">
+                  <option [ngValue]=null>--Seleccione--</option>
+                  <option *ngFor="let labSubrogado of laboratoriosSubrogado" [ngValue]="labSubrogado.id">
+                    {{labSubrogado.nomenclatura}}
+                  </option>
+                </select>
+                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.AnioId==null">
+                  Campo <strong>requerido</strong>
+                </span>
+              </div>
+            </div>
+       
+              <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+              <button (click)="AddLimites();" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
+              <button (click)="UpdateLimites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
+           
+          </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+
   </div>
-  <!-- /.modal -->
-
-
-</div>

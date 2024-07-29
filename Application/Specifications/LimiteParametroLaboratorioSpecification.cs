@@ -12,7 +12,7 @@ namespace Application.Specifications
     {
         public LimiteParametroLaboratorioSpecification() {
             Query.Include(x => x.Parametro).Include(y => y.Laboratorio).Include(z => z.RealizaLaboratorioMuestreo).Include(a => a.LaboratorioMuestreo)
-                    .Include(b => b.LaboratorioSubroga).Include(c => c.LoSubroga).Include(d => d.Anio);
+                .Include(e => e.Periodo).Include(b => b.LaboratorioSubroga).Include(c => c.LoSubroga).Include(d => d.Anio);
         }
     }
 }

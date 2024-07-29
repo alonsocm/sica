@@ -27,15 +27,18 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     parametroId: null,
     laboratorio: '',
     laboratorioId: null,
-    realizaLaboratorioMuestreo: false,
+    realizaLaboratorioMuestreoId: null,
+    realizaLaboratorioMuestreo: '',
     laboratorioMuestreo: '',
     laboratorioMuestreoId: null,
-    periodo: 0,
+    mes: '',
+    periodoId: null,
     activo: false,
-    loSubroga:'',
+    loSubroga: '',
+    loSubrogaId: null,
     ldMaCumplir: '',
     lpCaCumplir: '',
-    loMuestra: false,
+    loMuestra: null,
     accionLaboratorio: '',
     accionLaboratorioId: null,
     laboratorioSubrogado: '',
@@ -344,7 +347,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     this.limiteLaboratorioService
       .obtenerLimitesLaboratorioPaginados(page, pageSize, filter, this.orderBy)
       .subscribe({
-        next: (response: any) => {
+        next: (response: any) => {        
           this.selectedPage = false;
           this.limitesLaboratorio = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;

@@ -7,15 +7,18 @@ export interface LimitesLaboratorios extends Row {
   parametroId: number |null,
   laboratorio: string,
   laboratorioId: number | null,
-  realizaLaboratorioMuestreo: boolean,
+  realizaLaboratorioMuestreoId: number | null,
+  realizaLaboratorioMuestreo: string,
   laboratorioMuestreo: string,
   laboratorioMuestreoId: number | null,
-  periodo: number,
+  periodoId: number | null,
+  mes: string,
   activo: boolean,
   ldMaCumplir: string,
   lpCaCumplir: string,
-  loMuestra: boolean,
+  loMuestra: boolean | null,
   loSubroga: string,
+  loSubrogaId: number|null,
   accionLaboratorio: string,
   accionLaboratorioId: number | null /*viene siendo la propiedad de LoSubrogaId*/
   laboratorioSubrogado: string,
@@ -25,8 +28,5 @@ export interface LimitesLaboratorios extends Row {
   lpc: string,
   AnioId: number | null,
   anio: string
-
-
-
 
 }
