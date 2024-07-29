@@ -23,7 +23,7 @@ export class MuestreosTotalesComponent implements OnInit {
     this.filtroResumen = 'Seleccionar filtro';
     
     muestreoService.muestreos.subscribe(
-      (muestreos) => {
+      (muestreos) => {  
         this.muestreosFiltrados = muestreos;
         this.totalMuestreos = this.muestreosFiltrados.length;
         this.filtrarResumen();
@@ -35,13 +35,13 @@ export class MuestreosTotalesComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  filtrarResumen(): void {
+  filtrarResumen(): void {    
     this.resultadosFiltro = [];
     this.totalResultadosPorFiltro = 0;
     switch (this.filtroResumen) {
       case 'OC':
         let oc = this.muestreosFiltrados
-          .filter((f) => f.isChecked && f.ocdl.startsWith('OC'))
+          .filter((f) => f.selected && f.ocdl.startsWith('OC'))
           .map((m) => m.ocdl);
         this.resultadosFiltro = this.obtenerResumenMonitoreosSeleccionados(oc);
         this.totalResultadosPorFiltro = this.calcularTotalMonitoreosResumen(
@@ -50,7 +50,7 @@ export class MuestreosTotalesComponent implements OnInit {
         break;
       case 'DL':
         let direccionesLocales = this.muestreosFiltrados
-          .filter((f) => f.isChecked && f.ocdl.startsWith('DL'))
+          .filter((f) => f.selected && f.ocdl.startsWith('DL'))
           .map((m) => m.ocdl);
         this.resultadosFiltro =
           this.obtenerResumenMonitoreosSeleccionados(direccionesLocales);
@@ -60,7 +60,7 @@ export class MuestreosTotalesComponent implements OnInit {
         break;
       case 'Estado':
         let estados = this.muestreosFiltrados
-          .filter((f) => f.isChecked)
+          .filter((f) => f.selected)
           .map((m) => m.estado);
         this.resultadosFiltro =
           this.obtenerResumenMonitoreosSeleccionados(estados);
@@ -70,7 +70,7 @@ export class MuestreosTotalesComponent implements OnInit {
         break;
       case 'Tipo cuerpo de agua':
         let cuerpoAgua = this.muestreosFiltrados
-          .filter((f) => f.isChecked)
+          .filter((f) => f.selected)
           .map((m) => m.tipoCuerpoAgua);
         this.resultadosFiltro =
           this.obtenerResumenMonitoreosSeleccionados(cuerpoAgua);
@@ -80,7 +80,7 @@ export class MuestreosTotalesComponent implements OnInit {
         break;
       case 'Laboratorio':
         let laboratorio = this.muestreosFiltrados
-          .filter((f) => f.isChecked)
+          .filter((f) => f.selected)
           .map((m) => m.laboratorio);
         this.resultadosFiltro =
           this.obtenerResumenMonitoreosSeleccionados(laboratorio);
@@ -90,7 +90,7 @@ export class MuestreosTotalesComponent implements OnInit {
         break;
       case 'Fecha realización':
         let fechaRealizacion = this.muestreosFiltrados
-          .filter((f) => f.isChecked)
+          .filter((f) => f.selected)
           .map((m) => m.fechaRealizacion);
         this.resultadosFiltro =
           this.obtenerResumenMonitoreosSeleccionados(fechaRealizacion);
