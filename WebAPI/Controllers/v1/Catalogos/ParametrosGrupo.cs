@@ -13,6 +13,12 @@ namespace WebAPI.Controllers.v1.Catalogos
     public class ParametrosGrupo : BaseApiController
     {
         [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await Mediator.Send(new GetAllParametros()));
+        }
+
+        [HttpGet("ParametrosPaginados")]
         public async Task<IActionResult> Get(int page, int pageSize, string? filter)
         {
             var filters = new List<Filter>();
@@ -44,7 +50,7 @@ namespace WebAPI.Controllers.v1.Catalogos
         {
             return Ok(await Mediator.Send(new UpdateParametro
             {
-                ParametroId = parametro.ParametroId,
+                Id = parametro.Id,
                 Clave = parametro.Descripcion,
                 Descripcion = parametro.Descripcion,
                 GrupoId = parametro.GrupoId,
