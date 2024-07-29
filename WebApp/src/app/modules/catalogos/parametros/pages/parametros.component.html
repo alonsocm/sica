@@ -157,7 +157,7 @@
                             (click)="onEditClick(registro.id)"><i class="bi bi-pencil-square icon-action"></i>
                         </button>
                         <button type="button" class="btn-action btn-danger-action" title="Eliminar"
-                            (click)="onDeleteClick()"><i class="bi bi-trash"></i>
+                            (click)="onDeleteClick(registro.id)"><i class="bi bi-trash"></i>
                         </button>
                     </td>
                 </tr>
@@ -202,7 +202,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Eliminar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    (click)="onConfirmDeleteClick();">Eliminar</button>
             </div>
         </div>
     </div>

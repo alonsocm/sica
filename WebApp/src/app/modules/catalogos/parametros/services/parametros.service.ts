@@ -61,4 +61,10 @@ export class ParametrosService {
   update(registro: Parametro): Observable<Object> {
     return this.http.put(environment.apiUrl + '/ParametrosGrupo', registro);
   }
+
+  delete(registro: number): Observable<Object> {
+    return this.http.delete(
+      environment.apiUrl + '/ParametrosGrupo?parametroid=' + registro
+    );
+  }
 }

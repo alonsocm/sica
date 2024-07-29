@@ -304,9 +304,30 @@ export class ParametrosComponent extends BaseService implements OnInit {
     this.hideColumnFilter();
   }
 
-  onDeleteClick() {
-    //this.supervision = supervision;
+  onDeleteClick(registroId: number) {
+    this.registro.id = registroId;
     document.getElementById('btn-confirm-modal')?.click();
+  }
+
+  onConfirmDeleteClick() {
+    this.parametrosService.delete(this.registro.id).subscribe({
+      next: (response: any) => {
+        this.resetRegistro();
+        this.notificationService.updateNotification({
+          type: NotificationType.success,
+          text: 'Parámetro eliminado',
+          show: true,
+        });
+      },
+      error: (error) => {
+        this.resetRegistro();
+        this.notificationService.updateNotification({
+          type: NotificationType.danger,
+          text: 'El parámetro no pudo ser elminado. Se encontrarón resultados reportados para el parámetro',
+          show: true,
+        });
+      },
+    });
   }
 
   onAgregarClick() {
