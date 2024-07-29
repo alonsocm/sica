@@ -4,6 +4,14 @@ import { ParametrosService } from '../services/parametros.service';
 import { Parametro } from '../models/parametro';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from 'src/app/interfaces/filter/item';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
 
 @Component({
   selector: 'app-parametros',
@@ -26,13 +34,39 @@ export class ParametrosComponent extends BaseService implements OnInit {
     parametroPadreId: 0,
     orden: 0,
   };
+
+  parametroForm = new FormGroup({
+    clave: new FormControl(this.registro.clave, Validators.required),
+    nombre: new FormControl(this.registro.descripcion, Validators.required),
+    tipo: new FormControl(this.registro.grupoId ?? 0, [
+      Validators.required,
+      Validators.min(1),
+    ]),
+    subgrupo: new FormControl(this.registro.subgrupoId ?? 0, [
+      Validators.required,
+      Validators.min(1),
+    ]),
+    unidadMedida: new FormControl(this.registro.unidadMedidaId ?? 0, [
+      Validators.required,
+      Validators.min(1),
+    ]),
+  });
+
   registros: Array<Parametro> = [];
   registrosSeleccionados: Array<Parametro> = [];
   grupos: any;
   subgrupos: any;
   unidadesMedida: any;
+  initialValueForm: any;
 
-  constructor(private parametrosService: ParametrosService) {
+  get form(): { [key: string]: AbstractControl } {
+    return this.parametroForm.controls;
+  }
+
+  constructor(
+    private parametrosService: ParametrosService,
+    private notificationService: NotificationService
+  ) {
     super();
   }
 
@@ -42,6 +76,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
     this.getUnidadesMedida();
     this.getGrupos();
     this.getSubgrupos();
+    this.initialValueForm = this.parametroForm.value;
   }
 
   definirColumnas() {
@@ -287,7 +322,21 @@ export class ParametrosComponent extends BaseService implements OnInit {
     document.getElementById('btn-confirm-modal')?.click();
   }
 
-  onEditClick() {
+  onAgregarClick() {
+    this.parametroForm.reset(this.initialValueForm);
+    document.getElementById('btn-edit-modal')?.click();
+  }
+
+  onEditClick(parametroId: number) {
+    let elemento = this.registros.findIndex((f) => f.id === parametroId);
+    this.registro = this.registros[elemento];
+    this.parametroForm.patchValue({
+      clave: this.registro.clave,
+      nombre: this.registro.descripcion,
+      tipo: this.registro.grupoId,
+      subgrupo: this.registro.subgrupoId,
+      unidadMedida: this.registro.unidadMedidaId,
+    });
     document.getElementById('btn-edit-modal')?.click();
   }
 
@@ -316,5 +365,57 @@ export class ParametrosComponent extends BaseService implements OnInit {
       },
       error: (error) => {},
     });
+  }
+
+  onGuardarCambiosClick() {
+    this.registro.clave = this.parametroForm.value.clave ?? '';
+    this.registro.descripcion = this.parametroForm.value.nombre ?? '';
+    this.registro.grupoId = this.parametroForm.value.tipo ?? 0;
+    this.registro.subgrupoId = this.parametroForm.value.subgrupo ?? 0;
+    this.registro.unidadMedidaId = this.parametroForm.value.unidadMedida ?? 0;
+
+    if (this.parametroForm.valid && this.registro.id === 0) {
+      this.parametrosService.create(this.registro).subscribe({
+        next: (response: any) => {
+          document.getElementById('btn-close')?.click();
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Parámetro agregado correctamente.',
+            show: true,
+          });
+        },
+        error: (error) => {},
+      });
+    } else if (this.parametroForm.valid && this.registro.id !== 0) {
+      this.parametrosService.update(this.registro).subscribe({
+        next: (response: any) => {
+          document.getElementById('btn-close')?.click();
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Cambios guardados correctamente.',
+            show: true,
+          });
+        },
+        error: (error) => {},
+      });
+    }
+  }
+
+  resetRegistro() {
+    this.registro = {
+      selected: false,
+      id: 0,
+      clave: '',
+      descripcion: '',
+      unidadMedida: '',
+      unidadMedidaId: 0,
+      grupo: '',
+      grupoId: 0,
+      subGrupo: '',
+      subgrupoId: 0,
+      parametroPadre: '',
+      parametroPadreId: 0,
+      orden: 0,
+    };
   }
 }

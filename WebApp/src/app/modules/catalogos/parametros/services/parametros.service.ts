@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Parametro } from '../models/parametro';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,7 @@ export class ParametrosService {
   ): Observable<Object> {
     return this.http.get(
       environment.apiUrl +
-        '/ParametrosGrupo?page=' +
+        '/ParametrosGrupo/ParametrosPaginados?page=' +
         page +
         '&pageSize=' +
         pageSize +
@@ -51,5 +52,13 @@ export class ParametrosService {
     return this.http.get(
       environment.apiUrl + '/ParametrosGrupo/GetUnidadesMedida'
     );
+  }
+
+  create(registro: Parametro): Observable<Object> {
+    return this.http.post(environment.apiUrl + '/ParametrosGrupo', registro);
+  }
+
+  update(registro: Parametro): Observable<Object> {
+    return this.http.put(environment.apiUrl + '/ParametrosGrupo', registro);
   }
 }

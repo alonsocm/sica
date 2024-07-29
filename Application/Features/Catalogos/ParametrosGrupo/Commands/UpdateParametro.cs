@@ -6,7 +6,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
 {
     public class UpdateParametro : IRequest<Response<bool>>
     {
-        public int ParametroId { get; set; }
+        public int Id { get; set; }
         public string Clave { get; set; }
         public string Descripcion { get; set; }
         public int UnidadMedidaId { get; set; }
@@ -26,7 +26,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
 
         public async Task<Response<bool>> Handle(UpdateParametro request, CancellationToken cancellationToken)
         {
-            var parametroBD = await _parametroRepository.ObtenerElementoPorIdAsync(request.ParametroId);
+            var parametroBD = await _parametroRepository.ObtenerElementoPorIdAsync(request.Id);
 
             if (parametroBD == null)
                 throw new KeyNotFoundException();

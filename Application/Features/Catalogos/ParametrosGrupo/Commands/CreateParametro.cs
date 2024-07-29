@@ -6,7 +6,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
 {
     public class CreateParametro : IRequest<Response<bool>>
     {
-        public int ParametroId { get; set; }
+        public int Id { get; set; }
         public string Clave { get; set; }
         public string Descripcion { get; set; }
         public int UnidadMedidaId { get; set; }
@@ -32,8 +32,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
                 Descripcion = request.Descripcion,
                 GrupoParametroId = request.GrupoId,
                 IdSubgrupo = request.SubgrupoId,
-                IdUnidadMedida = request.UnidadMedidaId,
-                ParametroPadreId = request.ParametroPadreId,
+                IdUnidadMedida = request.UnidadMedidaId
             };
 
             _parametroRepository.Insertar(parametro);

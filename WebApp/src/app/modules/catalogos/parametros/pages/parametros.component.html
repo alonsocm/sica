@@ -13,7 +13,7 @@
             </app-busqueda-columna>
         </div> -->
         <div class="float-right">
-            <button class="btn btn-primary btn-sm mr-1" type="button">
+            <button class="btn btn-primary btn-sm mr-1" type="button" (click)="onAgregarClick()">
                 <i class="bi bi-plus-lg"></i> Nuevo parámetro
             </button>
             <button class="btn btn-primary btn-sm mr-1" type="button">
@@ -155,7 +155,7 @@
                     <td>{{registro.parametroPadre}}</td>
                     <td>
                         <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"
-                            (click)="onEditClick()"><i class="bi bi-pencil-square icon-action"></i>
+                            (click)="onEditClick(registro.id)"><i class="bi bi-pencil-square icon-action"></i>
                         </button>
                         <button type="button" class="btn-action btn-danger-action" title="Eliminar"
                             (click)="onDeleteClick()"><i class="bi bi-trash"></i>
@@ -210,7 +210,7 @@
 </div>
 
 <button id="btn-edit-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#editModal">
-    Confirmar eliminación
+    Agregar/Editar
 </button>
 
 <!-- Modal -->
@@ -225,57 +225,63 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
+                <form class="form-horizontal" [formGroup]="parametroForm" (ngSubmit)="onGuardarCambiosClick()">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="clave">Clave:</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="clave" placeholder="Clave del parámetro" type="text">
+                            <input class="form-control" id="clave" type="text" placeholder="Clave del parámetro"
+                                formControlName="clave" [ngClass]="{'is-invalid': form['clave'].errors}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="descripcion">Descripción:</label>
+                        <label class="col-sm-3 control-label" for="descripcion">Nombre:</label>
                         <div class="col-sm-9">
-                            <input class="form-control" id="descripcion" placeholder="Descripción del parámetro"
-                                type="text">
+                            <input class="form-control" id="descripcion" type="text"
+                                placeholder="Descripción del parámetro" formControlName="nombre"
+                                [ngClass]="{'is-invalid': form['nombre'].errors}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="grupo">Grupo:</label>
+                        <label class="col-sm-3 control-label" for="grupo">Tipo:</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="grupo" placeholder="Grupo del parámetro">
-                                <option *ngFor="let grupo of this.grupos">{{grupo.descripcion}}</option>
+                            <select class="form-control" id="grupo" placeholder="Grupo del parámetro"
+                                formControlName="tipo" [ngClass]="{'is-invalid': form['tipo'].errors}">
+                                <option value="0">Seleccione</option>
+                                <option *ngFor="let grupo of this.grupos" value="{{grupo.id}}">
+                                    {{grupo.descripcion}}
+                                </option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="subgrupo">Subgrupo:</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="subgrupo" placeholder="Subgrupo del parámetro">
-                                <option *ngFor="let subgrupo of this.subgrupos">{{subgrupo.descripcion}}</option>
+                            <select class="form-control" id="subgrupo" placeholder="Subgrupo del parámetro"
+                                formControlName="subgrupo" [ngClass]="{'is-invalid': form['subgrupo'].errors}">
+                                <option value="0">Seleccione</option>
+                                <option *ngFor="let subgrupo of this.subgrupos" value="{{subgrupo.id}}">
+                                    {{subgrupo.descripcion}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="unidad-medida">Unidad de medida:</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="unidad-medida">
-                                <option *ngFor="let unidad of this.unidadesMedida">{{unidad.descripcion}}</option>
+                            <select class="form-control" id="unidad-medida" formControlName="unidadMedida"
+                                [ngClass]="{'is-invalid': form['unidadMedida'].errors}">
+                                <option value="0">Seleccione</option>
+                                <option *ngFor="let unidad of this.unidadesMedida" value="{{unidad.id}}">
+                                    {{unidad.descripcion}}</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label" for="parametro-padre">Parámetro padre:</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="parametro-padre">
-                                <option>opcion uno</option>
-                            </select>
-                        </div>
+                    <div class="modal-footer">
+                        <button id="btn-close" type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="!parametroForm.valid">Guardar
+                            cambios</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar cambios</button>
             </div>
         </div>
     </div>
