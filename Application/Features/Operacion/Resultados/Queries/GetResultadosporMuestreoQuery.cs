@@ -1,8 +1,10 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
+using System.Linq;
 
 namespace Application.Features.Operacion.Resultados.Queries
 {
@@ -32,24 +34,12 @@ namespace Application.Features.Operacion.Resultados.Queries
 
             if (request.Filter.Any())
             {
-                var expressions = MuestreoExpression.GetExpressionList(request.Filter);
-                List<AcumuladosResultadoDto> lstMuestreo = new List<AcumuladosResultadoDto>();
+                var expressions = QueryExpression<AcumuladosResultadoDto>.GetExpressionList(request.Filter);
 
                 foreach (var filter in expressions)
                 {
-                    if (request.Filter.Count == 2 && request.Filter[0].Conditional == "equals" && request.Filter[1].Conditional == "equals")
-                    {
-                        var dataFinal = data;
-                        dataFinal = (IEnumerable<AcumuladosResultadoDto>)dataFinal.AsQueryable().Where(filter);
-                        lstMuestreo.AddRange(dataFinal);
-
-                    }
-                    else
-                    {
-                        data = (IEnumerable<AcumuladosResultadoDto>)data.AsQueryable().Where(filter);
-                    }
+                    data = data.AsQueryable().Where(filter);
                 }
-                data = (lstMuestreo.Count > 0) ? lstMuestreo.AsQueryable() : data;
             }
 
             if (request.OrderBy != null)

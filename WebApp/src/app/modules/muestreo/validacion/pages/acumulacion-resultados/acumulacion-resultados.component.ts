@@ -155,7 +155,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'date',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
