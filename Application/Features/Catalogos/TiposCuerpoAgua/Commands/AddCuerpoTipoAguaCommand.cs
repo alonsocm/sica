@@ -2,7 +2,7 @@
 using Application.Wrappers;
 using MediatR;
 
-namespace Application.Features.TiposCuerpoAgua.Commands.AddTipoCuerpoAguaCommand
+namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
 {
     public class AddTipoCuerpoAguaCommand : IRequest<Response<bool>>
     {
