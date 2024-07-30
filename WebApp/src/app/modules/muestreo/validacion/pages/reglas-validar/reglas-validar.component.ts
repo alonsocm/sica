@@ -32,6 +32,12 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
+    id: 'mdlConfirmacion'
+  };
+  notificacionConfirmacion: Notificacion = {
+    title: 'Confirmar carga resultados',
+    text: '¿Desea cargar los resultados de los muestreos eliminados?',
+    id: 'mdlCargaResultados'
   };
   archivo: any;
   ngOnInit(): void {
@@ -641,7 +647,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
           document.getElementById('btnCancelarModal')?.click();
           this.cargaResultados();
           this.loading = false;
-          document.getElementById('inputExcelMonitoreos')?.click();
+          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
           this.resetValues();
           this.hacerScroll();
           return this.notificationService.updateNotification({
@@ -664,7 +670,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
           document.getElementById('btnCancelarModal')?.click();
           this.cargaResultados();
           this.loading = false;
-          document.getElementById('inputExcelMonitoreos')?.click();
+          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
           this.resetValues();
           this.hacerScroll();
           return this.notificationService.updateNotification({

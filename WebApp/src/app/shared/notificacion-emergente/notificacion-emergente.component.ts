@@ -11,7 +11,8 @@ import { BaseService } from '../services/base.service';
 export class NotificacionEmergenteComponent extends BaseService implements OnInit {
   @Input() notificacion: Notificacion = {
     title: '',
-    text: ''
+    text: '',
+    id:'',
   };
   @Output() changed = new EventEmitter<boolean>();
 

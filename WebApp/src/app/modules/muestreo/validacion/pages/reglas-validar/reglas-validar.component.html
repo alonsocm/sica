@@ -25,6 +25,8 @@
       </button>
       <button id="btnMdlConfirmacion" class="btn btn-primary btn-sm element-hidden" type="button" data-toggle="modal"
               data-target="#mdlConfirmacion" title="Seleccionar"></button>
+      <button id="btnMdlConfirmacionCargaResultados" class="btn btn-primary btn-sm element-hidden" type="button" data-toggle="modal"
+              data-target="#mdlCargaResultados" title="Seleccionar"></button>
       <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="onDownload()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
       </button>
@@ -66,7 +68,7 @@
             <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
                    (change)="onSelectPageClick(this.resultadosMuestreo,this.resultadosSeleccionados);"
                    title="Selecciona la página actual" />
-          
+
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
             <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
@@ -176,7 +178,7 @@
           <td style="text-align:center">{{(dato.autorizacionFechaEntrega)?"SI":"NO"}}</td>
           <td style="text-align:center">
             <input type="checkbox" [disabled]="(dato.cumpleReglasCondic=='SI')?true:false" (change)="validarCorreReglaAutorizaciones(dato);" class="cursor-pointer" [(ngModel)]="dato.autorizacionCondicionantes">
-                      </td>
+          </td>
           <td style="text-align:center">
             {{(validarCorreReglaAutorizaciones(dato))? "SI":"NO"}}
           </td> <!--se corre regla de validacion-->
@@ -210,7 +212,8 @@
   <app-autofiltro [columnaEspecial]="this.columnaFiltroEspecial"
                   [opcionesFiltro]="this.opcionesFiltrosModal"></app-autofiltro>
   <app-notificacion-emergente [notificacion]="this.notificacion"
-                              (changed)="this.eliminarResultados();"></app-notificacion-emergente>  
+                              (changed)="this.eliminarResultados();"></app-notificacion-emergente>
+  <app-notificacion-emergente [notificacion]="this.notificacionConfirmacion" (changed)="inputExcelMonitoreos.click()"></app-notificacion-emergente>
   <input style="visibility:hidden" type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
          title="Seleccionar archivo" #inputExcelMonitoreos>
   <button style="visibility:hidden" id="inputExcelMonitoreos" type="button" class="btn btn-primary mr-1" (click)="inputExcelMonitoreos.click()"
