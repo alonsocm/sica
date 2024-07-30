@@ -481,7 +481,13 @@ export class SitiosComponent extends BaseService implements OnInit {
 
   RegistrarSitio() { }
 
-  AddSites() { }
+  AddSites() {    
+    this.sitioService.addSitio(this.sitioRegistro).subscribe({
+      next: (response: any) => { 
+      },
+      error: (error) => { },
+    });
+  }
 
   UpdateSites() { }
 }

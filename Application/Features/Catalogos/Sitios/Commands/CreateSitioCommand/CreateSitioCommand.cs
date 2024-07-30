@@ -13,8 +13,17 @@ namespace Application.Features.Sitios.Commands.CreateSitioCommand
 {
     public class CreateSitioCommand : IRequest<Response<long>>
     {
-        public string Nombre { get; set; }
-        public string Clave { get; set; }
+        public string ClaveSitio { get; set; }
+        public string NombreSitio { get; set; }
+        public long CuencaDireccionesLocalesId { get; set; }
+        public long EstadoId { get; set; }
+        public long MunicipioId { get; set; }
+        public long CuerpoTipoSubtipoAguaId { get; set; }
+        public decimal Latitud { get; set; }
+        public decimal Longitud { get; set; }
+        public string Observaciones { get; set; }
+        public int? AcuiferoId { get; set; }
+
     }
 
     public class CreateSitioCommandHandler : IRequestHandler<CreateSitioCommand, Response<long>>

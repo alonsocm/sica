@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
+using Application.Features.Muestreos.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Commands.Liberacion;
@@ -17,6 +18,7 @@ using Domain.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
+using System.Drawing.Printing;
 using System.Reflection;
 using WebAPI.Shared;
 
@@ -683,7 +685,40 @@ namespace WebAPI.Controllers.v1.Operacion
             }));
         }
 
-        //ExportaciondeExcelPantallasValidacionReglas
+
+        [HttpGet("ResultadosporMuestreoDistinct")]
+        public async Task<IActionResult> ResultadosporMuestreoDistinct(int estatusId, string column, string? filter = "", string? order = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+            var data =  Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+            {
+                estatusId = estatusId,               
+                Filter = filters,
+                OrderBy = orderBy
+            }).Result.Data;      
+
+            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
+
+        }
+
+
+        //ExportaciondeExcelPantallasValidacionReglas cambiar por el filtrado
         [HttpPost("exportExcelValidaciones")]
         public IActionResult ExportExcelValidaciones(List<AcumuladosResultadoDto> muestreos)
         {

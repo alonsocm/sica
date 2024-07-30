@@ -10,6 +10,7 @@ using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
+using Application.Features.Catalogos.ParametrosGrupo.Commands;
 
 namespace WebAPI.Controllers.v1.Catalogos
 {
@@ -53,13 +54,23 @@ namespace WebAPI.Controllers.v1.Catalogos
                 OrderBy = orderBy
             }));
         }
-
-        //POST api/<controller>
         [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Post(CreateSitioCommand command)
+        public async Task<IActionResult> Post(CreateSitioCommand sitio)
         {
-            return Ok(await Mediator.Send(command));
+            return Ok(await Mediator.Send(new CreateSitioCommand
+            {
+                ClaveSitio = sitio.ClaveSitio,
+                NombreSitio = sitio.NombreSitio,
+                CuencaDireccionesLocalesId = sitio.CuencaDireccionesLocalesId,
+                EstadoId = sitio.EstadoId,
+                MunicipioId = sitio.MunicipioId,
+                CuerpoTipoSubtipoAguaId = sitio.CuerpoTipoSubtipoAguaId,
+                Latitud = sitio.Latitud,
+                Longitud = sitio.Longitud,
+                Observaciones = sitio.Observaciones,
+                AcuiferoId = sitio.AcuiferoId,
+                
+            }));
         }
 
         //PUT api/<controller>

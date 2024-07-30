@@ -41,6 +41,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   };
   archivo: any;
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.cargaResultados();
   }
@@ -461,16 +462,18 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     else {
 
       ////Validacion para aplicar reglas debe de ser si en correr regla y haber sido validado por el area de supervisión
-      
-          let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
-          let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == null);
-      if (resultadosNoAplicaRegla.length > 0 || novalidadoMuestreo.length > 0) {
-        return this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.warning,
-          text: 'Debes de seleccionar muestreos que se encuentre validados por el área de Supervisión de muestreo y ser aprobado para correr la regla',
-        });
-      }
+
+     /* ******Se comenta por el momento para que pueda realizar la validacion el area uduaria de Stephania en pruebas de QA sin depender de la otra area *******/
+
+      //let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
+      //let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == null);
+      //if (resultadosNoAplicaRegla.length > 0 || novalidadoMuestreo.length > 0) {
+      //  return this.notificationService.updateNotification({
+      //    show: true,
+      //    type: NotificationType.warning,
+      //    text: 'Debes de seleccionar muestreos que se encuentre validados por el área de Supervisión de muestreo y ser aprobado para correr la regla',
+      //  });
+      //}
 
       this.resultadosEnviados = muestreosConResultados.map(
         (m) => { return m.muestreoId; });
@@ -613,8 +616,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+      this.validacionService
+        .getDistinctValuesFromColumnporMuestreo(column.name, this.cadena, estatusMuestreo.SeleccionadoParaValidar)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
@@ -663,7 +666,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     } else {
       this.loading = false;
 
-      let ids = this.resultadosFiltradosn.map((s) => s.muestreoId);
+      let ids = this.resultadosFiltradosn.filter(x => x.selected).map((s) => s.muestreoId);
 
       this.validacionService.deleteResultadosByMuestreoId(ids).subscribe({
         next: (response) => {

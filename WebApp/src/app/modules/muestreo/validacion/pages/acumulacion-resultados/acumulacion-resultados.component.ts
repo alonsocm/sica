@@ -532,7 +532,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
   }
 
   //cambiar cuando selecciona todo
-  onDownload(): void {
+  onDownload(): void {   
     if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -803,8 +803,8 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+      this.validacionService
+        .getDistinctValuesFromColumn(column.name, this.cadena, estatusMuestreo.AcumulacionResultados)
         .subscribe({          
           next: (response: any) => {
             this.loading = true;

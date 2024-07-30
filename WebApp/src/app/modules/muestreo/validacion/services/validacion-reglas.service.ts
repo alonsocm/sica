@@ -169,14 +169,15 @@ export class ValidacionReglasService {
       options
     );
   }
-
+ 
   getDistinctValuesFromColumn(
     column: string,
-    filter: string
+    filter: string,
+    estatusId: number
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
-        estatusId: estatusMuestreo.ValidadoPorReglas,
+        estatusId: estatusId,
         column: column,
         filter: filter,
       },
@@ -187,6 +188,31 @@ export class ValidacionReglasService {
       { params }
     );
   }
+
+  
+  getDistinctValuesFromColumnporMuestreo(
+    column: string,
+    filter: string,
+    estatusId: number
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {    
+        estatusId: estatusId,
+        column: column,
+        filter: filter,
+      },
+    });
+    return this.http.get(
+      environment.apiUrl +
+      '/resultados/ResultadosporMuestreoDistinct',
+      { params }
+    );
+  }
+
+
+
+
+
 
   cargarArchivo(archivo: File): Observable<any> {
     const formData = new FormData();

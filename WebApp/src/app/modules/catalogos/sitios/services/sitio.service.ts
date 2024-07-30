@@ -1,7 +1,7 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Sitio } from '../../../muestreo/supervision/models/sitio';
+import { Sitio } from '../../../../interfaces/catalogos/sitio.interface';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -84,6 +84,10 @@ export class SitioService {
     return this.http.get(
       environment.apiUrl + '/Acuiferos', {}
     );
+  }  
+
+  addSitio(registro: Sitio): Observable<Object> {
+    return this.http.post(environment.apiUrl + '/Sitios', registro);
   }
 
 

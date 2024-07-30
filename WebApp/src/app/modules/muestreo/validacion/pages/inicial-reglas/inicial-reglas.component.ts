@@ -43,6 +43,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   archivo: any;
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.cargaResultados();
 
@@ -701,8 +702,8 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+      this.validacionService
+        .getDistinctValuesFromColumnporMuestreo(column.name, this.cadena, estatusMuestreo.InicialReglas)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {

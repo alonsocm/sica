@@ -39,6 +39,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
   archivo: any;
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarMonitoreos();
   }
@@ -664,7 +665,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.validacionService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .getDistinctValuesFromColumn(column.name, this.cadena, estatusMuestreo.ValidadoPorReglas)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
