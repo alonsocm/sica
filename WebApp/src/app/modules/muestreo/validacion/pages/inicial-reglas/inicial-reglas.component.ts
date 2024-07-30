@@ -127,7 +127,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'fechaVisifechaProgramadata',
+        name: 'fechaProgramada',
         label: 'FECHA PROGRAMADA',
         order: 6,
         selectAll: true,

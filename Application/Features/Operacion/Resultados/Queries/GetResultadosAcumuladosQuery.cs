@@ -48,7 +48,6 @@ namespace Application.Features.Operacion.Resultados.Queries
                     }
                 }
             }
-
             if (request.OrderBy != null)
             {
                 if (request.OrderBy.Type == "asc")
