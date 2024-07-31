@@ -33,10 +33,17 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
+    id: 'mdlConfirmacion'
+  };
+  notificacionConfirmacion: Notificacion = {
+    title: 'Confirmar carga resultados',
+    text: '¿Desea cargar los resultados de los muestreos eliminados?',
+    id: 'mdlCargaResultados'
   };
   archivo: any;
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.cargaResultados();
 
@@ -114,13 +121,13 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'date',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
       },
       {
-        name: 'fechaVisifechaProgramadata',
+        name: 'fechaProgramada',
         label: 'FECHA PROGRAMADA',
         order: 6,
         selectAll: true,
@@ -129,7 +136,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'date',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
@@ -144,7 +151,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'number',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
@@ -159,7 +166,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'date',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
@@ -234,7 +241,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'number',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
@@ -249,7 +256,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'number',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
@@ -636,7 +643,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
           document.getElementById('btnCancelarModal')?.click();
           this.cargaResultados();
           this.loading = false;
-          document.getElementById('inputExcelMonitoreos')?.click();
+          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
           this.resetValues();
           this.hacerScroll();
           return this.notificationService.updateNotification({
@@ -659,7 +666,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
           document.getElementById('btnCancelarModal')?.click();
           this.cargaResultados();
           this.loading = false;
-          document.getElementById('inputExcelMonitoreos')?.click();
+          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
           this.resetValues();
           this.hacerScroll();
           return this.notificationService.updateNotification({
@@ -695,8 +702,8 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+      this.validacionService
+        .getDistinctValuesFromColumnporMuestreo(column.name, this.cadena, estatusMuestreo.InicialReglas)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {

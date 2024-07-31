@@ -85,7 +85,10 @@ export class MuestreosTotalesComponent implements OnInit {
 
   generarResumenMonitoreosGpoParametro(summaryOptions: SummaryOptions): void {
     if (summaryOptions.muestreos.length == 0 && !summaryOptions.selectAll) {
+      this.resumenMuestreos = [];
       this.grupoParametros = [];
+      this.resultadosFiltro = [];
+      this.totalResultadosPorFiltro = 0;
       this.totalResultadosParametros = 0;
     } else {
       this.muestreoService

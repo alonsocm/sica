@@ -32,6 +32,7 @@ export class CargaComponent extends BaseService implements OnInit {
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?',
+    id: 'mdlConfirmacion'
   };
 
 

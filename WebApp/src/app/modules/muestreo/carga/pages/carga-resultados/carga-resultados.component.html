@@ -14,7 +14,8 @@
         (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
       </app-busqueda-columna>
     </div>
-    <div class="float-right"> 
+    <div class="float-right">
+
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
         title="Seleccionar archivo" #inputExcelMonitoreos>
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
@@ -24,6 +25,9 @@
       </button>
       <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarMonitoreos()">
         <i class="bi bi-send"></i>&nbsp;Enviar monitoreo(s)
+      </button>
+      <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="confirmarEliminacion()">
+        <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
       </button>
       <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="exportarResultados()">
         <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
@@ -65,7 +69,7 @@
         <tr>
           <th class="no-border-top td-center">
             <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-              (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);  this.getSummary();"
+              (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);  getSummary();"
               title="Selecciona la página actual" />
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
@@ -199,9 +203,7 @@
   </div>
   <div class="row">
     <div class="col-md-6 align-self-end">
-      <button class="btn btn-secondary btn-sm" type="button" (click)="confirmarEliminacion()">
-        <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
-      </button>
+
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
         data-target="#mdlConfirmacion" title="Seleccionar"></button>
     </div>

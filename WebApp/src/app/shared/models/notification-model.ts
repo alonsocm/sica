@@ -9,4 +9,5 @@ export interface NotificationModel {
 export interface Notificacion {
   title: string;
   text: string;
+  id: string;
 }

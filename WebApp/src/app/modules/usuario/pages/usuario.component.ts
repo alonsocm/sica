@@ -19,6 +19,7 @@ export class UsuarioComponent extends BaseService implements OnInit {
   notificacion: Notificacion = {
     title: 'Cambiar estatus',
     text: '¿Está seguro de cambiar el estatus del usuario ?',
+    id: 'mdlConfirmacion'
   };
   correctoFormatoEmail: boolean = false;
   public usuario: Usuario = {
