@@ -384,10 +384,12 @@ export class BaseService {
 
   onSelectAllPagesClick() {
     this.allSelected = true;
+ 
   }
 
   onUnselectAllClick() {
     this.allSelected = false;
+    
   }
 
   onSpecialFiltersClick($event: MouseEvent, columnName: string) {
@@ -577,6 +579,9 @@ export class BaseService {
   }
 
   onSelectPageClick(muestreos: Array<any>, muestreosSeleccionados: Array<any>) {
+    console.log(muestreos);
+    console.log(muestreosSeleccionados);
+
     muestreos.map((m) => {
       m.selected = this.selectedPage;
 
