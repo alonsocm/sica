@@ -11,12 +11,12 @@ namespace Application.Features.Sitios.Commands.UpdateSitioCommand
     {
         public UpdateSitioCommandValidator()
         {
-            RuleFor(p => p.Nombre)
+            RuleFor(p => p.Sitio.NombreSitio)
                     .NotEmpty().WithMessage("{PropertyName} es requerido")
                     .MinimumLength(5).WithMessage("{PropertyName} debe tener un minimo de {MinLength} caracteres")
                     .MaximumLength(20).WithMessage("{Property} no debe exceder de {MinimumLength} caracteres");
 
-            RuleFor(p => p.Clave)
+            RuleFor(p => p.Sitio.ClaveSitio)
                     .NotEmpty().WithMessage("{PropertyName} es requerido")
                     .MinimumLength(5).WithMessage("{PropertyName} debe tener un minimo de {MinLength} caracteres")
                     .MaximumLength(20).WithMessage("{Property} no debe exceder de {MaximumLength} caracteres");

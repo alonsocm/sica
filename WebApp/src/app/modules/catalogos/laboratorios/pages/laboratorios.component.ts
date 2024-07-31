@@ -25,6 +25,7 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
   constructor(public muestreoService: MuestreoService, private laboratorioService: LaboratorioService) { super(); }
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarLaboratorios();
   }
@@ -32,8 +33,8 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
-        name: 'nombre',
-        label: 'DESCRIPCIÓN',
+        name: 'descripcion',
+        label: 'NOMBRE LABORATORIO',
         order: 1,
         selectAll: true,
         filtered: false,
@@ -68,10 +69,14 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
   }
 
   //cambiar porque hay que mandar el filter en caso de que exista filtrado
-  public consultarLaboratorios(): void {
+
+  public consultarLaboratorios(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena): void {
     this.loading = true;
     this.laboratorioService
-      .obtenerLaboratorios()
+      .obtenerLaboratorios(page, pageSize, filter, this.orderBy)
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;        
@@ -158,7 +163,10 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.laboratorioService
-      .obtenerLaboratorios()
+      .obtenerLaboratorios(this.page, this.NoPage, this.cadena, {
+        column: column,
+        type: type,
+      })
       .subscribe({
         next: (response: any) => {
           this.laboratorios = response.data;

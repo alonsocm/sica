@@ -9,16 +9,10 @@
     <app-notification></app-notification>
   </div>
   <div class="clearfix" style="margin-bottom: 1%;">
-    <!--<div class="float-lefth col-md-4">
-      <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
-                            (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
-      </app-busqueda-columna>
-    </div>-->
     <div class="float-right">
-      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro" (click)="cargarCombos()">
-        <i class="bi bi-plus-lg"></i> Nuevo sitio
+      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro" (click)="this.modalTitle = 'Registro Sitio'; cargarCombos()">
+        <i class="bi bi-plus-lg" data-toggle="modal" data-target="#modalregistro"></i> Nuevo sitio
       </button>
-
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
              title="Seleccionar archivo" #inputExcelMonitoreos>
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
@@ -32,8 +26,8 @@
         Limpiar filtros
       </button>
       <!-- <button class="btn btn-primary btn-sm mr-1" type="button">
-          <i class="bi bi-send-exclamation"></i> Borrar
-      </button> -->
+      <i class="bi bi-send-exclamation"></i> Borrar
+  </button> -->
     </div>
 
 
@@ -178,7 +172,7 @@
           <td>{{sitio.longitud}}</td>
           <td>{{sitio.observaciones}}</td>
           <td>
-            <button type="button" class="btn-action btn-primary-action mr-1" title="Editar">
+            <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"  data-toggle="modal" data-target="#modalregistro" (click)="UpdateSites(sitio);">
               <i class="bi bi-pencil-square icon-action"></i>
             </button>
             <button type="button" class="btn-action btn-danger-action" title="Eliminar">
@@ -237,42 +231,39 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Acuifero:</label>
             <div class="col-sm-9">
-              <select id="dropAcuifero" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.acuiferoId">
+              <select id="dropAcuifero" class="form-control" [(ngModel)]="this.sitioRegistro.acuiferoId">
                 <option [ngValue]=null>--Seleccione--</option>
                 <option *ngFor="let acuifero of acuiferos" [ngValue]="acuifero.id">
                   {{acuifero.descripcion}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.acuiferoId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
 
           <div class="form-group">
             <label class="col-sm-3 control-label">Organismo de cuenca:</label>
             <div class="col-sm-3">
-              <select id="dropOrganismoCuenca" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.organismoCuencaId" (click)="cargaDireccionLocal();">
+              <select id="dropOrganismoCuenca" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.oCuencaId" (click)="cargaDireccionLocal();">
                 <option [ngValue]="null">--Seleccione--</option>
-                <option *ngFor="let cuenca of organismosCuenca" [ngValue]="cuenca.organismoCuencaId">
+                <option *ngFor="let cuenca of organismosCuenca" [ngValue]="editar ? this.sitioRegistro.oCuencaId : cuenca.oCuencaId">
                   {{cuenca.organismoCuenca}}
                 </option>
               </select>
 
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.organismoCuencaId==null">
+              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.oCuencaId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>
 
             <label class="col-sm-3 control-label">Dirección local:</label>
             <div class="col-sm-3">
-              <select id="dropDireccionLocal" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.direccionLocalId">
+              <select id="dropDireccionLocal" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.dLocalId">
                 <option [ngValue]="null">--Seleccione--</option>
-                <option *ngFor="let direccion of direccionesLocales" [ngValue]="direccion.dieccionLocalId">
+                <option *ngFor="let direccion of direccionesLocales" [ngValue]="direccion.dLocalId">
                   {{direccion.dieccionLocal}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.direccionLocalId==null">
+              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.dLocalId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>
@@ -307,13 +298,13 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Cuerpo de agua:</label>
             <div class="col-sm-9">
-              <select id="dropCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.cuerpoAguaId">
-                <option value="0">--Seleccione--</option>
-                <option *ngFor="let perfil of cuerposAgua" [ngValue]="perfil.id">
-                  {{perfil.nombre}}
+              <select id="dropCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.cuerpoAguaId" (click)="cuerpoTipoSubtipoByCuerpoId();">
+                <option [ngValue]="null">--Seleccione--</option>
+                <option *ngFor="let cuerpo of cuerposAgua" [ngValue]="cuerpo.id">
+                  {{cuerpo.descripcion}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.cuerpoAguaId==0">
+              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.cuerpoAguaId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>
@@ -321,13 +312,13 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Tipo cuerpo de agua:</label>
             <div class="col-sm-3">
-              <select id="dropTipoCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.tipoCuerpoAguaId">
-                <option value="0">--Seleccione--</option>
-                <option *ngFor="let perfil of tiposCuerpoAgua" [ngValue]="perfil.id">
-                  {{perfil.nombre}}
+              <select id="dropTipoCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.tipoCuerpoAguaId" (click)="cargaSubtipoAgua();">
+                <option [ngValue]="null">--Seleccione--</option>
+                <option *ngFor="let tipoCuerpo of tiposCuerpoAgua" [ngValue]="tipoCuerpo.tipoCuerpoAguaId">
+                  {{tipoCuerpo.tipoCuerpoAgua}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.tipoCuerpoAguaId==0">
+              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.tipoCuerpoAguaId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>
@@ -335,12 +326,12 @@
             <label class="col-sm-3 control-label">Subtipo cuerpo de agua:</label>
             <div class="col-sm-3">
               <select id="dropubtipoCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.subtipoCuerpoAguaId">
-                <option value="0">--Seleccione--</option>
-                <option *ngFor="let perfil of subtiposCuerpoAgua" [ngValue]="perfil.id">
-                  {{perfil.nombre}}
+                <option [ngValue]="null">--Seleccione--</option>
+                <option *ngFor="let subtipo of subtiposCuerpoAgua" [ngValue]="subtipo.subtipoCuerpoAguaId">
+                  {{subtipo.subtipoCuerpoAgua}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.subtipoCuerpoAguaId==0">
+              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.subtipoCuerpoAguaId==null">
                 Campo <strong>requerido</strong>
               </span>
             </div>
@@ -348,7 +339,7 @@
           <div class="form-group">
             <label class="col-sm-3 control-label">Latitud:</label>
             <div class="col-sm-3">
-              <input id="txtLatitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Latitud" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.latitud" />
+              <input id="txtLatitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Latitud" [(ngModel)]="this.sitioRegistro.latitud" />
               <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.latitud==0">
                 Campo <strong>requerido</strong>
               </span>
@@ -356,7 +347,7 @@
 
             <label class="col-sm-3 control-label">Longitud:</label>
             <div class="col-sm-3">
-              <input id="txtLongitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Longitud" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.longitud" />
+              <input id="txtLongitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Longitud" [(ngModel)]="this.sitioRegistro.longitud" />
               <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.longitud==0">
                 Campo <strong>requerido</strong>
               </span>
@@ -377,7 +368,7 @@
 
           <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
           <button (click)="AddSites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
-          <button (click)="UpdateSites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
+          <button (click)="Update()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
         </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

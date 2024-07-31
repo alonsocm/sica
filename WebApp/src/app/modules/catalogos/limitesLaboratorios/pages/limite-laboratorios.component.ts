@@ -53,6 +53,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
   constructor(private muestreoService: MuestreoService, private limiteLaboratorioService: LimiteLaboratorioService) { super(); }
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarLimitesLaboratorio();
   }

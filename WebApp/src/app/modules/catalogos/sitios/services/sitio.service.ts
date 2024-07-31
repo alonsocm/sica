@@ -68,7 +68,6 @@ export class SitioService {
     );
   }
 
-
   getMunicipios(EstadoId: number): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
@@ -84,12 +83,33 @@ export class SitioService {
     return this.http.get(
       environment.apiUrl + '/Acuiferos', {}
     );
+  }
+
+  getCuerposAgua(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/CuerpoDeAgua', {}
+    );
   }  
 
   addSitio(registro: Sitio): Observable<Object> {
     return this.http.post(environment.apiUrl + '/Sitios', registro);
   }
 
+  getCuerpoTipoSubtipo(CuerpoAguaId: number): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        CuerpoAguaId: CuerpoAguaId
+      },
+    });
+    console.log(params);
+    return this.http.get(
+      environment.apiUrl + '/CuerposTipoSubtipoAgua', { params }
+    );
+  }
+
+  updateSitio(registro: Sitio) {  
+    return this.http.put(environment.apiUrl + '/Sitios', registro);
+  }
 
 }
 

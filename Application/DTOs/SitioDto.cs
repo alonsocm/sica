@@ -23,6 +23,16 @@ namespace Application.DTOs
         public string Longitud { get; set; }
         public string Observaciones { get; set; }
 
+        public long EstadoId { get; set; }
+        public long MunicipioId { get; set; }
+        public long CuencaDireccionesLocalesId { get; set; }
+        public long CuerpoTipoSubtipoAguaId { get; set; }
+        public long CuerpoAguaId { get; set; }
+        public long TipoCuerpoAguaId { get; set; }
+        public long SubtipoCuerpoAguaId { get; set; }
+        public long OcuencaId { get; set; }
+        public long? DlocalId { get; set; }
+
 
     }
 }

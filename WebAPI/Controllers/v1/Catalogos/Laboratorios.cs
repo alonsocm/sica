@@ -1,5 +1,9 @@
-﻿using Application.Features.Catalogos.Laboratorios.Queries;
+﻿using Application.DTOs;
+using Application.Features.Catalogos.Laboratorios.Queries;
+using Application.Features.Sitios.Queries.GetAllSitios;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Catalogos
 {
@@ -7,16 +11,55 @@ namespace WebAPI.Controllers.v1.Catalogos
     [ApiController]
     public class Laboratorios : BaseApiController
     {
+
         [HttpGet("Laboratorios")]
-        public async Task<IActionResult> GetLaboratoriosQuery()
+        public async Task<IActionResult> GetLaboratoriosQuery([FromQuery] int page, int pageSize, string? filter = "", string? order = "")
         {
-            return Ok(await Mediator.Send(new GetLaboratoriosQuery()));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+            return Ok(await Mediator.Send(new GetLaboratoriosQuery
+            {
+
+                Page = page,
+                PageSize = pageSize,
+                Filter = filters,
+                OrderBy = orderBy
+            }));
         }
 
         [HttpGet("LaboratoriosMuestradores")]
         public async Task<IActionResult> GetLaboratoriosMuestradores()
         {
             return Ok(await Mediator.Send(new GetLaboratoriosMuestradoresQuery()));
+        }
+
+        [HttpGet("GetDistinctValuesFromColumn")]
+        public async Task<IActionResult> Get(string column, string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
         }
     }
 }
