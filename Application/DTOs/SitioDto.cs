@@ -12,6 +12,7 @@ namespace Application.DTOs
         public string NombreSitio { get; set; }
         public string ClaveSitio { get; set; }
         public string? Acuifero { get; set; }
+        public string? AcuiferoId { get; set; }
         public string Cuenca { get; set; }
         public string? DireccionLocal { get; set; }
         public string Estado { get; set; }

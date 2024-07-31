@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LimitesLaboratorios } from '../../../../interfaces/catalogos/limitesLaboratorio.interface';
 import { Column } from '../../../../interfaces/filter/column';
 import { Item } from '../../../../interfaces/filter/item';
+import { Notificacion } from '../../../../shared/models/notification-model';
 import { BaseService } from '../../../../shared/services/base.service';
 import { MuestreoService } from '../../../muestreo/liberacion/services/muestreo.service';
 import { LimiteLaboratorioService } from '../services/limite-laboratorios.service';
@@ -51,7 +52,11 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     anio:''
   }
   constructor(private muestreoService: MuestreoService, private limiteLaboratorioService: LimiteLaboratorioService) { super(); }
-
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación de límite de laboratorio',
+    text: '¿Está seguro de querer eliminar el límite de laboratorio?',
+    id: 'mdlConfirmacion'
+  };
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
@@ -438,4 +443,6 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
   AddLimites() { }
 
   UpdateLimites() { }
+
+  DeleteLimiteLaboratorio() { }
 }
