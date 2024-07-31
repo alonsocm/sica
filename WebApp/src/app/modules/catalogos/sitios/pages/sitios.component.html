@@ -10,7 +10,7 @@
   </div>
   <div class="clearfix" style="margin-bottom: 1%;">
     <div class="float-right">
-      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro" (click)="this.modalTitle = 'Registro Sitio'; cargarCombos()">
+      <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregistro" (click)="MostrarModalRegistro();">
         <i class="bi bi-plus-lg" data-toggle="modal" data-target="#modalregistro"></i> Nuevo sitio
       </button>
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
@@ -207,8 +207,8 @@
 
 
   <!--MODAL AGREGAR EDITAR SITIO-->
-  <div class="modal fade modal-dialog-centered" id="modalregistro" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
+  <div class="modal fade" id="modalregistro" data-bs-backdrop="static" data-toggle="modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 70%;">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title2">{{modalTitle}}</h4>
@@ -249,11 +249,10 @@
             <div class="col-sm-3">
               <select id="dropOrganismoCuenca" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.oCuencaId" (click)="cargaDireccionLocal();">
                 <option [ngValue]="null">--Seleccione--</option>
-                <option *ngFor="let cuenca of organismosCuenca" [ngValue]="editar ? this.sitioRegistro.oCuencaId: cuenca.oCuencaId">
+                <option *ngFor="let cuenca of organismosCuenca" [ngValue]="cuenca.oCuencaId">
                   {{cuenca.organismoCuenca}}
                 </option>
               </select>
-
               <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.oCuencaId==null">
                 Campo <strong>requerido</strong>
               </span>
@@ -263,7 +262,7 @@
             <div class="col-sm-3">
               <select id="dropDireccionLocal" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.dLocalId">
                 <option [ngValue]="null">--Seleccione--</option>
-                <option *ngFor="let direccion of direccionesLocales" [ngValue]="editar ? this.sitioRegistro.dLocalId :direccion.dLocalId">
+                <option *ngFor="let direccion of direccionesLocales" [ngValue]="direccion.dLocalId">
                   {{direccion.dieccionLocal}}
                 </option>
               </select>
@@ -316,7 +315,7 @@
             <div class="col-sm-3">
               <select id="dropTipoCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.tipoCuerpoAguaId" (click)="cargaSubtipoAgua();">
                 <option [ngValue]="null">--Seleccione--</option>
-                <option *ngFor="let tipoCuerpo of tiposCuerpoAgua" [ngValue]="editar ? this.sitioRegistro.tipoCuerpoAguaId:tipoCuerpo.tipoCuerpoAguaId">
+                <option *ngFor="let tipoCuerpo of tiposCuerpoAgua" [ngValue]="tipoCuerpo.tipoCuerpoAguaId">
                   {{tipoCuerpo.tipoCuerpoAgua}}
                 </option>
               </select>
@@ -329,7 +328,7 @@
             <div class="col-sm-3">
               <select id="dropubtipoCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.subtipoCuerpoAguaId">
                 <option [ngValue]="null">--Seleccione--</option>
-                <option *ngFor="let subtipo of subtiposCuerpoAgua" [ngValue]="editar ? this.sitioRegistro.subtipoCuerpoAguaId:subtipo.subtipoCuerpoAguaId">
+                <option *ngFor="let subtipo of subtiposCuerpoAgua" [ngValue]="subtipo.subtipoCuerpoAguaId">
                   {{subtipo.subtipoCuerpoAgua}}
                 </option>
               </select>
@@ -367,10 +366,15 @@
               </span>
             </div>
           </div>
+          <div class="modal-footer">
+            <button id="btn-close" type="button" class="btn btn-secondary"
+                    data-dismiss="modal">
+              Cancelar
+            </button>            
+            <button (click)="AddSites()" data-dismiss="modal" class="btn btn-primary" *ngIf="!editar" type="button">Guardar</button>
+            <button (click)="Update()" data-dismiss="modal" class="btn btn-primary" *ngIf="editar" type="button">Guardar cambios</button>
+          </div>
 
-          <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
-          <button (click)="AddSites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
-          <button (click)="Update()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

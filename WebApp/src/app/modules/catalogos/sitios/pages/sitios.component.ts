@@ -77,7 +77,6 @@ export class SitiosComponent extends BaseService implements OnInit {
     this.definirColumnas();
     this.consultarSitios();    
   }
-
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
       {
@@ -287,11 +286,18 @@ export class SitiosComponent extends BaseService implements OnInit {
     this.sitioService
       .getCuencasDireccionesLocales()
       .subscribe({
-        next: (response: any) => {         
+        next: (response: any) => {
           this.cuencaDireccionesLocales = response;
           this.organismosCuenca = this.cuencaDireccionesLocales.filter(
             (thing, i, arr) => arr.findIndex(t => t.organismoCuenca === thing.organismoCuenca) === i
           );
+
+          if (this.editar) {
+            let cuencaDireccionLocal = this.cuencaDireccionesLocales.filter(x => x.id == this.sitioRegistro.cuencaDireccionesLocalesId);
+            this.sitioRegistro.oCuencaId = cuencaDireccionLocal[0].oCuencaId;
+            this.cargaDireccionLocal();
+            this.sitioRegistro.dLocalId = cuencaDireccionLocal[0].dLocalId;        
+          }
         },
         error: (error) => {         
         },
@@ -330,7 +336,7 @@ export class SitiosComponent extends BaseService implements OnInit {
 
 
   cargaDireccionLocal() {  
-    this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId != null);   
+    this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId != null);  
   }
 
   cargaMunicipios() { 
@@ -533,15 +539,10 @@ export class SitiosComponent extends BaseService implements OnInit {
 
   RegistrarSitio() { }
 
-  validarObligatorios(): boolean {
-    //if (this.sitioRegistro.dLocalId != null)
-    //{
-    //  let valor =
-    //    this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId == this.sitioRegistro.dLocalId)
-    //      .map((s) => { return s.Id });   
-    //  this.sitioRegistro.cuencaDireccionesLocalesId = parseInt(valor.toString());
-  
-    //};
+  validarObligatorios(): boolean {  
+    let valor = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId == this.sitioRegistro.dLocalId);
+    this.sitioRegistro.cuencaDireccionesLocalesId = valor[0].id;
+
     let obligatoriosRegistro: any[] = [this.sitioRegistro.claveSitio, this.sitioRegistro.nombreSitio, this.sitioRegistro.cuerpoTipoSubtipoAguaId,
     this.sitioRegistro.cuencaDireccionesLocalesId, this.sitioRegistro.estadoId, this.sitioRegistro.municipioId, this.sitioRegistro.latitud, this.sitioRegistro.longitud, this.sitioRegistro.observaciones];
     return (obligatoriosRegistro.includes("") || obligatoriosRegistro.includes(null)) ? false : true;
@@ -577,22 +578,14 @@ export class SitiosComponent extends BaseService implements OnInit {
 
   }
 
+  MostrarModalRegistro() {
+    this.resetSitio();
+    this.modalTitle = 'Registro Sitio';
+    this.cargarCombos();  }
+
   UpdateSites(sitio: Sitio) {
-    this.sitioRegistro = sitio;
-    console.log(this.sitioRegistro);
+    this.sitioRegistro = sitio;  
     this.cargarCombos();
-    //this.cargaDireccionLocal();
-
-    console.log(this.cuencaDireccionesLocales);
-    //this.oCuencaIdEdicion = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId).map((s) => s.oCuencaId)
-
-
-    this.oCuencaIdEdicion =  this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId)
-      .map((s) => { return s.oCuencaId }); 
-
-    this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId);  
-
-    console.log(this.direccionesLocales);
     this.cargaMunicipios();
     this.cuerpoTipoSubtipoByCuerpoId();
     this.cargaSubtipoAgua();
@@ -619,4 +612,33 @@ export class SitiosComponent extends BaseService implements OnInit {
   }
 
   DeleteSitios() { }
+
+  resetSitio() {
+
+    this.sitioRegistro.id = 0;
+    this.sitioRegistro.claveSitio = "";
+    this.sitioRegistro.nombreSitio="";
+    this.sitioRegistro.cuenca="";
+    this.sitioRegistro.direccionLocal="";
+    this.sitioRegistro.estado="";
+    this.sitioRegistro.municipio="";
+    this.sitioRegistro.cuerpoAgua="";
+    this.sitioRegistro.tipoCuerpoAgua="";
+    this.sitioRegistro.subtipoCuerpoAgua="";
+    this.sitioRegistro.latitud=0;
+    this.sitioRegistro.longitud=0;
+    this.sitioRegistro.observaciones="";
+    this.sitioRegistro.selected=false;
+    this.sitioRegistro.oCuencaId=null;
+    this.sitioRegistro.dLocalId=null;
+    this.sitioRegistro.estadoId=null;
+    this.sitioRegistro.municipioId=null;
+    this.sitioRegistro.cuerpoAguaId=null;
+    this.sitioRegistro.tipoCuerpoAguaId=null;
+    this.sitioRegistro.subtipoCuerpoAguaId=null;
+    this.sitioRegistro.acuifero="";
+    this.sitioRegistro.acuiferoId=null;
+    this.sitioRegistro.cuerpoTipoSubtipoAguaId=null;
+    this.sitioRegistro.cuencaDireccionesLocalesId = null;
+  }
 }
