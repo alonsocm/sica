@@ -5,7 +5,6 @@ import { Item } from 'src/app/interfaces/filter/item';
 import { TipoCuerpoAgua, TipoHomologado } from '../../models/tipocuerpoagua';
 import { TipoCuerpoAguaService } from '../../services/tipoCuerpoAgua.service';
 import { FileService } from 'src/app/shared/services/file.service';
-import * as XLSX from 'xlsx';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 @Component({
   selector: 'app-tipo-cuerpo-agua',
@@ -343,46 +342,6 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     this.hideColumnFilter();
   }
 
-importarExcel(event: any) {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-  reader.onload = (e: any) => {
-    const workbook = XLSX.read(e.target.result, { type: 'binary' });
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(worksheet);
-    console.log('datos',data);
-    data.forEach((row: any) => {
-      // Crear un nuevo objeto TipoCuerpoAgua
-      const tipoCuerpoAgua: TipoCuerpoAgua = {
-        id: 0, // Asignar un ID único si es necesario
-        descripcion: row.descripcion,
-        tipoHomologadoId: row.tipoHomologadoId, // Ajustar el nombre de la columna si es necesario
-        tipoHomologadoDescripcion: row.tipoHomologadoDescripcion, // Ajustar el nombre de la columna si es necesario
-        activo: row.activo, // Ajustar el nombre de la columna si es necesario
-        frecuencia: row.frecuencia, // Ajustar el nombre de la columna si es necesario
-        evidenciasEsperadas: row.evidenciasEsperadas, // Ajustar el nombre de la columna si es necesario
-        tiempoMinimoMuestreo: row.tiempoMinimoMuestreo, // Ajustar el nombre de la columna si es necesario
-        selected: false,        
-      };   
-         
-      // Agregar el nuevo objeto a la lista de registros
-      this.tipoCuerpoAguaServices.addTipoCuerpoAgua(tipoCuerpoAgua).subscribe({
-        next: (response: any) => {
-          this.registros.push(response.data);          
-          // Actualizar la lista de registros
-          this.getTipoCuerpoAgua();          
-        },
-        
-        error: (error) => {
-          console.error('Error al importar tipo cuerpo de agua:', error);
-        },
-        
-      });
-      
-    });
-    console.log('d',data)
-  };
-
-  reader.readAsBinaryString(file);
+importarExcel(event: any) {  
 }
 }
