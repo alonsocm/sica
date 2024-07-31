@@ -12,6 +12,7 @@ import {
 } from '@angular/forms';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from 'src/app/shared/enums/notification-type';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 
 @Component({
   selector: 'app-parametros',
@@ -70,12 +71,17 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
   constructor(
     private parametrosService: ParametrosService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private filtroHistorialService: FiltroHistorialService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      this.deleteFilter(columnName);
+      this.getParametros();
+    });
     this.definirColumnas();
     this.getParametros();
     this.getUnidadesMedida();
@@ -214,9 +220,9 @@ export class ParametrosComponent extends BaseService implements OnInit {
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
 
-    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
-    //this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
-    this.filtros = filteredColumns;
+    //let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    // this.filtroHistorialService.updateFilter(filteredColumns); //Actualizamos la lista de filtros, para el componente de filtro
+    // this.filtros = filteredColumns;
 
     this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
 
@@ -269,7 +275,9 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    // this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.getParametros();
   }
 
@@ -306,6 +314,10 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
     this.esHistorial = true;
     //this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    ); //Actualizamos la lista de filtros, para el componente de filtro
+    //this.filtros = filteredColumns;
     this.hideColumnFilter();
   }
 
