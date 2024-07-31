@@ -7,6 +7,6 @@
         public string Grupo { get; set; }
         public string Subgrupo { get; set; }
         public string UnidadMedida { get; set; }
-        public int Orden { get; set; }
+        //public int Orden { get; set; }
     }
 }

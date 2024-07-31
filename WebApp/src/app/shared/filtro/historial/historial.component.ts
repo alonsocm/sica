@@ -19,6 +19,10 @@ export class HistorialComponent implements OnInit {
     this.muestreosServiceSub = muestreosService.filtros.subscribe((filtros) => {
       this.filtros = filtros;
     });
+    this.muestreosServiceSub =
+      filtroHistorialService.filteredColumns$.subscribe((filtros) => {
+        this.filtros = filtros;
+      });
   }
 
   ngOnInit(): void {}
