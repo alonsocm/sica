@@ -104,5 +104,7 @@ namespace WebAPI.Controllers.v1.Catalogos
 
             return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
         }
+
+       
     }
 }
