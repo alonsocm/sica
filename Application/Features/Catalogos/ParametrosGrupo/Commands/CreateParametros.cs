@@ -2,7 +2,6 @@
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 
 namespace Application.Features.Catalogos.ParametrosGrupo.Commands
@@ -19,7 +18,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
 
         public CreateParametrosHandler(IParametroRepository parametroRepository)
         {
-            _parametroRepository=parametroRepository;
+            _parametroRepository = parametroRepository;
         }
 
         public async Task<Response<bool>> Handle(CreateParametros request, CancellationToken cancellationToken)
@@ -30,26 +29,32 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
 
             foreach (var parametro in request.Parametros)
             {
-                var parametroBD = await _parametroRepository.ObtenerElementosPorCriterioAsync(x => x.ClaveParametro == parametro.Clave);
+                //Buscamos grupo
+                var grupo = grupos.Where(w => w.Descripcion == parametro.Grupo).FirstOrDefault();
+                //Buscamos subgrupo
+                var subgrupo = subgrupos.Where(w => w.Descripcion == parametro.Subgrupo).FirstOrDefault();
+                //Buscamos unidad de medida
+                var unidadMedida = unidadesMedida.Where(w => w.Descripcion == parametro.UnidadMedida).FirstOrDefault();
 
-                if (parametroBD.Any())
+                var parametroBD = _parametroRepository.ObtenerElementosPorCriterioAsync(x => x.ClaveParametro == parametro.Clave).Result.FirstOrDefault();
+
+                if (parametroBD != null && !request.Actualizar)
                 {
-                    var errors = new List<ValidationFailure>
-                    {
-                        new("clave", "")
-                    };
+                    return new Response<bool> { Succeded = false, Message = "Se encontraron parámetros registrados previamente" };
+                }
+                else if (parametroBD != null && request.Actualizar)
+                {
+                    parametroBD.ClaveParametro = parametro.Clave;
+                    parametroBD.Descripcion = parametro.Descripcion;
+                    parametroBD.GrupoParametroId = grupo.Id;
+                    parametroBD.IdSubgrupo = subgrupo.Id;
+                    parametroBD.IdUnidadMedida = unidadMedida.Id;
 
-                    throw new ValidationException(errors);
+                    _parametroRepository.Actualizar(parametroBD);
                 }
                 else
                 {
-                    //Buscamos grupo
-                    var grupo = grupos.Where(w => w.Descripcion == parametro.Grupo).FirstOrDefault();
-                    //Buscamos subgrupo
-                    var subgrupo = subgrupos.Where(w => w.Descripcion == parametro.Subgrupo).FirstOrDefault();
-                    //Buscamos unidad de medida
-                    var unidadMedida = unidadesMedida.Where(w => w.Descripcion == parametro.UnidadMedida).FirstOrDefault();
-
+                    var ultimoValorOrden = _parametroRepository.ObtenerTodosElementosAsync().Result.Max(x => x.Orden);
                     var nuevoRegistro = new Domain.Entities.ParametrosGrupo()
                     {
                         ClaveParametro = parametro.Clave,
@@ -57,7 +62,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
                         GrupoParametroId = grupo.Id,
                         IdSubgrupo = subgrupo.Id,
                         IdUnidadMedida = unidadMedida.Id,
-                        Orden = parametro.Orden
+                        Orden = ultimoValorOrden
                     };
 
                     _parametroRepository.Insertar(nuevoRegistro);

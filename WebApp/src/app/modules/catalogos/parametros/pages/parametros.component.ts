@@ -61,6 +61,8 @@ export class ParametrosComponent extends BaseService implements OnInit {
   subgrupos: any;
   unidadesMedida: any;
   initialValueForm: any;
+  fileList: any;
+  operation: string = '';
 
   get form(): { [key: string]: AbstractControl } {
     return this.parametroForm.controls;
@@ -316,6 +318,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
     this.parametrosService.delete(this.registro.id).subscribe({
       next: (response: any) => {
         this.resetRegistro();
+        this.getParametros();
         this.notificationService.updateNotification({
           type: NotificationType.success,
           text: 'Parámetro eliminado',
@@ -334,12 +337,14 @@ export class ParametrosComponent extends BaseService implements OnInit {
   }
 
   onAgregarClick() {
+    this.operation = 'Registro parámetro';
     this.resetRegistro();
     this.parametroForm.reset(this.initialValueForm);
     document.getElementById('btn-edit-modal')?.click();
   }
 
   onEditClick(parametroId: number) {
+    this.operation = 'Editar parámetro';
     let elemento = this.registros.findIndex((f) => f.id === parametroId);
     this.registro = this.registros[elemento];
     this.parametroForm.patchValue({
@@ -389,6 +394,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
     if (this.parametroForm.valid && this.registro.id === 0) {
       this.parametrosService.create(this.registro).subscribe({
         next: (response: any) => {
+          this.getParametros();
           document.getElementById('btn-close')?.click();
           this.notificationService.updateNotification({
             type: NotificationType.success,
@@ -414,13 +420,21 @@ export class ParametrosComponent extends BaseService implements OnInit {
   }
 
   onCargarArchivoClick(event: Event) {
-    let archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    this.fileList = (event.target as HTMLInputElement).files ?? new FileList();
+    this.uploadFile(this.fileList, false);
+  }
+
+  onSustituirParametrosClick() {
+    this.uploadFile(this.fileList, true);
+  }
+
+  private uploadFile(archivo: FileList, sustituir: boolean) {
     if (archivo) {
       this.loading = true;
-
-      this.parametrosService.uploadFile(archivo[0], false).subscribe({
+      this.parametrosService.uploadFile(archivo[0], sustituir).subscribe({
         next: (response: any) => {
           if (response.succeded) {
+            this.getParametros();
             this.loading = false;
             return this.notificationService.updateNotification({
               show: true,
@@ -429,7 +443,6 @@ export class ParametrosComponent extends BaseService implements OnInit {
             });
           } else {
             this.loading = false;
-            alert('Se encontraron parámetros previamente registrados.');
             document.getElementById('btnMdlConfirmacionActualizacion')?.click();
           }
         },
