@@ -4,12 +4,10 @@ using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
-using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Muestreos.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
-using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
@@ -195,9 +193,16 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ResumenResultadosPorMuestreo")]
-        public async Task<IActionResult> Get([FromQuery] List<int> muestreos)
+        public async Task<IActionResult> Get([FromQuery] IEnumerable<long> muestreos, bool selectAll, string? filter = "")
         {
-            return Ok(await Mediator.Send(new GetResumenResultadosByMuestreo { Muestreos = muestreos }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetResumenResultadosByMuestreo { Muestreos = muestreos, SelectAll = selectAll, Filters = filters }));
         }
 
         [HttpGet("Aprobados")]
@@ -251,7 +256,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpPut("ActualizarMuestreos")]
         public async Task<IActionResult> ActualizarMuestreos(List<MuestreoDto> request)
-        {return Ok(await Mediator.Send(new ActualizarMuestreoCommand { lstMuestreos = request }));}
+        { return Ok(await Mediator.Send(new ActualizarMuestreoCommand { lstMuestreos = request })); }
 
         [HttpGet("obtenerPuntosPorMuestreo")]
         public async Task<IActionResult> obtenerPuntosPorMuestreo(string claveMuestreo)
