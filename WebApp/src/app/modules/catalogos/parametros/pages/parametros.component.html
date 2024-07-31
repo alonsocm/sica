@@ -16,7 +16,9 @@
             <button class="btn btn-primary btn-sm mr-1" type="button" (click)="onAgregarClick()">
                 <i class="bi bi-plus-lg"></i> Nuevo parámetro
             </button>
-            <button class="btn btn-primary btn-sm mr-1" type="button">
+            <input type="file" class="element-hidden" (change)="onCargarArchivoClick($event)" accept=".xls, .xlsx"
+                title="Seleccionar archivo" #inputExcelParametros>
+            <button class="btn btn-primary btn-sm mr-1" type="button" (click)="inputExcelParametros.click()">
                 <i class="bi bi-filetype-xlsx"></i> Agregar desde archivo
             </button>
             <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
