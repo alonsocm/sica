@@ -397,6 +397,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
   }
 
   onGuardarCambiosClick() {
+    this.loading = true;
     this.registro.clave = this.parametroForm.value.clave ?? '';
     this.registro.descripcion = this.parametroForm.value.nombre ?? '';
     this.registro.grupoId = this.parametroForm.value.tipo ?? 0;
@@ -408,25 +409,31 @@ export class ParametrosComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.getParametros();
           document.getElementById('btn-close')?.click();
+          this.loading = false;
           this.notificationService.updateNotification({
             type: NotificationType.success,
             text: 'Parámetro agregado correctamente.',
             show: true,
           });
         },
-        error: (error) => {},
+        error: (error) => {
+          this.loading = false;
+        },
       });
     } else if (this.parametroForm.valid && this.registro.id !== 0) {
       this.parametrosService.update(this.registro).subscribe({
         next: (response: any) => {
           document.getElementById('btn-close')?.click();
+          this.loading = false;
           this.notificationService.updateNotification({
             type: NotificationType.success,
             text: 'Cambios guardados correctamente.',
             show: true,
           });
         },
-        error: (error) => {},
+        error: (error) => {
+          this.loading = false;
+        },
       });
     }
   }
@@ -445,6 +452,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
       this.loading = true;
       this.parametrosService.uploadFile(archivo[0], sustituir).subscribe({
         next: (response: any) => {
+          this.resetInputFile(this.inputExcelMonitoreos);
           if (response.succeded) {
             this.getParametros();
             this.loading = false;
@@ -459,6 +467,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
           }
         },
         error: (error: any) => {
+          this.resetInputFile(this.inputExcelMonitoreos);
           this.loading = false;
           let errores = '';
           if (error.error.Errors === null) {
