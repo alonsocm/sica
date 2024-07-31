@@ -16,11 +16,13 @@ export interface Sitio extends Row {
   longitud: number,
   observaciones: string,
   acuiferoId: number | null,
-  organismoCuencaId: number | null,
-  direccionLocalId: number | null,
+  oCuencaId: number | null,
+  dLocalId: number | null,
   estadoId: number | null,
   municipioId: number | null,
-  cuerpoAguaId: number,
-  tipoCuerpoAguaId: number,
-  subtipoCuerpoAguaId: number
+  cuerpoAguaId: number | null,
+  tipoCuerpoAguaId: number|null,
+  subtipoCuerpoAguaId: number | null,
+  cuerpoTipoSubtipoAguaId: number | null,
+  cuencaDireccionesLocalesId: number | null
 }

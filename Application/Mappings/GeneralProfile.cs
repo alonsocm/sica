@@ -43,7 +43,7 @@ namespace Application.Mappings
                 .ForMember(x => x.LPC, o => o.MapFrom(src => src.Lpc))
                 .ForMember(x => x.Anio, o => o.MapFrom(src => src.Anio.Anio))
                 .ForMember(x => x.AnioId, o => o.MapFrom(src => src.Anio.Id));
-               
+
             CreateMap<Acuifero, AcuiferoDto>();
             CreateMap<Sitio, SitioDto>()
                 .ForMember(x => x.NombreSitio, o => o.MapFrom(src => src.NombreSitio))
@@ -51,6 +51,8 @@ namespace Application.Mappings
                 .ForMember(x => x.Acuifero, o => o.MapFrom(src => src.Acuifero.Descripcion))
                 .ForMember(x => x.Cuenca, o => o.MapFrom(src => src.CuencaDireccionesLocales.Ocuenca.Descripcion))
                 .ForMember(x => x.DireccionLocal, o => o.MapFrom(src => src.CuencaDireccionesLocales.Dlocal.Descripcion))
+                .ForMember(x => x.OcuencaId, o => o.MapFrom(src => src.CuencaDireccionesLocales.OcuencaId))
+                .ForMember(x => x.DireccionLocal, o => o.MapFrom(src => src.CuencaDireccionesLocales.DlocalId))
                 .ForMember(x => x.Estado, o => o.MapFrom(src => src.Estado.Nombre))
                 .ForMember(x => x.Municipio, o => o.MapFrom(src => src.Municipio.Nombre))
                 .ForMember(x => x.CuerpoAgua, o => o.MapFrom(src => src.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion))
@@ -62,8 +64,8 @@ namespace Application.Mappings
             CreateMap<CuencaDireccionesLocales, CuencaDireccionesLocalesDto>()
                 .ForMember(x => x.OrganismoCuenca, o => o.MapFrom(src => src.Ocuenca.Descripcion))
                 .ForMember(x => x.DieccionLocal, o => o.MapFrom(src => src.Dlocal.Descripcion))
-            .ForMember(x => x.OrganismoCuencaId, o => o.MapFrom(src => src.Ocuenca.Id))
-       .ForMember(x => x.DieccionLocalId, o => o.MapFrom(src => src.Dlocal.Id));
+            .ForMember(x => x.OCuencaId, o => o.MapFrom(src => src.Ocuenca.Id))
+       .ForMember(x => x.DLocalId, o => o.MapFrom(src => src.Dlocal.Id));
 
             CreateMap<Perfil, PerfilDto>();
             CreateMap<DireccionLocal, DireccionLocalDto>();
@@ -92,9 +94,17 @@ namespace Application.Mappings
             CreateMap<EvidenciaSupervisionMuestreo, EvidenciaSupervisionDto>();
             CreateMap<TipoCuerpoAgua, TipoCuerpoAguaDto>()
                 .ForMember(x => x.TipoHomologadoDescripcion, o => o.MapFrom(src => src.TipoHomologado.Descripcion));
+
             CreateMap<VwValidacionEviencias, vwValidacionEvienciasDto>();
             CreateMap<VwValidacionEvidenciaRealizada, EventualidadesMuestreoAprobados>();
             CreateMap<VwValidacionEvidenciaRealizada, EvidenciasMuestreosAprobados>();
+            CreateMap<CuerpoAgua, CuerpoAguaDto>();
+            CreateMap<CuerpoTipoSubtipoAgua, CuerpoTipoSubtipoAguaDto>()
+                .ForMember(x => x.CuerpoAgua, o => o.MapFrom(src => src.CuerpoAgua.Descripcion))
+                 .ForMember(x => x.SubtipoCuerpoAgua, o => o.MapFrom(src => src.SubtipoCuerpoAgua.Descripcion))
+                 .ForMember(x => x.TipoCuerpoAgua, o => o.MapFrom(src => src.TipoCuerpoAgua.Descripcion));
+
+            
             #endregion
         }
     }

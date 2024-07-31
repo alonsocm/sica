@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.DTOs;
+using Application.Exceptions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -14,9 +15,7 @@ namespace Application.Features.Sitios.Commands.UpdateSitioCommand
 {
     public class UpdateSitioCommand : IRequest<Response<long>>
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Clave { get; set; }
+        public SitioDto Sitio { get; set; }
     }
 
     public class UpdateSitioCommandHandler : IRequestHandler<UpdateSitioCommand, Response<long>>
@@ -32,15 +31,14 @@ namespace Application.Features.Sitios.Commands.UpdateSitioCommand
 
         public async Task<Response<long>> Handle(UpdateSitioCommand request, CancellationToken cancellationToken)
         {
-            var sitio = await _repositoryAsync.GetByIdAsync(request.Id);
+            //var sitio = await _repositoryAsync.GetByIdAsync(request.Id);
 
-            if (sitio == null)
-            {
-                throw new KeyNotFoundException($"Registro no encontrado con el id {request.Id}");
-            }
+            //if (sitio == null)
+            //{
+            //    throw new KeyNotFoundException($"Registro no encontrado con el id {request.Id}");
+            //}
 
-            sitio.NombreSitio = request.Nombre;
-            sitio.ClaveSitio = request.Clave;
+            var sitio = _mapper.Map<Sitio>(request.Sitio);
 
             await _repositoryAsync.UpdateAsync(sitio);
 

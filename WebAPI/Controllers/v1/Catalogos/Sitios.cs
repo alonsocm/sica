@@ -76,10 +76,10 @@ namespace WebAPI.Controllers.v1.Catalogos
         //PUT api/<controller>
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<ActionResult> Put(int id, UpdateSitioCommand command)
+        public async Task<ActionResult> Put(UpdateSitioCommand command)
         {
-            if (id != command.Id)
-                return BadRequest();
+            //if (id != command.Id)
+            //    return BadRequest();
 
             return Ok(await Mediator.Send(command));
         }

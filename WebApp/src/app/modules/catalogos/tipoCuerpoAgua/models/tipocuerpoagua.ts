@@ -6,7 +6,25 @@ export interface TipoCuerpoAgua extends Row {
   tipoHomologadoId:number;
   tipoHomologadoDescripcion:string;
   activo:Boolean;
-  frecuencia: string;
+  frecuencia:string;
   evidenciasEsperadas:number;
   tiempoMinimoMuestreo:number;
+  selected:boolean;
+}
+export interface TipoHomologado extends Row {
+  id: number;
+  descripcion: string;
+  activo: boolean;
+  selected:boolean;
+}
+export interface PostTipoCuerpoAgua extends Row{
+  id: number;
+  descripcion: string;
+  tipoHomologadoId:number;
+  tipoHomologadoDescripcion:string;
+  activo:Boolean;
+  frecuencia:string;
+  evidenciasEsperadas:number;
+  tiempoMinimoMuestreo:number;
+  selected:boolean;
 }

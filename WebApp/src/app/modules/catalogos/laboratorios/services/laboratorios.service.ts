@@ -24,9 +24,23 @@ export class LaboratorioService {
     this.laboratorioPrivate.next(laboratorios);
   }
 
-  obtenerLaboratorios(): Observable<Object> {  
-  return this.http.get(environment.apiUrl + '/Laboratorios/Laboratorios');
+  obtenerLaboratorios(    
+    page: number,
+    pageSize: number,
+    filter: string,
+    order?: { column: string; type: string }
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {      
+        page: page,
+        pageSize: pageSize,
+        filter: filter,
+        order: order != null ? order.column + '_' + order.type : '',
+      },
+    });
+    return this.http.get(environment.apiUrl + '/Laboratorios/Laboratorios', { params });
   }
+
 
   getDistinctValuesFromColumn(
     column: string,

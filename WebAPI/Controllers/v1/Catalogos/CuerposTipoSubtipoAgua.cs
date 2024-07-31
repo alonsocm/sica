@@ -8,10 +8,10 @@ namespace WebAPI.Controllers.v1.Catalogos
     public class CuerposTipoSubtipoAgua : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> Get(long CuerporAguaId)
+        public async Task<IActionResult> Get(long CuerpoAguaId)
         {
 
-            return Ok(await Mediator.Send(new GetCuerpoTipoSubtipoAguaByCuerpoAguaIdQuery { CuerpoAguaId = CuerporAguaId }));
+            return Ok(await Mediator.Send(new GetCuerpoTipoSubtipoAguaByCuerpoAguaIdQuery { CuerpoAguaId = CuerpoAguaId }));
         }
     }
 }

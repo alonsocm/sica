@@ -12,7 +12,7 @@ namespace Application.Specifications
     {
         public CuerpoTipoSubtipoAguaSpecification()
         {
-            Query.Include(x => x.CuerpoAgua).Include(y => y.TipoCuerpoAgua).Include(z=> z.SubtipoCuerpoAgua).Include(a => a.TipoCuerpoAgua.TipoHomologado);
+            Query.Include(x => x.CuerpoAgua).Include(y => y.TipoCuerpoAgua).Include(z=> z.SubtipoCuerpoAgua);
         }
     }
 }
