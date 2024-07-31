@@ -1,7 +1,8 @@
 ﻿using Application.Features.Catalogos.TiposCuerpoAgua.Commands;
 using Application.Features.Catalogos.TiposCuerpoAgua.Queries;
-using Application.Features.TiposCuerpoAgua.Commands.AddTipoCuerpoAguaCommand;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Mvc;
+using WebAPI.Shared;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,13 +16,39 @@ namespace WebAPI.Controllers.v1.Catalogos
         {
             return Ok(await Mediator.Send(new GetTipoCuerpoAguaQuery()));
         }
+        [HttpGet("TipoCuerpoAguaP")]
+        public async Task<IActionResult> Get(int page, int pageSize, string? filter)
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            return Ok(await Mediator.Send(new GetTipoCuerpoAguaPQuery { Page = page, PageSize = pageSize, Filter = filters }));
+        }
+        [HttpGet("GetDistinctFromColumn")]
+        public IActionResult GetDistinctFromColumn(string column, string? filter)
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var data = Mediator.Send(new GetTipoCuerpoAguaPQuery { Filter = filters }).Result.Data;
+
+            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await Mediator.Send(new GetTipoCuerpoAguaIdQuery { Id = id })); ;
         }
         [HttpDelete("{id}")]
-
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new DeleteTipoCuerpoAguaCommand { Id = id })); ;
@@ -29,21 +56,26 @@ namespace WebAPI.Controllers.v1.Catalogos
         [HttpPost]
         public async Task<IActionResult> Post(AddTipoCuerpoAguaCommand command)
         {
-            return Ok(await Mediator.Send(command));
-        }
-        [HttpPut]
-        public async Task<IActionResult> Put(UpdateTipoCuerpoAguaCommand tipoCuerpoAgua)
-        {
-            return Ok(await Mediator.Send(new UpdateTipoCuerpoAguaCommand
+            return Ok(await Mediator.Send(new AddTipoCuerpoAguaCommand
             {
-                Id = tipoCuerpoAgua.Id,
-                Descripcion = tipoCuerpoAgua.Descripcion,
-                TipoHomologadoId = tipoCuerpoAgua.TipoHomologadoId,
-                Activo = tipoCuerpoAgua.Activo,
-                Frecuencia = tipoCuerpoAgua.Frecuencia,
-                EvidenciaEsperada = tipoCuerpoAgua.EvidenciaEsperada,
-                TiempoMinimoMuestreo = tipoCuerpoAgua.TiempoMinimoMuestreo,
+                Id = command.Id,
+                Descripcion = command.Descripcion,
+                TipoHomologadoId = command.TipoHomologadoId,
+                Activo = command.Activo,
+                Frecuencia = command.Frecuencia,
+                EvidenciasEsperadas = command.EvidenciasEsperadas,
+                TiempoMinimoMuestreo = command.TiempoMinimoMuestreo
             }));
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(long id, UpdateTipoCuerpoAguaCommand tipoCuerpoAgua)
+        {
+            if (id != tipoCuerpoAgua.Id)
+            {
+                return BadRequest("El Id no existe.");
+            }
+
+            return Ok(await Mediator.Send(tipoCuerpoAgua));
         }
     }
 }
