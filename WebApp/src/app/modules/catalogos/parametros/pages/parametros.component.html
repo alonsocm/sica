@@ -1,4 +1,7 @@
 <router-outlet name="menu"></router-outlet>
+<div *ngIf="loading">
+    <app-loading></app-loading>
+</div>
 <div class="container-fluid">
     <h1 class="row col">Administración de párametros</h1>
     <hr class="red">
