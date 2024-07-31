@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { ParametrosService } from '../services/parametros.service';
 import { Parametro } from '../models/parametro';
@@ -19,6 +19,9 @@ import { NotificationType } from 'src/app/shared/enums/notification-type';
   styleUrls: ['./parametros.component.css'],
 })
 export class ParametrosComponent extends BaseService implements OnInit {
+  @ViewChild('inputExcelParametros') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
+
   registro: Parametro = {
     selected: false,
     id: 0,
@@ -304,12 +307,34 @@ export class ParametrosComponent extends BaseService implements OnInit {
     this.hideColumnFilter();
   }
 
-  onDeleteClick() {
-    //this.supervision = supervision;
+  onDeleteClick(registroId: number) {
+    this.registro.id = registroId;
     document.getElementById('btn-confirm-modal')?.click();
   }
 
+  onConfirmDeleteClick() {
+    this.parametrosService.delete(this.registro.id).subscribe({
+      next: (response: any) => {
+        this.resetRegistro();
+        this.notificationService.updateNotification({
+          type: NotificationType.success,
+          text: 'Parámetro eliminado',
+          show: true,
+        });
+      },
+      error: (error) => {
+        this.resetRegistro();
+        this.notificationService.updateNotification({
+          type: NotificationType.danger,
+          text: 'El parámetro no pudo ser elminado. Se encontrarón resultados reportados para el parámetro',
+          show: true,
+        });
+      },
+    });
+  }
+
   onAgregarClick() {
+    this.resetRegistro();
     this.parametroForm.reset(this.initialValueForm);
     document.getElementById('btn-edit-modal')?.click();
   }
@@ -384,6 +409,48 @@ export class ParametrosComponent extends BaseService implements OnInit {
           });
         },
         error: (error) => {},
+      });
+    }
+  }
+
+  onCargarArchivoClick(event: Event) {
+    let archivo = (event.target as HTMLInputElement).files ?? new FileList();
+    if (archivo) {
+      this.loading = true;
+
+      this.parametrosService.uploadFile(archivo[0], false).subscribe({
+        next: (response: any) => {
+          if (response.succeded) {
+            this.loading = false;
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Archivo procesado correctamente.',
+            });
+          } else {
+            this.loading = false;
+            alert('Se encontraron parámetros previamente registrados.');
+            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
+          }
+        },
+        error: (error: any) => {
+          this.loading = false;
+          let errores = '';
+          if (error.error.Errors === null) {
+            errores = error.error.Message;
+          } else {
+            errores = error.error.Errors;
+          }
+          let archivoErrores = this.generarArchivoDeErrores(errores);
+          this.hacerScroll();
+          // FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelMonitoreos);
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
+          });
+        },
       });
     }
   }

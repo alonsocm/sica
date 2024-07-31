@@ -1,9 +1,12 @@
-﻿using Application.Features.Catalogos.GrupoParametro.Queries;
+﻿using Application.DTOs.Catalogos;
+using Application.Features.Catalogos.GrupoParametro.Queries;
 using Application.Features.Catalogos.ParametrosGrupo.Commands;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.Catalogos.UnidadMedida.Queries;
 using Application.Wrappers;
+using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Utilities.Services;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Catalogos
@@ -36,13 +39,38 @@ namespace WebAPI.Controllers.v1.Catalogos
         {
             return Ok(await Mediator.Send(new CreateParametro
             {
-                Clave = parametro.Descripcion,
+                Clave = parametro.Clave,
                 Descripcion = parametro.Descripcion,
                 GrupoId = parametro.GrupoId,
                 SubgrupoId = parametro.SubgrupoId,
                 ParametroPadreId = parametro.ParametroPadreId,
                 UnidadMedidaId = parametro.UnidadMedidaId,
             }));
+        }
+
+        [HttpPost("CargaMasiva")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromQuery] bool actualizar, [FromForm] IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = ExcelParametrosSettings.KeyValues;
+
+            var registros = ExcelService.Import<ExcelParametroDTO>(fileInfo, "Hoja1");
+            System.IO.File.Delete(filePath);
+
+            return Ok(await Mediator.Send(new CreateParametros { Parametros = registros, Actualizar = actualizar }));
         }
 
         [HttpPut]

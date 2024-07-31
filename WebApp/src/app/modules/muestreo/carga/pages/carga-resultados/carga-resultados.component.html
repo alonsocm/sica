@@ -17,9 +17,9 @@
     <div class="float-right">
 
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-             title="Seleccionar archivo" #inputExcelMonitoreos>
+        title="Seleccionar archivo" #inputExcelMonitoreos>
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
-              title="Seleccionar archivo">
+        title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
         Seleccionar y procesar archivo...
       </button>
@@ -69,7 +69,7 @@
         <tr>
           <th class="no-border-top td-center">
             <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-              (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);  this.getSummary();"
+              (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);  getSummary();"
               title="Selecciona la página actual" />
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
@@ -203,7 +203,7 @@
   </div>
   <div class="row">
     <div class="col-md-6 align-self-end">
-   
+
       <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
         data-target="#mdlConfirmacion" title="Seleccionar"></button>
     </div>

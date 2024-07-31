@@ -5,6 +5,7 @@ import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Resultado } from '../../../../interfaces/Resultado.interface';
 import { environment } from 'src/environments/environment';
 import { acumuladosMuestreo } from '../../../../interfaces/acumuladosMuestreo.interface';
+import { SummaryOptions } from '../models/summaryOptions';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,21 @@ export class MuestreoService {
   );
   private filtrosCabeceroFocoPrivate: BehaviorSubject<any[]> =
     new BehaviorSubject<any[]>([]);
+
+  private summarySubject = new BehaviorSubject<SummaryOptions>({
+    muestreos: [],
+    filter: '',
+    selectAll: false,
+    total: 0,
+  });
+
+  // Observable to expose the BehaviorSubject
+  summaryOptions$ = this.summarySubject.asObservable();
+
+  // Method to update the BehaviorSubject
+  updateSummaryOptions(options: SummaryOptions) {
+    this.summarySubject.next(options);
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -139,9 +155,13 @@ export class MuestreoService {
     return this.http.put(environment.apiUrl + '/muestreos', muestreos);
   }
 
-  obtenerResumenPorGpoParametros(muestreos: any): Observable<Object> {
+  obtenerResumenPorGpoParametros(
+    muestreos: any,
+    selectAll: boolean,
+    filter: string
+  ): Observable<Object> {
     const params = new HttpParams({
-      fromObject: { muestreos: muestreos },
+      fromObject: { muestreos, selectAll, filter },
     });
 
     return this.http.get(
@@ -239,11 +259,17 @@ export class MuestreoService {
   }
 
   actualizarMuestreos(muestreos: any): Observable<Object> {
-    return this.http.put(environment.apiUrl + '/muestreos/ActualizarMuestreos', muestreos);
+    return this.http.put(
+      environment.apiUrl + '/muestreos/ActualizarMuestreos',
+      muestreos
+    );
   }
 
   obtenerResultadosNoCumplenFechaEntrega(muestreosId: Array<number> = []) {
-    return this.http.post(environment.apiUrl + '/Resultados/obtenerResultadosNoCumplenFechaEntrega', muestreosId, { responseType: 'blob' });
-  }  
-  
+    return this.http.post(
+      environment.apiUrl + '/Resultados/obtenerResultadosNoCumplenFechaEntrega',
+      muestreosId,
+      { responseType: 'blob' }
+    );
+  }
 }

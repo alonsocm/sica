@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public partial class TipoCuerpoAgua
 {
@@ -28,17 +25,17 @@ public partial class TipoCuerpoAgua
     /// <summary>
     /// Campo que describe la frecuencia del tipo de cuerpo de agua para el muestreo
     /// </summary>
-    public string? Frecuencia { get; set; }
+    public string Frecuencia { get; set; }
 
     /// <summary>
     /// Campo que describe las evidencias esperadas conforme al tipo de cuerpo de agua
     /// </summary>
-    public int? EvidenciasEsperadas { get; set; }
+    public int EvidenciasEsperadas { get; set; }
 
     /// <summary>
     /// Campo que describe el tiempo mínimo del muestreo en minutos
     /// </summary>
-    public int? TiempoMinimoMuestreo { get; set; }
+    public int TiempoMinimoMuestreo { get; set; }
 
     public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = new List<CuerpoTipoSubtipoAgua>();
 

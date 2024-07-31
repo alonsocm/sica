@@ -29,7 +29,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?',
-    id: 'mdlConfirmacion'
+    id: 'mdlConfirmacion',
   };
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
@@ -797,7 +797,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   getSummary() {
-    this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
+    this.muestreoService.updateSummaryOptions({
+      muestreos: this.muestreosSeleccionados,
+      filter: this.cadena,
+      selectAll: this.allSelected,
+      total: this.totalItems,
+    });
+    //this.muestreoService.muestreosSeleccionados = this.muestreosSeleccionados;
   }
 
   getPreviousSelected(
@@ -869,5 +875,15 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       column.selectAll = false;
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
+  }
+
+  override onSelectAllPagesClick() {
+    this.allSelected = true;
+    this.getSummary();
+  }
+
+  override onUnselectAllClick() {
+    this.allSelected = false;
+    this.getSummary();
   }
 }

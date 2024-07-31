@@ -172,17 +172,17 @@ namespace Persistence.Repository
 
 
 
-        public async Task<IEnumerable<ResumenResultadosDto>> GetResumenResultados(List<int> muestreos)
+        public async Task<IEnumerable<ResumenResultadosDTO>> GetResumenResultados(IEnumerable<long> muestreos)
         {
-            var resultados = new List<ResumenResultadosDto>();
+            var resultados = new List<ResumenResultadosDTO>();
 
             resultados = await (from m in _dbContext.Muestreo
                                 join rm in _dbContext.ResultadoMuestreo on m.Id equals rm.MuestreoId
                                 join pg in _dbContext.ParametrosGrupo on rm.ParametroId equals pg.Id
                                 join sga in _dbContext.SubgrupoAnalitico on pg.IdSubgrupo equals sga.Id
-                                where muestreos.Contains(Convert.ToInt32(m.Id))
+                                where muestreos.Contains(m.Id)
                                 group new { sga } by new { sga.Id, sga.Descripcion } into gpo
-                                select new ResumenResultadosDto
+                                select new ResumenResultadosDTO
                                 {
                                     Cantidad = gpo.Count(),
                                     Grupo = gpo.Key.Descripcion

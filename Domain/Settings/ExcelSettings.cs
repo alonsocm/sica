@@ -223,4 +223,19 @@
 
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
     }
+
+    public static class ExcelParametrosSettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("Clave","Clave"),
+            new KeyValuePair<string, string>("Nombre","Descripcion"),
+            new KeyValuePair<string, string>("Tipo","Grupo"),
+            new KeyValuePair<string, string>("Subgrupo","Subgrupo"),
+            new KeyValuePair<string, string>("Unidad de medida","UnidadMedida"),
+            new KeyValuePair<string, string>("Orden","Orden"),
+        };
+
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
+    }
 }
