@@ -7,6 +7,7 @@ import { Sitio } from '../../../../interfaces/catalogos/sitio.interface';
 import { Column } from '../../../../interfaces/filter/column';
 import { Item } from '../../../../interfaces/filter/item';
 import { NotificationType } from '../../../../shared/enums/notification-type';
+import { Notificacion } from '../../../../shared/models/notification-model';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { MuestreoService } from '../../../muestreo/liberacion/services/muestreo.service';
 import { TipoCuerpoAgua } from '../../tipoCuerpoAgua/models/tipocuerpoagua';
@@ -59,7 +60,17 @@ export class SitiosComponent extends BaseService implements OnInit {
   tiposCuerpoAgua: Array<any> = [];
   subtiposCuerpoAgua: Array<any> = [];
   acuiferos: Array<any> = [];
-  constructor(public muestreoService: MuestreoService, public sitioService: SitioService, private notificationService: NotificationService) { super(); }
+  oCuencaIdEdicion: any;
+  constructor(public muestreoService: MuestreoService, public sitioService: SitioService, private notificationService: NotificationService) {
+    super();
+  
+  }
+
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación de sitio',
+    text: '¿Está seguro de querer eliminar el sitio?',
+    id: 'mdlConfirmacion'
+  };
 
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
@@ -278,8 +289,6 @@ export class SitiosComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {         
           this.cuencaDireccionesLocales = response;
-          console.log(this.cuencaDireccionesLocales);
-
           this.organismosCuenca = this.cuencaDireccionesLocales.filter(
             (thing, i, arr) => arr.findIndex(t => t.organismoCuenca === thing.organismoCuenca) === i
           );
@@ -311,8 +320,7 @@ export class SitiosComponent extends BaseService implements OnInit {
     this.sitioService
       .getCuerposAgua()
       .subscribe({
-        next: (response: any) => {
-          console.log(response);
+        next: (response: any) => {         
           this.cuerposAgua = response.data;
         },
         error: (error) => {
@@ -320,11 +328,9 @@ export class SitiosComponent extends BaseService implements OnInit {
       });
   }
 
-  //organismoCuencaId
-  cargaDireccionLocal() {
-    console.log(this.cuencaDireccionesLocales);
-    this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId != null);
-    console.log(this.direccionesLocales);
+
+  cargaDireccionLocal() {  
+    this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId != null);   
   }
 
   cargaMunicipios() { 
@@ -340,13 +346,10 @@ export class SitiosComponent extends BaseService implements OnInit {
   }
 
   cuerpoTipoSubtipoByCuerpoId() {
-    console.log(this.sitioRegistro.cuerpoAguaId);
     this.sitioService
       .getCuerpoTipoSubtipo((this.sitioRegistro.cuerpoAguaId == null) ? 0 : this.sitioRegistro.cuerpoAguaId)
       .subscribe({
-        next: (response: any) => {
-          console.log("cuerpostiposubtipos");
-          console.log(response);
+        next: (response: any) => {         
           this.cuerpoTiposSubtipoAgua = response;
           this.tiposCuerpoAgua = this.cuerpoTiposSubtipoAgua.filter(
             (thing, i, arr) => arr.findIndex(t => t.tipoCuerpoAgua === thing.tipoCuerpoAgua) === i
@@ -531,23 +534,14 @@ export class SitiosComponent extends BaseService implements OnInit {
   RegistrarSitio() { }
 
   validarObligatorios(): boolean {
-
-    console.log(this.sitioRegistro);
-
-    if (this.sitioRegistro.dLocalId != null)
-    {
-      let valor =
-        this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId == this.sitioRegistro.dLocalId)
-          .map((s) => { return s.Id });
-      console.log(valor);
-      this.sitioRegistro.cuencaDireccionesLocalesId = parseInt(valor.toString());
-      console.log(valor);
-    };
-
-    console.log("CuencaDireccionesLocalesId");
-    
-    console.log(this.sitioRegistro.cuencaDireccionesLocalesId);
-
+    //if (this.sitioRegistro.dLocalId != null)
+    //{
+    //  let valor =
+    //    this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId == this.sitioRegistro.dLocalId)
+    //      .map((s) => { return s.Id });   
+    //  this.sitioRegistro.cuencaDireccionesLocalesId = parseInt(valor.toString());
+  
+    //};
     let obligatoriosRegistro: any[] = [this.sitioRegistro.claveSitio, this.sitioRegistro.nombreSitio, this.sitioRegistro.cuerpoTipoSubtipoAguaId,
     this.sitioRegistro.cuencaDireccionesLocalesId, this.sitioRegistro.estadoId, this.sitioRegistro.municipioId, this.sitioRegistro.latitud, this.sitioRegistro.longitud, this.sitioRegistro.observaciones];
     return (obligatoriosRegistro.includes("") || obligatoriosRegistro.includes(null)) ? false : true;
@@ -585,19 +579,26 @@ export class SitiosComponent extends BaseService implements OnInit {
 
   UpdateSites(sitio: Sitio) {
     this.sitioRegistro = sitio;
-    this.cargarCombos();
-    this.cargaDireccionLocal();
-    this.cargaMunicipios();
-    //document.getElementById("dropEstados")?.click();
-    console.log("edicion");
-    console.log(sitio);
-    
     console.log(this.sitioRegistro);
+    this.cargarCombos();
+    //this.cargaDireccionLocal();
+
+    console.log(this.cuencaDireccionesLocales);
+    //this.oCuencaIdEdicion = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId).map((s) => s.oCuencaId)
+
+
+    this.oCuencaIdEdicion =  this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId)
+      .map((s) => { return s.oCuencaId }); 
+
+    this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId);  
+
+    console.log(this.direccionesLocales);
+    this.cargaMunicipios();
+    this.cuerpoTipoSubtipoByCuerpoId();
+    this.cargaSubtipoAgua();
     this.modalTitle = "Edición de Sitios";
     this.editar = true;
   }
-
- 
 
   Update() {
     this.sitioService.updateSitio(this.sitioRegistro).subscribe({
@@ -616,4 +617,6 @@ export class SitiosComponent extends BaseService implements OnInit {
     });
 
   }
+
+  DeleteSitios() { }
 }

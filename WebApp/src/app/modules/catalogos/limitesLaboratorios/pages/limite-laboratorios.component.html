@@ -143,8 +143,8 @@
           <td style="text-align:center">
             <button type="button" class="btn-action btn-primary-action mr-1" title="Editar">
               <i class="bi bi-pencil-square icon-action"></i>
-            </button>
-            <button type="button" class="btn-action btn-danger-action" title="Eliminar">
+            </button>           
+            <button type="button" class="btn-action btn-danger-action" title="Eliminar" data-toggle="modal" data-target="#mdlConfirmacion">
               <i class="bi bi-trash"></i>
             </button>
           </td>
@@ -252,7 +252,7 @@
                 Campo <strong>requerido</strong>
               </span>
             </div>
-       
+
           </div>
 
           <div class="form-group">
@@ -263,7 +263,7 @@
                 Campo <strong>requerido</strong>
               </span>
             </div>
-    
+
           </div>
 
 
@@ -282,7 +282,7 @@
                 Campo <strong>requerido</strong>
               </span>
             </div>
-    
+
           </div>
 
           <div class="form-group">
@@ -341,56 +341,57 @@
 
           </div>
 
-       
-            <div class="form-group">
-              <label class="col-sm-2 control-label">Método análitico:</label>
-              <div class="col-sm-3">
-                <input id="txtMetodoAnalitico" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Método análitico" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.metodoAnalitico" />
-                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.metodoAnalitico==''">
-                  Campo <strong>requerido</strong>
-                </span>
-              </div>
-              <label class="col-sm-2 control-label">LDM:</label>
-              <div class="col-sm-5">
-                <input id="txtLDM" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LDM" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.ldm" />
-                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.ldm==''">
-                  Campo <strong>requerido</strong>
-                </span>
-              </div>
-       
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Método análitico:</label>
+            <div class="col-sm-3">
+              <input id="txtMetodoAnalitico" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Método análitico" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.metodoAnalitico" />
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.metodoAnalitico==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
+            <label class="col-sm-2 control-label">LDM:</label>
+            <div class="col-sm-5">
+              <input id="txtLDM" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LDM" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.ldm" />
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.ldm==''">
+                Campo <strong>requerido</strong>
+              </span>
             </div>
 
-            <div class="form-group">
-              <label class="col-sm-2 control-label">LPC:</label>
-              <div class="col-sm-3">
-                <input id="txtLPC" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.lpc" />
-                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.lpc==''">
-                  Campo <strong>requerido</strong>
-                </span>
-              </div>
-              <label class="col-sm-2 control-label">Año:</label>
-              <div class="col-sm-5">
-                <select id="dropAnios" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.AnioId">
-                  <option [ngValue]=null>--Seleccione--</option>
-                  <option *ngFor="let labSubrogado of laboratoriosSubrogado" [ngValue]="labSubrogado.id">
-                    {{labSubrogado.nomenclatura}}
-                  </option>
-                </select>
-                <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.AnioId==null">
-                  Campo <strong>requerido</strong>
-                </span>
-              </div>
-            </div>
-       
-              <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
-              <button (click)="AddLimites();" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
-              <button (click)="UpdateLimites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
-           
           </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">LPC:</label>
+            <div class="col-sm-3">
+              <input id="txtLPC" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC" (keypress)="validarCaracteres($event)" [(ngModel)]="this.LaboratorioRegistro.lpc" />
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.lpc==''">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
+            <label class="col-sm-2 control-label">Año:</label>
+            <div class="col-sm-5">
+              <select id="dropAnios" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.AnioId">
+                <option [ngValue]=null>--Seleccione--</option>
+                <option *ngFor="let labSubrogado of laboratoriosSubrogado" [ngValue]="labSubrogado.id">
+                  {{labSubrogado.nomenclatura}}
+                </option>
+              </select>
+              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.AnioId==null">
+                Campo <strong>requerido</strong>
+              </span>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+          <button (click)="AddLimites();" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
+          <button (click)="UpdateLimites()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==true" type="button">Actualizar</button>
+
+        </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
-
   </div>
+  <!-- /.modal -->
+  <app-notificacion-emergente [notificacion]="this.notificacion"
+                              (changed)="this.DeleteLimiteLaboratorio();"></app-notificacion-emergente>
+
+</div>

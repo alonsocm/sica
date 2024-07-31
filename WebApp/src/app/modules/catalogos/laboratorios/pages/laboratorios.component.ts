@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Laboratorio } from '../../../../interfaces/catalogos/laboratorio.interface';
 import { Column } from '../../../../interfaces/filter/column';
 import { Item } from '../../../../interfaces/filter/item';
+import { Notificacion } from '../../../../shared/models/notification-model';
 import { BaseService } from '../../../../shared/services/base.service';
 import { MuestreoService } from '../../../muestreo/liberacion/services/muestreo.service';
 import { LaboratorioService } from '../services/laboratorios.service';
@@ -23,7 +24,11 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
     selected: false
   }
   constructor(public muestreoService: MuestreoService, private laboratorioService: LaboratorioService) { super(); }
-
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación de laboratorio',
+    text: '¿Está seguro de querer eliminar el laboratorio?',
+    id: 'mdlConfirmacion'
+  };
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
@@ -216,4 +221,5 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
     this.consultarLaboratorios();
     this.page = page;
   }
+  DeleteLaboratorio() { }
 }

@@ -131,7 +131,7 @@
             <button type="button" class="btn-action btn-primary-action mr-1" title="Editar">
               <i class="bi bi-pencil-square icon-action"></i>
             </button>
-            <button type="button" class="btn-action btn-danger-action" title="Eliminar">
+            <button type="button" class="btn-action btn-danger-action" title="Eliminar" data-toggle="modal" data-target="#mdlConfirmacion">
               <i class="bi bi-trash"></i>
             </button>
           </td>
@@ -155,7 +155,7 @@
     </div>
     <div class="col-md-3">
       <!--<p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.totalItems}}</span></p>-->
-      <p class="total-items">Total de registros: <span class="badge text-bg-primary">{{this.laboratorios.length}}</span></p>
+      <p class="total-items">toTotal de registros: <span class="badge text-bg-primary">{{this.laboratorios.length}}</span></p>
     </div>
   </div>
 
@@ -174,7 +174,7 @@
               <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.descripcion==''">
                 Campo <strong>requerido</strong>
               </span>
-            </div>       
+            </div>
           </div>
 
           <div class="form-group">
@@ -185,7 +185,7 @@
                 Campo <strong>requerido</strong>
               </span>
             </div>
-          </div>         
+          </div>
 
           <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
           <button (click)="AddLaboratorio()" data-dismiss="modal" class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Registrar</button>
@@ -195,5 +195,6 @@
     </div><!-- /.modal-dialog -->
   </div>
   <!-- /.modal -->
-
+  <app-notificacion-emergente [notificacion]="this.notificacion"
+                              (changed)="this.DeleteLaboratorio();"></app-notificacion-emergente>
 </div>
