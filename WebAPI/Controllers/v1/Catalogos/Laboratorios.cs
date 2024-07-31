@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
+using Application.Features.Catalogos.Laboratorios.Commands;
 using Application.Features.Catalogos.Laboratorios.Queries;
-using Application.Features.Sitios.Queries.GetAllSitios;
 using Application.Wrappers;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
@@ -60,6 +60,16 @@ namespace WebAPI.Controllers.v1.Catalogos
             }
 
             return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateLaboratorio parametro)
+        {
+            return Ok(await Mediator.Send(new CreateLaboratorio
+            {
+                Descripcion = parametro.Descripcion,
+                Nomenclatura = parametro.Nomenclatura,
+            }));
         }
     }
 }

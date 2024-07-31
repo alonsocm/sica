@@ -6,33 +6,71 @@ import { Notificacion } from '../../../../shared/models/notification-model';
 import { BaseService } from '../../../../shared/services/base.service';
 import { MuestreoService } from '../../../muestreo/liberacion/services/muestreo.service';
 import { LaboratorioService } from '../services/laboratorios.service';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
 
 @Component({
   selector: 'app-laboratorios',
   templateUrl: './laboratorios.component.html',
-  styleUrls: ['./laboratorios.component.css']
+  styleUrls: ['./laboratorios.component.css'],
 })
 export class LaboratoriosComponent extends BaseService implements OnInit {
-  laboratorios: Array<Laboratorio> = [];
-  laboratoriosSeleccionados: Array<Laboratorio> = [];
+  onAgregarClick() {
+    this.operation = 'Registro laboratorio';
+    this.resetRegistro();
+    this.laboratorioForm.reset(this.initialValueForm);
+    document.getElementById('btn-edit-modal')?.click();
+  }
+  registros: Array<Laboratorio> = [];
+  registrosSeleccionados: Array<Laboratorio> = [];
   modalTitle: string = '';
   editar: boolean = false;
-  public LaboratorioRegistro: Laboratorio = {
-    id:null,
+  operation: string = '';
+  initialValueForm: any;
+  registro: Laboratorio = {
+    id: null,
     descripcion: '',
     nomenclatura: '',
-    selected: false
+    selected: false,
+  };
+  laboratorioForm = new FormGroup({
+    descripcion: new FormControl(
+      this.registro.descripcion,
+      Validators.required
+    ),
+    nomenclatura: new FormControl(
+      this.registro.nomenclatura,
+      Validators.required
+    ),
+  });
+
+  get form(): { [key: string]: AbstractControl } {
+    return this.laboratorioForm.controls;
   }
-  constructor(public muestreoService: MuestreoService, private laboratorioService: LaboratorioService) { super(); }
+
+  constructor(
+    public muestreoService: MuestreoService,
+    private laboratorioService: LaboratorioService,
+    private notificationService: NotificationService
+  ) {
+    super();
+  }
   notificacion: Notificacion = {
     title: 'Confirmar eliminación de laboratorio',
     text: '¿Está seguro de querer eliminar el laboratorio?',
-    id: 'mdlConfirmacion'
+    id: 'mdlConfirmacion',
   };
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
-    this.consultarLaboratorios();
+    this.getLaboratorios();
+    this.initialValueForm = this.laboratorioForm.value;
   }
 
   definirColumnas() {
@@ -66,7 +104,7 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-      }    
+      },
     ];
 
     this.columns = nombresColumnas;
@@ -75,21 +113,22 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
 
   //cambiar porque hay que mandar el filter en caso de que exista filtrado
 
-  public consultarLaboratorios(
+  public getLaboratorios(
     page: number = this.page,
     pageSize: number = this.NoPage,
-    filter: string = this.cadena): void {
+    filter: string = this.cadena
+  ): void {
     this.loading = true;
     this.laboratorioService
       .obtenerLaboratorios(page, pageSize, filter, this.orderBy)
       .subscribe({
         next: (response: any) => {
-          this.selectedPage = false;        
-          this.laboratorios = response.data;
+          this.selectedPage = false;
+          this.registros = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(this.laboratorios, this.laboratoriosSeleccionados);
-          this.selectedPage = this.anyUnselected(this.laboratorios) ? false : true;
+          this.getPreviousSelected(this.registros, this.registrosSeleccionados);
+          this.selectedPage = this.anyUnselected(this.registros) ? false : true;
           this.loading = false;
         },
         error: (error) => {
@@ -113,11 +152,11 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
     });
   }
 
-  AddLaboratorio() { }
+  addLaboratorio() {}
 
-  UpdateLaboratorio() { }
+  updateLaboratorio() {}
 
-  cargarArchivo(evento: Event) { }
+  cargarArchivo(evento: Event) {}
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
@@ -155,7 +194,7 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
           },
-          error: (error) => { },
+          error: (error) => {},
         });
     }
 
@@ -174,16 +213,16 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
       })
       .subscribe({
         next: (response: any) => {
-          this.laboratorios = response.data;
+          this.registros = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
     this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
-    this.consultarLaboratorios();
+    this.getLaboratorios();
   }
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
@@ -191,7 +230,7 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
-    this.consultarLaboratorios();
+    this.getLaboratorios();
 
     this.columns
       .filter((x) => x.isLatestFilter)
@@ -218,8 +257,67 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
   }
 
   pageClic(page: any) {
-    this.consultarLaboratorios();
+    this.getLaboratorios();
     this.page = page;
   }
-  DeleteLaboratorio() { }
+  DeleteLaboratorio() {}
+
+  resetRegistro() {
+    this.registro = {
+      selected: false,
+      id: 0,
+      descripcion: '',
+      nomenclatura: '',
+    };
+  }
+
+  onEditClick(parametroId: number) {
+    this.operation = 'Editar parámetro';
+    let elemento = this.registros.findIndex((f) => f.id === parametroId);
+    this.registro = this.registros[elemento];
+    this.laboratorioForm.patchValue({
+      descripcion: this.registro.descripcion,
+      nomenclatura: this.registro.nomenclatura,
+    });
+    document.getElementById('btn-edit-modal')?.click();
+  }
+
+  onGuardarCambiosClick() {
+    this.loading = true;
+    this.registro.descripcion = this.laboratorioForm.value.descripcion ?? '';
+    this.registro.nomenclatura = this.laboratorioForm.value.nomenclatura ?? '';
+
+    if (this.laboratorioForm.valid && this.registro.id === 0) {
+      this.laboratorioService.create(this.registro).subscribe({
+        next: (response: any) => {
+          this.getLaboratorios();
+          document.getElementById('btn-close')?.click();
+          this.loading = false;
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Laboratorio agregado correctamente.',
+            show: true,
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    } else if (this.laboratorioForm.valid && this.registro.id !== 0) {
+      this.laboratorioService.update(this.registro).subscribe({
+        next: (response: any) => {
+          document.getElementById('btn-close')?.click();
+          this.loading = false;
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Cambios guardados correctamente.',
+            show: true,
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
+    }
+  }
 }

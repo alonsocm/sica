@@ -3,18 +3,16 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Sitio } from '../../../muestreo/supervision/models/sitio';
 import { environment } from 'src/environments/environment';
-import { Laboratorio } from '../../../muestreo/supervision/models/laboratorio';
+import { Laboratorio } from '../../../../interfaces/catalogos/laboratorio.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class LaboratorioService {
-  private laboratorioPrivate: BehaviorSubject<Laboratorio[]> = new BehaviorSubject<
-    Laboratorio[]
-    >([]);
+  private laboratorioPrivate: BehaviorSubject<Laboratorio[]> =
+    new BehaviorSubject<Laboratorio[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   get laboratorios() {
     return this.laboratorioPrivate.asObservable();
@@ -24,23 +22,24 @@ export class LaboratorioService {
     this.laboratorioPrivate.next(laboratorios);
   }
 
-  obtenerLaboratorios(    
+  obtenerLaboratorios(
     page: number,
     pageSize: number,
     filter: string,
     order?: { column: string; type: string }
   ): Observable<Object> {
     const params = new HttpParams({
-      fromObject: {      
+      fromObject: {
         page: page,
         pageSize: pageSize,
         filter: filter,
         order: order != null ? order.column + '_' + order.type : '',
       },
     });
-    return this.http.get(environment.apiUrl + '/Laboratorios/Laboratorios', { params });
+    return this.http.get(environment.apiUrl + '/Laboratorios/Laboratorios', {
+      params,
+    });
   }
-
 
   getDistinctValuesFromColumn(
     column: string,
@@ -56,5 +55,13 @@ export class LaboratorioService {
       environment.apiUrl + '/Laboratorios/GetDistinctValuesFromColumn',
       { params }
     );
+  }
+
+  create(registro: Laboratorio): Observable<Object> {
+    return this.http.post(environment.apiUrl + '/Laboratorios', registro);
+  }
+
+  update(registro: Laboratorio): Observable<Object> {
+    return this.http.put(environment.apiUrl + '/Laboratorios', registro);
   }
 }
