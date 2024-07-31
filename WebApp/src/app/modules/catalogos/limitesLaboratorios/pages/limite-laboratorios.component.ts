@@ -445,4 +445,6 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
   UpdateLimites() { }
 
   DeleteLimiteLaboratorio() { }
+
+  cargarCombos() { }
 }

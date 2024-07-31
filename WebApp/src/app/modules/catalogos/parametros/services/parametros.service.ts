@@ -77,4 +77,9 @@ export class ParametrosService {
       environment.apiUrl + '/ParametrosGrupo?parametroid=' + registro
     );
   }
+
+  getAllParametros() {
+    return this.http.get(
+      environment.apiUrl + '/ParametrosGrupo'
+    ); }
 }
