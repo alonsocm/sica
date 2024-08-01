@@ -3,6 +3,7 @@ using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Features.Sitios.Commands.CreateSitioCommand;
+using Application.Features.Sitios.Commands.UpdateSitioCommand;
 using Application.Models;
 using AutoMapper;
 using Domain.Entities;
@@ -15,6 +16,7 @@ namespace Application.Mappings
         {
             #region Commands
             CreateMap<CreateSitioCommand, Sitio>();
+            CreateMap<UpdateSitioCommand, Sitio>();
             #endregion
 
             #region DTOs
@@ -44,7 +46,8 @@ namespace Application.Mappings
                 .ForMember(x => x.Anio, o => o.MapFrom(src => src.Anio.Anio))
                 .ForMember(x => x.AnioId, o => o.MapFrom(src => src.Anio.Id));
 
-            CreateMap<Acuifero, AcuiferoDto>();
+            CreateMap<Acuifero, AcuiferoDto>()
+                  .ForMember(x => x.AcuiferoId, o => o.MapFrom(src => src.Id));
             CreateMap<Sitio, SitioDto>()
                 .ForMember(x => x.NombreSitio, o => o.MapFrom(src => src.NombreSitio))
                 .ForMember(x => x.ClaveSitio, o => o.MapFrom(src => src.ClaveSitio))

@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { parse } from 'jest-editor-support';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { cuerpoAgua } from '../../../../interfaces/catalogos/cuerpoAgua.interface';
-import { cuerpoTipoSubtipoAgua } from '../../../../interfaces/catalogos/cuerpoTipoSubtipoAgua.interface';
 import { Sitio } from '../../../../interfaces/catalogos/sitio.interface';
 import { Column } from '../../../../interfaces/filter/column';
 import { Item } from '../../../../interfaces/filter/item';
@@ -10,7 +7,6 @@ import { NotificationType } from '../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../shared/models/notification-model';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { MuestreoService } from '../../../muestreo/liberacion/services/muestreo.service';
-import { TipoCuerpoAgua } from '../../tipoCuerpoAgua/models/tipocuerpoagua';
 import { SitioService } from '../services/sitio.service';
 
 @Component({
@@ -292,11 +288,13 @@ export class SitiosComponent extends BaseService implements OnInit {
             (thing, i, arr) => arr.findIndex(t => t.organismoCuenca === thing.organismoCuenca) === i
           );
 
-          if (this.editar) {
+          if (this.editar) {     
             let cuencaDireccionLocal = this.cuencaDireccionesLocales.filter(x => x.id == this.sitioRegistro.cuencaDireccionesLocalesId);
             this.sitioRegistro.oCuencaId = cuencaDireccionLocal[0].oCuencaId;
             this.cargaDireccionLocal();
-            this.sitioRegistro.dLocalId = cuencaDireccionLocal[0].dLocalId;        
+            this.sitioRegistro.dLocalId = cuencaDireccionLocal[0].dLocalId;
+            let acuiferos = this.acuiferos.filter(x => x.acuiferoId == this.sitioRegistro.acuiferoId);
+            this.sitioRegistro.acuiferoId = acuiferos[0].acuiferoId;
           }
         },
         error: (error) => {         
@@ -333,7 +331,6 @@ export class SitiosComponent extends BaseService implements OnInit {
         },
       });
   }
-
 
   cargaDireccionLocal() {  
     this.direccionesLocales = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId != null);  
@@ -540,8 +537,11 @@ export class SitiosComponent extends BaseService implements OnInit {
   RegistrarSitio() { }
 
   validarObligatorios(): boolean {  
-    let valor = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId == this.sitioRegistro.dLocalId);
-    this.sitioRegistro.cuencaDireccionesLocalesId = valor[0].id;
+    let cuencaDirecciones = this.cuencaDireccionesLocales.filter(x => x.oCuencaId == this.sitioRegistro.oCuencaId && x.dLocalId == this.sitioRegistro.dLocalId);
+    this.sitioRegistro.cuencaDireccionesLocalesId = cuencaDirecciones[0].id;
+    let cuerpotiposubtipoAgua = this.cuerpoTiposSubtipoAgua.filter(x => x.cuerpoAguaId == this.sitioRegistro.cuerpoAguaId && x.tipoCuerpoAguaId == this.sitioRegistro.tipoCuerpoAguaId
+      && x.subtipoCuerpoAguaId == this.sitioRegistro.subtipoCuerpoAguaId);
+    this.sitioRegistro.cuerpoTipoSubtipoAguaId = cuerpotiposubtipoAgua[0].id;
 
     let obligatoriosRegistro: any[] = [this.sitioRegistro.claveSitio, this.sitioRegistro.nombreSitio, this.sitioRegistro.cuerpoTipoSubtipoAguaId,
     this.sitioRegistro.cuencaDireccionesLocalesId, this.sitioRegistro.estadoId, this.sitioRegistro.municipioId, this.sitioRegistro.latitud, this.sitioRegistro.longitud, this.sitioRegistro.observaciones];
@@ -568,7 +568,7 @@ export class SitiosComponent extends BaseService implements OnInit {
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.success,
-              text: 'Usuario registrado exitosamente',
+              text: 'Se registro el sitio exitosamente',
             });
           }
         }
@@ -584,7 +584,7 @@ export class SitiosComponent extends BaseService implements OnInit {
     this.cargarCombos();  }
 
   UpdateSites(sitio: Sitio) {
-    this.sitioRegistro = sitio;  
+    this.sitioRegistro = sitio; 
     this.cargarCombos();
     this.cargaMunicipios();
     this.cuerpoTipoSubtipoByCuerpoId();
@@ -603,7 +603,7 @@ export class SitiosComponent extends BaseService implements OnInit {
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.success,
-            text: 'Usuario actualizado exitosamente',
+            text: 'Sitio actualizado exitosamente',
           });
         }
       }

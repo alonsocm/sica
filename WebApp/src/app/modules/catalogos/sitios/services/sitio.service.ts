@@ -107,7 +107,8 @@ export class SitioService {
     );
   }
 
-  updateSitio(registro: Sitio) {  
+
+  updateSitio(registro: Sitio): Observable<Object> {
     return this.http.put(environment.apiUrl + '/Sitios', registro);
   }
 

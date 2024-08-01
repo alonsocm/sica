@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Catalogos
 {
-    public class AcuiferoDto
+    public class AccionLaboratorioDto
     {
-        public int AcuiferoId { get; set; }
-        public string Descripcion { get; set; }
-        public string Clave { get; set; }
+        public int Id { get; set; }
+        public string LoSubroga { get; set; }
+        public string? Descripcion { get; set; }
     }
 }

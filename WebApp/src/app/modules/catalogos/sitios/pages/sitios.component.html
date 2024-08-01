@@ -236,7 +236,7 @@
             <div class="col-sm-9">
               <select id="dropAcuifero" class="form-control" [(ngModel)]="this.sitioRegistro.acuiferoId">
                 <option [ngValue]=null>--Seleccione--</option>
-                <option *ngFor="let acuifero of acuiferos" [ngValue]="editar ? this.sitioRegistro.acuiferoId:acuifero.id">
+                <option *ngFor="let acuifero of acuiferos" [ngValue]="acuifero.acuiferoId">
                   {{acuifero.descripcion}}
                 </option>
               </select>
@@ -360,7 +360,6 @@
             <div class="col-sm-9">
               <textarea id="txtObservaciones" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Observaciones" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.observaciones">
                </textarea>
-
               <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.observaciones==''">
                 Campo <strong>requerido</strong>
               </span>
