@@ -24,11 +24,23 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
             _parametroRepository=parametroRepository;
         }
 
-        public Task<Response<bool>> Handle(CreateParametro request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(CreateParametro request, CancellationToken cancellationToken)
         {
+            //Buscamos que no exista ya un registro con esa clave.
+            var registroDB = await _parametroRepository.ObtenerElementosPorCriterioAsync(x => x.ClaveParametro == request.Clave.Trim());
+
+            if (registroDB.Any())
+            {
+                return new Response<bool>(false)
+                {
+                    Succeded = false,
+                    Message = $"No se pudo registrar el parámetro. La clave {request.Clave}, ya se encuentra registrada."
+                };
+            }
+
             var parametro = new Domain.Entities.ParametrosGrupo()
             {
-                ClaveParametro = request.Clave,
+                ClaveParametro = request.Clave.Trim(),
                 Descripcion = request.Descripcion,
                 GrupoParametroId = request.GrupoId,
                 IdSubgrupo = request.SubgrupoId,
@@ -36,7 +48,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
             };
 
             _parametroRepository.Insertar(parametro);
-            return Task.FromResult(new Response<bool>(true));
+            return new Response<bool>(true);
         }
     }
 }

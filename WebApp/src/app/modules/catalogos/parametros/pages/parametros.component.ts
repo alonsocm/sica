@@ -407,14 +407,22 @@ export class ParametrosComponent extends BaseService implements OnInit {
     if (this.parametroForm.valid && this.registro.id === 0) {
       this.parametrosService.create(this.registro).subscribe({
         next: (response: any) => {
-          this.getParametros();
+          if (response.succeded) {
+            this.getParametros();
+            this.notificationService.updateNotification({
+              type: NotificationType.success,
+              text: 'Parámetro agregado correctamente.',
+              show: true,
+            });
+          } else {
+            this.notificationService.updateNotification({
+              type: NotificationType.danger,
+              text: `${response.message}`,
+              show: true,
+            });
+          }
           document.getElementById('btn-close')?.click();
           this.loading = false;
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Parámetro agregado correctamente.',
-            show: true,
-          });
         },
         error: (error) => {
           this.loading = false;
