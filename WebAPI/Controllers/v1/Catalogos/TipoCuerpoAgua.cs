@@ -1,10 +1,12 @@
-﻿using Application.Features.Catalogos.TiposCuerpoAgua.Commands;
+﻿using Application.DTOs.Catalogos;
+using Application.Features.Catalogos.TiposCuerpoAgua.Commands;
 using Application.Features.Catalogos.TiposCuerpoAgua.Queries;
 using Application.Wrappers;
+using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Utilities.Services;
 using WebAPI.Shared;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAPI.Controllers.v1.Catalogos
 {
@@ -76,6 +78,30 @@ namespace WebAPI.Controllers.v1.Catalogos
             }
 
             return Ok(await Mediator.Send(tipoCuerpoAgua));
+        }
+        [HttpPost("CargaMasiva")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromQuery] bool actualizar, [FromForm] IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = ExcelTipoCuerpoAguaSettings.KeyValues;
+
+            var registros = ExcelService.Import<ExcelTipocuerpoAguaDTO>(fileInfo, "Hoja1");
+            System.IO.File.Delete(filePath);
+
+            return Ok(await Mediator.Send(new AddTipoCuerpoAguaExcelCommand { TipoCuerpoAgua = registros, Actualizar = actualizar }));
         }
     }
 }

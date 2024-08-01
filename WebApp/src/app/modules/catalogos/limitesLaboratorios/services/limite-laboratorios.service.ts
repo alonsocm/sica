@@ -54,5 +54,14 @@ export class LimiteLaboratorioService {
     );
   }
 
+  addLimiteLaboratorios(registro: LimitesLaboratorios): Observable<Object> {
+    return this.http.post(environment.apiUrl + '/LimiteParametroLaboratorio', registro);
+  }
+
+  updateLimiteLaboratorios(registro: LimitesLaboratorios): Observable<Object> {
+    return this.http.put(environment.apiUrl + '/LimiteParametroLaboratorio', registro);
+  }
+
+
   
 }

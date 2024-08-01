@@ -8,6 +8,7 @@ namespace Application.DTOs.Catalogos
 {
     public class CuerpoTipoSubtipoAguaDto
     {
+        public long Id { get; set; }
         public string CuerpoAgua { get; set; }
         public string TipoCuerpoAgua { get; set; }
         public string SubtipoCuerpoAgua { get; set; }

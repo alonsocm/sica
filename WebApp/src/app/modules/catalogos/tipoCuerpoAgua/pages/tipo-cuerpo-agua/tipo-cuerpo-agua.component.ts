@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from 'src/app/interfaces/filter/item';
@@ -40,11 +46,37 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   editar: boolean = false;
   modalTitle: string = '';
   showModal: boolean = false;
+  fileList: any;
+  registro: TipoCuerpoAgua = {
+    id: 0,
+    descripcion: '',
+    tipoHomologadoId: 0,
+    tipoHomologadoDescripcion: '',
+    activo: true,
+    frecuencia: '',
+    evidenciasEsperadas: 0,
+    tiempoMinimoMuestreo: 0,
+    selected: false,
+  };
+  tipoCuerpoAguaForm = new FormGroup({
+    descripcion: new FormControl(
+      this.registro.descripcion,
+      Validators.required
+    ),
+    nomenclatura: new FormControl(
+      this.registro.tipoHomologadoId,
+      Validators.required
+    ),
+  });
 
-  constructor(
-    private tipoCuerpoAguaServices: TipoCuerpoAguaService,
-    private fileService: FileService
-  ) {
+  @ViewChild('inputExcelTipoCuerpoAgua') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
+
+  get form(): { [key: string]: AbstractControl } {
+    return this.tipoCuerpoAguaForm.controls;
+  }
+
+  constructor(private tipoCuerpoAguaServices: TipoCuerpoAguaService) {
     super();
   }
 
@@ -177,7 +209,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
           this.getTipoCuerpoAgua();
         },
         error: (error) => {
-          console.error('Error al actualizar tipo cuerpo de agua:', error);          
+          console.error('Error al actualizar tipo cuerpo de agua:', error);
         },
       });
   }
@@ -188,7 +220,8 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
         next: () => {
           this.mostrarMensaje(
             'Tipo cuerpo de agua eliminado correctamente.',
-            TIPO_MENSAJE.exito)
+            TIPO_MENSAJE.exito
+          );
           this.tipoCuerpoAgua = {
             id: 0,
             descripcion: '',
@@ -201,15 +234,13 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
             selected: false,
           };
           this.getTipoCuerpoAgua();
-          
         },
         error: (error) => {
-          
           console.error('Error al eliminar tipo cuerpo de agua:', error);
           this.mostrarMensaje(
             'No se puede eliminar el tipo cuerpo de agua.',
             TIPO_MENSAJE.error
-          );             
+          );
           this.tipoCuerpoAgua = {
             id: 0,
             descripcion: '',
@@ -342,6 +373,51 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     this.hideColumnFilter();
   }
 
-importarExcel(event: any) {  
-}
+  importarExcel(event: any) {
+    this.fileList = (event.target as HTMLInputElement).files ?? new FileList();
+    this.uploadFile(this.fileList, false);
+    
+  }
+  private uploadFile(archivo: FileList, sustituir: boolean) {
+    if (archivo) {
+      this.loading = true;      
+      this.tipoCuerpoAguaServices.uploadFile(archivo[0], sustituir).subscribe({
+        next: (response: any) => {                    
+          if (response.succeded) {            
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.getTipoCuerpoAgua();
+            this.loading = false;
+            this.mostrarMensaje(
+              'Archivo procesado correctamente.',
+              TIPO_MENSAJE.exito
+            );
+          } else {
+            this.loading = false;
+            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
+          }
+        },
+        error: (error: any) => {
+                  
+          this.resetInputFile(this.inputExcelMonitoreos);
+          
+          this.loading = false;
+          let errores = '';
+          if (error.error.Errors === null) {
+            errores = error.error.Message;
+          } else {
+            errores = error.error.Errors;
+          }
+          let archivoErrores = this.generarArchivoDeErrores(errores);
+          this.hacerScroll();
+          this.mostrarMensaje(
+            'Se encontraron errores en el archivo procesado.',
+            TIPO_MENSAJE.error
+          );
+        },
+      });
+    }
+  }
+  onSustituirtipoCuerpoAguaClick() {
+    this.uploadFile(this.fileList, true);
+  }
 }

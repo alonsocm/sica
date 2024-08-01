@@ -2,9 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { LimitesLaboratorios } from '../../../../interfaces/catalogos/limitesLaboratorio.interface';
 import { Column } from '../../../../interfaces/filter/column';
 import { Item } from '../../../../interfaces/filter/item';
+import { NotificationType } from '../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../shared/models/notification-model';
 import { BaseService } from '../../../../shared/services/base.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 import { MuestreoService } from '../../../muestreo/liberacion/services/muestreo.service';
+import { LaboratorioService } from '../../laboratorios/services/laboratorios.service';
+import { ParametrosService } from '../../parametros/services/parametros.service';
 import { LimiteLaboratorioService } from '../services/limite-laboratorios.service';
 
 @Component({
@@ -18,11 +22,14 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
   modalTitle: string = '';
   editar: boolean = false;
   laboratorios: Array<any> = [];
+  nombresLaboratorios: Array<any> = [];
   parametros: Array<any> = [];
   laboratorioMuestreo: Array<any> = [];
   laboratoriosSubrogado: Array<any> = [];
+  meses: Array<any> = [];
+  anios: Array<any> = [];
   public LaboratorioRegistro: LimitesLaboratorios = {
-    id:null,
+    id: null,
     claveParametro: '',
     nombreParametro: '',
     parametroId: null,
@@ -49,9 +56,13 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     lpc: '',
     AnioId: null,
     selected: false,
-    anio:''
+    anio: ''
   }
-  constructor(private muestreoService: MuestreoService, private limiteLaboratorioService: LimiteLaboratorioService) { super(); }
+  constructor(private muestreoService: MuestreoService,
+    private limiteLaboratorioService: LimiteLaboratorioService,
+    private parametrosService: ParametrosService,
+    private laboratoriosService: LaboratorioService,
+    private notificationService: NotificationService) { super(); }
   notificacion: Notificacion = {
     title: 'Confirmar eliminación de límite de laboratorio',
     text: '¿Está seguro de querer eliminar el límite de laboratorio?',
@@ -353,7 +364,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     this.limiteLaboratorioService
       .obtenerLimitesLaboratorioPaginados(page, pageSize, filter, this.orderBy)
       .subscribe({
-        next: (response: any) => {        
+        next: (response: any) => {
           this.selectedPage = false;
           this.limitesLaboratorio = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
@@ -440,11 +451,129 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-  AddLimites() { }
 
-  UpdateLimites() { }
+  validarObligatorios(): boolean {
+    let obligatoriosRegistro: any[] = [this.LaboratorioRegistro.parametroId, this.LaboratorioRegistro.laboratorioId, this.LaboratorioRegistro.AnioId];
+    return (obligatoriosRegistro.includes("") || obligatoriosRegistro.includes(null)) ? false : true;
+  }
+
+AddLimites() {
+    if (!this.validarObligatorios()) {
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe de llenar los campos obligatorios para su registro',
+      });
+    }
+    else {
+      this.limiteLaboratorioService.addLimiteLaboratorios(this.LaboratorioRegistro).subscribe({
+        next: (response: any) => {
+          this.loading = true;
+          if (response.succeded) {
+            this.consultarLimitesLaboratorio();
+            this.loading = false;
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Se registro el límite laboratorio exitosamente',
+            });
+          }
+        }
+      });
+  }
+}
+
+  MostrarModalRegistro() {
+    this.resetLimiteLaboratorio();
+    this.modalTitle = 'Registro límite laboratorio';
+    this.cargarCombos();
+  }
+
+  UpdateLimites(limites: LimitesLaboratorios) {
+    this.LaboratorioRegistro = limites; 
+    this.cargarCombos();
+    this.modalTitle = "Edición de límites de laboratorios";
+    this.editar = true;
+  }
+  Update() {
+    this.limiteLaboratorioService.updateLimiteLaboratorios(this.LaboratorioRegistro).subscribe({
+      next: (response: any) => {
+        this.loading = true;
+        if (response.succeded) {
+          this.consultarLimitesLaboratorio();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Límite laboratorio actualizado exitosamente',
+          });
+        }
+      }
+    });
+
+  }
 
   DeleteLimiteLaboratorio() { }
 
-  cargarCombos() { }
+  cargarCombos() {
+    this.parametrosService
+      .getAllParametros()
+      .subscribe({
+        next: (response: any) => {
+          this.parametros = response.data;
+        },
+        error: (error) => {
+        },
+      });
+
+    this.laboratoriosService
+      .obtenerLaboratorios(0, 0, '', this.orderBy)
+      .subscribe({
+        next: (response: any) => {
+          this.laboratorios = response.data;
+          this.laboratorioMuestreo = response.data;
+          this.laboratoriosSubrogado = response.data;
+        },
+        error: (error) => {
+        },
+      });
+  }
+
+  obtenerNombre() { this.LaboratorioRegistro.laboratorio = (this.laboratorios.filter(x => x.id == this.LaboratorioRegistro.laboratorioId))[0].descripcion; }
+  obtenerNombreParametro() { this.LaboratorioRegistro.nombreParametro = (this.parametros.filter(x => x.id == this.LaboratorioRegistro.parametroId))[0].descripcion; }
+  obtenerLaboratorioMuestreo() { this.LaboratorioRegistro.laboratorioMuestreo = (this.laboratorioMuestreo.filter(x => x.id == this.LaboratorioRegistro.laboratorioMuestreoId))[0].descripcion; }
+  obtenerLaboratorioSubrogado() { this.LaboratorioRegistro.laboratorioSubrogado = (this.laboratoriosSubrogado.filter(x => x.id == this.LaboratorioRegistro.laboratorioSubrogadoId))[0].descripcion; }
+
+  resetLimiteLaboratorio() {
+    this.LaboratorioRegistro.id = null;
+    this.LaboratorioRegistro.claveParametro = '';
+    this.LaboratorioRegistro.nombreParametro = '';
+    this.LaboratorioRegistro.parametroId = null;
+    this.LaboratorioRegistro.laboratorio = '';
+    this.LaboratorioRegistro.laboratorioId = null;
+    this.LaboratorioRegistro.realizaLaboratorioMuestreoId = null;
+    this.LaboratorioRegistro.realizaLaboratorioMuestreo = '';
+    this.LaboratorioRegistro.laboratorioMuestreo = '';
+    this.LaboratorioRegistro.laboratorioMuestreoId = null;
+    this.LaboratorioRegistro.mes = '';
+    this.LaboratorioRegistro.periodoId = null;
+    this.LaboratorioRegistro.activo = false;
+    this.LaboratorioRegistro.loSubroga = '';
+    this.LaboratorioRegistro.loSubrogaId = null;
+    this.LaboratorioRegistro.ldMaCumplir = '';
+    this.LaboratorioRegistro.lpCaCumplir = '';
+    this.LaboratorioRegistro.loMuestra = null;
+    this.LaboratorioRegistro.accionLaboratorio = '';
+    this.LaboratorioRegistro.accionLaboratorioId = null;
+    this.LaboratorioRegistro.laboratorioSubrogado = '';
+    this.LaboratorioRegistro.laboratorioSubrogadoId = null;
+    this.LaboratorioRegistro.metodoAnalitico = '';
+    this.LaboratorioRegistro.ldm = '';
+    this.LaboratorioRegistro.lpc = '';
+    this.LaboratorioRegistro.AnioId = null;
+    this.LaboratorioRegistro.selected = false;
+    this.LaboratorioRegistro.anio = ''
+
+  }
+
 }

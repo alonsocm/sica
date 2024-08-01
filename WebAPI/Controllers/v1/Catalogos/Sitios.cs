@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
 using Application.Features.Catalogos.ParametrosGrupo.Commands;
+using Domain.Entities;
 
 namespace WebAPI.Controllers.v1.Catalogos
 {
@@ -73,15 +74,24 @@ namespace WebAPI.Controllers.v1.Catalogos
             }));
         }
 
-        //PUT api/<controller>
-        [HttpPut("{id}")]
-        [Authorize]
+       
+        [HttpPut]
         public async Task<ActionResult> Put(UpdateSitioCommand command)
         {
-            //if (id != command.Id)
-            //    return BadRequest();
-
-            return Ok(await Mediator.Send(command));
+            return Ok(await Mediator.Send(new UpdateSitioCommand
+            {
+                Id = command.Id,
+                ClaveSitio = command.ClaveSitio,
+                NombreSitio = command.NombreSitio,
+                CuencaDireccionesLocalesId = command.CuencaDireccionesLocalesId,
+                EstadoId = command.EstadoId,
+                MunicipioId = command.MunicipioId,
+                CuerpoTipoSubtipoAguaId = command.CuerpoTipoSubtipoAguaId,
+                Latitud = command.Latitud,
+                Longitud = command.Longitud,
+                Observaciones = command.Observaciones,
+                AcuiferoId = command.AcuiferoId,
+            }));
         }
 
         //Delete api/<controller>
