@@ -16,16 +16,16 @@
         </ng-template>
       </ng-container>
       <div class="pull-right" style="margin: 10px;">
-      <li style="text-align:right" class="list-inline-item">
-        <a routerLink="{{this.paginaAdminUsuario[0].url}}">{{this.paginaAdminUsuario[0].descripcion}}</a>
-      </li>
-      <i class="bi bi-person-circle"></i>
-      &nbsp;
-      <span>{{this.usuario.nombreUsuario}}-&nbsp;{{this.usuario.nombrePerfil}}</span>
-      &nbsp;
-      &nbsp;
-      <a (click)="cerrarSesion()">Cerrar sesión</a>
-</div>
+        <li *ngIf="this.paginaAdminUsuario.descripcion !== ''" style="text-align:right" class="list-inline-item">
+          <a routerLink="{{this.paginaAdminUsuario.url}}">{{this.paginaAdminUsuario.descripcion}}</a>
+        </li>
+        <i class="bi bi-person-circle"></i>
+        &nbsp;
+        <span>{{this.usuario.nombreUsuario}}-&nbsp;{{this.usuario.nombrePerfil}}</span>
+        &nbsp;
+        &nbsp;
+        <a (click)="cerrarSesion()">Cerrar sesión</a>
+      </div>
     </ul>
   </div>
 </nav>
