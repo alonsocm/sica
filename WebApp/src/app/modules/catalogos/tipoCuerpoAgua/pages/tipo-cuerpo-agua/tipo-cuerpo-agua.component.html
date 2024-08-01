@@ -14,8 +14,8 @@
                 Nuevo Tipo Cuerpo Agua
             </button>
             <input type="file" class="element-hidden" (change)="importarExcel($event)" accept=".xls, .xlsx"
-                title="Seleccionar archivo" #inputExcelMonitoreos>
-            <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
+                title="Seleccionar archivo" #inputExcelTipoCuerpoAgua>
+            <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelTipoCuerpoAgua.click()"
                 title="Seleccionar archivo">
                 <i class="bi bi-filetype-xlsx"></i>
                 Agregar desde archivo
@@ -275,4 +275,32 @@
     <button id="btn-delete-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#modaleliminar">
         Confirmar eliminación
     </button>    
+    <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
+    data-target="#mdlConfirmacionActualizacion">
+    Abrir modal
+  </button>
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static"
+    data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar actualización de tipo cuerpo de agua</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            Se encontraron en el archivo, tipos cuerpo de agua que ya se encuentran en el catálogo.
+          </p>
+          <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá la información actual de los tipos cuerpo de agua.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onSustituirtipoCuerpoAguaClick()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

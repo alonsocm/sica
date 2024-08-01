@@ -221,7 +221,7 @@
             new KeyValuePair<string, string>("Observaciones final","ObservacionFinal"),
         };
 
-        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
     }
 
     public static class ExcelParametrosSettings
@@ -236,7 +236,7 @@
             //new KeyValuePair<string, string>("Orden","Orden"),
         };
 
-        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
     }
 
     public static class ExcelLaboratoriosSettings
@@ -247,6 +247,17 @@
             new KeyValuePair<string, string>("Nomenclatura","Nomenclatura"),
         };
 
-        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
     }
+    public static class ExcelTipoCuerpoAguaSettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("Tipo cuerpo de agua","Descripcion"),
+            new KeyValuePair<string, string>("Tipo Homologado Id","TipoHomologadoId"),
+        };
+
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
+    }
+
 }
