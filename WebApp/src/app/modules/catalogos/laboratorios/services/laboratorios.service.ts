@@ -69,4 +69,13 @@ export class LaboratorioService {
       environment.apiUrl + '/Laboratorios?laboratorioId=' + registro
     );
   }
+
+  uploadFile(archivo: File, actualizar: boolean) {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+    return this.http.post(
+      environment.apiUrl + '/Laboratorios/cargamasiva?actualizar=' + actualizar,
+      formData
+    );
+  }
 }

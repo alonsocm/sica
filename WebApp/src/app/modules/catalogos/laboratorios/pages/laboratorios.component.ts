@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Laboratorio } from '../../../../interfaces/catalogos/laboratorio.interface';
 import { Column } from '../../../../interfaces/filter/column';
 import { Item } from '../../../../interfaces/filter/item';
@@ -27,6 +27,7 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
     this.laboratorioForm.reset(this.initialValueForm);
     document.getElementById('btn-edit-modal')?.click();
   }
+  fileList: any;
   registros: Array<Laboratorio> = [];
   registrosSeleccionados: Array<Laboratorio> = [];
   modalTitle: string = '';
@@ -49,6 +50,9 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
       Validators.required
     ),
   });
+
+  @ViewChild('inputExcelParametros') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
 
   get form(): { [key: string]: AbstractControl } {
     return this.laboratorioForm.controls;
@@ -342,5 +346,56 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
         });
       },
     });
+  }
+
+  onCargarArchivoClick(event: Event) {
+    this.fileList = (event.target as HTMLInputElement).files ?? new FileList();
+    this.uploadFile(this.fileList, false);
+  }
+
+  private uploadFile(archivo: FileList, sustituir: boolean) {
+    if (archivo) {
+      this.loading = true;
+      this.laboratorioService.uploadFile(archivo[0], sustituir).subscribe({
+        next: (response: any) => {
+          if (response.succeded) {
+            this.resetInputFile(this.inputExcelMonitoreos);
+            this.getLaboratorios();
+            this.loading = false;
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Archivo procesado correctamente.',
+            });
+          } else {
+            this.loading = false;
+            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
+          }
+        },
+        error: (error: any) => {
+          this.resetInputFile(this.inputExcelMonitoreos);
+          this.loading = false;
+          let errores = '';
+          if (error.error.Errors === null) {
+            errores = error.error.Message;
+          } else {
+            errores = error.error.Errors;
+          }
+          let archivoErrores = this.generarArchivoDeErrores(errores);
+          this.hacerScroll();
+          // FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelMonitoreos);
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
+          });
+        },
+      });
+    }
+  }
+
+  onSustituirParametrosClick() {
+    this.uploadFile(this.fileList, true);
   }
 }

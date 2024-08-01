@@ -14,12 +14,10 @@
         <i class="bi bi-plus-lg"></i> Nuevo laboratorio
       </button>
 
-      <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-        title="Seleccionar archivo" #inputExcelMonitoreos>
-      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
-        title="Seleccionar archivo">
-        <i class="bi bi-filetype-xlsx"></i>
-        Agregar desde archivo
+      <input type="file" class="element-hidden" (change)="onCargarArchivoClick($event)" accept=".xls, .xlsx"
+        title="Seleccionar archivo" #inputExcelParametros>
+      <button class="btn btn-primary btn-sm mr-1" type="button" (click)="inputExcelParametros.click()">
+        <i class="bi bi-filetype-xlsx"></i> Agregar desde archivo
       </button>
 
       <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
@@ -229,6 +227,35 @@
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal"
             (click)="onConfirmDeleteClick();">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
+    data-target="#mdlConfirmacionActualizacion">
+    Abrir modal
+  </button>
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static"
+    data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar actualización de parámetros</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            Se encontraron en el archivo, parámetros que ya se encuentran en el catálogo.
+          </p>
+          <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá la información actual de los parámetros.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onSustituirParametrosClick()">
+            Aceptar
+          </button>
         </div>
       </div>
     </div>
