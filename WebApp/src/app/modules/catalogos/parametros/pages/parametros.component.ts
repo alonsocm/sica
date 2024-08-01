@@ -79,8 +79,10 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
   ngOnInit(): void {
     this.filtroHistorialService.columnName.subscribe((columnName) => {
-      this.deleteFilter(columnName);
-      this.getParametros();
+      if (columnName !== '') {
+        this.deleteFilter(columnName);
+        this.getParametros();
+      }
     });
     this.definirColumnas();
     this.getParametros();
