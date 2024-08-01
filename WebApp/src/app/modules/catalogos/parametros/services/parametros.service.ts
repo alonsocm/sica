@@ -8,16 +8,6 @@ import { Parametro } from '../models/parametro';
   providedIn: 'root',
 })
 export class ParametrosService {
-  uploadFile(archivo: File, actualizar: boolean) {
-    const formData = new FormData();
-    formData.append('archivo', archivo, archivo.name);
-    return this.http.post(
-      environment.apiUrl +
-        '/ParametrosGrupo/cargamasiva?actualizar=' +
-        actualizar,
-      formData
-    );
-  }
   constructor(private http: HttpClient) {}
 
   getParametros(
@@ -79,7 +69,17 @@ export class ParametrosService {
   }
 
   getAllParametros() {
-    return this.http.get(
-      environment.apiUrl + '/ParametrosGrupo'
-    ); }
+    return this.http.get(environment.apiUrl + '/ParametrosGrupo');
+  }
+
+  uploadFile(archivo: File, actualizar: boolean) {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+    return this.http.post(
+      environment.apiUrl +
+        '/ParametrosGrupo/cargamasiva?actualizar=' +
+        actualizar,
+      formData
+    );
+  }
 }

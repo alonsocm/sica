@@ -1,7 +1,6 @@
-import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Sitio } from '../../../muestreo/supervision/models/sitio';
 import { environment } from 'src/environments/environment';
 import { Laboratorio } from '../../../../interfaces/catalogos/laboratorio.interface';
 
@@ -63,5 +62,20 @@ export class LaboratorioService {
 
   update(registro: Laboratorio): Observable<Object> {
     return this.http.put(environment.apiUrl + '/Laboratorios', registro);
+  }
+
+  delete(registro: number): Observable<Object> {
+    return this.http.delete(
+      environment.apiUrl + '/Laboratorios?laboratorioId=' + registro
+    );
+  }
+
+  uploadFile(archivo: File, actualizar: boolean) {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+    return this.http.post(
+      environment.apiUrl + '/Laboratorios/cargamasiva?actualizar=' + actualizar,
+      formData
+    );
   }
 }

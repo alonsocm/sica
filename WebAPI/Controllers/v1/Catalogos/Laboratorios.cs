@@ -1,8 +1,12 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.Features.Catalogos.Laboratorios.Commands;
 using Application.Features.Catalogos.Laboratorios.Queries;
+using Application.Features.Catalogos.ParametrosGrupo.Commands;
 using Application.Wrappers;
+using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Utilities.Services;
 using WebAPI.Shared;
 
 namespace WebAPI.Controllers.v1.Catalogos
@@ -70,6 +74,48 @@ namespace WebAPI.Controllers.v1.Catalogos
                 Descripcion = parametro.Descripcion,
                 Nomenclatura = parametro.Nomenclatura,
             }));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(UpdateLaboratorio laboratorio)
+        {
+            return Ok(await Mediator.Send(new UpdateLaboratorio
+            {
+                Id = laboratorio.Id,
+                Nomenclatura = laboratorio.Descripcion,
+                Descripcion = laboratorio.Descripcion,
+            }));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int laboratorioId)
+        {
+            return Ok(await Mediator.Send(new DeleteLaboratorio { LaboratorioId = laboratorioId }));
+        }
+
+        [HttpPost("CargaMasiva")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromQuery] bool actualizar, [FromForm] IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = ExcelLaboratoriosSettings.KeyValues;
+
+            var registros = ExcelService.Import<ExcelLaboratorioDTO>(fileInfo, "Hoja1");
+            System.IO.File.Delete(filePath);
+
+            return Ok(await Mediator.Send(new CreateLaboratorios { Laboratorios = registros, Actualizar = actualizar }));
         }
     }
 }

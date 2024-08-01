@@ -238,4 +238,15 @@
 
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
     }
+
+    public static class ExcelLaboratoriosSettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("Nombre","Descripcion"),
+            new KeyValuePair<string, string>("Nomenclatura","Nomenclatura"),
+        };
+
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues=value; }
+    }
 }
