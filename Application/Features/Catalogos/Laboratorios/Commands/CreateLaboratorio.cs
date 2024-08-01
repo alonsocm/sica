@@ -20,8 +20,19 @@ namespace Application.Features.Catalogos.Laboratorios.Commands
             _laboratorioRepository=laboratorioRepository;
         }
 
-        public Task<Response<bool>> Handle(CreateLaboratorio request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(CreateLaboratorio request, CancellationToken cancellationToken)
         {
+            var laboratorioBD = await _laboratorioRepository.ObtenerElementosPorCriterioAsync(x => x.Nomenclatura == request.Nomenclatura);
+
+            if (laboratorioBD.Any())
+            {
+                return new Response<bool>
+                {
+                    Succeded = false,
+                    Message = $"No se pudo registrar el laboratorio. La nomenclatura {request.Nomenclatura}, ya se encuentra registrada."
+                };
+            }
+
             var laboratorio = new Domain.Entities.Laboratorios()
             {
                 Descripcion = request.Descripcion,
@@ -29,7 +40,7 @@ namespace Application.Features.Catalogos.Laboratorios.Commands
             };
 
             _laboratorioRepository.Insertar(laboratorio);
-            return Task.FromResult(new Response<bool>(true));
+            return new Response<bool>(true);
         }
     }
 }

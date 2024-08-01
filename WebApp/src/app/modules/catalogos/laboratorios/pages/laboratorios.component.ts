@@ -273,8 +273,14 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
 
   onEditClick(parametroId: number) {
     this.operation = 'Editar parámetro';
-    let elemento = this.registros.findIndex((f) => f.id === parametroId);
-    this.registro = this.registros[elemento];
+    const registrosCopia = JSON.parse(JSON.stringify(this.registros)); //Sacamos una copia para no afectar al arreglo original.
+    const registro = registrosCopia.find((obj: any) => {
+      return obj.id === parametroId;
+    });
+
+    if (registro != undefined) {
+      this.registro = registro;
+    }
     this.laboratorioForm.patchValue({
       descripcion: this.registro.descripcion,
       nomenclatura: this.registro.nomenclatura,
@@ -290,14 +296,22 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
     if (this.laboratorioForm.valid && this.registro.id === 0) {
       this.laboratorioService.create(this.registro).subscribe({
         next: (response: any) => {
-          this.getLaboratorios();
+          if (response.succeded) {
+            this.getLaboratorios();
+            this.notificationService.updateNotification({
+              type: NotificationType.success,
+              text: 'Laboratorio agregado correctamente.',
+              show: true,
+            });
+          } else {
+            this.notificationService.updateNotification({
+              type: NotificationType.danger,
+              text: `${response.message}`,
+              show: true,
+            });
+          }
           document.getElementById('btn-close')?.click();
           this.loading = false;
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Laboratorio agregado correctamente.',
-            show: true,
-          });
         },
         error: (error) => {
           this.loading = false;
@@ -306,13 +320,21 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
     } else if (this.laboratorioForm.valid && this.registro.id !== 0) {
       this.laboratorioService.update(this.registro).subscribe({
         next: (response: any) => {
+          if (response.succeded) {
+            this.notificationService.updateNotification({
+              type: NotificationType.success,
+              text: 'Cambios guardados correctamente.',
+              show: true,
+            });
+          } else {
+            this.notificationService.updateNotification({
+              type: NotificationType.danger,
+              text: `${response.message}`,
+              show: true,
+            });
+          }
           document.getElementById('btn-close')?.click();
           this.loading = false;
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Cambios guardados correctamente.',
-            show: true,
-          });
         },
         error: (error) => {
           this.loading = false;

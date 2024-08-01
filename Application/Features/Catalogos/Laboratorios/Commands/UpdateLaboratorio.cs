@@ -22,15 +22,24 @@ namespace Application.Features.Catalogos.Laboratorios.Commands
 
         public async Task<Response<bool>> Handle(UpdateLaboratorio request, CancellationToken cancellationToken)
         {
-            var parametroBD = await _laboratorioRepository.ObtenerElementoPorIdAsync(request.Id);
+            var laboratorioBD = await _laboratorioRepository.ObtenerElementoPorIdAsync(request.Id);
 
-            if (parametroBD == null)
+            if (laboratorioBD == null)
                 throw new KeyNotFoundException();
 
-            parametroBD.Descripcion = request.Descripcion;
-            parametroBD.Nomenclatura = request.Nomenclatura;
+            if (laboratorioBD.Nomenclatura == request.Nomenclatura || laboratorioBD.Descripcion == request.Descripcion)
+            {
+                return new Response<bool>
+                {
+                    Succeded = false,
+                    Message = $"No se pudo actualizar el laboratorio. El nombre o nomenclatura ya se encuentran registrados."
+                };
+            }
 
-            _laboratorioRepository.Actualizar(parametroBD);
+            laboratorioBD.Descripcion = request.Descripcion;
+            laboratorioBD.Nomenclatura = request.Nomenclatura;
+
+            _laboratorioRepository.Actualizar(laboratorioBD);
             return new Response<bool>(true);
         }
     }
