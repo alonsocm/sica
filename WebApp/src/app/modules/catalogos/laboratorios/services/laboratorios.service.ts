@@ -63,4 +63,10 @@ export class LaboratorioService {
   update(registro: Laboratorio): Observable<Object> {
     return this.http.put(environment.apiUrl + '/Laboratorios', registro);
   }
+
+  delete(registro: number): Observable<Object> {
+    return this.http.delete(
+      environment.apiUrl + '/Laboratorios?laboratorioId=' + registro
+    );
+  }
 }

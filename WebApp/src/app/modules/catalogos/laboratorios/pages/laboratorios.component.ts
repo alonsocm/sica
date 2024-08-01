@@ -61,11 +61,7 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
   ) {
     super();
   }
-  notificacion: Notificacion = {
-    title: 'Confirmar eliminación de laboratorio',
-    text: '¿Está seguro de querer eliminar el laboratorio?',
-    id: 'mdlConfirmacion',
-  };
+
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
@@ -319,5 +315,32 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
         },
       });
     }
+  }
+
+  onDeleteClick(registroId: number) {
+    this.registro.id = registroId;
+    document.getElementById('btn-confirm-modal')?.click();
+  }
+
+  onConfirmDeleteClick() {
+    this.laboratorioService.delete(this.registro.id ?? 0).subscribe({
+      next: (response: any) => {
+        this.resetRegistro();
+        this.getLaboratorios();
+        this.notificationService.updateNotification({
+          type: NotificationType.success,
+          text: 'Parámetro eliminado',
+          show: true,
+        });
+      },
+      error: (error) => {
+        this.resetRegistro();
+        this.notificationService.updateNotification({
+          type: NotificationType.danger,
+          text: 'El parámetro no pudo ser elminado. Se encontrarón resultados reportados para el parámetro',
+          show: true,
+        });
+      },
+    });
   }
 }

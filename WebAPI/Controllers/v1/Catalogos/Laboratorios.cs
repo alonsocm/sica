@@ -82,5 +82,11 @@ namespace WebAPI.Controllers.v1.Catalogos
                 Descripcion = laboratorio.Descripcion,
             }));
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int laboratorioId)
+        {
+            return Ok(await Mediator.Send(new DeleteLaboratorio { LaboratorioId = laboratorioId }));
+        }
     }
 }
