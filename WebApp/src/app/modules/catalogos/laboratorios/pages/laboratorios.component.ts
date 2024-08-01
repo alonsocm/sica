@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from 'src/app/shared/enums/notification-type';
+import { FileService } from 'src/app/shared/services/file.service';
 
 @Component({
   selector: 'app-laboratorios',
@@ -405,7 +406,7 @@ export class LaboratoriosComponent extends BaseService implements OnInit {
           }
           let archivoErrores = this.generarArchivoDeErrores(errores);
           this.hacerScroll();
-          // FileService.download(archivoErrores, 'errores.txt');
+          FileService.download(archivoErrores, 'errores.txt');
           this.resetInputFile(this.inputExcelMonitoreos);
           return this.notificationService.updateNotification({
             show: true,
