@@ -174,7 +174,6 @@ export class ParametrosComponent extends BaseService implements OnInit {
           this.getPreviousSelected(this.registros, this.registrosSeleccionados);
           this.selectedPage = this.anyUnselected(this.registros) ? false : true;
           this.loading = false;
-          console.log(this.registros);
         },
         error: (error) => {
           this.loading = false;
@@ -357,8 +356,15 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
   onEditClick(parametroId: number) {
     this.operation = 'Editar parámetro';
-    let elemento = this.registros.findIndex((f) => f.id === parametroId);
-    this.registro = this.registros[elemento];
+    const registrosCopia = JSON.parse(JSON.stringify(this.registros)); //Sacamos una copia para no afectar al arreglo original.
+    const registro = registrosCopia.find((obj: any) => {
+      return obj.id === parametroId;
+    });
+
+    if (registro != undefined) {
+      this.registro = registro;
+    }
+
     this.parametroForm.patchValue({
       clave: this.registro.clave,
       nombre: this.registro.descripcion,
@@ -431,13 +437,22 @@ export class ParametrosComponent extends BaseService implements OnInit {
     } else if (this.parametroForm.valid && this.registro.id !== 0) {
       this.parametrosService.update(this.registro).subscribe({
         next: (response: any) => {
+          if (response.succeded) {
+            this.notificationService.updateNotification({
+              type: NotificationType.success,
+              text: 'Cambios guardados correctamente.',
+              show: true,
+            });
+          } else {
+            this.notificationService.updateNotification({
+              type: NotificationType.danger,
+              text: `${response.message}`,
+              show: true,
+            });
+          }
           document.getElementById('btn-close')?.click();
+          this.getParametros();
           this.loading = false;
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Cambios guardados correctamente.',
-            show: true,
-          });
         },
         error: (error) => {
           this.loading = false;
