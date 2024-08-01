@@ -71,5 +71,16 @@ namespace WebAPI.Controllers.v1.Catalogos
                 Nomenclatura = parametro.Nomenclatura,
             }));
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(UpdateLaboratorio laboratorio)
+        {
+            return Ok(await Mediator.Send(new UpdateLaboratorio
+            {
+                Id = laboratorio.Id,
+                Nomenclatura = laboratorio.Descripcion,
+                Descripcion = laboratorio.Descripcion,
+            }));
+        }
     }
 }
