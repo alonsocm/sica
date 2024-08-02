@@ -11,13 +11,12 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Queries
     // se hace la peticion IRequest  se ocupa la clase PagedResponse para traer datos paginados 
     // IEnumerable se obtines los datos 
     public class GetTipoCuerpoAguaPQuery : IRequest<PagedResponse<IEnumerable<TipoCuerpoAguaDto>>>
-
     {
-
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
     }
+
     // manejador GetTipoCuerpoAguaPQuertyHandler 
     // hace la solicitud IRequestHandler
     public class GetTipoCuerpoAguaPQuertyHandler : IRequestHandler<GetTipoCuerpoAguaPQuery, PagedResponse<IEnumerable<TipoCuerpoAguaDto>>>
@@ -29,18 +28,19 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Queries
             _repository = repository;
         }
         public async Task<PagedResponse<IEnumerable<TipoCuerpoAguaDto>>> Handle(GetTipoCuerpoAguaPQuery request, CancellationToken cancellationToken)
-
         {
-            var data = _repository
-               .GetTipoCuerpoAgua(); // trae todo los datos 
+            var data = _repository.GetTipoCuerpoAgua(); // trae todo los datos 
+
             if (request.Filter.Any()) // se relizan los filtros 
             {
                 var e = QueryExpression<TipoCuerpoAguaDto>.GetExpressionList(request.Filter);
+
                 foreach (var filter in e)
                 {
                     data = data.AsQueryable().Where(filter);
                 }
             }
+
             return PagedResponse<TipoCuerpoAguaDto>.CreatePagedReponse(data.OrderBy(o => o.Descripcion), request.Page, request.PageSize);
         }
     }
