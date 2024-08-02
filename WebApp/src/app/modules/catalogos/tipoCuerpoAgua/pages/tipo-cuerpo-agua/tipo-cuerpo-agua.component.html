@@ -3,10 +3,7 @@
     <h1 class="row col">Administración Tipos Cuerpo de Agua</h1>
     <hr class="red">
     <div class="message-container">
-        <div class="message-container">
-            <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-                [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
-        </div>
+        <app-notification></app-notification>
     </div>
     <div class="clearfix" style="margin-bottom: 1%;">
         <div class="float-right">
