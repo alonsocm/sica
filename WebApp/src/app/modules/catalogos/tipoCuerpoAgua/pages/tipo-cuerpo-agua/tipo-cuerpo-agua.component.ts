@@ -11,6 +11,7 @@ import { Item } from 'src/app/interfaces/filter/item';
 import { TipoCuerpoAgua, TipoHomologado } from '../../models/tipocuerpoagua';
 import { TipoCuerpoAguaService } from '../../services/tipoCuerpoAgua.service';
 import { FileService } from 'src/app/shared/services/file.service';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 @Component({
   selector: 'app-tipo-cuerpo-agua',
@@ -76,11 +77,20 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     return this.tipoCuerpoAguaForm.controls;
   }
 
-  constructor(private tipoCuerpoAguaServices: TipoCuerpoAguaService) {
+  constructor(
+    private tipoCuerpoAguaServices: TipoCuerpoAguaService,
+    private filtroHistorialService: FiltroHistorialService
+  ) {
     super();
   }
 
   ngOnInit(): void {
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      if (columnName !== '') {
+        this.deleteFilter(columnName);
+        this.getTipoCuerpoAgua();
+      }
+    });
     this.definirColumnas();
     this.getTipoCuerpoAgua();
     this.getTipoHomologado();
@@ -336,6 +346,9 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.getTipoCuerpoAgua();
   }
 
@@ -370,20 +383,22 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
     this.esHistorial = true;
     this.getTipoCuerpoAgua();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    ); //Actualizamos la lista de filtros, para el componente de filtro
     this.hideColumnFilter();
   }
 
   importarExcel(event: any) {
     this.fileList = (event.target as HTMLInputElement).files ?? new FileList();
     this.uploadFile(this.fileList, false);
-    
   }
   private uploadFile(archivo: FileList, sustituir: boolean) {
     if (archivo) {
-      this.loading = true;      
+      this.loading = true;
       this.tipoCuerpoAguaServices.uploadFile(archivo[0], sustituir).subscribe({
-        next: (response: any) => {                    
-          if (response.succeded) {            
+        next: (response: any) => {
+          if (response.succeded) {
             this.resetInputFile(this.inputExcelMonitoreos);
             this.getTipoCuerpoAgua();
             this.loading = false;
@@ -397,9 +412,8 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
           }
         },
         error: (error: any) => {
-                  
           this.resetInputFile(this.inputExcelMonitoreos);
-          
+
           this.loading = false;
           let errores = '';
           if (error.error.Errors === null) {

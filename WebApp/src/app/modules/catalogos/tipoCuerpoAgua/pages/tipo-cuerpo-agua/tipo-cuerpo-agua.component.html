@@ -5,8 +5,8 @@
     <div class="message-container">
         <div class="message-container">
             <app-alert #mensajes id="dvMessage" [mostrar]="this.mostrarAlerta" [message]="this.mensajeAlerta"
-                       [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
-          </div>
+                [type]="this.tipoAlerta" (mostrando)="this.mostrarAlerta=$event"></app-alert>
+        </div>
     </div>
     <div class="clearfix" style="margin-bottom: 1%;">
         <div class="float-right">
@@ -19,13 +19,14 @@
                 title="Seleccionar archivo">
                 <i class="bi bi-filetype-xlsx"></i>
                 Agregar desde archivo
-            </button>            
+            </button>
             <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
                 <i class="bi bi-funnel"></i>
                 Limpiar filtros
             </button>
         </div>
     </div>
+    <app-historial></app-historial>
     <div class="dvTable">
         <table class="table table-bordered table-hover">
             <thead class="thead-sticky">
@@ -175,8 +176,9 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Tipo cuerpo de agua</label>
                         <div class="col-sm-9">
-                            <input id="txtdescripcion1" class="form-control obligatorio" placeholder="Tipo cuerpo de agua"
-                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />
+                            <input id="txtdescripcion1" class="form-control obligatorio"
+                                placeholder="Tipo cuerpo de agua" (keypress)="validarCaracteres($event)"
+                                [(ngModel)]="this.tipoCuerpoAgua.descripcion" />
                             <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.descripcion">
                                 Campo <strong>requerido</strong>
                             </span>
@@ -189,18 +191,19 @@
                         <div class="col-sm-9">
                             <select id="dropTipoHomologado2" class="form-control obligatorio"
                                 [(ngModel)]="this.tipoCuerpoAgua.tipoHomologadoId">
-                                <option value="">--Seleccione--</option> <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.tipoHomologadoId==null">
-                                <strong> Campo requerido</strong>
-                            </span>
+                                <option value="">--Seleccione--</option> <span class="text-danger ml-2 "
+                                    *ngIf="this.tipoCuerpoAgua.tipoHomologadoId==null">
+                                    <strong> Campo requerido</strong>
+                                </span>
                                 <option *ngFor="let ltr of rtipohomologado" [ngValue]="ltr.id">
                                     {{ltr.descripcion}}
                                 </option>
                             </select>
-                            
+
                         </div>
                     </div>
                     <br>
-                    <br>                  
+                    <br>
                     <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
                     <button (click)="addTipoCuerpoAgua()" data-dismiss="modal" class="btn btn-primary pull-right ml-2"
                         type="button">Registrar</button>
@@ -222,8 +225,9 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Tipo cuerpo de agua</label>
                         <div class="col-sm-9">
-                            <input id="txtdescripcion2" class="form-control obligatorio" placeholder="Tipo cuerpo de agua"
-                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />
+                            <input id="txtdescripcion2" class="form-control obligatorio"
+                                placeholder="Tipo cuerpo de agua" (keypress)="validarCaracteres($event)"
+                                [(ngModel)]="this.tipoCuerpoAgua.descripcion" />
                             <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.descripcion">
                                 Campo <strong>requerido</strong>
                             </span>
@@ -247,7 +251,7 @@
                         </div>
                         <br>
                         <br>
-                    </div>                    
+                    </div>
                     <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
                     <button (click)="updateTipoCuerpoAgua(this.tipoCuerpoAgua.id)" data-dismiss="modal"
                         class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Actualizar</button>
@@ -259,14 +263,15 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title2">Eliminar tipo cuerpo de agua</h4>                                       
+                    <h4 class="modal-title2">Eliminar tipo cuerpo de agua</h4>
                 </div>
-                <p style="font-size: larger; text-align: center;"> ¿Está seguro de que desea eliminar el tipo de cuerpo de agua "{{tipoCuerpoAgua.descripcion}}"?</p>
+                <p style="font-size: larger; text-align: center;"> ¿Está seguro de que desea eliminar el tipo de cuerpo
+                    de agua "{{tipoCuerpoAgua.descripcion}}"?</p>
                 <div class="form-group">
-                    <div class="modal-body">                        
-                    <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>                                  
-                    <button (click)="deleteTipoCuerpoAgua(this.tipoCuerpoAgua.id)" data-dismiss="modal"
-                        class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Aceptar</button>
+                    <div class="modal-body">
+                        <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+                        <button (click)="deleteTipoCuerpoAgua(this.tipoCuerpoAgua.id)" data-dismiss="modal"
+                            class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Aceptar</button>
                     </div>
                 </div>
             </div>
@@ -274,33 +279,36 @@
     </div>
     <button id="btn-delete-modal" type="button" class="btn-hidden" data-toggle="modal" data-target="#modaleliminar">
         Confirmar eliminación
-    </button>    
+    </button>
     <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
-    data-target="#mdlConfirmacionActualizacion">
-    Abrir modal
-  </button>
-  <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static"
-    data-toggle="modal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar actualización de tipo cuerpo de agua</h4>
+        data-target="#mdlConfirmacionActualizacion">
+        Abrir modal
+    </button>
+    <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static"
+        data-toggle="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar actualización de tipo cuerpo
+                        de agua</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Se encontraron en el archivo, tipos cuerpo de agua que ya se encuentran en el catálogo.
+                    </p>
+                    <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá la información actual de los tipos
+                        cuerpo de agua.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        (click)="onSustituirtipoCuerpoAguaClick()">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <p>
-            Se encontraron en el archivo, tipos cuerpo de agua que ya se encuentran en el catálogo.
-          </p>
-          <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá la información actual de los tipos cuerpo de agua.</p>
-        </div>
-        <div class="modal-footer">
-          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">
-            Cancelar
-          </button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="onSustituirtipoCuerpoAguaClick()">
-            Aceptar
-          </button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
