@@ -3,7 +3,7 @@
     public class ExcelTipocuerpoAguaDTO
     {
         public string Descripcion { get; set; }
-        public int? TipoHomologadoId { get; set; }
+        public string? TipoHomologadoDescripcion { get; set; }
 
     }
 }

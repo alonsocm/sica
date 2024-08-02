@@ -102,7 +102,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'tipoHomologadoIdDescripcion',
+        name: 'tipoHomologadoDescripcion',
         label: 'TIPO HOMOLOGADO',
         order: 2,
         selectAll: true,
@@ -150,7 +150,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       });
   }
   getTipoHomologado() {
-    this.tipoCuerpoAguaServices.getTipoHomologado().subscribe({
+    this.tipoCuerpoAguaServices.getTipoHomologado(this.cadena).subscribe({
       next: (response: any) => {
         this.rtipohomologado = response.data;
       },
@@ -408,7 +408,9 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
             errores = error.error.Errors;
           }
           let archivoErrores = this.generarArchivoDeErrores(errores);
+
           this.hacerScroll();
+          FileService.download(archivoErrores, 'errores.txt');
           this.mostrarMensaje(
             'Se encontraron errores en el archivo procesado.',
             TIPO_MENSAJE.error

@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using AutoMapper;
@@ -9,6 +10,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Queries
 {
     public class GetTipoHomologadoQ : IRequest<Response<List<TipoHomologadoDto>>>
     {
+        public List<Filter> Filter { get; set; }
     }
     public class TipoHomologadoQHandler : IRequestHandler<GetTipoHomologadoQ, Response<List<TipoHomologadoDto>>>
     {
@@ -25,7 +27,18 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Queries
         {
             var TipoHomolo = await _repository.ListAsync(cancellationToken);
             var tipoHomoloDto = _mapper.Map<List<TipoHomologadoDto>>(TipoHomolo);
-            return new Response<List<TipoHomologadoDto>>(tipoHomoloDto);
+            var data = tipoHomoloDto.AsQueryable(); // Se define data como la lista de DTOs
+
+            if (request.Filter.Any()) // se relizan los filtros 
+            {
+                var e = QueryExpression<TipoHomologadoDto>.GetExpressionList(request.Filter);
+                foreach (var filter in e)
+                {
+                    data = data.AsQueryable().Where(filter);
+                }
+            }
+
+            return new Response<List<TipoHomologadoDto>>(data.OrderBy(o => o.Descripcion).ToList()); // Se devuelve la lista filtrada y ordenada
         }
     }
 }

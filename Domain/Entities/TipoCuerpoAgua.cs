@@ -37,6 +37,8 @@ public partial class TipoCuerpoAgua
     /// </summary>
     public int TiempoMinimoMuestreo { get; set; }
 
+    public string? TipoHomologadoDescripcion { get; set; } = null!;
+
     public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = new List<CuerpoTipoSubtipoAgua>();
 
     public virtual ICollection<ParametrosSitioTipoCuerpoAgua> ParametrosSitioTipoCuerpoAgua { get; set; } = new List<ParametrosSitioTipoCuerpoAgua>();
@@ -44,4 +46,6 @@ public partial class TipoCuerpoAgua
     public virtual ICollection<ReglaReporteResultadoTca> ReglaReporteResultadoTca { get; set; } = new List<ReglaReporteResultadoTca>();
 
     public virtual TipoHomologado? TipoHomologado { get; set; }
+
+
 }

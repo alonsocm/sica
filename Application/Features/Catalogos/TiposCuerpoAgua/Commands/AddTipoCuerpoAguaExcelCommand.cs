@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.Catalogos;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using FluentValidation;
 using MediatR;
 
 namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
@@ -18,33 +19,38 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
         public AddTipoCuerpoAguaExcelCommandHandler(ITipoCuerpoAguaRepository repository)
         {
             _repository = repository;
+
         }
 
         public async Task<Response<bool>> Handle(AddTipoCuerpoAguaExcelCommand request, CancellationToken cancellationToken)
         {
+            var homologado = _repository.GetTipoCuerpoAgua();
 
-            foreach (var tipoCuaerpoAgua in request.TipoCuerpoAgua)
+            foreach (var item in request.TipoCuerpoAgua)
             {
-                var tipoCuerpoAguaE = _repository.ObtenerElementosPorCriterioAsync(x => x.Descripcion == tipoCuaerpoAgua.Descripcion).Result.FirstOrDefault();
-                if (tipoCuerpoAguaE != null && !request.Actualizar)
+                var thomologado = homologado.Where(w => w.Descripcion == item.TipoHomologadoDescripcion).FirstOrDefault();
+
+                var tipoCuerpoAguaBD = _repository.ObtenerElementosPorCriterioAsync(x => x.Descripcion == item.Descripcion).Result.FirstOrDefault();
+                if (tipoCuerpoAguaBD != null && !request.Actualizar)
                 {
-                    return new Response<bool> { Succeded = false, Message = "Se econtraron Tipos cuerpo de agua con la misma descripcion" };
+                    return new Response<bool> { Succeded = false, Message = "Se encontraron parámetros registrados previamente" };
                 }
-                else if (tipoCuerpoAguaE != null && !request.Actualizar)
+                else if (tipoCuerpoAguaBD != null && request.Actualizar)
                 {
-                    tipoCuerpoAguaE.Descripcion = tipoCuaerpoAgua.Descripcion;
-                    tipoCuerpoAguaE.TipoHomologadoId = tipoCuaerpoAgua.TipoHomologadoId;
-                    _repository.Actualizar(tipoCuerpoAguaE);
+                    tipoCuerpoAguaBD.Descripcion = item.Descripcion;
+                    tipoCuerpoAguaBD.TipoHomologadoDescripcion = thomologado.TipoHomologadoDescripcion;
+
+                    _repository.Actualizar(tipoCuerpoAguaBD);
                 }
                 else
                 {
                     var nuevoRegistro = new Domain.Entities.TipoCuerpoAgua()
                     {
-
-                        Descripcion = tipoCuaerpoAgua.Descripcion,
-                        TipoHomologadoId = tipoCuaerpoAgua.TipoHomologadoId,
+                        Descripcion = item.Descripcion,
+                        TipoHomologadoDescripcion = thomologado.Descripcion
 
                     };
+
                     _repository.Insertar(nuevoRegistro);
                 }
             }

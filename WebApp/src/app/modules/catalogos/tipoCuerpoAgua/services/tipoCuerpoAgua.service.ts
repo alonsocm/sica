@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -14,22 +14,42 @@ export class TipoCuerpoAguaService {
   getTipoCuerpoAgua(
     page: number,
     pageSize: number,
-    filter: string
+    filter: string,
+    order?: { column: string; type: string }
   ): Observable<Object> {
-    return this.http.get(
-      environment.apiUrl +
-        '/TipoCuerpoAgua/TipoCuerpoAguaP?' +
-        'page=' +
-        page +
-        '&pageSize=' +
-        pageSize +
-        '&filter=' +
-        filter
-    );
+    const params = new HttpParams({
+      fromObject: {     
+        page: page,
+        pageSize: pageSize,
+        filter: filter,
+        order: order != null ? order.column + '_' + order.type : '',
+      },
+    });
+    return this.http.get(environment.apiUrl + '/TipoCuerpoAgua/TipoCuerpoAguaP', { params });
   }
+  getTipoHomologado(
+    filter: string,
+    order?: { column: string; type: string }
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: { 
+        filter: filter,
+        order: order != null ? order.column + '_' + order.type : '',
+      },
+    });   
+      return this.http.get(environment.apiUrl + '/CuerpoDeAgua/TipoHomologado', { params });         
+  }
+
   getDistinct(column: string, filter: string): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        column: column,
+        filter: filter,
+      },
+    });
     return this.http.get(
-      environment.apiUrl + '/TipoCuerpoAgua?/GetDistinctFromColumn' + column + '&filter=' + filter
+      environment.apiUrl + '/TipoCuerpoAgua/GetDistinctFromColumn',
+      { params }
     );
   }
 
@@ -65,11 +85,7 @@ export class TipoCuerpoAguaService {
     return this.http.get<TipoCuerpoAgua>(environment.apiUrl + '/TipoCuerpoAgua/' + id);
   }
 
-  getTipoHomologado(): Observable<TipoHomologado[]> {
-    return this.http.get<TipoHomologado[]>(
-      environment.apiUrl + '/CuerpoDeAgua/TipoHomologado'
-    );
-  }
+  
   uploadFile(archivo: File, actualizar: boolean) {
     const formData = new FormData();
     formData.append('archivo', archivo, archivo.name);
