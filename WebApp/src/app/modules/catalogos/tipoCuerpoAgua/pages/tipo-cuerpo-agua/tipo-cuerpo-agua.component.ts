@@ -11,6 +11,9 @@ import { Item } from 'src/app/interfaces/filter/item';
 import { TipoCuerpoAgua, TipoHomologado } from '../../models/tipocuerpoagua';
 import { TipoCuerpoAguaService } from '../../services/tipoCuerpoAgua.service';
 import { FileService } from 'src/app/shared/services/file.service';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
 @Component({
   selector: 'app-tipo-cuerpo-agua',
@@ -76,11 +79,21 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     return this.tipoCuerpoAguaForm.controls;
   }
 
-  constructor(private tipoCuerpoAguaServices: TipoCuerpoAguaService) {
+  constructor(
+    private tipoCuerpoAguaServices: TipoCuerpoAguaService,
+    private filtroHistorialService: FiltroHistorialService,
+    private notificationService: NotificationService
+  ) {
     super();
   }
 
   ngOnInit(): void {
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      if (columnName !== '') {
+        this.deleteFilter(columnName);
+        this.getTipoCuerpoAgua();
+      }
+    });
     this.definirColumnas();
     this.getTipoCuerpoAgua();
     this.getTipoHomologado();
@@ -176,6 +189,11 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
             tiempoMinimoMuestreo: 0,
             selected: false,
           };
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Registro guardado correctamente.',
+            show: true,
+          });
         },
         error: (error) => {
           console.error('Error al agregar tipo cuerpo de agua:', error);
@@ -195,7 +213,6 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       .updateTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
       .subscribe({
         next: (data) => {
-          console.log('Tipo cuerpo de agua actualizado:', data);
           this.tipoCuerpoAgua = {
             id: 0,
             descripcion: '',
@@ -208,6 +225,11 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
             selected: false,
           };
           this.getTipoCuerpoAgua();
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Cambios guardados correctamente.',
+            show: true,
+          });
         },
         error: (error) => {
           console.error('Error al actualizar tipo cuerpo de agua:', error);
@@ -219,10 +241,6 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       .deleteTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
       .subscribe({
         next: () => {
-          this.mostrarMensaje(
-            'Tipo cuerpo de agua eliminado correctamente.',
-            TIPO_MENSAJE.exito
-          );
           this.tipoCuerpoAgua = {
             id: 0,
             descripcion: '',
@@ -235,13 +253,19 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
             selected: false,
           };
           this.getTipoCuerpoAgua();
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Tipo cuerpo de agua eliminado correctamente.',
+            show: true,
+          });
         },
         error: (error) => {
           console.error('Error al eliminar tipo cuerpo de agua:', error);
-          this.mostrarMensaje(
-            'No se puede eliminar el tipo cuerpo de agua.',
-            TIPO_MENSAJE.error
-          );
+          this.notificationService.updateNotification({
+            type: NotificationType.danger,
+            text: 'No se puede eliminar el tipo cuerpo de agua.',
+            show: true,
+          });
           this.tipoCuerpoAgua = {
             id: 0,
             descripcion: '',
@@ -337,6 +361,9 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.getTipoCuerpoAgua();
   }
 
@@ -371,36 +398,38 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
     this.esHistorial = true;
     this.getTipoCuerpoAgua();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    ); //Actualizamos la lista de filtros, para el componente de filtro
     this.hideColumnFilter();
   }
 
   importarExcel(event: any) {
     this.fileList = (event.target as HTMLInputElement).files ?? new FileList();
     this.uploadFile(this.fileList, false);
-    
   }
   private uploadFile(archivo: FileList, sustituir: boolean) {
     if (archivo) {
-      this.loading = true;      
+      this.loading = true;
       this.tipoCuerpoAguaServices.uploadFile(archivo[0], sustituir).subscribe({
-        next: (response: any) => {                    
-          if (response.succeded) {            
+        next: (response: any) => {
+          if (response.succeded) {
             this.resetInputFile(this.inputExcelMonitoreos);
             this.getTipoCuerpoAgua();
             this.loading = false;
-            this.mostrarMensaje(
-              'Archivo procesado correctamente.',
-              TIPO_MENSAJE.exito
-            );
+            this.notificationService.updateNotification({
+              type: NotificationType.success,
+              text: 'Archivo procesado correctamente.',
+              show: true,
+            });
           } else {
             this.loading = false;
             document.getElementById('btnMdlConfirmacionActualizacion')?.click();
           }
         },
         error: (error: any) => {
-                  
           this.resetInputFile(this.inputExcelMonitoreos);
-          
+
           this.loading = false;
           let errores = '';
           if (error.error.Errors === null) {
@@ -412,10 +441,11 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
           this.hacerScroll();
           FileService.download(archivoErrores, 'errores.txt');
-          this.mostrarMensaje(
-            'Se encontraron errores en el archivo procesado.',
-            TIPO_MENSAJE.error
-          );
+          this.notificationService.updateNotification({
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
+            show: true,
+          });
         },
       });
     }
