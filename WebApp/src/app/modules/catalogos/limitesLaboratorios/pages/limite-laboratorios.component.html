@@ -19,7 +19,6 @@
         <i class="bi bi-filetype-xlsx"></i>
         Agregar desde archivo
       </button>
-
       <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
@@ -139,7 +138,7 @@
           <td>{{limite.ldm}} </td>
           <td>{{limite.lpc}} </td>
           <td>{{limite.anio}} </td>
-          <td style="text-align:center">          
+          <td style="text-align:center">
             <button type="button" class="btn-action btn-primary-action mr-1" title="Editar" data-toggle="modal" data-target="#modalregistro" (click)="UpdateLimites(limite);">
               <i class="bi bi-pencil-square icon-action"></i>
             </button>
@@ -172,194 +171,151 @@
 
   <!--MODAL AGREGAR EDITAR LIMITE LABORATORIOS-->
 
-  <div class="modal fade" id="modalregistro" data-bs-backdrop="static" data-toggle="modal">
+  <div class="modal" id="modalregistro" data-bs-backdrop="static" data-toggle="modal">
     <div class="modal-dialog modal-dialog-centered modal-lg" style="min-width: 85%;">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title2">{{modalTitle}}</h4>
         </div>
         <div class="modal-body">
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-2 control-label">Clave parámetro:</label>
             <div class="col-sm-3">
-              <select id="dropClaveParametro" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.parametroId" (change)="obtenerNombreParametro();">
+              <select id="dropClaveParametro" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.parametroId==null}" [(ngModel)]="this.LaboratorioRegistro.parametroId" (change)="obtenerNombreParametro();">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let parametro of parametros" [ngValue]="parametro.id">
                   {{parametro.claveParametro}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.parametroId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
-
             <label class="col-sm-2 control-label">Nombre parámetro:</label>
             <div class="col-sm-5">
-              <input id="txtNombreParametro" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Descripción parámetro" [(ngModel)]="this.LaboratorioRegistro.nombreParametro" />
-              <span class="text-danger ml-2 ">
-              </span>
+              <input id="txtNombreParametro" class="form-control obligatorio" disabled placeholder="Nombre parámetro" [(ngModel)]="this.LaboratorioRegistro.nombreParametro" />
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-2 control-label">Laboratorio:</label>
             <div class="col-sm-3">
-              <select id="dropLaboratorio" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.laboratorioId" (change)="obtenerNombre();">
+              <select id="dropLaboratorio" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.laboratorioId==null}" [(ngModel)]="this.LaboratorioRegistro.laboratorioId" (change)="obtenerNombre();">
                 <option [ngValue]=null>--Seleccione--</option>
                 <option *ngFor="let laboratorio of laboratorios" [ngValue]="laboratorio.id">
                   {{laboratorio.nomenclatura}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.laboratorioId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
             <label class="col-sm-2 control-label">Nombre laboratorio:</label>
             <div class="col-sm-5">
-              <input id="txtLaboratorio" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Nombre laboratorio" [(ngModel)]="this.LaboratorioRegistro.laboratorio" />
-              <span class="text-danger ml-2">
-              </span>
+              <input id="txtLaboratorio" class="form-control" disabled placeholder="Nombre laboratorio" [(ngModel)]="this.LaboratorioRegistro.laboratorio" />
             </div>
           </div>
 
           <!--cambiar por catalogo de acciones-->
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-2 control-label">Realiza laboratorio Muestreo:</label>
             <div class="col-sm-3">
-              <select id="dropRealizaLabMuestreo" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.realizaLaboratorioMuestreoId">
+              <select id="dropRealizaLabMuestreo" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.realizaLaboratorioMuestreoId==null}" [(ngModel)]="this.LaboratorioRegistro.realizaLaboratorioMuestreoId"
+                      (change)="this.LaboratorioRegistro.laboratorioMuestreoId=null; this.LaboratorioRegistro.laboratorioMuestreo = ''">
                 <option [ngValue]=null>--Seleccione--</option>
-                <option *ngFor="let laboratorio of laboratorios" [ngValue]="laboratorio.id">
-                  {{laboratorio.nomenclatura}}
+                <option *ngFor="let accion of realizaLaboratorioMuestreo" [ngValue]="accion.id">
+                  {{accion.loSubroga}}
                 </option>
               </select>
-              <span class="text-danger ml-2">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
             <label class="col-sm-2 control-label">Laboratorio de Muestreo:</label>
             <div class="col-sm-5">
-              <select id="dropMunicipios" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.laboratorioMuestreoId" (change)="obtenerLaboratorioMuestreo();">
+              <select id="dropMunicipios" class="form-control" [disabled]="(this.LaboratorioRegistro.realizaLaboratorioMuestreoId==1)?false:true" [ngClass]="{'is-invalid':this.LaboratorioRegistro.laboratorioMuestreoId==null && this.LaboratorioRegistro.realizaLaboratorioMuestreoId==1 }"
+                      [(ngModel)]="this.LaboratorioRegistro.laboratorioMuestreoId" (change)="obtenerLaboratorioMuestreo();">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let labMuestreo of laboratorioMuestreo" [ngValue]="labMuestreo.id">
                   {{labMuestreo.nomenclatura}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.laboratorioMuestreoId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">Nombre laboratorio muestreo:</label>
-            <div class="col-sm-10">
-              <input id="txtLaboratorioMuestreo" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Descripción laboratorio" [(ngModel)]="this.LaboratorioRegistro.laboratorioMuestreo" />
-              <span class="text-danger ml-2"></span>
+          <div class="form-group col-sm-12">
+            <label class="col-sm-3 control-label">Nombre laboratorio muestreo:</label>
+            <div class="col-sm-5">
+              <input id="txtLaboratorioMuestreo" class="form-control" disabled placeholder="Nombre laboratorio muestreo" [(ngModel)]="this.LaboratorioRegistro.laboratorioMuestreo" />
             </div>
-          </div>
-          <div class="form-group">
             <label class="col-sm-2 control-label">Mes:</label>
-            <div class="col-sm-3">
-              <select id="dropMeses" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.periodoId">
+            <div class="col-sm-2">
+              <select id="dropMeses" class="form-control" [(ngModel)]="this.LaboratorioRegistro.periodoId">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let mes of meses" [ngValue]="mes.id">
                   {{mes.descripcion}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.periodoId==null">
-                Campo <strong>requerido</strong>
-              </span>
-            </div>
-            <label class="col-sm-2 control-label">LDM a cumplir:</label>
-            <div class="col-sm-5">
-              <input id="txtLDMCumplir" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LDM a cumplir" [(ngModel)]="this.LaboratorioRegistro.ldMaCumplir" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.ldMaCumplir==''">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
+            <label class="col-sm-2 control-label">LDM a cumplir:</label>
+            <div class="col-sm-3">
+              <input id="txtLDMCumplir" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.ldMaCumplir==''}" placeholder="LDM a cumplir"
+                     [(ngModel)]="this.LaboratorioRegistro.ldMaCumplir" />
+            </div>
             <label class="col-sm-2 control-label">LPC a cumplir:</label>
             <div class="col-sm-2">
-              <input id="txtLPCCumplir" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC a cumplir" [(ngModel)]="this.LaboratorioRegistro.lpCaCumplir" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.lpCaCumplir==''">
-                Campo <strong>requerido</strong>
-              </span>
+              <input id="txtLPCCumplir" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.lpCaCumplir==''}" placeholder="LPC a cumplir"
+                     [(ngModel)]="this.LaboratorioRegistro.lpCaCumplir" />
             </div>
             <label class="col-sm-2 control-label">Lo muestra:</label>
-            <div class="col-sm-2">
-              <input class="check" type="checkbox" />
-              <span class="text-danger ml-2">
-                Campo <strong>requerido</strong>
-              </span>
-            </div>
-            <!--cambiar por catalogo de acciones laboratorio-->
-            <label class="col-sm-2 control-label">Lo subroga:</label>
-            <div class="col-sm-2">
-              <select id="dropLoSubroga" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.loSubrogaId">
-                <option [ngValue]=null>--Seleccione--</option>
-                <option *ngFor="let laboratorio of laboratorios" [ngValue]="laboratorio.id">
-                  {{laboratorio.descripcion}}
-                </option>
-              </select>
-              <span class="text-danger ml-2" *ngIf="this.LaboratorioRegistro.loSubrogaId==null">
-                Campo <strong>requerido</strong>
-              </span>
+            <div class="col-sm-1">
+              <input class="check" required type="checkbox" [ngClass]="{'is-invalid':this.LaboratorioRegistro.loMuestra==null}" />
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="col-sm-2 control-label">Laboratorio subrogado:</label>
+          <div class="form-group col-sm-12">
+            <!--cambiar por catalogo de acciones laboratorio-->
+            <label class="col-sm-2 control-label">Lo subroga:</label>
             <div class="col-sm-3">
-              <select id="dropLaboratorioSubrogado" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.laboratorioSubrogadoId" (change)="obtenerLaboratorioSubrogado();">
+              <select id="dropLoSubroga" class="form-control" [(ngModel)]="this.LaboratorioRegistro.loSubrogaId"
+                      (change)="this.LaboratorioRegistro.laboratorioSubrogadoId=null; this.LaboratorioRegistro.laboratorioSubrogado = ''">
+                <option [ngValue]=null>--Seleccione--</option>
+                <option *ngFor="let subroga of loSubroga" [ngValue]="subroga.id">
+                  {{subroga.loSubroga}}
+                </option>
+              </select>
+            </div>
+            <label class="col-sm-2 control-label">Laboratorio subrogado:</label>
+            <div class="col-sm-5">
+              <select id="dropLaboratorioSubrogado" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.laboratorioSubrogadoId==null && this.LaboratorioRegistro.loSubrogaId ==1}"
+                      [disabled]="!(this.LaboratorioRegistro.loSubrogaId==1)"
+                      [(ngModel)]="this.LaboratorioRegistro.laboratorioSubrogadoId" (change)="obtenerLaboratorioSubrogado();">
                 <option [ngValue]=null>--Seleccione--</option>
                 <option *ngFor="let labSubrogado of laboratoriosSubrogado" [ngValue]="labSubrogado.id">
                   {{labSubrogado.nomenclatura}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.laboratorioSubrogadoId==null">
-                Campo <strong>requerido</strong>
-              </span>
-            </div>
-            <label class="col-sm-2 control-label">Nombre laboratorio subrogado:</label>
-            <div class="col-sm-5">
-              <input id="txtLaboratorioMuestreo" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Nombre laboratorio subrogado" [(ngModel)]="this.LaboratorioRegistro.laboratorioSubrogado" />
-              <span class="text-danger ml-2"></span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
+            <label class="col-sm-3 control-label">Nombre laboratorio subrogado:</label>
+            <div class="col-sm-4">
+              <input id="txtLaboratorioMuestreo" class="form-control" disabled placeholder="Nombre laboratorio subrogado" [(ngModel)]="this.LaboratorioRegistro.laboratorioSubrogado" />
+            </div>
             <label class="col-sm-2 control-label">Método analítico:</label>
             <div class="col-sm-3">
-              <input id="txtMetodoAnalitico" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Método análitico" [(ngModel)]="this.LaboratorioRegistro.metodoAnalitico" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.metodoAnalitico==''">
-                Campo <strong>requerido</strong>
-              </span>
-            </div>
-            <label class="col-sm-2 control-label">LDM:</label>
-            <div class="col-sm-5">
-              <input id="txtLDM" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LDM" [(ngModel)]="this.LaboratorioRegistro.ldm" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.ldm==''">
-                Campo <strong>requerido</strong>
-              </span>
+              <input id="txtMetodoAnalitico" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.metodoAnalitico==''}" placeholder="Método analítico" [(ngModel)]="this.LaboratorioRegistro.metodoAnalitico" />
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label">LPC:</label>
+          <div class="form-group col-sm-12">
+            <label class="col-sm-2 control-label">LDM:</label>
             <div class="col-sm-3">
-              <input id="txtLPC" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="LPC" [(ngModel)]="this.LaboratorioRegistro.lpc" />
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.lpc==''">
-                Campo <strong>requerido</strong>
-              </span>
+              <input id="txtLDM" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.ldm==''}" placeholder="LDM" [(ngModel)]="this.LaboratorioRegistro.ldm" />
             </div>
-            <label class="col-sm-2 control-label">Año:</label>
+            <label class="col-sm-2 control-label">LPC:</label>
             <div class="col-sm-5">
-              <select id="dropAnios" class="form-control obligatorio" [(ngModel)]="this.LaboratorioRegistro.AnioId">
+              <input id="txtLPC" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.lpc==''}" placeholder="LPC" [(ngModel)]="this.LaboratorioRegistro.lpc" />
+            </div>
+          </div>
+          <div class="form-group col-sm-12">
+            <label class="col-sm-2 control-label">Año:</label>
+            <div class="col-sm-2">
+              <select id="dropAnios" class="form-control" [ngClass]="{'is-invalid':this.LaboratorioRegistro.AnioId==null}" [(ngModel)]="this.LaboratorioRegistro.AnioId">
                 <option [ngValue]=null>--Seleccione--</option>
                 <option *ngFor="let anio of anios" [ngValue]="anio.id">
                   {{anio.anio}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.LaboratorioRegistro.AnioId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
           <div class="modal-footer">
