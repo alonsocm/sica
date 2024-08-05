@@ -9,6 +9,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
         public long Id { get; set; }
         public string Descripcion { get; set; }
         public long? TipoHomologadoId { get; set; }
+
         public bool Activo { get; set; }
         public string Frecuencia { get; set; }
         public int EvidenciasEsperadas { get; set; }
@@ -21,21 +22,32 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
         {
             _repository = repository;
         }
-        public Task<Response<bool>> Handle(AddTipoCuerpoAguaCommand request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(AddTipoCuerpoAguaCommand request, CancellationToken cancellationToken)
         {
+            var tipocuerpoaguaDB = await _repository.ObtenerElementosPorCriterioAsync(x => x.Descripcion == request.Descripcion.Trim());
 
+            if (tipocuerpoaguaDB.Any())
+            {
+                return new Response<bool>(false)
+                {
+                    Succeded = false,
+                    Message = $"No se pudo registrar el tipo cuerpo de agua. La clave {request.Descripcion}, ya se encuentra registrada."
+
+                };
+            }
             var tipoCuerpoAgua = new Domain.Entities.TipoCuerpoAgua()
             {
                 Id = request.Id,
                 Descripcion = request.Descripcion,
                 TipoHomologadoId = request.TipoHomologadoId,
+
                 Activo = request.Activo,
                 Frecuencia = request.Frecuencia,
                 EvidenciasEsperadas = request.EvidenciasEsperadas,
                 TiempoMinimoMuestreo = request.TiempoMinimoMuestreo
             };
             _repository.Insertar(tipoCuerpoAgua);
-            return Task.FromResult(new Response<bool>(true, "TipoCuerpoAgua agregado exitosamente."));
+            return new Response<bool>(true, "TipoCuerpoAgua agregado exitosamente.");
         }
     }
 }

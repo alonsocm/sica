@@ -3,9 +3,9 @@ import { Row } from 'src/app/modules/muestreo/formatoResultado/models/row';
 export interface TipoCuerpoAgua extends Row {
   id: number;
   descripcion: string;
-  tipoHomologadoId:number;
+  tipoHomologadoId:number | null;
   tipoHomologadoDescripcion:string;
-  activo:Boolean;
+  activo:boolean;
   frecuencia:string;
   evidenciasEsperadas:number;
   tiempoMinimoMuestreo:number;
@@ -22,7 +22,7 @@ export interface PostTipoCuerpoAgua extends Row{
   descripcion: string;
   tipoHomologadoId:number;
   tipoHomologadoDescripcion:string;
-  activo:Boolean;
+  activo:boolean;
   frecuencia:string;
   evidenciasEsperadas:number;
   tiempoMinimoMuestreo:number;

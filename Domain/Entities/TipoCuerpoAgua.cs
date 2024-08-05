@@ -37,7 +37,7 @@ public partial class TipoCuerpoAgua
     /// </summary>
     public int TiempoMinimoMuestreo { get; set; }
 
-    public string? TipoHomologadoDescripcion { get; set; } = null!;
+
 
     public virtual ICollection<CuerpoTipoSubtipoAgua> CuerpoTipoSubtipoAgua { get; set; } = new List<CuerpoTipoSubtipoAgua>();
 
