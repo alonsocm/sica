@@ -108,7 +108,7 @@
                                         <input type="checkbox" id={{columna.name+i}} [(ngModel)]="dato.checked"
                                             class="check chkdata" />
                                         <label for="{{columna.name+i}}" style="font-size:xx-small;display: inline;"
-                                            (click)="$event.stopPropagation()">&nbsp;{{dato.value}}</label>
+                                            (click)="$event.stopPropagation()">&nbsp;{{ (columna.name == "Activo") ? ((dato.value) ? "SI" :"NO") : dato.value }}</label>
                                     </div>
                                 </div>
                                 <div class="modal-footer" style="font-size:xx-small;">
@@ -133,7 +133,7 @@
                     *ngFor="let registro of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems }">
                     <td>{{registro.descripcion}}</td>
                     <td>{{registro.tipoHomologadoDescripcion}}</td>
-                    <td>{{registro.activo?'SI':'NO'}}</td>
+                    <td>{{(registro.activo)?"SI":"NO"}}</td>
                     <td>
                         <button type="button" class="btn-action btn-primary-action mr-1" title="Editar"
                             (click)="onEditClick(this.registro.id)">
@@ -176,8 +176,8 @@
                         <label class="col-sm-3 control-label">Tipo cuerpo de agua</label>
                         <div class="col-sm-9">
                             <input id="txtdescripcion1" class="form-control obligatorio" placeholder="Tipo cuerpo de agua"
-                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />
-                            <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.descripcion">
+                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />                                
+                            <span class="text-danger ml-2 " *ngIf="!this.tipoCuerpoAgua.descripcion">
                                 Campo <strong>requerido</strong>
                             </span>
                         </div>
@@ -189,7 +189,7 @@
                         <div class="col-sm-9">
                             <select id="dropTipoHomologado2" class="form-control obligatorio"
                                 [(ngModel)]="this.tipoCuerpoAgua.tipoHomologadoId">
-                                <option value="">--Seleccione--</option> <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.tipoHomologadoId==null">
+                                <option [ngValue]="null">--Seleccione--</option> <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.tipoHomologadoId==null">
                                 <strong> Campo requerido</strong>
                             </span>
                                 <option *ngFor="let ltr of rtipohomologado" [ngValue]="ltr.id">

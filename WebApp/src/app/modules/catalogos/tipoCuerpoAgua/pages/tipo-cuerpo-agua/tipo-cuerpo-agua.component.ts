@@ -28,7 +28,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   public tipoCuerpoAgua: TipoCuerpoAgua = {
     id: 0,
     descripcion: '',
-    tipoHomologadoId: 0,
+    tipoHomologadoId: null,
     tipoHomologadoDescripcion: '',
     activo: true,
     frecuencia: '',
@@ -50,9 +50,9 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   registro: TipoCuerpoAgua = {
     id: 0,
     descripcion: '',
-    tipoHomologadoId: 0,
+    tipoHomologadoId: null,
     tipoHomologadoDescripcion: '',
-    activo: true,
+    activo: true ,
     frecuencia: '',
     evidenciasEsperadas: 0,
     tiempoMinimoMuestreo: 0,
@@ -63,7 +63,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       this.registro.descripcion,
       Validators.required
     ),
-    nomenclatura: new FormControl(
+    tipo: new FormControl(
       this.registro.tipoHomologadoId,
       Validators.required
     ),
@@ -89,7 +89,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   definirColumnas() {
     let columnas: Array<Column> = [
       {
-        name: 'descripcion',
+        name: 'Descripcion',
         label: 'TIPO CUERPO DE AGUA',
         order: 1,
         selectAll: true,
@@ -102,7 +102,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'tipoHomologadoDescripcion',
+        name: 'TipoHomologadoDescripcion',
         label: 'TIPO HOMOLOGADO',
         order: 2,
         selectAll: true,
@@ -115,7 +115,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'activo',
+        name: 'Activo',
         label: 'ACTIVO',
         order: 3,
         selectAll: true,
@@ -127,7 +127,8 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
         dataType: '',
         selectedData: '',
       },
-    ];
+    ];    
+
     this.columns = columnas;
   }
   getTipoCuerpoAgua() {
@@ -167,7 +168,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
           this.tipoCuerpoAgua = {
             id: 0,
             descripcion: '',
-            tipoHomologadoId: 0,
+            tipoHomologadoId: null,
             tipoHomologadoDescripcion: '',
             activo: true,
             frecuencia: '',

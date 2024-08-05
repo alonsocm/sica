@@ -38,7 +38,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 else if (tipoCuerpoAguaBD != null && request.Actualizar)
                 {
                     tipoCuerpoAguaBD.Descripcion = item.Descripcion;
-                    tipoCuerpoAguaBD.TipoHomologadoDescripcion = thomologado.TipoHomologadoDescripcion;
+                    //tipoCuerpoAguaBD.TipoHomologadoDescripcion = thomologado.TipoHomologadoDescripcion;
 
                     _repository.Actualizar(tipoCuerpoAguaBD);
                 }
@@ -47,7 +47,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                     var nuevoRegistro = new Domain.Entities.TipoCuerpoAgua()
                     {
                         Descripcion = item.Descripcion,
-                        TipoHomologadoDescripcion = thomologado.Descripcion
+                        //TipoHomologadoDescripcion = thomologado.Descripcion
 
                     };
 
