@@ -50,6 +50,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                     tipoCuerpoAguaBD.Descripcion = item.Descripcion;
                     tipoCuerpoAguaBD.TipoHomologadoId = tipoHomologado.Id; // Asignar el Id del TipoHomologado
 
+
                     _repository.Actualizar(tipoCuerpoAguaBD);
                 }
                 else
@@ -57,7 +58,8 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                     var nuevoRegistro = new TipoCuerpoAgua()
                     {
                         Descripcion = item.Descripcion,
-                        TipoHomologadoId = tipoHomologado.Id // Asignar el Id del TipoHomologado
+                        TipoHomologadoId = tipoHomologado.Id, // Asignar el Id del TipoHomologado
+
                     };
 
                     _repository.Insertar(nuevoRegistro);
