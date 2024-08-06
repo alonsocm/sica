@@ -2,6 +2,8 @@
 
 public partial class TipoCuerpoAgua
 {
+    public string TipoHomologadoDescripcion;
+
     /// <summary>
     /// Identificador principal de la tabla TipoCuerpoAgua
     /// </summary>

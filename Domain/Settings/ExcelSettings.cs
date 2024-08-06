@@ -253,8 +253,8 @@
     {
         private static List<KeyValuePair<string, string>> keyValues = new()
         {
-            new KeyValuePair<string, string>("Tipo cuerpo de agua","descripcion"),
-            new KeyValuePair<string, string>("Tipo Homologado","tipoHomologadoDescripcion"),
+            new KeyValuePair<string, string>("TIPO CUERPO DE AGUA","Descripcion"),
+            new KeyValuePair<string, string>("TIPO HOMOLOGADO","TipoHomologadoDescripcion"),
         };
 
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
