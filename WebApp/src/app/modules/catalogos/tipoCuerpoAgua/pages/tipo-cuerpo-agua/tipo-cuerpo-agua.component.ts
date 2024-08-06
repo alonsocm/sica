@@ -196,7 +196,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
             show: true,
           });
         },
-        error: (error) => {
+        error: (error) => {          
           console.error('Error al agregar tipo cuerpo de agua:', error);
         },
       });

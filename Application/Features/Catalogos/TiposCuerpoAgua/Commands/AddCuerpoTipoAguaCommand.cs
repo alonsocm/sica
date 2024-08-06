@@ -40,7 +40,6 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 Id = request.Id,
                 Descripcion = request.Descripcion,
                 TipoHomologadoId = request.TipoHomologadoId,
-
                 Activo = request.Activo,
                 Frecuencia = request.Frecuencia,
                 EvidenciasEsperadas = request.EvidenciasEsperadas,

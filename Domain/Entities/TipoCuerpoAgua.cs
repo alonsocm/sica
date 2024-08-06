@@ -27,7 +27,7 @@ public partial class TipoCuerpoAgua
     /// <summary>
     /// Campo que describe la frecuencia del tipo de cuerpo de agua para el muestreo
     /// </summary>
-    public string Frecuencia { get; set; }
+    public string? Frecuencia { get; set; }
 
     /// <summary>
     /// Campo que describe las evidencias esperadas conforme al tipo de cuerpo de agua

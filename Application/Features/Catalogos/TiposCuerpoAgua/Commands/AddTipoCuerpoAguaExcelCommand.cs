@@ -30,7 +30,15 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
 
             foreach (var item in request.TipoCuerpoAgua)
             {
-                var tipoHomologado = tiposHomologados.Where(w => w.Descripcion == item.TipoHomologadoDescripcion).FirstOrDefault();
+                // Buscar el TipoHomologado por su descripción
+                var tipoHomologado = tiposHomologados.Where(w => w.Descripcion == item.TipoHomologadoDescripcion || w.Descripcion == null).FirstOrDefault();
+
+                // Si no se encuentra el TipoHomologado, manejar el error
+                if (tipoHomologado == null)
+                {
+                    return new Response<bool> { Succeded = false, Message = $"No se encontró el Tipo Homologado con la descripción: {item.TipoHomologadoDescripcion}" };
+                }
+
                 var tipoCuerpoAguaBD = _repository.ObtenerElementosPorCriterioAsync(x => x.Descripcion == item.Descripcion).Result.FirstOrDefault();
 
                 if (tipoCuerpoAguaBD != null && !request.Actualizar)
@@ -40,7 +48,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 else if (tipoCuerpoAguaBD != null && request.Actualizar)
                 {
                     tipoCuerpoAguaBD.Descripcion = item.Descripcion;
-                    tipoHomologado.Descripcion = item.TipoHomologadoDescripcion;
+                    tipoCuerpoAguaBD.TipoHomologadoId = tipoHomologado.Id; // Asignar el Id del TipoHomologado
 
                     _repository.Actualizar(tipoCuerpoAguaBD);
                 }
@@ -49,7 +57,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                     var nuevoRegistro = new TipoCuerpoAgua()
                     {
                         Descripcion = item.Descripcion,
-                        TipoHomologadoDescripcion = tipoHomologado.Descripcion
+                        TipoHomologadoId = tipoHomologado.Id // Asignar el Id del TipoHomologado
                     };
 
                     _repository.Insertar(nuevoRegistro);
