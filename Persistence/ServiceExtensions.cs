@@ -77,6 +77,7 @@ namespace Persistence
             #region Repositories
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(MyRepositoryAsync<>));
             services.AddTransient<IRepository<Sitio>, SitioRepository>();
+            services.AddTransient<IRepository<LimiteParametroLaboratorio>, LimiteParametroLaboratorioRepository>();
             services.AddTransient<IRepository<Laboratorios>, LaboratorioRepository>();
             services.AddTransient<IRepository<CuencaDireccionesLocales>, CuencaDireccionesLocalesRepository>();
             services.AddTransient<IMuestreoRepository, MuestreoRepository>();
@@ -120,6 +121,8 @@ namespace Persistence
             services.AddTransient<IVwEstatusMuestreosAdministracionRepository, VwEstatusMuestreosAdministracionRepository>();
             services.AddTransient<IVwResultadosNoCumplenFechaEntregaRepository, VwResultadosNoCumplenFechaEntregaRepository>();
             services.AddTransient<ITipoCuerpoAguaRepository,TipoCuerpoAguaRepository>();
+           
+            
             #endregion
         }
     }

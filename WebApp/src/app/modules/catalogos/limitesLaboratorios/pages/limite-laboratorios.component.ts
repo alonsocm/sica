@@ -22,12 +22,13 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
   modalTitle: string = '';
   editar: boolean = false;
   laboratorios: Array<any> = [];
-  nombresLaboratorios: Array<any> = [];
   parametros: Array<any> = [];
   laboratorioMuestreo: Array<any> = [];
   laboratoriosSubrogado: Array<any> = [];
   meses: Array<any> = [];
   anios: Array<any> = [];
+  realizaLaboratorioMuestreo: Array<any> = [];
+  loSubroga: Array<any> = [];
   public LaboratorioRegistro: LimitesLaboratorios = {
     id: null,
     claveParametro: '',
@@ -58,6 +59,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     selected: false,
     anio: ''
   }
+  esValido: boolean = false;
   constructor(private muestreoService: MuestreoService,
     private limiteLaboratorioService: LimiteLaboratorioService,
     private parametrosService: ParametrosService,
@@ -92,7 +94,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'parametro',
+        name: 'nombreParametro',
         label: 'PARÁMETRO',
         order: 2,
         selectAll: true,
@@ -137,7 +139,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'periodo',
+        name: 'mes',
         label: 'MES',
         order: 5,
         selectAll: true,
@@ -167,7 +169,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'LDMaCumplir',
+        name: 'ldMaCumplir',
         label: 'LDM A CUMPLIR',
         order: 7,
         selectAll: true,
@@ -182,7 +184,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'LPCaCumplir',
+        name: 'lpCaCumplir',
         label: 'LPC A CUMPLIR',
         order: 8,
         selectAll: true,
@@ -257,7 +259,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'LDM',
+        name: 'ldm',
         label: 'LDM',
         order: 13,
         selectAll: true,
@@ -272,7 +274,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'LPC',
+        name: 'lpc',
         label: 'LPC',
         order: 14,
         selectAll: true,
@@ -451,13 +453,13 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     this.page = page;
   }
 
-
   validarObligatorios(): boolean {
     let obligatoriosRegistro: any[] = [this.LaboratorioRegistro.parametroId, this.LaboratorioRegistro.laboratorioId, this.LaboratorioRegistro.AnioId];
     return (obligatoriosRegistro.includes("") || obligatoriosRegistro.includes(null)) ? false : true;
   }
 
-AddLimites() {
+  AddLimites() {
+
     if (!this.validarObligatorios()) {
       return this.notificationService.updateNotification({
         show: true,
@@ -495,6 +497,7 @@ AddLimites() {
     this.modalTitle = "Edición de límites de laboratorios";
     this.editar = true;
   }
+
   Update() {
     this.limiteLaboratorioService.updateLimiteLaboratorios(this.LaboratorioRegistro).subscribe({
       next: (response: any) => {
@@ -510,7 +513,6 @@ AddLimites() {
         }
       }
     });
-
   }
 
   DeleteLimiteLaboratorio() { }
@@ -537,11 +539,46 @@ AddLimites() {
         error: (error) => {
         },
       });
+
+    this.limiteLaboratorioService
+      .getMes()
+      .subscribe({
+        next: (response: any) => {
+          this.meses = response.data;
+        },
+        error: (error) => {
+        },
+      });
+
+    this.limiteLaboratorioService
+      .getAccionesLaboratorio()
+      .subscribe({
+        next: (response: any) => {
+          this.realizaLaboratorioMuestreo = response;
+          this.loSubroga = response;
+        },
+        error: (error) => {
+        },
+      });
+    this.limiteLaboratorioService
+      .getAnios()
+      .subscribe({
+        next: (response: any) => {
+          this.anios = response.data;        
+        },
+        error: (error) => {
+        },
+      });
+
+    
   }
 
   obtenerNombre() { this.LaboratorioRegistro.laboratorio = (this.laboratorios.filter(x => x.id == this.LaboratorioRegistro.laboratorioId))[0].descripcion; }
+
   obtenerNombreParametro() { this.LaboratorioRegistro.nombreParametro = (this.parametros.filter(x => x.id == this.LaboratorioRegistro.parametroId))[0].descripcion; }
+
   obtenerLaboratorioMuestreo() { this.LaboratorioRegistro.laboratorioMuestreo = (this.laboratorioMuestreo.filter(x => x.id == this.LaboratorioRegistro.laboratorioMuestreoId))[0].descripcion; }
+
   obtenerLaboratorioSubrogado() { this.LaboratorioRegistro.laboratorioSubrogado = (this.laboratoriosSubrogado.filter(x => x.id == this.LaboratorioRegistro.laboratorioSubrogadoId))[0].descripcion; }
 
   resetLimiteLaboratorio() {
@@ -575,5 +612,4 @@ AddLimites() {
     this.LaboratorioRegistro.anio = ''
 
   }
-
 }

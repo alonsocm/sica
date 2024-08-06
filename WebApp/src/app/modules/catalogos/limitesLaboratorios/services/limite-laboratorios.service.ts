@@ -1,7 +1,6 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Sitio } from '../../../muestreo/supervision/models/sitio';
 import { environment } from 'src/environments/environment';
 import { LimitesLaboratorios } from '../../../../interfaces/catalogos/limitesLaboratorio.interface';
 
@@ -62,6 +61,19 @@ export class LimiteLaboratorioService {
     return this.http.put(environment.apiUrl + '/LimiteParametroLaboratorio', registro);
   }
 
+  getMes(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/Mes', {}
+    );
+  }
 
-  
+  getAccionesLaboratorio(): Observable<Object> {
+    return this.http.get(
+      environment.apiUrl + '/AccionLaboratorio', {}
+    );
+  }
+
+  getAnios() {
+    return this.http.get<any>(environment.apiUrl + '/ProgramaAnio');
+  }
 }

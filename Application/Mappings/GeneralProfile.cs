@@ -2,6 +2,7 @@
 using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
+using Application.Features.Catalogos.LimiteParametroLaboratorio.Commands;
 using Application.Features.Sitios.Commands.CreateSitioCommand;
 using Application.Features.Sitios.Commands.UpdateSitioCommand;
 using Application.Models;
@@ -17,6 +18,8 @@ namespace Application.Mappings
             #region Commands
             CreateMap<CreateSitioCommand, Sitio>();
             CreateMap<UpdateSitioCommand, Sitio>();
+            CreateMap<CreateLimiteLaboratorioCommand, LimiteParametroLaboratorio>();
+            CreateMap<UpdateLimiteLaboratorioCommand, LimiteParametroLaboratorio>();
             #endregion
 
             #region DTOs
@@ -45,7 +48,7 @@ namespace Application.Mappings
                 .ForMember(x => x.LPC, o => o.MapFrom(src => src.Lpc))
                 .ForMember(x => x.Anio, o => o.MapFrom(src => src.Anio.Anio))
                 .ForMember(x => x.AnioId, o => o.MapFrom(src => src.Anio.Id));
-
+            CreateMap<AccionLaboratorio, AccionLaboratorioDto>();
             CreateMap<Acuifero, AcuiferoDto>()
                   .ForMember(x => x.AcuiferoId, o => o.MapFrom(src => src.Id));
             CreateMap<Sitio, SitioDto>()
@@ -74,6 +77,17 @@ namespace Application.Mappings
                 .ForMember(x => x.DieccionLocal, o => o.MapFrom(src => src.Dlocal.Descripcion))
             .ForMember(x => x.OCuencaId, o => o.MapFrom(src => src.Ocuenca.Id))
        .ForMember(x => x.DLocalId, o => o.MapFrom(src => src.Dlocal.Id));
+            CreateMap<LimiteParametroLaboratorio, LimitesParametroLaboratorioDto>()
+                  .ForMember(x => x.ClaveParametro, o => o.MapFrom(src => src.Parametro.ClaveParametro))
+                     .ForMember(x => x.NombreParametro, o => o.MapFrom(src => src.Parametro.Descripcion))
+                     .ForMember(x => x.RealizaLaboratorioMuestreo, o => o.MapFrom(src => src.RealizaLaboratorioMuestreo.LoSubroga))
+                        .ForMember(x => x.Laboratorio, o => o.MapFrom(src => src.Laboratorio.Nomenclatura))
+                           .ForMember(x => x.LaboratorioMuestreo, o => o.MapFrom(src => src.LaboratorioMuestreo.Nomenclatura))
+                              .ForMember(x => x.Mes, o => o.MapFrom(src => src.Periodo.Descripcion))
+                                 .ForMember(x => x.LoSubroga, o => o.MapFrom(src => src.LoSubroga.LoSubroga))
+                                    .ForMember(x => x.LaboratorioSubrogado, o => o.MapFrom(src => src.LaboratorioSubroga.Nomenclatura))
+                                   .ForMember(x => x.Anio, o => o.MapFrom(src => src.Anio.Anio));
+
 
             CreateMap<Perfil, PerfilDto>();
             CreateMap<DireccionLocal, DireccionLocalDto>();
@@ -112,7 +126,7 @@ namespace Application.Mappings
                  .ForMember(x => x.SubtipoCuerpoAgua, o => o.MapFrom(src => src.SubtipoCuerpoAgua.Descripcion))
                  .ForMember(x => x.TipoCuerpoAgua, o => o.MapFrom(src => src.TipoCuerpoAgua.Descripcion));
 
-            
+
             #endregion
         }
     }
