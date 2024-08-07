@@ -172,36 +172,32 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       error: (error) => {},
     });
   }
-  addTipoCuerpoAgua() {
-    this.tipoCuerpoAguaServices
-      .addTipoCuerpoAgua(this.tipoCuerpoAgua)
-      .subscribe({
-        next: (response: any) => {
-          this.tipoCuerpoAgua = response.data;
-          this.getTipoCuerpoAgua();
-          this.tipoCuerpoAgua = {
-            id: 0,
-            descripcion: '',
-            tipoHomologadoId: null,
-            tipoHomologadoDescripcion: '',
-            activo: true,
-            frecuencia: '',
-            evidenciasEsperadas: 0,
-            tiempoMinimoMuestreo: 0,
-            selected: false,
-          };
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Registro guardado correctamente.',
-            show: true,
-          });
-        },
-        error: (error) => {          
-          console.error('Error al agregar tipo cuerpo de agua:', error);
-        },
-      });
-  }
-
+ addTipoCuerpoAgua() {
+   this.tipoCuerpoAguaServices
+     .addTipoCuerpoAgua(this.tipoCuerpoAgua)
+     .subscribe({
+       next: (response: any) => {
+         if (response.succeded) {
+           this.tipoCuerpoAgua = response.data;
+           this.getTipoCuerpoAgua();
+           this.resetForm();
+           this.notificationService.updateNotification({
+             type: NotificationType.success,
+             text: 'Registro guardado correctamente.',
+             show: true,
+           });
+         } else {
+           this.notificationService.updateNotification({
+             type: NotificationType.danger,
+             text: response.message,
+             show: true,
+           });
+           this.resetForm();
+         }
+       },       
+     });
+ }
+ 
   onEditClick(id: number) {
     let index = this.registros.findIndex((x) => x.id == id);
     let registro = this.registros[index];

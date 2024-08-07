@@ -30,10 +30,10 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
 
             foreach (var item in request.TipoCuerpoAgua)
             {
-                // Buscar el TipoHomologado por su descripción
-                var tipoHomologado = tiposHomologados.Where(w => w.Descripcion == item.TipoHomologadoDescripcion || w.Descripcion == null).FirstOrDefault();
+                // Buscar el TipoHomologado por su descripción,ignorando mayúsculas o minúsculas 
+                var tipoHomologado = tiposHomologados.Where(w => string.Equals(w.Descripcion, item.TipoHomologadoDescripcion, StringComparison.OrdinalIgnoreCase) || w.Descripcion == null).FirstOrDefault();
 
-                // Si no se encuentra el TipoHomologado, manejar el error
+
                 if (tipoHomologado == null)
                 {
                     return new Response<bool> { Succeded = false, Message = $"No se encontró el Tipo Homologado con la descripción: {item.TipoHomologadoDescripcion}" };
@@ -59,6 +59,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                     {
                         Descripcion = item.Descripcion,
                         TipoHomologadoId = tipoHomologado.Id, // Asignar el Id del TipoHomologado
+                        Activo = true
 
                     };
 

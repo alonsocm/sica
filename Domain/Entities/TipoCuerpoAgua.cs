@@ -22,7 +22,7 @@ public partial class TipoCuerpoAgua
     /// <summary>
     /// Campo que describe si se encuentra activo el tipo cuerpo de agua
     /// </summary>
-    public bool Activo { get; set; } = true;
+    public bool Activo { get; set; }
 
     /// <summary>
     /// Campo que describe la frecuencia del tipo de cuerpo de agua para el muestreo
