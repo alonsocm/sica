@@ -26,6 +26,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
 
         public async Task<Response<bool>> Handle(AddTipoCuerpoAguaExcelCommand request, CancellationToken cancellationToken)
         {
+
             var tiposHomologados = await _repositoryTipoHomologado.ListAsync(cancellationToken);
 
             foreach (var item in request.TipoCuerpoAgua)
@@ -38,7 +39,10 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 {
                     return new Response<bool> { Succeded = false, Message = $"No se encontró el Tipo Homologado con la descripción: {item.TipoHomologadoDescripcion}" };
                 }
-
+                if (string.IsNullOrWhiteSpace(item.Descripcion))
+                {
+                    return new Response<bool> { Succeded = false, Message = "La descripción del tipo de cuerpo de agua no puede estar vacía o contener solo espacios en blanco." };
+                }
                 var tipoCuerpoAguaBD = _repository.ObtenerElementosPorCriterioAsync(x => x.Descripcion == item.Descripcion).Result.FirstOrDefault();
 
                 if (tipoCuerpoAguaBD != null && !request.Actualizar)
