@@ -78,6 +78,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   get form(): { [key: string]: AbstractControl } {
     return this.tipoCuerpoAguaForm.controls;
   }
+  
 
   constructor(
     private tipoCuerpoAguaServices: TipoCuerpoAguaService,
@@ -102,7 +103,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   definirColumnas() {
     let columnas: Array<Column> = [
       {
-        name: 'Descripcion',
+        name: 'descripcion',
         label: 'TIPO CUERPO DE AGUA',
         order: 1,
         selectAll: true,
@@ -115,7 +116,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'TipoHomologadoDescripcion',
+        name: 'tipoHomologadoDescripcion',
         label: 'TIPO HOMOLOGADO',
         order: 2,
         selectAll: true,
@@ -128,7 +129,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'Activo',
+        name: 'activo',
         label: 'ACTIVO',
         order: 3,
         selectAll: true,
@@ -171,36 +172,32 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       error: (error) => {},
     });
   }
-  addTipoCuerpoAgua() {
-    this.tipoCuerpoAguaServices
-      .addTipoCuerpoAgua(this.tipoCuerpoAgua)
-      .subscribe({
-        next: (response: any) => {
-          this.tipoCuerpoAgua = response.data;
-          this.getTipoCuerpoAgua();
-          this.tipoCuerpoAgua = {
-            id: 0,
-            descripcion: '',
-            tipoHomologadoId: null,
-            tipoHomologadoDescripcion: '',
-            activo: true,
-            frecuencia: '',
-            evidenciasEsperadas: 0,
-            tiempoMinimoMuestreo: 0,
-            selected: false,
-          };
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Registro guardado correctamente.',
-            show: true,
-          });
-        },
-        error: (error) => {
-          console.error('Error al agregar tipo cuerpo de agua:', error);
-        },
-      });
-  }
-
+ addTipoCuerpoAgua() {
+   this.tipoCuerpoAguaServices
+     .addTipoCuerpoAgua(this.tipoCuerpoAgua)
+     .subscribe({
+       next: (response: any) => {
+         if (response.succeded) {
+           this.tipoCuerpoAgua = response.data;
+           this.getTipoCuerpoAgua();
+           this.resetForm();
+           this.notificationService.updateNotification({
+             type: NotificationType.success,
+             text: 'Registro guardado correctamente.',
+             show: true,
+           });
+         } else {
+           this.notificationService.updateNotification({
+             type: NotificationType.danger,
+             text: response.message,
+             show: true,
+           });
+           this.resetForm();
+         }
+       },       
+     });
+ }
+ 
   onEditClick(id: number) {
     let index = this.registros.findIndex((x) => x.id == id);
     let registro = this.registros[index];
@@ -208,11 +205,12 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     document.getElementById('btn-edit-modal')?.click();
   }
 
-  updateTipoCuerpoAgua(id: number) {
+  updateTipoCuerpoAgua() {
     this.tipoCuerpoAguaServices
       .updateTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
       .subscribe({
-        next: (data) => {
+        next: (response: any) => {
+          this.tipoCuerpoAgua = response.data;
           this.tipoCuerpoAgua = {
             id: 0,
             descripcion: '',
@@ -413,7 +411,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       this.loading = true;
       this.tipoCuerpoAguaServices.uploadFile(archivo[0], sustituir).subscribe({
         next: (response: any) => {
-          if (response.succeded) {
+          if (response.succeded){
             this.resetInputFile(this.inputExcelMonitoreos);
             this.getTipoCuerpoAgua();
             this.loading = false;
@@ -452,5 +450,20 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   }
   onSustituirtipoCuerpoAguaClick() {
     this.uploadFile(this.fileList, true);
+  }
+
+  resetForm() {
+    this.tipoCuerpoAguaForm.reset();
+    this.tipoCuerpoAgua = {
+      id: 0,
+      descripcion: '',
+      tipoHomologadoId: null,
+      tipoHomologadoDescripcion: '',
+      activo: true,
+      frecuencia: '',
+      evidenciasEsperadas: 0,
+      tiempoMinimoMuestreo: 0,
+      selected: false,
+    };
   }
 }

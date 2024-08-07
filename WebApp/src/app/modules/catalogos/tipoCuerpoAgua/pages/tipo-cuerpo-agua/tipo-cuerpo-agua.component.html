@@ -1,4 +1,7 @@
 <router-outlet name="menu"></router-outlet>
+<div *ngIf="loading">
+    <app-loading></app-loading>
+</div>
 <div class="container-fluid">
     <h1 class="row col">Administración Tipos Cuerpo de Agua</h1>
     <hr class="red">
@@ -174,7 +177,7 @@
                         <label class="col-sm-3 control-label">Tipo cuerpo de agua:</label>
                         <div class="col-sm-9">
                             <input id="txtdescripcion1" class="form-control obligatorio" placeholder="Tipo cuerpo de agua"
-                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />                                
+                                (keypress)="validarCaracteres2($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />                                
                             <span class="text-danger ml-2 " *ngIf="!this.tipoCuerpoAgua.descripcion">
                                 Campo <strong>requerido</strong>
                             </span>
@@ -195,7 +198,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+                        <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button"(click)="resetForm()">Cancelar</button>
                         <button (click)="addTipoCuerpoAgua()" data-dismiss="modal"
                             class="btn btn-primary pull-right ml-2" type="button">Registrar</button>
                     </div>
@@ -217,10 +220,9 @@
                         <label class="col-sm-3 control-label">Tipo cuerpo de agua:</label>
                         <div class="col-sm-9">
                             <input id="txtdescripcion2" class="form-control obligatorio"
-                                placeholder="Tipo cuerpo de agua" (keypress)="validarCaracteres($event)"
+                                placeholder="Tipo cuerpo de agua" (keypress)="validarCaracteres2($event)"
                                 [(ngModel)]="this.tipoCuerpoAgua.descripcion" />
-                            <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.descripcion">
-                                Campo <strong>requerido</strong>
+                            <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.descripcion">                                
                             </span>
                         </div>
                     </div>
@@ -240,8 +242,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
-                        <button (click)="updateTipoCuerpoAgua(this.tipoCuerpoAgua.id)" data-dismiss="modal"
+                        <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button" (click)="resetForm()">Cancelar</button>
+                        <button (click)="updateTipoCuerpoAgua()" data-dismiss="modal"
                             class="btn btn-primary pull-right ml-2" *ngIf="editar==false"
                             type="button">Actualizar</button>
                     </div>
@@ -259,7 +261,7 @@
                     de agua "{{tipoCuerpoAgua.descripcion}}"?</p>
                 <div class="form-group">
                     <div class="modal-body">
-                        <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button">Cancelar</button>
+                        <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button" (click)="resetForm()">Cancelar</button>
                         <button (click)="deleteTipoCuerpoAgua(this.tipoCuerpoAgua.id)" data-dismiss="modal"
                             class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Aceptar</button>
                     </div>
@@ -290,7 +292,7 @@
                         cuerpo de agua.</p>
                 </div>
                 <div class="modal-footer">
-                    <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal"(click)="resetForm()">
                         Cancelar
                     </button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal"

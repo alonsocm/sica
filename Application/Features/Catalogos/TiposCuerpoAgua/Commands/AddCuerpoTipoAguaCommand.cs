@@ -31,7 +31,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 return new Response<bool>(false)
                 {
                     Succeded = false,
-                    Message = $"No se pudo registrar el tipo cuerpo de agua. La clave {request.Descripcion}, ya se encuentra registrada."
+                    Message = $"No se pudo registrar el tipo cuerpo de agua. {request.Descripcion}, ya se encuentra registrado."
 
                 };
             }
@@ -40,7 +40,6 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 Id = request.Id,
                 Descripcion = request.Descripcion,
                 TipoHomologadoId = request.TipoHomologadoId,
-
                 Activo = request.Activo,
                 Frecuencia = request.Frecuencia,
                 EvidenciasEsperadas = request.EvidenciasEsperadas,

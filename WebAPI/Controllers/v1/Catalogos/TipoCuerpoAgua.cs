@@ -69,16 +69,12 @@ namespace WebAPI.Controllers.v1.Catalogos
                 TiempoMinimoMuestreo = command.TiempoMinimoMuestreo
             }));
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, UpdateTipoCuerpoAguaCommand tipoCuerpoAgua)
+        [HttpPut()]
+        public async Task<IActionResult> Put(UpdateTipoCuerpoAguaCommand tipoCuerpoAgua)
         {
-            if (id != tipoCuerpoAgua.Id)
-            {
-                return BadRequest("El Id no existe.");
-            }
-
             return Ok(await Mediator.Send(tipoCuerpoAgua));
         }
+
         [HttpPost("CargaMasiva")]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromQuery] bool actualizar, [FromForm] IFormFile archivo)

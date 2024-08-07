@@ -67,7 +67,7 @@ export class TipoCuerpoAguaService {
     tipoCuerpoAgua: TipoCuerpoAgua
   ): Observable<TipoCuerpoAgua> {
     return this.http.put<TipoCuerpoAgua>(
-      environment.apiUrl + '/TipoCuerpoAgua/' + id,
+      environment.apiUrl + '/TipoCuerpoAgua/',
       tipoCuerpoAgua
     );
   }
