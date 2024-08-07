@@ -112,6 +112,17 @@ export class SitioService {
     return this.http.put(environment.apiUrl + '/Sitios', registro);
   }
 
+  uploadFile(archivo: File, actualizar: boolean) {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+    return this.http.post(
+      environment.apiUrl +
+      '/Sitios/CargaSitios?actualizar=' +
+      actualizar,
+      formData
+    );
+  }
+
 }
 
 

@@ -14,20 +14,16 @@
         <i class="bi bi-plus-lg" data-toggle="modal" data-target="#modalregistro"></i> Nuevo sitio
       </button>
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-             title="Seleccionar archivo" #inputExcelMonitoreos>
-      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
+             title="Seleccionar archivo" #inputExcelSitios>
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelSitios.click()"
               title="Seleccionar archivo">
         <i class="bi bi-filetype-xlsx"></i>
         Agregar desde archivo
       </button>
-
       <button class="btn btn-secondary btn-sm" type="button" (click)="onLimpiarFiltrosClick()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
-      <!-- <button class="btn btn-primary btn-sm mr-1" type="button">
-          <i class="bi bi-send-exclamation"></i> Borrar
-      </button> -->
     </div>
 
 
@@ -51,9 +47,6 @@
     <table class="table-bordered table-hover">
       <thead class="thead-sticky">
         <tr>
-          <!-- <th columnResize class="td-center no-border-bottom th-resize">
-              &nbsp;SELECCIONAR&nbsp;
-          </th> -->
           <th columnResize scope="col" *ngFor="let columna of this.columns let i = index"
               id="{{columna.name}}" class="no-border-bottom th-resize"
               [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : '#E9ECEF'), 'z-index': '0'}">
@@ -64,13 +57,7 @@
           </th>
         </tr>
 
-
         <tr>
-          <!--<th class="no-border-top td-center">
-            <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-                   (change)="onSelectPageClick(this.sitios,this.sitiosSeleccionados);"
-                   title="Selecciona la página actual" />
-          </th>-->
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
             <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
               <button id="dLabel" style="border:none; text-align:right" data-toggle="dropdown" aria-haspopup="true"
@@ -154,10 +141,6 @@
       </thead>
       <tbody>
         <tr *ngFor="let sitio of this.sitios | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
-          <!--<td class="td-center">
-            <input type="checkbox" class="cursor-pointer" [(ngModel)]="sitio.selected"
-                   (change)="onSelectClick(sitio)" title="Seleccionar">
-          </td>-->
           <td>{{sitio.claveSitio}}</td>
           <td>{{sitio.nombreSitio}} </td>
           <td>{{sitio.acuifero}} </td>
@@ -178,9 +161,6 @@
             <button type="button" class="btn-action btn-danger-action" title="Eliminar" data-toggle="modal" data-target="#mdlConfirmacion">
               <i class="bi bi-trash"></i>
             </button>
-
-            <!--<button id="btnMdlConfirmacion" class="btn btn-primary btn-sm element-hidden" type="button" data-toggle="modal"
-                    data-target="#mdlConfirmacion" title="Seleccionar"></button>-->
           </td>
 
         </tr>
@@ -214,24 +194,18 @@
           <h4 class="modal-title2">{{modalTitle}}</h4>
         </div>
         <div class="modal-body">
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Clave sitio:</label>
             <div class="col-sm-3">
-              <input id="txtClaveSitio" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Clave sitio" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.claveSitio" />
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.claveSitio==''">
-                Campo <strong>requerido</strong>
-              </span>
+              <input id="txtClaveSitio" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.claveSitio==''}" [attr.disabled]="editar? true : null" placeholder="Clave sitio" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.claveSitio" />
             </div>
 
             <label class="col-sm-3 control-label">Nombre sitio:</label>
             <div class="col-sm-3">
-              <input id="txtNombreSitio" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Nombre sitio" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.nombreSitio" />
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.nombreSitio==''">
-                Campo <strong>requerido</strong>
-              </span>
+              <input id="txtNombreSitio" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.nombreSitio==''}" [attr.disabled]="editar? true : null" placeholder="Nombre sitio" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.nombreSitio" />
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Acuifero:</label>
             <div class="col-sm-9">
               <select id="dropAcuifero" class="form-control" [(ngModel)]="this.sitioRegistro.acuiferoId">
@@ -240,136 +214,103 @@
                   {{acuifero.descripcion}}
                 </option>
               </select>
-              <span class="text-danger ml-2"></span>
             </div>
           </div>
-
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Organismo de cuenca:</label>
             <div class="col-sm-3">
-              <select id="dropOrganismoCuenca" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.oCuencaId" (click)="cargaDireccionLocal();">
+              <select id="dropOrganismoCuenca" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.oCuencaId==null}" [(ngModel)]="this.sitioRegistro.oCuencaId" (click)="cargaDireccionLocal();">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let cuenca of organismosCuenca" [ngValue]="cuenca.oCuencaId">
                   {{cuenca.organismoCuenca}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.oCuencaId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
-
             <label class="col-sm-3 control-label">Dirección local:</label>
             <div class="col-sm-3">
-              <select id="dropDireccionLocal" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.dLocalId">
+              <select id="dropDireccionLocal" class="form-control" [(ngModel)]="this.sitioRegistro.dLocalId">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let direccion of direccionesLocales" [ngValue]="direccion.dLocalId">
                   {{direccion.dieccionLocal}}
                 </option>
               </select>
-              <span class="text-danger ml-2"></span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Estado:</label>
             <div class="col-sm-3">
-              <select id="dropEstados" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.estadoId" (click)="cargaMunicipios();">
+              <select id="dropEstados" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.estadoId==null}" [(ngModel)]="this.sitioRegistro.estadoId" (click)="cargaMunicipios();">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let estado of estados" [ngValue]="estado.id">
                   {{estado.nombre}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.estadoId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
-
             <label class="col-sm-3 control-label">Municipio:</label>
             <div class="col-sm-3">
-              <select id="dropMunicipios" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.municipioId">
+              <select id="dropMunicipios" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.municipioId==null}" [(ngModel)]="this.sitioRegistro.municipioId">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let municipio of municipios" [ngValue]="municipio.id">
                   {{municipio.nombre}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.municipioId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Cuerpo de agua:</label>
             <div class="col-sm-9">
-              <select id="dropCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.cuerpoAguaId" (click)="cuerpoTipoSubtipoByCuerpoId();">
+              <select id="dropCuerpoAgua" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.cuerpoAguaId==null}" [(ngModel)]="this.sitioRegistro.cuerpoAguaId" (click)="cuerpoTipoSubtipoByCuerpoId();">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let cuerpo of cuerposAgua" [ngValue]="cuerpo.id">
                   {{cuerpo.descripcion}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.cuerpoAguaId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Tipo cuerpo de agua:</label>
             <div class="col-sm-3">
-              <select id="dropTipoCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.tipoCuerpoAguaId" (click)="cargaSubtipoAgua();">
+              <select id="dropTipoCuerpoAgua" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.tipoCuerpoAguaId==null}" [(ngModel)]="this.sitioRegistro.tipoCuerpoAguaId" (click)="cargaSubtipoAgua();">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let tipoCuerpo of tiposCuerpoAgua" [ngValue]="tipoCuerpo.tipoCuerpoAguaId">
                   {{tipoCuerpo.tipoCuerpoAgua}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.tipoCuerpoAguaId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
 
             <label class="col-sm-3 control-label">Subtipo cuerpo de agua:</label>
             <div class="col-sm-3">
-              <select id="dropubtipoCuerpoAgua" class="form-control obligatorio" [(ngModel)]="this.sitioRegistro.subtipoCuerpoAguaId">
+              <select id="dropubtipoCuerpoAgua" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.subtipoCuerpoAguaId==null}" [(ngModel)]="this.sitioRegistro.subtipoCuerpoAguaId">
                 <option [ngValue]="null">--Seleccione--</option>
                 <option *ngFor="let subtipo of subtiposCuerpoAgua" [ngValue]="subtipo.subtipoCuerpoAguaId">
                   {{subtipo.subtipoCuerpoAgua}}
                 </option>
               </select>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.subtipoCuerpoAguaId==null">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Latitud:</label>
             <div class="col-sm-3">
-              <input id="txtLatitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Latitud" [(ngModel)]="this.sitioRegistro.latitud" />
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.latitud==0">
-                Campo <strong>requerido</strong>
-              </span>
+              <input id="txtLatitud" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.latitud==0}" [attr.disabled]="editar? true : null" placeholder="Latitud" [(ngModel)]="this.sitioRegistro.latitud" />
             </div>
 
             <label class="col-sm-3 control-label">Longitud:</label>
             <div class="col-sm-3">
-              <input id="txtLongitud" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Longitud" [(ngModel)]="this.sitioRegistro.longitud" />
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.longitud==0">
-                Campo <strong>requerido</strong>
-              </span>
+              <input id="txtLongitud" class="form-control" [ngClass]="{'is-invalid':this.sitioRegistro.longitud==0}" [attr.disabled]="editar? true : null" placeholder="Longitud" [(ngModel)]="this.sitioRegistro.longitud" />
             </div>
           </div>
-
-          <div class="form-group">
+          <div class="form-group col-sm-12">
             <label class="col-sm-3 control-label">Observaciones:</label>
             <div class="col-sm-9">
-              <textarea id="txtObservaciones" class="form-control obligatorio" [attr.disabled]="editar? true : null" placeholder="Observaciones" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.observaciones">
+              <textarea id="txtObservaciones" class="form-control" [attr.disabled]="editar? true : null" placeholder="Observaciones" (keypress)="validarCaracteres($event)" [(ngModel)]="this.sitioRegistro.observaciones">
                </textarea>
-              <span class="text-danger ml-2 " *ngIf="this.sitioRegistro.observaciones==''">
-                Campo <strong>requerido</strong>
-              </span>
             </div>
           </div>
           <div class="modal-footer">
             <button id="btn-close" type="button" class="btn btn-secondary"
                     data-dismiss="modal">
               Cancelar
-            </button>            
+            </button>
             <button (click)="AddSites()" data-dismiss="modal" class="btn btn-primary" *ngIf="!editar" type="button">Guardar</button>
             <button (click)="Update()" data-dismiss="modal" class="btn btn-primary" *ngIf="editar" type="button">Guardar cambios</button>
           </div>
@@ -382,4 +323,34 @@
 
   <app-notificacion-emergente [notificacion]="this.notificacion"
                               (changed)="this.DeleteSitios();"></app-notificacion-emergente>
+  <button id="btnMdlConfirmacionActualizacion" class="element-hidden" type="button" data-toggle="modal"
+          data-target="#mdlConfirmacionActualizacion">
+    Abrir modal
+  </button>
+  <div class="modal fade modal-dialog-centered" id="mdlConfirmacionActualizacion" data-bs-backdrop="static"
+       data-toggle="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center" id="staticBackdropLabel">Confirmar actualización de sitios</h4>
+        </div>
+        <div class="modal-body">
+          <p>
+            Se encontraron en el archivo, sitios que ya se encuentran en el catálogo.
+          </p>
+          <p><b>¿Desea volver a cargarlos?</b> Esta acción sustituirá la información actual de los sitios.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="btnCancelarModal" type="button" class="btn btn-secondary" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal"
+                  (click)="actualizarSitios()">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
