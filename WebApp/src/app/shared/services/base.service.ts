@@ -668,4 +668,11 @@ export class BaseService {
       evento.preventDefault();
     }
   }
+    //Función para validar caracteres  
+  validarCaracteres2(evento: any): void {
+    const pattern: RegExp = /^([a-zA-ZÀ-ÿ_\u00f1\u00d1\s0-9\.\,\-\/\(\)\:\;\'\"\?\&\%\$\€\+=\*\#\~\[\]\{\}\|\^\`\<\>\|\@])/; 
+    if (!pattern.test(evento.key)) {
+      evento.preventDefault();
+    }
+  }
 }

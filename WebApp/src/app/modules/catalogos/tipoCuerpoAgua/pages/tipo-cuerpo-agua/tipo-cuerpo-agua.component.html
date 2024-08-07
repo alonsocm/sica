@@ -177,7 +177,7 @@
                         <label class="col-sm-3 control-label">Tipo cuerpo de agua:</label>
                         <div class="col-sm-9">
                             <input id="txtdescripcion1" class="form-control obligatorio" placeholder="Tipo cuerpo de agua"
-                                (keypress)="validarCaracteres($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />                                
+                                (keypress)="validarCaracteres2($event)" [(ngModel)]="this.tipoCuerpoAgua.descripcion" />                                
                             <span class="text-danger ml-2 " *ngIf="!this.tipoCuerpoAgua.descripcion">
                                 Campo <strong>requerido</strong>
                             </span>
@@ -220,7 +220,7 @@
                         <label class="col-sm-3 control-label">Tipo cuerpo de agua:</label>
                         <div class="col-sm-9">
                             <input id="txtdescripcion2" class="form-control obligatorio"
-                                placeholder="Tipo cuerpo de agua" (keypress)="validarCaracteres($event)"
+                                placeholder="Tipo cuerpo de agua" (keypress)="validarCaracteres2($event)"
                                 [(ngModel)]="this.tipoCuerpoAgua.descripcion" />
                             <span class="text-danger ml-2 " *ngIf="this.tipoCuerpoAgua.descripcion">                                
                             </span>
