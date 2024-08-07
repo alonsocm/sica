@@ -12,6 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Shared;
 using Application.Features.Catalogos.ParametrosGrupo.Commands;
 using Domain.Entities;
+using Application.DTOs.Catalogos;
+using Domain.Settings;
+using Shared.Utilities.Services;
+using Application.Models;
+using Application.Features.Catalogos.Sitios.Commands;
 
 namespace WebAPI.Controllers.v1.Catalogos
 {
@@ -115,6 +120,31 @@ namespace WebAPI.Controllers.v1.Catalogos
             return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
         }
 
-       
+        [HttpPost("CargaSitios")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromQuery] bool actualizar, [FromForm] IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = ExcelSitiosSettings.KeyValues;
+
+            var registros = ExcelService.Import<SitiosExcel>(fileInfo, "Sitios");
+            System.IO.File.Delete(filePath);
+
+            return Ok(await Mediator.Send(new CargaSitiosCommand { Sitios = registros, Actualizar = actualizar }));
+        }
+
+
     }
 }

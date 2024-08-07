@@ -260,4 +260,49 @@
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
     }
 
+    public static class ExcelLimitesParametroLaboratorioSettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("Clave parametro","ClaveParametro"),
+            new KeyValuePair<string, string>("Nombre parametro","NombreParametro"),
+            new KeyValuePair<string, string>("Laboratorio","Laboratorio"),
+            new KeyValuePair<string, string>("Realiza laboratrio muestreo","RealizaLaboratorioMuestreo"),
+            new KeyValuePair<string, string>("Laboratorio muestreo","LaboratorioMuestreo"),
+            new KeyValuePair<string, string>("Mes","Mes"),
+            new KeyValuePair<string, string>("LDM a cumplir","LDMaCumplir"),
+            new KeyValuePair<string, string>("LPC a cumplir","LPCaCumplir"),
+            new KeyValuePair<string, string>("Lo muestra","LoMuestra"),
+            new KeyValuePair<string, string>("Lo subroga","LoSubroga"),
+            new KeyValuePair<string, string>("Laboratorio subrogado","LaboratorioSubrogado"),
+            new KeyValuePair<string, string>("Metodo analitico","MetodoAnalitico"),
+            new KeyValuePair<string, string>("LDM","LDM"),
+            new KeyValuePair<string, string>("LCP","LPC"),
+            new KeyValuePair<string, string>("Año","Anio"),
+        };
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
+    }
+
+    public static class ExcelSitiosSettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("Clave sitio","ClaveSitio"),
+            new KeyValuePair<string, string>("Nombre sitio","NombreSitio"),
+            new KeyValuePair<string, string>("Acuifero","Acuifero"),
+            new KeyValuePair<string, string>("Organismo de cuenca","Cuenca"),
+            new KeyValuePair<string, string>("Dirección local","DireccionLocal"),
+            new KeyValuePair<string, string>("Estado","Estado"),
+            new KeyValuePair<string, string>("Municipio","Municipio"),
+            new KeyValuePair<string, string>("Cuerpo agua","CuerpoAgua"),
+            new KeyValuePair<string, string>("Tipo cuerpo agua","TipoCuerpoAgua"),
+            new KeyValuePair<string, string>("Subtipo cuerpo agua","SubtipoCuerpoAgua"),
+            new KeyValuePair<string, string>("Latitud","Latitud"),
+            new KeyValuePair<string, string>("Longitud","Longitud"),
+            new KeyValuePair<string, string>("Observaciones","Observaciones"),
+          
+        };
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
+    }
+
 }
