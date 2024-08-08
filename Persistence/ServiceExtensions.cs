@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces.IRepositories;
+using Application.Models;
 using Application.Wrappers;
 using Domain.Entities;
 using Domain.Settings;
@@ -121,8 +122,11 @@ namespace Persistence
             services.AddTransient<IVwEstatusMuestreosAdministracionRepository, VwEstatusMuestreosAdministracionRepository>();
             services.AddTransient<IVwResultadosNoCumplenFechaEntregaRepository, VwResultadosNoCumplenFechaEntregaRepository>();
             services.AddTransient<ITipoCuerpoAguaRepository,TipoCuerpoAguaRepository>();
-           
-            
+            services.AddTransient<ICuencaDireccionesLocalesRepository, CuencaDireccionesLocalesRepository>();
+        
+
+
+
             #endregion
         }
     }

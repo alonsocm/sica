@@ -1,10 +1,4 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Column } from 'src/app/interfaces/filter/column';
 import { Item } from 'src/app/interfaces/filter/item';
@@ -14,7 +8,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from 'src/app/shared/enums/notification-type';
-const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
+
 @Component({
   selector: 'app-tipo-cuerpo-agua',
   templateUrl: './tipo-cuerpo-agua.component.html',
@@ -27,7 +21,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
   excelData: any[] = [];
   messageEventualidad: string = '';
   mostrarMensajeAlerta: boolean = false;
-
+  ModalConfirmacion: boolean = false;
   public tipoCuerpoAgua: TipoCuerpoAgua = {
     id: 0,
     descripcion: '',
@@ -60,24 +54,10 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     evidenciasEsperadas: 0,
     tiempoMinimoMuestreo: 0,
     selected: false,
-  };
-  tipoCuerpoAguaForm = new FormGroup({
-    descripcion: new FormControl(
-      this.registro.descripcion,
-      Validators.required
-    ),
-    tipo: new FormControl(
-      this.registro.tipoHomologadoId,
-      Validators.required
-    ),
-  });
+  }; 
 
   @ViewChild('inputExcelTipoCuerpoAgua') inputExcelMonitoreos: ElementRef =
-    {} as ElementRef;
-
-  get form(): { [key: string]: AbstractControl } {
-    return this.tipoCuerpoAguaForm.controls;
-  }
+    {} as ElementRef; 
   
 
   constructor(
@@ -156,9 +136,7 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.registros, this.registrosSeleccionados);
           this.selectedPage = this.anyUnselected(this.registros) ? false : true;
-          this.loading = false;
-          console.log(this.registros);
-        },
+          this.loading = false;                  },
         error: (error) => {
           this.loading = false;
         },
@@ -172,31 +150,35 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
       error: (error) => {},
     });
   }
- addTipoCuerpoAgua() {
-   this.tipoCuerpoAguaServices
-     .addTipoCuerpoAgua(this.tipoCuerpoAgua)
-     .subscribe({
-       next: (response: any) => {
-         if (response.succeded) {
-           this.tipoCuerpoAgua = response.data;
-           this.getTipoCuerpoAgua();
-           this.resetForm();
-           this.notificationService.updateNotification({
-             type: NotificationType.success,
-             text: 'Registro guardado correctamente.',
-             show: true,
-           });
-         } else {
-           this.notificationService.updateNotification({
-             type: NotificationType.danger,
-             text: response.message,
-             show: true,
-           });
-           this.resetForm();
-         }
-       },       
-     });
- }
+
+
+addTipoCuerpoAgua() {
+  this.tipoCuerpoAguaServices
+    .addTipoCuerpoAgua(this.tipoCuerpoAgua)
+    .subscribe({
+      next: (response: any) => {
+        if (response.succeded) {
+          this.tipoCuerpoAgua = response.data;
+          this.getTipoCuerpoAgua();
+          this.resetForm();
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Registro guardado correctamente.',
+            show: true,
+          });
+        } else {
+          this.notificationService.updateNotification({
+            type: NotificationType.danger,
+            text: response.message,
+            show: true,
+          });
+          this.resetForm();
+        }
+      },
+    });
+}
+
+
  
   onEditClick(id: number) {
     let index = this.registros.findIndex((x) => x.id == id);
@@ -205,35 +187,33 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     document.getElementById('btn-edit-modal')?.click();
   }
 
-  updateTipoCuerpoAgua() {
-    this.tipoCuerpoAguaServices
-      .updateTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
-      .subscribe({
-        next: (response: any) => {
-          this.tipoCuerpoAgua = response.data;
-          this.tipoCuerpoAgua = {
-            id: 0,
-            descripcion: '',
-            tipoHomologadoId: 0,
-            tipoHomologadoDescripcion: '',
-            activo: true,
-            frecuencia: '',
-            evidenciasEsperadas: 0,
-            tiempoMinimoMuestreo: 0,
-            selected: false,
-          };
-          this.getTipoCuerpoAgua();
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Cambios guardados correctamente.',
-            show: true,
-          });
-        },
-        error: (error) => {
-          console.error('Error al actualizar tipo cuerpo de agua:', error);
-        },
-      });
-  }
+ updateTipoCuerpoAgua() {
+     this.tipoCuerpoAguaServices
+       .updateTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
+       .subscribe({
+         next: (response: any) => {
+           if (response.succeded) {
+             this.tipoCuerpoAgua = response.data;
+             this.getTipoCuerpoAgua();
+             this.resetForm();
+             this.notificationService.updateNotification({
+               type: NotificationType.success,
+               text: 'Registro guardado correctamente.',
+               show: true,
+             });
+           } else {
+             this.notificationService.updateNotification({
+               type: NotificationType.danger,
+               text: response.message,
+               show: true,
+             });
+             this.getTipoCuerpoAgua(); 
+             this.resetForm();
+           };
+         },
+       });
+   } 
+
   deleteTipoCuerpoAgua(id: number) {
     this.tipoCuerpoAguaServices
       .deleteTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
@@ -406,54 +386,70 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
     this.fileList = (event.target as HTMLInputElement).files ?? new FileList();
     this.uploadFile(this.fileList, false);
   }
-  private uploadFile(archivo: FileList, sustituir: boolean) {
-    if (archivo) {
-      this.loading = true;
-      this.tipoCuerpoAguaServices.uploadFile(archivo[0], sustituir).subscribe({
-        next: (response: any) => {
-          if (response.succeded){
-            this.resetInputFile(this.inputExcelMonitoreos);
-            this.getTipoCuerpoAgua();
-            this.loading = false;
-            this.notificationService.updateNotification({
-              type: NotificationType.success,
-              text: 'Archivo procesado correctamente.',
-              show: true,
-            });
-          } else {
-            this.loading = false;
-            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
-          }
-        },
-        error: (error: any) => {
-          this.resetInputFile(this.inputExcelMonitoreos);
-
-          this.loading = false;
-          let errores = '';
-          if (error.error.Errors === null) {
-            errores = error.error.Message;
-          } else {
-            errores = error.error.Errors;
-          }
-          let archivoErrores = this.generarArchivoDeErrores(errores);
-
-          this.hacerScroll();
-          FileService.download(archivoErrores, 'errores.txt');
-          this.notificationService.updateNotification({
-            type: NotificationType.danger,
-            text: 'Se encontraron errores en el archivo procesado.',
-            show: true,
-          });
-        },
-      });
-    }
-  }
+ private uploadFile(archivo: FileList, sustituir: boolean) {
+     if (archivo) {
+       this.loading = true;
+       this.tipoCuerpoAguaServices.uploadFile(archivo[0], sustituir).subscribe({
+         next: (response: any) => {
+           this.resetInputFile(this.inputExcelMonitoreos);
+           this.loading = false;
+           this.messageEventualidad = response.message;
+           this.mostrarMensajeAlerta = true;
+           if (response.succeded) {
+             this.getTipoCuerpoAgua();
+             this.notificationService.updateNotification({
+               type: NotificationType.success,
+               text: 'Archivo procesado correctamente.',
+               show: true,
+             });
+           } else {
+             let errores = response.message; 
+             this.loading = false;
+             if (errores.includes("Se encontraron tipo cuerpo de agua registrados previamente")) {
+               document.getElementById('btnMdlConfirmacionActualizacion')?.click(); 
+             } else if (errores.includes("No se encontró el Tipo Homologado con la descripción:")) {
+               this.notificationService.updateNotification({
+                 show: true,
+                 type: NotificationType.danger,
+                 text: errores,
+               });
+             } else if (errores.includes("La descripción del tipo de cuerpo de agua no puede estar vacía o contener solo espacios en blanco.")) {
+               this.notificationService.updateNotification({
+                 show: true,
+                 type: NotificationType.danger,
+                 text: errores,
+               });
+             } 
+           }
+         },
+         error: (error: any) => {
+           this.resetInputFile(this.inputExcelMonitoreos);
+           this.loading = false;
+           let errores = '';
+           if (error.error.Errors === null) {
+             errores = error.error.Message;
+           } else {
+             errores = error.error.Errors;
+           }
+           let archivoErrores = this.generarArchivoDeErrores(errores);
+           this.hacerScroll();
+           FileService.download(archivoErrores, 'errores.txt');
+           this.resetInputFile(this.inputExcelMonitoreos);
+           return this.notificationService.updateNotification({
+             show: true,
+             type: NotificationType.danger,
+             text: 'Se encontraron errores en el archivo procesado.',
+           });
+         },
+       });
+     }
+   } 
+ 
   onSustituirtipoCuerpoAguaClick() {
     this.uploadFile(this.fileList, true);
   }
 
-  resetForm() {
-    this.tipoCuerpoAguaForm.reset();
+  resetForm() {    
     this.tipoCuerpoAgua = {
       id: 0,
       descripcion: '',

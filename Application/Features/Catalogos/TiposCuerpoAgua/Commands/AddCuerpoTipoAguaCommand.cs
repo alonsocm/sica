@@ -9,7 +9,6 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
         public long Id { get; set; }
         public string Descripcion { get; set; }
         public long? TipoHomologadoId { get; set; }
-
         public bool Activo { get; set; }
         public string Frecuencia { get; set; }
         public int EvidenciasEsperadas { get; set; }
@@ -24,6 +23,15 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
         }
         public async Task<Response<bool>> Handle(AddTipoCuerpoAguaCommand request, CancellationToken cancellationToken)
         {
+            // revisa una cadena de texto y te dice si está vacía o con espacios en blanco
+            if (string.IsNullOrWhiteSpace(request.Descripcion))
+            {
+                return new Response<bool>(false)
+                {
+                    Succeded = false,
+                    Message = "La descripción es un campo obligatorio."
+                };
+            }
             var tipocuerpoaguaDB = await _repository.ObtenerElementosPorCriterioAsync(x => x.Descripcion == request.Descripcion.Trim());
 
             if (tipocuerpoaguaDB.Any())
@@ -31,7 +39,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 return new Response<bool>(false)
                 {
                     Succeded = false,
-                    Message = $"No se pudo registrar el tipo cuerpo de agua. {request.Descripcion}, ya se encuentra registrado."
+                    Message = "Se encontraron tipo cuerpo de agua registrados previamente."
 
                 };
             }
