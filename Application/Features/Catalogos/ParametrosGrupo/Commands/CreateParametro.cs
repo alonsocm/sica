@@ -31,11 +31,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Commands
 
             if (registroDB.Any())
             {
-                return new Response<bool>(false)
-                {
-                    Succeded = false,
-                    Message = $"No se pudo registrar el parámetro. La clave {request.Clave}, ya se encuentra registrada."
-                };
+                throw new ArgumentException($"No se pudo registrar el parámetro. La clave {request.Clave}, ya se encuentra registrada.");
             }
 
             var parametro = new Domain.Entities.ParametrosGrupo()

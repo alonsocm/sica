@@ -41,8 +41,14 @@ export class ParametrosComponent extends BaseService implements OnInit {
   };
 
   parametroForm = new FormGroup({
-    clave: new FormControl(this.registro.clave, Validators.required),
-    nombre: new FormControl(this.registro.descripcion, Validators.required),
+    clave: new FormControl(this.registro.clave, [
+      Validators.required,
+      Validators.pattern(/\S+/),
+    ]),
+    nombre: new FormControl(this.registro.descripcion, [
+      Validators.required,
+      Validators.pattern(/\S+/),
+    ]),
     tipo: new FormControl(this.registro.grupoId ?? 0, [
       Validators.required,
       Validators.min(1),
@@ -416,25 +422,23 @@ export class ParametrosComponent extends BaseService implements OnInit {
     if (this.parametroForm.valid && this.registro.id === 0) {
       this.parametrosService.create(this.registro).subscribe({
         next: (response: any) => {
-          if (response.succeded) {
-            this.getParametros();
-            this.notificationService.updateNotification({
-              type: NotificationType.success,
-              text: 'Parámetro agregado correctamente.',
-              show: true,
-            });
-          } else {
-            this.notificationService.updateNotification({
-              type: NotificationType.danger,
-              text: `${response.message}`,
-              show: true,
-            });
-          }
+          this.getParametros();
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Parámetro agregado correctamente.',
+            show: true,
+          });
           document.getElementById('btn-close')?.click();
           this.loading = false;
         },
         error: (error) => {
+          document.getElementById('btn-close')?.click();
           this.loading = false;
+          this.notificationService.updateNotification({
+            type: NotificationType.danger,
+            text: `${error.error.Message}`,
+            show: true,
+          });
         },
       });
     } else if (this.parametroForm.valid && this.registro.id !== 0) {

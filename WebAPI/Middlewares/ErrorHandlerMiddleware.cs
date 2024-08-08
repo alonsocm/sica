@@ -28,18 +28,22 @@ namespace WebAPI.Middlewares
                 switch (error)
                 {
                     case Application.Exceptions.ApiException e:
-                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;
                     case Application.Exceptions.ValidationException e:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         responseModel.Errors = e.Errors;
                         break;
+                    case ValidationException e:
+                        response.StatusCode  = (int)HttpStatusCode.BadRequest;
+                        responseModel.Message = e.Message;
+                        break;
                     case KeyNotFoundException e:
                         response.StatusCode  = (int)HttpStatusCode.NotFound;
                         responseModel.Message = e.Message;
                         break;
-                    case ValidationException e:
-                        response.StatusCode  = (int)HttpStatusCode.BadRequest;
+                    case ArgumentException e:
+                        response.StatusCode = (int)HttpStatusCode.Conflict;
                         responseModel.Message = e.Message;
                         break;
                     default:
