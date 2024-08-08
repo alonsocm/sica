@@ -39,7 +39,7 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
                 return new Response<bool>(false)
                 {
                     Succeded = false,
-                    Message = $"No se pudo registrar el tipo cuerpo de agua. {request.Descripcion}, ya se encuentra registrado."
+                    Message = "Se encontraron tipo cuerpo de agua registrados previamente."
 
                 };
             }
