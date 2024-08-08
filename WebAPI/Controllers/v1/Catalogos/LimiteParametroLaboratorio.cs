@@ -1,8 +1,12 @@
 ﻿using Application.DTOs;
 using Application.Features.Catalogos.LimiteParametroLaboratorio.Commands;
 using Application.Features.Catalogos.LimiteParametroLaboratorio.Queries;
+using Application.Features.Catalogos.Sitios.Commands;
+using Application.Models;
 using Application.Wrappers;
+using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Utilities.Services;
 using System.Drawing.Printing;
 using WebAPI.Shared;
 
@@ -101,6 +105,31 @@ namespace WebAPI.Controllers.v1.Catalogos
                 LPC = limite.LPC,
                 AnioId = limite.AnioId,
             }));
+        }
+
+        [HttpPost("CargaLimitesLaboratorio")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> Post([FromQuery] bool actualizar, [FromForm] IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = ExcelLimitesParametroLaboratorioSettings.KeyValues;
+
+            var registros = ExcelService.Import<LimiteParametrosLaboratorioExcel>(fileInfo, "Limites laboratorio");
+            System.IO.File.Delete(filePath);
+
+            return Ok(await Mediator.Send(new CargaLimitesLaboratorioCommand { LimitesLaboratorios = registros, Actualizar = actualizar }));
         }
 
     }

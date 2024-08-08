@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { LimitesLaboratorios } from '../../../../interfaces/catalogos/limitesLaboratorio.interface';
 import { Column } from '../../../../interfaces/filter/column';
 import { Item } from '../../../../interfaces/filter/item';
 import { NotificationType } from '../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../shared/models/notification-model';
 import { BaseService } from '../../../../shared/services/base.service';
+import { FileService } from '../../../../shared/services/file.service';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { MuestreoService } from '../../../muestreo/liberacion/services/muestreo.service';
 import { LaboratorioService } from '../../laboratorios/services/laboratorios.service';
@@ -17,6 +18,8 @@ import { LimiteLaboratorioService } from '../services/limite-laboratorios.servic
   styleUrls: ['./limite-laboratorios.component.css']
 })
 export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
+  @ViewChild('inputExcelLimites') inputExcelLimites: ElementRef =
+    {} as ElementRef;
   limitesLaboratorio: Array<LimitesLaboratorios> = [];
   limitesLaboratorioSeleccionados: Array<LimitesLaboratorios> = [];
   modalTitle: string = '';
@@ -60,6 +63,7 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     anio: ''
   }
   esValido: boolean = false;
+  fileList: any;
   constructor(private muestreoService: MuestreoService,
     private limiteLaboratorioService: LimiteLaboratorioService,
     private parametrosService: ParametrosService,
@@ -309,7 +313,53 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     this.setHeadersList(this.columns);
   }
 
-  cargarArchivo(evento: Event) { }
+  cargarArchivo(event: Event) {
+    this.fileList = (event.target as HTMLInputElement).files ?? new FileList();
+    this.uploadFile(this.fileList, false);
+  }
+
+  private uploadFile(archivo: FileList, sustituir: boolean) {
+    if (archivo) {
+      this.loading = true;
+      this.limiteLaboratorioService.uploadFile(archivo[0], sustituir).subscribe({
+        next: (response: any) => {
+          this.resetInputFile(this.inputExcelLimites);
+          if (response.succeded) {
+            this.consultarLimitesLaboratorio();
+            this.loading = false;
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Archivo procesado correctamente.',
+            });
+          } else {
+            this.loading = false;
+            document.getElementById('btnMdlConfirmacionActualizacion')?.click();
+          }
+        },
+        error: (error: any) => {
+          this.resetInputFile(this.inputExcelLimites);
+          this.loading = false;
+          let errores = '';
+          if (error.error.Errors === null) {
+            errores = error.error.Message;
+          } else {
+            errores = error.error.Errors;
+          }
+          let archivoErrores = this.generarArchivoDeErrores(errores);
+          this.hacerScroll();
+          FileService.download(archivoErrores, 'errores.txt');
+          this.resetInputFile(this.inputExcelLimites);
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Se encontraron errores en el archivo procesado.',
+          });
+        },
+      });
+    }
+  }
+
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
@@ -612,4 +662,8 @@ export class LimiteLaboratoriosComponent extends BaseService implements OnInit {
     this.LaboratorioRegistro.anio = ''
 
   }
+
+actualizarLimites() { this.uploadFile(this.fileList, true); }
+
+ 
 }
