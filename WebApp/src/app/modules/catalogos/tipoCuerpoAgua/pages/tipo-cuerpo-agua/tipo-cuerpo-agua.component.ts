@@ -191,35 +191,33 @@ addTipoCuerpoAgua() {
     document.getElementById('btn-edit-modal')?.click();
   }
 
-  updateTipoCuerpoAgua() {
-    this.tipoCuerpoAguaServices
-      .updateTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
-      .subscribe({
-        next: (response: any) => {
-          this.tipoCuerpoAgua = response.data;
-          this.tipoCuerpoAgua = {
-            id: 0,
-            descripcion: '',
-            tipoHomologadoId: 0,
-            tipoHomologadoDescripcion: '',
-            activo: true,
-            frecuencia: '',
-            evidenciasEsperadas: 0,
-            tiempoMinimoMuestreo: 0,
-            selected: false,
-          };
-          this.getTipoCuerpoAgua();
-          this.notificationService.updateNotification({
-            type: NotificationType.success,
-            text: 'Cambios guardados correctamente.',
-            show: true,
-          });
-        },
-        error: (error) => {
-          console.error('Error al actualizar tipo cuerpo de agua:', error);
-        },
-      });
-  }
+ updateTipoCuerpoAgua() {
+     this.tipoCuerpoAguaServices
+       .updateTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)
+       .subscribe({
+         next: (response: any) => {
+           if (response.succeded) {
+             this.tipoCuerpoAgua = response.data;
+             this.getTipoCuerpoAgua();
+             this.resetForm();
+             this.notificationService.updateNotification({
+               type: NotificationType.success,
+               text: 'Registro guardado correctamente.',
+               show: true,
+             });
+           } else {
+             this.notificationService.updateNotification({
+               type: NotificationType.danger,
+               text: response.message,
+               show: true,
+             });
+             this.getTipoCuerpoAgua(); 
+             this.resetForm();
+           };
+         },
+       });
+   } 
+
   deleteTipoCuerpoAgua(id: number) {
     this.tipoCuerpoAguaServices
       .deleteTipoCuerpoAgua(this.tipoCuerpoAgua.id, this.tipoCuerpoAgua)

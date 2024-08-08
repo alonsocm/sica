@@ -21,6 +21,15 @@ namespace Application.Features.Catalogos.TiposCuerpoAgua.Commands
         }
         public async Task<Response<bool>> Handle(UpdateTipoCuerpoAguaCommand request, CancellationToken cancellationToken)
         {
+            // revisa una cadena de texto y te dice si está vacía o con espacios en blanco
+            if (string.IsNullOrWhiteSpace(request.Descripcion))
+            {
+                return new Response<bool>(false)
+                {
+                    Succeded = false,
+                    Message = "La descripción es un campo obligatorio."
+                };
+            }
             var tipoCuerpoAgua = await _repository.ObtenerElementoPorIdAsync(request.Id);
 
             if (tipoCuerpoAgua == null)
