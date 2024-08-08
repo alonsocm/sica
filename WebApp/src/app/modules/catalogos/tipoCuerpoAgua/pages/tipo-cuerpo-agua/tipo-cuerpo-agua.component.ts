@@ -153,35 +153,31 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
 
 addTipoCuerpoAgua() {
-  const confirmation = confirm("¿Está seguro de cargar el registro?");
-  if (confirmation) {
-    this.tipoCuerpoAguaServices
-      .addTipoCuerpoAgua(this.tipoCuerpoAgua)
-      .subscribe({
-        next: (response: any) => {
-          if (response.succeded) {
-            this.tipoCuerpoAgua = response.data;
-            this.getTipoCuerpoAgua();
-            this.resetForm();
-            this.notificationService.updateNotification({
-              type: NotificationType.success,
-              text: 'Registro guardado correctamente.',
-              show: true,
-            });
-          } else {
-            this.notificationService.updateNotification({
-              type: NotificationType.danger,
-              text: response.message,
-              show: true,
-            });
-            this.resetForm();
-          }
-        },
-      });
-  } else {
-    this.resetForm();
-  }
+  this.tipoCuerpoAguaServices
+    .addTipoCuerpoAgua(this.tipoCuerpoAgua)
+    .subscribe({
+      next: (response: any) => {
+        if (response.succeded) {
+          this.tipoCuerpoAgua = response.data;
+          this.getTipoCuerpoAgua();
+          this.resetForm();
+          this.notificationService.updateNotification({
+            type: NotificationType.success,
+            text: 'Registro guardado correctamente.',
+            show: true,
+          });
+        } else {
+          this.notificationService.updateNotification({
+            type: NotificationType.danger,
+            text: response.message,
+            show: true,
+          });
+          this.resetForm();
+        }
+      },
+    });
 }
+
 
  
   onEditClick(id: number) {
