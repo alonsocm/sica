@@ -4,15 +4,8 @@ using MediatR;
 
 namespace Application.Features.Catalogos.ParametrosGrupo.Commands
 {
-    public class UpdateParametro : IRequest<Response<bool>>
+    public class UpdateParametro : CreateParametro, IRequest<Response<bool>>
     {
-        public int Id { get; set; }
-        public string Clave { get; set; }
-        public string Descripcion { get; set; }
-        public int UnidadMedidaId { get; set; }
-        public int GrupoId { get; set; }
-        public int SubgrupoId { get; set; }
-        public int? ParametroPadreId { get; set; }
     }
 
     public class UpdateParametroHandler : IRequestHandler<UpdateParametro, Response<bool>>
