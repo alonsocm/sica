@@ -76,4 +76,15 @@ export class LimiteLaboratorioService {
   getAnios() {
     return this.http.get<any>(environment.apiUrl + '/ProgramaAnio');
   }
+
+  uploadFile(archivo: File, actualizar: boolean) {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+    return this.http.post(
+      environment.apiUrl +
+      '/LimiteParametroLaboratorio/CargaLimitesLaboratorio?actualizar=' +
+      actualizar,
+      formData
+    );
+  }
 }
