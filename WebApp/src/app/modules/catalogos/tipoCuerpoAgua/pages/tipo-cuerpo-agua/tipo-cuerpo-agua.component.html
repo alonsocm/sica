@@ -259,13 +259,13 @@
                 </div>
                 <p style="font-size: larger; text-align: center;"> ¿Está seguro de que desea eliminar el tipo de cuerpo
                     de agua "{{tipoCuerpoAgua.descripcion}}"?</p>
-                <div class="form-group">
-                    <div class="modal-body">
+               
+                    <div class="modal-footer">
                         <button class="btn btn-secondary ml-2" data-dismiss="modal" type="button" (click)="resetForm()">Cancelar</button>
                         <button (click)="deleteTipoCuerpoAgua(this.tipoCuerpoAgua.id)" data-dismiss="modal"
                             class="btn btn-primary pull-right ml-2" *ngIf="editar==false" type="button">Aceptar</button>
                     </div>
-                </div>
+              
             </div>
         </div>
     </div>
