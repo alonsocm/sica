@@ -23,4 +23,5 @@ export interface Column {
   startAt?: number;
   //#endregion
   parameter?: boolean; //Indicamos si la columna es un parámetro. Con esto sabemos que el endpoint a consultar, es diferente.
+  color?: string; //Propiedad para establecer el color del encabezado
 }
