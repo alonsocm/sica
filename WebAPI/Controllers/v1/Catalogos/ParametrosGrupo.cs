@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Catalogos;
+﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.Features.Catalogos.GrupoParametro.Queries;
 using Application.Features.Catalogos.ParametrosGrupo.Commands;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
@@ -22,7 +23,7 @@ namespace WebAPI.Controllers.v1.Catalogos
         }
 
         [HttpGet("ParametrosPaginados")]
-        public async Task<IActionResult> Get(int page, int pageSize, string? filter)
+        public async Task<IActionResult> Get(int page, int pageSize, string? filter, string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -31,7 +32,18 @@ namespace WebAPI.Controllers.v1.Catalogos
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new ParametrosQuery { Page = page, PageSize = pageSize, Filter = filters }));
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+            return Ok(await Mediator.Send(new ParametrosQuery { Page = page, PageSize = pageSize, Filter = filters, OrderBy = orderBy }));
         }
 
         [HttpPost]

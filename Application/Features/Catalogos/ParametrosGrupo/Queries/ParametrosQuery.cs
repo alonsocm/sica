@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Catalogos;
+﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
@@ -11,6 +12,7 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Queries
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
+        public OrderBy? OrderBy { get; set; }
     }
 
     public class ParametrosQueryHandler : IRequestHandler<ParametrosQuery, PagedResponse<IEnumerable<ParametroDTO>>>
@@ -33,6 +35,18 @@ namespace Application.Features.Catalogos.ParametrosGrupo.Queries
                 foreach (var filter in expressions)
                 {
                     data = data.AsQueryable().Where(filter);
+                }
+            }
+
+            if (request.OrderBy != null)
+            {
+                if (request.OrderBy.Type == "asc")
+                {
+                    data = data.AsQueryable().OrderBy(QueryExpression<ParametroDTO>.GetOrderByExpression(request.OrderBy.Column));
+                }
+                else if (request.OrderBy.Type == "desc")
+                {
+                    data = data.AsQueryable().OrderByDescending(QueryExpression<ParametroDTO>.GetOrderByExpression(request.OrderBy.Column));
                 }
             }
 

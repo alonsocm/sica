@@ -173,7 +173,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
   getParametros() {
     this.parametrosService
-      .getParametros(this.page, this.pageSize, this.cadena)
+      .getParametros(this.page, this.pageSize, this.cadena, this.orderBy)
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
@@ -272,7 +272,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.parametrosService
-      .getParametros(this.page, this.pageSize, this.cadena)
+      .getParametros(this.page, this.pageSize, this.cadena, this.orderBy)
       .subscribe({
         next: (response: any) => {
           this.registros = response.data;
