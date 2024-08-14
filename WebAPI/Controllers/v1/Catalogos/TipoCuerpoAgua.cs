@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Catalogos;
+﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.Features.Catalogos.TiposCuerpoAgua.Commands;
 using Application.Features.Catalogos.TiposCuerpoAgua.Queries;
 using Application.Wrappers;
@@ -19,7 +20,7 @@ namespace WebAPI.Controllers.v1.Catalogos
             return Ok(await Mediator.Send(new GetTipoCuerpoAguaQuery()));
         }
         [HttpGet("TipoCuerpoAguaP")]
-        public async Task<IActionResult> Get(int page, int pageSize, string? filter)
+        public async Task<IActionResult> Get([FromQuery] int page, int pageSize, string? filter = "", string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -27,8 +28,18 @@ namespace WebAPI.Controllers.v1.Catalogos
             {
                 filters = QueryParam.GetFilters(filter);
             }
+            OrderBy orderBy = null;
 
-            return Ok(await Mediator.Send(new GetTipoCuerpoAguaPQuery { Page = page, PageSize = pageSize, Filter = filters }));
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+
+            }
+            return Ok(await Mediator.Send(new GetTipoCuerpoAguaPQuery { Page = page, PageSize = pageSize, Filter = filters, OrderBy = orderBy }));
         }
         [HttpGet("GetDistinctFromColumn")]
         public IActionResult GetDistinctFromColumn(string column, string? filter)

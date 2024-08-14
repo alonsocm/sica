@@ -125,9 +125,14 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
 
     this.columns = columnas;
   }
-  getTipoCuerpoAgua() {
+  getTipoCuerpoAgua(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ): void {
+    this.loading = true;
     this.tipoCuerpoAguaServices
-      .getTipoCuerpoAgua(this.page, this.pageSize, this.cadena)
+      .getTipoCuerpoAgua(this.page, this.pageSize, this.cadena,this.orderBy)
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
@@ -136,7 +141,8 @@ export class TipoCuerpoAguaComponent extends BaseService implements OnInit {
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.registros, this.registrosSeleccionados);
           this.selectedPage = this.anyUnselected(this.registros) ? false : true;
-          this.loading = false;                  },
+          this.loading = false;
+        },
         error: (error) => {
           this.loading = false;
         },
@@ -328,7 +334,10 @@ addTipoCuerpoAgua() {
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.tipoCuerpoAguaServices
-      .getTipoCuerpoAgua(this.page, this.pageSize, this.cadena)
+      .getTipoCuerpoAgua(this.page, this.pageSize, this.cadena,{
+        column: column,
+        type: type,
+      })
       .subscribe({
         next: (response: any) => {
           this.registros = response.data;
