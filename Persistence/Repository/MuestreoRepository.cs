@@ -14,81 +14,83 @@ namespace Persistence.Repository
         {
         }
 
-        public async Task<IEnumerable<MuestreoDto>> GetResumenMuestreosAsync(List<long> estatus)
+        public async Task<IEnumerable<MuestreoDto>> GetResumenMuestreosAsync(IEnumerable<long> estatus)
         {
-            var muestreos = await (from m in _dbContext.Muestreo
-                                   join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
-                                   where estatus.Contains(m.EstatusId)
-                                   select new MuestreoDto
-                                   {
-                                       MuestreoId = m.Id,
-                                       OCDL = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal == null ? m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave : m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Clave ?? string.Empty,
-                                       ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
-                                       ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
-                                       Estado = m.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre ?? string.Empty,
-                                       CuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                       TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
-                                       TipoCuerpoAguaHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion ?? string.Empty,
-                                       SubTipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion ?? string.Empty,
-                                       Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
-                                       FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       FechaLimiteRevision = m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
-                                       NumeroEntrega = m.NumeroEntrega.ToString(),
-                                       Estatus = m.Estatus.Descripcion,
-                                       HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
-                                       HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
-                                       ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,
-                                       FechaProgramada = m.ProgramaMuestreo.DiaProgramado.ToString("dd/MM/yyyy"),
-                                       TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString() ?? string.Empty,
-                                       NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
-                                       FechaCarga = m.FechaCarga.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       Observaciones = string.Empty,
-                                       ClaveSitioOriginal = string.Empty,
-                                       HoraCargaEvidencias = $"{m.FechaCargaEvidencias:yyyy-MM-dd}",
-                                       NumeroCargaEvidencias = string.Empty,
-                                       TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
-                                       DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
-                                       OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
-                                       FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty,
-                                       TipoCargaResultados = m.TipoCarga.Descripcion
-                                   })
-                                   .ToListAsync();
+            var muestreoQuery = from m in _dbContext.Muestreo
+                                join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
+                                where estatus.Contains(m.EstatusId)
+                                select new MuestreoDto
+                                {
+                                    MuestreoId = m.Id,
+                                    OCDL = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal == null ? m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave : m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Clave ?? string.Empty,
+                                    ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                    ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
+                                    Estado = m.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre ?? string.Empty,
+                                    CuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                                    TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                    TipoCuerpoAguaHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion ?? string.Empty,
+                                    SubTipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.SubtipoCuerpoAgua.Descripcion ?? string.Empty,
+                                    Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
+                                    FechaRealizacion = m.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                                    FechaLimiteRevision = m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                                    NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
+                                    NumeroEntrega = m.NumeroEntrega.ToString(),
+                                    Estatus = m.Estatus.Descripcion,
+                                    HoraInicio = $"{m.HoraInicio:hh\\:mm\\:ss}" ?? string.Empty,
+                                    HoraFin = $"{m.HoraFin:hh\\:mm\\:ss}" ?? string.Empty,
+                                    ProgramaAnual = m.AnioOperacion.ToString() ?? string.Empty,
+                                    FechaProgramada = m.ProgramaMuestreo.DiaProgramado.ToString("dd/MM/yyyy"),
+                                    TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion.ToString() ?? string.Empty,
+                                    NombreSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
+                                    FechaCarga = m.FechaCarga.ToString("dd/MM/yyyy") ?? string.Empty,
+                                    Observaciones = string.Empty,
+                                    ClaveSitioOriginal = string.Empty,
+                                    HoraCargaEvidencias = $"{m.FechaCargaEvidencias:yyyy-MM-dd}",
+                                    NumeroCargaEvidencias = string.Empty,
+                                    TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                    DireccionLocal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion ?? string.Empty,
+                                    OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
+                                    FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty,
+                                    TipoCargaResultados = m.TipoCarga.Descripcion,
+                                    EvidenciasEsperadas = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.EvidenciasEsperadas
+                                };
 
+            var evidencias = from e in _dbContext.EvidenciaMuestreo
+                             where muestreoQuery.Select(s => s.MuestreoId).Contains(e.MuestreoId)
+                             select new
+                             {
+                                 e.MuestreoId,
+                                 e.NombreArchivo,
+                                 e.TipoEvidenciaMuestreo.Sufijo,
+                                 e.TipoEvidenciaMuestreoId
+                             };
 
-            var evidencias = await (from e in _dbContext.EvidenciaMuestreo
-                                    where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
-                                    select new
-                                    {
-                                        e.MuestreoId,
-                                        e.NombreArchivo,
-                                        e.TipoEvidenciaMuestreo.Sufijo,
-                                        e.TipoEvidenciaMuestreoId
-                                    }).ToListAsync();
-
-            var laboratoriosubrogado = await (from e in _dbContext.ResultadoMuestreo
-                                              where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId) && e.LaboratorioSubrogadoId != null
-                                              select new { e.LaboratorioSubrogado.Nomenclatura, e.MuestreoId }).Distinct().ToListAsync();
+            var laboratoriosubrogado = (from e in _dbContext.ResultadoMuestreo
+                                        where muestreoQuery.Select(s => s.MuestreoId).Contains(e.MuestreoId) && e.LaboratorioSubrogadoId != null
+                                        select new { e.LaboratorioSubrogado.Nomenclatura, e.MuestreoId }).Distinct();
 
             //Cambiar para los que ahora no tienen resultados
-            var fechentrega = await (from e in _dbContext.ResultadoMuestreo
-                                     where muestreos.Select(s => s.MuestreoId).Contains(e.MuestreoId)
-                                     select new { e.FechaEntrega, e.MuestreoId }).Distinct().ToListAsync();
+            var fechentrega = (from e in _dbContext.ResultadoMuestreo
+                               where muestreoQuery.Select(s => s.MuestreoId).Contains(e.MuestreoId)
+                               select new { e.FechaEntrega, e.MuestreoId }).Distinct();
 
-            muestreos.ForEach(f =>
+            var muestreos = await muestreoQuery.ToListAsync();
+
+            foreach (var muestreo in muestreos)
             {
-                var laboratorioSubrogado = laboratoriosubrogado.Where(s => s.MuestreoId == f.MuestreoId).ToList().Select(s => s.Nomenclatura).Distinct().ToList();
-                var Fechaentrega = fechentrega.Where(s => s.MuestreoId == f.MuestreoId).ToList().OrderBy(x => x.FechaEntrega).Select(s => s.FechaEntrega).Distinct();
+                var laboratorioSubrogado = laboratoriosubrogado.Where(s => s.MuestreoId == muestreo.MuestreoId).Select(s => s.Nomenclatura).Distinct().ToList();
+                var Fechaentrega = fechentrega.Where(s => s.MuestreoId == muestreo.MuestreoId).OrderBy(x => x.FechaEntrega).Select(s => s.FechaEntrega).Distinct();
 
-                for (int i = 0; i < laboratorioSubrogado.ToList().Count; i++)
+                for (int i = 0; i < laboratorioSubrogado.Count; i++)
                 {
-                    f.LaboratorioSubrogado += laboratorioSubrogado[i] + "/";
+                    muestreo.LaboratorioSubrogado += laboratorioSubrogado[i] + "/";
                 }
 
-                f.LaboratorioSubrogado = f.LaboratorioSubrogado.TrimEnd('/');
-                f.FechaEntregaMuestreo = Fechaentrega.ToList()[0].ToString("dd/MM/yyyy");
-                f.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == f.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo, TipoEvidencia = s.TipoEvidenciaMuestreoId }).ToList());
-            });
+                muestreo.LaboratorioSubrogado = muestreo.LaboratorioSubrogado.TrimEnd('/');
+                muestreo.FechaEntregaMuestreo = Fechaentrega.ToList()[0].ToString("dd/MM/yyyy");
+                muestreo.Evidencias.AddRange(evidencias.Where(s => s.MuestreoId == muestreo.MuestreoId).Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.Sufijo, TipoEvidencia = s.TipoEvidenciaMuestreoId }));
+                muestreo.CumpleNumeroEvidencias = muestreo.Evidencias.Count == muestreo.EvidenciasEsperadas ? "SI" : "NO";
+            }
 
             return muestreos;
         }

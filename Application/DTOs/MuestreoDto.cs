@@ -48,7 +48,8 @@
 
         public string? UsuarioValido { get; set; }
         public string PorcentajePago { get; set; }
-
+        public int EvidenciasEsperadas { get; set; }
+        public string CumpleNumeroEvidencias { get; set; }
 
         public MuestreoDto()
         {
@@ -91,7 +92,7 @@
             NombreSitio = string.Empty;
             ClaveSitio = string.Empty;
             FechaRealizacion = string.Empty;
-            PorcentajePago = string.Empty;            
+            PorcentajePago = string.Empty;
         }
     }
 }
