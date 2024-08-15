@@ -107,7 +107,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'numeroEntrega',
+        name: 'numeroCarga',
         label: 'NÚMERO DE CARGA',
         order: 4,
         selectAll: true,
