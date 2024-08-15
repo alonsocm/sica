@@ -307,10 +307,8 @@ namespace Persistence.Repository
 
         public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId)
         {
-
             var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas
-
-
+                                   where resultados.EstatusId == estatusId
                                    select new AcumuladosResultadoDto
                                    {
                                        ClaveSitio = resultados.ClaveSitio,
@@ -340,8 +338,7 @@ namespace Persistence.Repository
                                        AutorizacionFechaEntrega=resultados.AutorizacionFechaEntrega,
                                        UsuarioValido = resultados.UsuarioValido,
                                        PorcentajePago  = resultados.PorcentajePago.ToString() ?? string.Empty
-
-                                   }).Where(x => x.EstatusId == estatusId).ToListAsync();
+                                   }).ToListAsync();
 
             foreach (var dato in muestreos)
             {

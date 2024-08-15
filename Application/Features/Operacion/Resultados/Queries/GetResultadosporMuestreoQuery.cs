@@ -1,18 +1,16 @@
 ﻿using Application.DTOs;
-using Application.DTOs.Catalogos;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using System.Linq;
 
 namespace Application.Features.Operacion.Resultados.Queries
 {
     public class GetResultadosporMuestreoPaginadosQuery : IRequest<PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
-        public int estatusId { get; set; }
-        public int page { get; set; }
-        public int pageSize { get; set; }
+        public int EstatusId { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
         public OrderBy? OrderBy { get; set; }
     }
@@ -24,12 +22,11 @@ namespace Application.Features.Operacion.Resultados.Queries
         public GetResultadosporMuestreoQueryHandler(IMuestreoRepository muestreoRepository)
         {
             _repositoryAsync = muestreoRepository;
-
         }
 
         public async Task<PagedResponse<IEnumerable<AcumuladosResultadoDto>>> Handle(GetResultadosporMuestreoPaginadosQuery request, CancellationToken cancellationToken)
         {
-            var data = await _repositoryAsync.GetResultadosporMuestreoAsync(request.estatusId);
+            var data = await _repositoryAsync.GetResultadosporMuestreoAsync(request.EstatusId);
             data = data.AsQueryable();
 
             if (request.Filter.Any())
@@ -59,7 +56,7 @@ namespace Application.Features.Operacion.Resultados.Queries
                 throw new KeyNotFoundException($"No se encontraron datos asociados a GetResultadosporMuestreoAsync");
             }
 
-            return PagedResponse<AcumuladosResultadoDto>.CreatePagedReponse(data, request.page, request.pageSize);
+            return PagedResponse<AcumuladosResultadoDto>.CreatePagedReponse(data, request.Page, request.PageSize);
         }
     }
 }

@@ -675,9 +675,9 @@ namespace WebAPI.Controllers.v1.Operacion
             }
             return Ok(await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
             {
-                estatusId = estatusId,
-                page = page,
-                pageSize = pageSize,
+                EstatusId = estatusId,
+                Page = page,
+                PageSize = pageSize,
                 Filter = filters,
                 OrderBy = orderBy
             }));
@@ -706,7 +706,7 @@ namespace WebAPI.Controllers.v1.Operacion
             }
             var data = Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
             {
-                estatusId = estatusId,
+                EstatusId = estatusId,
                 Filter = filters,
                 OrderBy = orderBy
             }).Result.Data;

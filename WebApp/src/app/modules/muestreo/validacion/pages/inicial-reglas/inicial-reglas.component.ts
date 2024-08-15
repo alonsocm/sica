@@ -19,8 +19,8 @@ import { Muestreo } from '../../../../../interfaces/Muestreo.interface';
   styleUrls: ['./inicial-reglas.component.css'],
 })
 export class InicialReglasComponent extends BaseService implements OnInit {
-
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
   constructor(
     private validacionService: ValidacionReglasService,
     private notificationService: NotificationService,
@@ -33,12 +33,12 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
-    id: 'mdlConfirmacion'
+    id: 'mdlConfirmacion',
   };
   notificacionConfirmacion: Notificacion = {
     title: 'Confirmar carga resultados',
     text: '¿Desea cargar los resultados de los muestreos eliminados?',
-    id: 'mdlCargaResultados'
+    id: 'mdlCargaResultados',
   };
   archivo: any;
 
@@ -46,7 +46,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.cargaResultados();
-
   }
 
   definirColumnas() {
@@ -353,7 +352,8 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       },
       {
         name: 'autorizacionRegla',
-        label: 'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA (SI/NO)',
+        label:
+          'AUTORIZACIÓN DE REGLAS CUANDO NO CUMPLE FECHA DE ENTREGA (SI/NO)',
         order: 21,
         selectAll: true,
         filtered: false,
@@ -404,7 +404,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.selectedPage = false;
           this.resultadosMuestreo = response.data;
-          console.log(this.resultadosMuestreo);
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(
@@ -433,11 +432,9 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     }
     this.loading = true;
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
-    console.log(this.resultadosEnviados);
-    this.resultadosEnviados
-      .map((s) => {
-        s.correReglaValidacion = (s.correReglaValidacion) ? "SI" : "NO";
-      });
+    this.resultadosEnviados.map((s) => {
+      s.correReglaValidacion = s.correReglaValidacion ? 'SI' : 'NO';
+    });
 
     this.validacionService
       .exportExcelResultadosaValidar(this.resultadosEnviados)
@@ -461,7 +458,9 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
   enviaraValidacion(): void {
     let datosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
-    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0);
+    let muestreosConResultados = datosSeleccionados.filter(
+      (m) => m.numParametrosCargados != 0
+    );
 
     if (datosSeleccionados.length == 0) {
       this.hacerScroll();
@@ -470,55 +469,51 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         type: NotificationType.warning,
         text: 'Debes de seleccionar al menos un muestreos para enviar a validar',
       });
-    }
-    else if (muestreosConResultados.length == 0) {
-
+    } else if (muestreosConResultados.length == 0) {
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
         text: 'Debes de seleccionar muestreos que cuenten con resultados para poder ser enviados a la etapa de "Módulo de reglas"',
       });
-    }
-    else {
+    } else {
       let lstMuestreos = muestreosConResultados.map(
         (m) =>
           <Muestreo>{
             estatusId: estatusMuestreo.SeleccionadoParaValidar,
             autorizacionIncompleto: m.autorizacionIncompleto,
             autorizacionFechaEntrega: m.autorizacionFechaEntrega,
-            muestreoId: m.muestreoId
+            muestreoId: m.muestreoId,
           }
       );
 
-      this.muestreoService.actualizarMuestreos(lstMuestreos)
-        .subscribe({
-          next: (response: any) => {
-            this.loading = true;
-            if (response.succeded) {
-              this.loading = false;
-              this.cargaResultados();
-              this.hacerScroll();
-              return this.notificationService.updateNotification({
-                show: true,
-                type: NotificationType.success,
-                text: 'Los muestreos fueron enviados a validar correctamente',
-              });
-            }
-          },
-          error: (response: any) => {
+      this.muestreoService.actualizarMuestreos(lstMuestreos).subscribe({
+        next: (response: any) => {
+          this.loading = true;
+          if (response.succeded) {
             this.loading = false;
+            this.cargaResultados();
             this.hacerScroll();
             return this.notificationService.updateNotification({
               show: true,
-              type: NotificationType.danger,
-              text: 'Error al enviar los muestreos a validar',
+              type: NotificationType.success,
+              text: 'Los muestreos fueron enviados a validar correctamente',
             });
-          },
-        });
+          }
+        },
+        error: (response: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'Error al enviar los muestreos a validar',
+          });
+        },
+      });
     }
   }
 
-  limpiarFiltros() { }
+  limpiarFiltros() {}
 
   sort(column: string, type: string) {
     this.orderBy = { column, type };
@@ -532,7 +527,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         next: (response: any) => {
           this.resultadosMuestreo = response.data;
         },
-        error: (error) => { },
+        error: (error) => {},
       });
   }
 
@@ -638,24 +633,28 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   eliminarResultados() {
     this.loading = true;
     if (this.allSelected) {
-      this.validacionService.deleteResultadosByFilter(estatusMuestreo.InicialReglas, this.cadena).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();
-          this.cargaResultados();
-          this.loading = false;
-          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Resultados eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
+      this.validacionService
+        .deleteResultadosByFilter(estatusMuestreo.InicialReglas, this.cadena)
+        .subscribe({
+          next: (response) => {
+            document.getElementById('btnCancelarModal')?.click();
+            this.cargaResultados();
+            this.loading = false;
+            document
+              .getElementById('btnMdlConfirmacionCargaResultados')
+              ?.click();
+            this.resetValues();
+            this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Resultados eliminados correctamente',
+            });
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+        });
     } else {
       this.loading = false;
 
@@ -703,7 +702,11 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.validacionService
-        .getDistinctValuesFromColumnporMuestreo(column.name, this.cadena, estatusMuestreo.InicialReglas)
+        .getDistinctValuesFromColumnporMuestreo(
+          column.name,
+          this.cadena,
+          estatusMuestreo.InicialReglas
+        )
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
@@ -718,7 +721,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
           },
-          error: (error) => { },
+          error: (error) => {},
         });
     }
 
@@ -732,34 +735,38 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     this.loading = true;
     if (this.archivo) {
-      this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
-        next: (response: any) => {
-          if (response.data.correcto) {
+      this.muestreoService
+        .cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico)
+        .subscribe({
+          next: (response: any) => {
+            if (response.data.correcto) {
+              this.loading = false;
+              this.resetInputFile(this.inputExcelMonitoreos);
+              this.cargaResultados();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.success,
+                text: 'Se sustituyeron los datos correctamente.',
+              });
+            } else {
+              this.loading = false;
+            }
+          },
+          error: (error: any) => {
             this.loading = false;
+            let archivoErrores = this.generarArchivoDeErrores(
+              error.error.Errors
+            );
+            this.hacerScroll();
+            FileService.download(archivoErrores, 'errores.txt');
             this.resetInputFile(this.inputExcelMonitoreos);
-            this.cargaResultados();
             return this.notificationService.updateNotification({
               show: true,
-              type: NotificationType.success,
-              text: 'Se sustituyeron los datos correctamente.',
+              type: NotificationType.danger,
+              text: 'Se encontraron errores en el archivo procesado.',
             });
-          } else {
-            this.loading = false;
-          }
-        },
-        error: (error: any) => {
-          this.loading = false;
-          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-          this.hacerScroll();
-          FileService.download(archivoErrores, 'errores.txt');
-          this.resetInputFile(this.inputExcelMonitoreos);
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.danger,
-            text: 'Se encontraron errores en el archivo procesado.',
-          });
-        },
-      });
+          },
+        });
     }
   }
 
@@ -771,10 +778,10 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         type: NotificationType.warning,
         text: 'No existe selección para la descarga de muestreos que no cumplen con la fecha de entrega',
       });
-
-    }
-    else {
-      let filtrdosNoCumplen = this.resultadosFiltradosn.filter(x => x.cumpleFechaEntrega == "SI");
+    } else {
+      let filtrdosNoCumplen = this.resultadosFiltradosn.filter(
+        (x) => x.cumpleFechaEntrega == 'SI'
+      );
       if (filtrdosNoCumplen.length == this.resultadosFiltradosn.length) {
         this.hacerScroll();
         return this.notificationService.updateNotification({
@@ -782,16 +789,19 @@ export class InicialReglasComponent extends BaseService implements OnInit {
           type: NotificationType.warning,
           text: 'Los muestreos seleccionados si cumplen con la fecha de entrega, no es necesaria la descarga ',
         });
-
-      }
-      else {
+      } else {
         this.loading = true;
         this.muestreoService
-          .obtenerResultadosNoCumplenFechaEntrega(this.resultadosFiltradosn.map((s) => s.muestreoId))
+          .obtenerResultadosNoCumplenFechaEntrega(
+            this.resultadosFiltradosn.map((s) => s.muestreoId)
+          )
           .subscribe({
             next: (response: any) => {
               this.loading = true;
-              FileService.download(response, 'ParametrosNoCumplenFechaEntrega.xlsx');
+              FileService.download(
+                response,
+                'ParametrosNoCumplenFechaEntrega.xlsx'
+              );
               this.loading = false;
             },
             error: (response: any) => {
@@ -807,6 +817,4 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       }
     }
   }
-
- 
 }
