@@ -41,9 +41,13 @@ export class ValidacionReglasService {
     );
   }
 
-  exportarResultadosAcumuladosExcel(muestreos: Array<any> = []) {
+  exportarResultadosAcumuladosExcel(muestreos: Array<any> = [], filter = '') {
     return this.http.post(
-      environment.apiUrl + '/Resultados/exportExcelValidaciones',
+      environment.apiUrl +
+        '/Resultados/exportExcelValidaciones?estatusId=' +
+        estatusMuestreo.AcumulacionResultados +
+        '&filter=' +
+        filter,
       muestreos,
       { responseType: 'blob' }
     );
@@ -169,7 +173,7 @@ export class ValidacionReglasService {
       options
     );
   }
- 
+
   getDistinctValuesFromColumn(
     column: string,
     filter: string,
@@ -189,30 +193,23 @@ export class ValidacionReglasService {
     );
   }
 
-  
   getDistinctValuesFromColumnporMuestreo(
     column: string,
     filter: string,
     estatusId: number
   ): Observable<Object> {
     const params = new HttpParams({
-      fromObject: {    
+      fromObject: {
         estatusId: estatusId,
         column: column,
         filter: filter,
       },
     });
     return this.http.get(
-      environment.apiUrl +
-      '/resultados/ResultadosporMuestreoDistinct',
+      environment.apiUrl + '/resultados/ResultadosporMuestreoDistinct',
       { params }
     );
   }
-
-
-
-
-
 
   cargarArchivo(archivo: File): Observable<any> {
     const formData = new FormData();

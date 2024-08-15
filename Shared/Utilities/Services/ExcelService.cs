@@ -429,5 +429,49 @@ namespace Shared.Utilities.Services
             // Save the workbook to the specified file path
             package.SaveAs(new FileInfo(filePath));
         }
+
+        public static void ExportAcumulacionResultadosExcel(IEnumerable<AcumuladosResultadoDto> data, string filePath)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var package = new ExcelPackage(filePath);
+            ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
+            var fila = 2;
+
+            foreach (var registro in data)
+            {
+                worksheet.Cells[fila, 1].Value = "NO";
+                worksheet.Cells[fila, 2].Value = registro.NumeroCarga;
+                worksheet.Cells[fila, 3].Value = registro.ClaveUnica;
+                worksheet.Cells[fila, 4].Value = registro.ClaveMonitoreo;
+                worksheet.Cells[fila, 5].Value = registro.ClaveSitio;
+                worksheet.Cells[fila, 6].Value = registro.NombreSitio;
+                worksheet.Cells[fila, 7].Value = registro.FechaProgramada;
+                worksheet.Cells[fila, 8].Value = registro.FechaRealizacion;
+                worksheet.Cells[fila, 9].Value = registro.HoraInicio;
+                worksheet.Cells[fila, 10].Value = registro.HoraFin;
+                worksheet.Cells[fila, 11].Value = registro.TipoSitio;
+                worksheet.Cells[fila, 12].Value = registro.TipoCuerpoAgua;
+                worksheet.Cells[fila, 13].Value = registro.SubTipoCuerpoAgua;
+                worksheet.Cells[fila, 14].Value = registro.Laboratorio;
+                worksheet.Cells[fila, 15].Value = registro.LaboratorioRealizoMuestreo;
+                worksheet.Cells[fila, 16].Value = registro.LaboratorioSubrogado;
+                worksheet.Cells[fila, 17].Value = registro.GrupoParametro;
+                worksheet.Cells[fila, 18].Value = registro.SubGrupo;
+                worksheet.Cells[fila, 19].Value = registro.ClaveParametro;
+                worksheet.Cells[fila, 20].Value = registro.Parametro;
+                worksheet.Cells[fila, 21].Value = registro.UnidadMedida;
+                worksheet.Cells[fila, 22].Value = registro.Resultado;
+                worksheet.Cells[fila, 23].Value = registro.NuevoResultadoReplica;
+                worksheet.Cells[fila, 24].Value = registro.ProgramaAnual;
+                worksheet.Cells[fila, 25].Value = registro.IdResultadoLaboratorio;
+                worksheet.Cells[fila, 26].Value = registro.FechaEntrega;
+                worksheet.Cells[fila, 27].Value = registro.Replica;
+                worksheet.Cells[fila, 28].Value = registro.CambioResultado;
+                fila++;
+            }
+
+            package.SaveAs(new FileInfo(filePath));
+        }
     }
 }

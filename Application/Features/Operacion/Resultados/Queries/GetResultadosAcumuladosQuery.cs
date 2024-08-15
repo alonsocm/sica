@@ -8,7 +8,7 @@ namespace Application.Features.Operacion.Resultados.Queries
 {
     public class GetResultadosMuestreoEstatusMuestreoPaginadosQuery : IRequest<PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
-        public int estatusId { get; set; }
+        public int EstatusId { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
@@ -26,7 +26,7 @@ namespace Application.Features.Operacion.Resultados.Queries
 
         public async Task<PagedResponse<IEnumerable<AcumuladosResultadoDto>>> Handle(GetResultadosMuestreoEstatusMuestreoPaginadosQuery request, CancellationToken cancellationToken)
         {
-            var data = await _repositoryAsync.GetResultadosMuestreoEstatusMuestreoAsync(request.estatusId);
+            var data = await _repositoryAsync.GetResultadosMuestreoEstatusMuestreoAsync(request.EstatusId);
 
             if (request.Filter.Any())
             {

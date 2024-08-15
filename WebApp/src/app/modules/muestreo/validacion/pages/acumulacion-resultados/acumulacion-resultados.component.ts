@@ -17,7 +17,9 @@ import { Item } from 'src/app/interfaces/filter/item';
   templateUrl: './acumulacion-resultados.component.html',
   styleUrls: ['./acumulacion-resultados.component.css'],
 })
-export class AcumulacionResultadosComponent   extends BaseService   implements OnInit
+export class AcumulacionResultadosComponent
+  extends BaseService
+  implements OnInit
 {
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
@@ -33,24 +35,21 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados seleccionados?',
-    id:'mdlConfirmacion'
+    id: 'mdlConfirmacion',
   };
 
   notificacionConfirmacion: Notificacion = {
     title: 'Confirmar carga resultados',
     text: '¿Desea cargar los resultados eliminados?',
-    id: 'mdlCargaResultados'
+    id: 'mdlCargaResultados',
   };
-
 
   archivo: any;
 
   ngOnInit(): void {
-
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarMonitoreos();
-  
   }
 
   definirColumnas() {
@@ -500,7 +499,6 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
     pageSize: number = this.NoPage,
     filter: string = this.cadena
   ): void {
-  
     this.validacionService
       .getResultadosAcumuladosParametrosPaginados(
         estatusMuestreo.AcumulacionResultados,
@@ -522,17 +520,13 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
           this.selectedPage = this.anyUnselected(this.datosAcumualdos)
             ? false
             : true;
-
-         
         },
-        error: (error) => {
-        
-        },
+        error: (error) => {},
       });
   }
 
   //cambiar cuando selecciona todo
-  onDownload(): void {   
+  onDownload(): void {
     if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -542,8 +536,17 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
       });
     }
 
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.resultadosFiltrados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
     this.validacionService
-      .exportarResultadosAcumuladosExcel(this.resultadosFiltrados)
+      .exportarResultadosAcumuladosExcel(registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
           this.loading = true;
@@ -585,8 +588,7 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
       .enviarMuestreoaValidar(estatusMuestreo.InicialReglas, resuladosenviados)
       .subscribe({
         next: (response: any) => {
-          if (response.succeded) {           
-            
+          if (response.succeded) {
             this.hacerScroll();
             this.consultarMonitoreos();
             return this.notificationService.updateNotification({
@@ -608,7 +610,6 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
       });
 
     this.loading = false;
-    
   }
 
   sort(column: string, type: string) {
@@ -708,59 +709,71 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
   pageClic(page: any) {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
-  } 
+  }
 
-  eliminarResultados() {    
+  eliminarResultados() {
     this.loading = true;
-    if (this.allSelected) {     
-      this.validacionService.deleteResultadosByFilter(estatusMuestreo.AcumulacionResultados, this.cadena).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();
-          this.consultarMonitoreos();
-          this.loading = false;
-          document.getElementById('btnMdlConfirmacionCargaResultados')?.click(); 
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Resultados eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
+    if (this.allSelected) {
+      this.validacionService
+        .deleteResultadosByFilter(
+          estatusMuestreo.AcumulacionResultados,
+          this.cadena
+        )
+        .subscribe({
+          next: (response) => {
+            document.getElementById('btnCancelarModal')?.click();
+            this.consultarMonitoreos();
+            this.loading = false;
+            document
+              .getElementById('btnMdlConfirmacionCargaResultados')
+              ?.click();
+            this.resetValues();
+            this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Resultados eliminados correctamente',
+            });
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+        });
     } else {
-      this.loading = false; 
-      let muestreosSeleccionados = this.Seleccionados(this.datosAcumualdos); 
-      let resultadosEliminar = muestreosSeleccionados.map((s) => s.resultadoMuestreoId);
-      this.validacionService.deleteResultadosById(resultadosEliminar).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();            
-          this.consultarMonitoreos();
-          this.loading = false;          
-          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Resultados eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
+      this.loading = false;
+      let muestreosSeleccionados = this.Seleccionados(this.datosAcumualdos);
+      let resultadosEliminar = muestreosSeleccionados.map(
+        (s) => s.resultadoMuestreoId
+      );
+      this.validacionService
+        .deleteResultadosById(resultadosEliminar)
+        .subscribe({
+          next: (response) => {
+            document.getElementById('btnCancelarModal')?.click();
+            this.consultarMonitoreos();
+            this.loading = false;
+            document
+              .getElementById('btnMdlConfirmacionCargaResultados')
+              ?.click();
+            this.resetValues();
+            this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Resultados eliminados correctamente',
+            });
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+        });
     }
   }
 
   confirmacionCarga() {
-    console.log("confirmacra");
     this.notificacion.title = 'Confirmación carga resultados eliminados';
     this.notificacion.text = '¿Desea cargar los resultados eliminados?';
-    document.getElementById('btnMdlConfirmacion')?.click(); 
+    document.getElementById('btnMdlConfirmacion')?.click();
   }
 
   private resetValues() {
@@ -804,8 +817,12 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.validacionService
-        .getDistinctValuesFromColumn(column.name, this.cadena, estatusMuestreo.AcumulacionResultados)
-        .subscribe({          
+        .getDistinctValuesFromColumn(
+          column.name,
+          this.cadena,
+          estatusMuestreo.AcumulacionResultados
+        )
+        .subscribe({
           next: (response: any) => {
             this.loading = true;
             column.data = response.data.map((register: any) => {
@@ -835,34 +852,38 @@ export class AcumulacionResultadosComponent   extends BaseService   implements O
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     this.loading = true;
     if (this.archivo) {
-      this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
-        next: (response: any) => {
-          if (response.data.correcto) {
+      this.muestreoService
+        .cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico)
+        .subscribe({
+          next: (response: any) => {
+            if (response.data.correcto) {
+              this.loading = false;
+              this.resetInputFile(this.inputExcelMonitoreos);
+              this.consultarMonitoreos();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.success,
+                text: 'Se sustituyeron los datos correctamente.',
+              });
+            } else {
+              this.loading = false;
+            }
+          },
+          error: (error: any) => {
             this.loading = false;
+            let archivoErrores = this.generarArchivoDeErrores(
+              error.error.Errors
+            );
+            this.hacerScroll();
+            FileService.download(archivoErrores, 'errores.txt');
             this.resetInputFile(this.inputExcelMonitoreos);
-            this.consultarMonitoreos();
             return this.notificationService.updateNotification({
               show: true,
-              type: NotificationType.success,
-              text: 'Se sustituyeron los datos correctamente.',
+              type: NotificationType.danger,
+              text: 'Se encontraron errores en el archivo procesado.',
             });
-          } else {
-            this.loading = false;
-          }
-        },
-        error: (error: any) => {
-          this.loading = false;
-          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-          this.hacerScroll();
-          FileService.download(archivoErrores, 'errores.txt');
-          this.resetInputFile(this.inputExcelMonitoreos);
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.danger,
-            text: 'Se encontraron errores en el archivo procesado.',
-          });
-        },
-      });
+          },
+        });
     }
   }
 }

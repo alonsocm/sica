@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
-using Application.Features.Muestreos.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Commands.Liberacion;
@@ -18,7 +17,6 @@ using Domain.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Utilities.Services;
-using System.Drawing.Printing;
 using System.Reflection;
 using WebAPI.Shared;
 
@@ -616,7 +614,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
             {
-                estatusId = estatusId,
+                EstatusId = estatusId,
                 Page = page,
                 PageSize = pageSize,
                 Filter = filters,
@@ -648,7 +646,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
             {
-                estatusId = estatusId,
+                EstatusId = estatusId,
                 Filter = filters,
                 OrderBy = orderBy
             }).Result.Data;
@@ -706,12 +704,12 @@ namespace WebAPI.Controllers.v1.Operacion
                     Type = order.Split('_')[1]
                 };
             }
-            var data =  Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+            var data = Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
             {
-                estatusId = estatusId,               
+                estatusId = estatusId,
                 Filter = filters,
                 OrderBy = orderBy
-            }).Result.Data;      
+            }).Result.Data;
 
             return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
 
@@ -720,49 +718,30 @@ namespace WebAPI.Controllers.v1.Operacion
 
         //ExportaciondeExcelPantallasValidacionReglas cambiar por el filtrado
         [HttpPost("exportExcelValidaciones")]
-        public IActionResult ExportExcelValidaciones(List<AcumuladosResultadoDto> muestreos)
+        public IActionResult ExportExcelValidaciones([FromQuery] int estatusId, [FromQuery] string? filter, [FromBody] List<long> muestreos)
         {
-            List<AcumuladosResultadosExcel> lstmuestreosExcel = new List<AcumuladosResultadosExcel>();
-            foreach (var dato in muestreos)
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                AcumuladosResultadosExcel resultadosAcumulados = new()
-                {
-                    ClaveUnica = dato.ClaveUnica,
-                    ClaveMonitoreo = dato.ClaveMonitoreo,
-                    ClaveSitio = dato.ClaveSitio,
-                    NombreSitio = dato.NombreSitio,
-                    FechaProgramada = dato.FechaProgramada,
-                    FechaRealizacion = dato.FechaRealizacion,
-                    HoraInicio = dato.HoraInicio,
-                    HoraFin = dato.HoraFin,
-                    TipoSitio = dato.TipoSitio,
-                    TipoCuerpoAgua = dato.TipoCuerpoAgua,
-                    SubTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    Laboratorio = dato.Laboratorio,
-                    LaboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
-                    LaboratorioSubrogado = dato.LaboratorioSubrogado,
-                    GrupoParametro = dato.GrupoParametro,
-                    SubGrupo = dato.SubGrupo,
-                    ClaveParametro = dato.ClaveParametro,
-                    Parametro = dato.Parametro,
-                    UnidadMedida = dato.UnidadMedida ?? string.Empty,
-                    Resultado = dato.Resultado,
-                    NuevoResultadoReplica = dato.NuevoResultadoReplica,
-                    ProgramaAnual = dato.ProgramaAnual,
-                    IdResultadoLaboratorio = dato.IdResultadoLaboratorio,
-                    FechaEntrega = dato.FechaEntrega,
-                    Replica = (dato.Replica) ? "SI" : "NO",
-                    CambioResultado = (dato.CambioResultado) ? "SI" : "NO"
+                filters = QueryParam.GetFilters(filter);
+            }
 
-                };
+            var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            {
+                EstatusId = estatusId,
+                Filter = filters,
+            }).Result.Data;
 
-                lstmuestreosExcel.Add(resultadosAcumulados);
+            if (muestreos != null && muestreos.Any())
+            {
+                data = data.Where(x => muestreos.Contains(x.MuestreoId)).ToList();
             }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("AcumulacionResultados");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
-            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+            ExcelService.ExportAcumulacionResultadosExcel(data, fileInfo.FullName);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
@@ -851,7 +830,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
             {
-                estatusId = estatus,
+                EstatusId = estatus,
                 Filter = filters
             }).Result.Data;
 
