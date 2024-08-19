@@ -137,12 +137,14 @@ export class MuestreoService {
 
   getDistinctValuesFromColumn(
     column: string,
-    filter: string
+    filter: string,
+    esLiberacion: boolean
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
         column: column,
         filter: filter,
+        esLiberacion: esLiberacion,
       },
     });
     return this.http.get(
