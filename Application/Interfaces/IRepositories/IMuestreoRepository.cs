@@ -7,7 +7,7 @@ namespace Application.Interfaces.IRepositories
 {
     public interface IMuestreoRepository : IRepository<Muestreo>
     {
-        Task<IEnumerable<MuestreoDto>> GetResumenMuestreosAsync(IEnumerable<long> estatus);
+        Task<IEnumerable<MuestreoDto>> GetResumenMuestreosAsync(IEnumerable<int> estatus);
         List<Muestreo> ConvertToMuestreosList(List<CargaMuestreoDto> cargaMuestreoDtoList, bool validado, int tipocarga);
 
         List<ResultadoMuestreo> GenerarResultados(string claveMuestreo, List<CargaMuestreoDto> cargaMuestreoDto);

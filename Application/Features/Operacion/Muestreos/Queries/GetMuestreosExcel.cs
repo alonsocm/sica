@@ -24,25 +24,25 @@ namespace Application.Features.Muestreos.Queries
 
         public async Task<List<CargaResultadosEbaseca>> Handle(GetMuestreosExcel request, CancellationToken cancellationToken)
         {
-            var estatus = new List<long>();
+            var estatus = new List<int>();
 
             if (!request.EsLiberacion)
             {
-                estatus.Add((long)Enums.EstatusMuestreo.Cargado);
-                estatus.Add((long)Enums.EstatusMuestreo.EvidenciasCargadas);
+                estatus.Add((int)Enums.EstatusMuestreo.Cargado);
+                estatus.Add((int)Enums.EstatusMuestreo.EvidenciasCargadas);
             }
             else
             {
                 //Revisar porque se tiene los demas estatus
-                estatus.Add((long)Enums.EstatusMuestreo.NoEnviado);
+                estatus.Add((int)Enums.EstatusMuestreo.NoEnviado);
 
                 //se comenta porque ya no es necesario este estatus aqui ya que despues de ser evidencias cargadas deben de pasar por la
                 //validación de reglas
                 //estatus.Add((long)Enums.EstatusMuestreo.EvidenciasCargadas);
 
-                estatus.Add((long)Enums.EstatusMuestreo.Enviado);
-                estatus.Add((long)Enums.EstatusMuestreo.EnviadoConExtensionFecha);
-                estatus.Add((long)Enums.EstatusMuestreo.Validado);
+                estatus.Add((int)Enums.EstatusMuestreo.Enviado);
+                estatus.Add((int)Enums.EstatusMuestreo.EnviadoConExtensionFecha);
+                estatus.Add((int)Enums.EstatusMuestreo.Validado);
             }
 
             var data = await _repositoryAsync.GetResumenMuestreosAsync(estatus);
@@ -55,12 +55,13 @@ namespace Application.Features.Muestreos.Queries
                 foreach (var filter in expressions)
                 {
                     if (request.Filter.Count == 2 && request.Filter[0].Conditional == "equals" && request.Filter[1].Conditional == "equals")
-                    {   var dataFinal = data;
+                    {
+                        var dataFinal = data;
                         dataFinal = dataFinal.AsQueryable().Where(filter);
                         lstMuestreo.AddRange(dataFinal);
                     }
                     else
-                    { data = data.AsQueryable().Where(filter); }                    
+                    { data = data.AsQueryable().Where(filter); }
                 }
                 data = (lstMuestreo.Count > 0) ? lstMuestreo.AsQueryable() : data;
             }

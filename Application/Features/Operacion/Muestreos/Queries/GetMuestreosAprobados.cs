@@ -20,9 +20,9 @@ namespace Application.Features.Operacion.Muestreos.Queries
 
         public async Task<Response<List<MuestreoDto>>> Handle(GetMuestreosAprobados request, CancellationToken cancellationToken)
         {
-            var estatus = new List<long>
+            var estatus = new List<int>
             {
-                (long)Application.Enums.EstatusMuestreo.OriginalesAprobados
+                (int)Enums.EstatusMuestreo.OriginalesAprobados
             };
 
             var muestreos = await _repository.GetResumenMuestreosAsync(estatus);
