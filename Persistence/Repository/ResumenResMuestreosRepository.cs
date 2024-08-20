@@ -10,9 +10,9 @@ namespace Persistence.Repository
     public class ResumenResMuestreosRepository : Repository<ResultadoMuestreo>, IResumenResRepository
 
     {
-        const int estatusEnviado = (int)Application.Enums.EstatusMuestreo.Enviado;
-        const int estatusExtensionFecha = (int)Application.Enums.EstatusMuestreo.EnviadoConExtensionFecha;
-        const int estatusVencido = (int)Application.Enums.EstatusMuestreo.PendienteDeEnvioAprobacionFinal;
+        const int estatusEnviado = (int)Application.Enums.EstatusMuestreo.RevisiónOCDLSECAIA;
+        const int estatusExtensionFecha = (int)Application.Enums.EstatusMuestreo.Liberaciondemonitoreosconextencióndefecha;
+        const int estatusVencido = (int)Application.Enums.EstatusMuestreo_1.PendienteDeEnvioAprobacionFinal;
 
         public ResumenResMuestreosRepository(SicaContext context) : base(context) { }
 

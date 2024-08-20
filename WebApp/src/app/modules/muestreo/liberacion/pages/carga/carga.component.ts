@@ -463,7 +463,7 @@ export class CargaComponent extends BaseService implements OnInit {
       this.loading = true;
       this.muestreoService
         .enviarMuestreoaSiguienteEtapa(
-          estatusMuestreo.Enviado,
+          estatusMuestreo.RevisiónOCDLSECAIA,
           muestreosSeleccionados.map((m) => {
             return m.muestreoId;
           })

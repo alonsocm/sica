@@ -72,7 +72,7 @@ namespace Application.Features.Operacion.Resultados.Comands
                             ValidarFormaReglaReporte(resultado);
                     });
 
-                    muestreo.EstatusId = (int)Enums.EstatusMuestreo.ValidadoPorReglas;
+                    muestreo.EstatusId = (int)Enums.EstatusMuestreo.ResumenValidaciónReglas;
 
                     _resultadosRepository.ActualizarResultadosValidadosPorReglas(resultadosMuestreo.ToList());
                     _muestreoRepository.Actualizar(muestreo);

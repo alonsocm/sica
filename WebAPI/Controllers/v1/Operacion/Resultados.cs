@@ -28,7 +28,7 @@ namespace WebAPI.Controllers.v1.Operacion
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
-        const int estatusVencido = (int)Application.Enums.EstatusMuestreo.PendienteDeEnvioAprobacionFinal;
+        const int estatusVencido = (int)Application.Enums.EstatusMuestreo_1.PendienteDeEnvioAprobacionFinal;
         const int aprobacionSistema = (int)Application.Enums.TipoAprobacion.Sistema;
 
         public Resultados(IConfiguration configuration, IWebHostEnvironment env)

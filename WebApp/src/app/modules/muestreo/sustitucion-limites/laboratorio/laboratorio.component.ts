@@ -130,7 +130,7 @@ export class LaboratorioComponent extends BaseService implements OnInit {
   }
   obtenerMuestreosSustituidos() {
     this.loading = true;
-    this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.AprobacionResultado).subscribe({
+    this.limiteService.getResultadosParametrosEstatus(estatusMuestreo.Aprobaciónderesultados).subscribe({
       next: (response: any) => {        
         this.muestreos = response.data;
         this.resultadosFiltradosn = response.data;

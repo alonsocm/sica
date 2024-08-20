@@ -26,11 +26,11 @@ namespace Persistence.Repository
         {
             IEnumerable<ReplicaResumenDto> revisionResumen = await (
                     from result in _dbContext.VwReplicaRevisionResultado
-                    where result.EstatusMuestreoId == (int)Application.Enums.EstatusMuestreo.AprobacionResultado
-                       || result.EstatusMuestreoId == (int)Application.Enums.EstatusMuestreo.OriginalesAprobados
-                       && result.EstatusId == (int)Application.Enums.EstatusMuestreo.EnviadoResultadosAprobados
-                       || result.EstatusId == (int)Application.Enums.EstatusMuestreo.RespuestaReplica_RespuestaLNR_EnviadoPenalizacion
-                       || result.EstatusId == (int)Application.Enums.EstatusMuestreo.RespuestaReplica_RespuestaLNR_EnviadoResultadosAprobados
+                    where result.EstatusMuestreoId == (int)Application.Enums.EstatusMuestreo.Aprobaciónderesultados
+                       || result.EstatusMuestreoId == (int)Application.Enums.EstatusMuestreo_1.OriginalesAprobados
+                       && result.EstatusId == (int)Application.Enums.EstatusMuestreo_1.EnviadoResultadosAprobados
+                       || result.EstatusId == (int)Application.Enums.EstatusMuestreo_1.RespuestaReplica_RespuestaLNR_EnviadoPenalizacion
+                       || result.EstatusId == (int)Application.Enums.EstatusMuestreo_1.RespuestaReplica_RespuestaLNR_EnviadoResultadosAprobados
 
                     select new ReplicaResumenDto
                     {

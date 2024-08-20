@@ -42,7 +42,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                 _evidenciaMuestreoRepository.Eliminar(x => x.MuestreoId == muestreo.Id);
                 _archivos.EliminarEvidencias(claveMuestreo);
 
-                muestreo.EstatusId = (int)Enums.EstatusMuestreo.Cargado;
+                muestreo.EstatusId = (int)Enums.EstatusMuestreo.CargaResultados;
                 _muestreoRepository.Actualizar(muestreo);
             }
 

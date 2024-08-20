@@ -28,7 +28,7 @@ namespace Application.Features.Muestreos.Commands.Liberacion
 
         public async Task<Response<bool>> Handle(DeleteByFilterCommand request, CancellationToken cancellationToken)
         {
-            var data = await _muestreoRepository.GetResumenMuestreosAsync(new List<int> { (int)Enums.EstatusMuestreo.Cargado, (int)Enums.EstatusMuestreo.EvidenciasCargadas });
+            var data = await _muestreoRepository.GetResumenMuestreosAsync(new List<int> { (int)Enums.EstatusMuestreo.CargaResultados, (int)Enums.EstatusMuestreo.EvidenciasCargadas });
             data = data.AsQueryable();
 
             if (request.Filters.Any())

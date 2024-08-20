@@ -30,17 +30,21 @@ namespace Application.Features.Muestreos.Queries
 
             if (!request.EsLiberacion)
             {
-                estatus.Add((int)Enums.EstatusMuestreo.Cargado);
+                estatus.Add((int)Enums.EstatusMuestreo.CargaResultados);
                 estatus.Add((int)Enums.EstatusMuestreo.EvidenciasCargadas);
             }
             else
             {
                 //Revisar porque se tiene los demas estatus
-                estatus.Add((int)Enums.EstatusMuestreo.NoEnviado);
+                estatus.Add((int)Enums.EstatusMuestreo.Liberaciondemonitoreos);
 
-                estatus.Add((int)Enums.EstatusMuestreo.Enviado);
-                estatus.Add((int)Enums.EstatusMuestreo.EnviadoConExtensionFecha);
-                estatus.Add((int)Enums.EstatusMuestreo.Validado);
+                //se comenta porque ya no es necesario este estatus aqui ya que despues de ser evidencias cargadas deben de pasar por la
+                //validación de reglas
+                //estatus.Add((long)Enums.EstatusMuestreo.EvidenciasCargadas);
+
+                estatus.Add((int)Enums.EstatusMuestreo.RevisiónOCDLSECAIA);
+                estatus.Add((int)Enums.EstatusMuestreo.Liberaciondemonitoreosconextencióndefecha);
+                estatus.Add((int)Enums.EstatusOcdlSEcaia.Validado);
             }
 
             var data = await _repositoryAsync.GetResumenMuestreosAsync(estatus);

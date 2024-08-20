@@ -3,6 +3,7 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
+import { estatusMuestreo_1 } from '../../../../../shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from '../../../../../shared/enums/estatusMuestreo';
 import { tipoCarga } from '../../../../../shared/enums/tipoCarga';
 import { Column } from '../../../../../interfaces/filter/column';
@@ -361,7 +362,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     this.loading = true;
     this.validacionService
       .getResultadosporMonitoreoPaginados(
-        estatusMuestreo.SeleccionadoParaValidar,
+        estatusMuestreo.MóduloReglas,
         page,
         pageSize,
         filter,
@@ -502,7 +503,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     //cambiar
     this.validacionService
       .getResultadosporMonitoreoPaginados(
-        estatusMuestreo.InicialReglas,
+        estatusMuestreo.MóduloInicialReglas,
         this.page,
         this.NoPage,
         this.cadena,
@@ -617,7 +618,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.validacionService
-        .getDistinctValuesFromColumnporMuestreo(column.name, this.cadena, estatusMuestreo.SeleccionadoParaValidar)
+        .getDistinctValuesFromColumnporMuestreo(column.name, this.cadena, estatusMuestreo.MóduloReglas)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
@@ -645,7 +646,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   eliminarResultados() {
     this.loading = true;
     if (this.allSelected) {      
-      this.validacionService.deleteResultadosByFilter(estatusMuestreo.SeleccionadoParaValidar, this.cadena).subscribe({
+      this.validacionService.deleteResultadosByFilter(estatusMuestreo.MóduloReglas, this.cadena).subscribe({
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
           this.cargaResultados();

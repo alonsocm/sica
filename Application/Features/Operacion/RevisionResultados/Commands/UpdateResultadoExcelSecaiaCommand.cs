@@ -38,7 +38,7 @@ namespace Application.Features.Operacion.RevisionResultados.Commands
                 var muestreoRM = await _repositorMuestreoyAsync.ObtenerElementoPorIdAsync(test.MuestreoId);
                 muestreoRM.UsuarioRevisionSecaiaid = request.UserId;                 
                 muestreoRM.FechaRevisionSecaia = DateTime.Now;
-                muestreoRM.EstatusSecaia = (int)Enums.EstatusMuestreo.Validado;
+                muestreoRM.EstatusSecaia = (int)Enums.EstatusOcdlSEcaia.Validado;
                 _repositorMuestreoyAsync.Actualizar(muestreoRM);
             }
 

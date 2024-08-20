@@ -3,6 +3,7 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { NotificationService } from '../../../../../shared/services/notification.service';
@@ -394,7 +395,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.loading = true;
     this.validacionService
       .getResultadosporMonitoreoPaginados(
-        estatusMuestreo.InicialReglas,
+        estatusMuestreo.MóduloInicialReglas,
         page,
         pageSize,
         filter,
@@ -479,7 +480,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
       let lstMuestreos = muestreosConResultados.map(
         (m) =>
           <Muestreo>{
-            estatusId: estatusMuestreo.SeleccionadoParaValidar,
+            estatusId: estatusMuestreo.MóduloReglas,
             autorizacionIncompleto: m.autorizacionIncompleto,
             autorizacionFechaEntrega: m.autorizacionFechaEntrega,
             muestreoId: m.muestreoId,
@@ -634,7 +635,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.loading = true;
     if (this.allSelected) {
       this.validacionService
-        .deleteResultadosByFilter(estatusMuestreo.InicialReglas, this.cadena)
+        .deleteResultadosByFilter(estatusMuestreo.MóduloInicialReglas, this.cadena)
         .subscribe({
           next: (response) => {
             document.getElementById('btnCancelarModal')?.click();
@@ -705,7 +706,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         .getDistinctValuesFromColumnporMuestreo(
           column.name,
           this.cadena,
-          estatusMuestreo.InicialReglas
+          estatusMuestreo.MóduloInicialReglas
         )
         .subscribe({
           next: (response: any) => {

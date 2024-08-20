@@ -3,6 +3,7 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interface';
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { Column } from '../../../../../interfaces/filter/column';
@@ -585,7 +586,7 @@ export class AcumulacionResultadosComponent
 
     this.loading = true;
     this.validacionService
-      .enviarMuestreoaValidar(estatusMuestreo.InicialReglas, resuladosenviados)
+      .enviarMuestreoaValidar(estatusMuestreo.MóduloInicialReglas, resuladosenviados)
       .subscribe({
         next: (response: any) => {
           if (response.succeded) {

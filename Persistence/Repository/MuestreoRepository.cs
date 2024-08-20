@@ -52,7 +52,7 @@ namespace Persistence.Repository
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty,
                                        TipoCargaResultados = m.TipoCarga.Descripcion,
-                                       EvidenciasEsperadas = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.EvidenciasEsperadas
+                                       EvidenciasEsperadas = (int)m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.EvidenciasEsperadas
                                    })
                                    .ToListAsync();
 
@@ -106,7 +106,7 @@ namespace Persistence.Repository
                                  FechaRealVisita = Convert.ToDateTime(cm.FechaRealVisita),
                                  HoraInicio = TimeSpan.Parse(cm.HoraInicioMuestreo),
                                  HoraFin = TimeSpan.Parse(cm.HoraFinMuestreo),
-                                 EstatusId = validado ? (int)Application.Enums.EstatusMuestreo.NoEnviado : (int)Application.Enums.EstatusMuestreo.Cargado,
+                                 EstatusId = validado ? (int)Application.Enums.EstatusMuestreo.Liberaciondemonitoreos : (int)Application.Enums.EstatusMuestreo.CargaResultados,
                                  ResultadoMuestreo = GenerarResultados(cm.Muestreo, cargaMuestreoDtoList),
                                  NumeroCarga = cm.NoCarga,
                                  AnioOperacion = Convert.ToInt32(cm.AnioOperacion),
@@ -281,7 +281,7 @@ namespace Persistence.Repository
                                        NumeroCarga = m.NumeroCarga.ToString() + "-" + m.AnioOperacion ?? string.Empty,
                                        FechaEntrega = resMuestreo.FechaEntrega.ToString("dd/MM/yyyy") ?? string.Empty,
                                        IdResultadoLaboratorio = resMuestreo.IdResultadoLaboratorio,
-                                       ValidadoReglas = m.EstatusId == (int)Application.Enums.EstatusMuestreo.ValidadoPorReglas,
+                                       ValidadoReglas = m.EstatusId == (int)Application.Enums.EstatusMuestreo.ResumenValidaciónReglas,
                                        ResultadoReglas = resMuestreo.ResultadoReglas ?? string.Empty,
                                        ResultadoMuestreoId = resMuestreo.Id,
                                        ValidacionFinal = resMuestreo.ValidacionFinal == null ? string.Empty : resMuestreo.ValidacionFinal.Value ? "OK" : "NO",

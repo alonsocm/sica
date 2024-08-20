@@ -17,10 +17,10 @@ namespace Persistence.Repository
                                      Descripcion = t.Descripcion,
                                      TipoHomologadoId = t.TipoHomologadoId != null ? (int)t.TipoHomologadoId : 0,
                                      TipoHomologadoDescripcion = t.TipoHomologado == null ? string.Empty : t.TipoHomologado.Descripcion,
-                                     Activo = t.Activo ? "SI" : "NO",
+                                     Activo = (t.Activo) ? "SI":"NO",
                                      Frecuencia = t.Frecuencia,
-                                     EvidenciasEsperadas = t.EvidenciasEsperadas,
-                                     TiempoMinimoMuestreo = t.TiempoMinimoMuestreo
+                                     EvidenciasEsperadas = (int)t.EvidenciasEsperadas,
+                                     TiempoMinimoMuestreo = (int)t.TiempoMinimoMuestreo
                                  };
 
             return tipoCuerpoAgua;
