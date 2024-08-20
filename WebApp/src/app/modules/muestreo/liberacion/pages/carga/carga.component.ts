@@ -12,6 +12,7 @@ import { NotificationType } from '../../../../../shared/enums/notification-type'
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 
 @Component({
   selector: 'app-carga',
@@ -241,12 +242,19 @@ export class CargaComponent extends BaseService implements OnInit {
   constructor(
     public numberService: NumberService,
     private muestreoService: MuestreoService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private filtroHistorialService: FiltroHistorialService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      if (columnName !== '') {
+        this.deleteFilter(columnName);
+        this.consultarMonitoreos();
+      }
+    });
     this.fechaActual =
       new DatePipe('en-US').transform(Date.now(), 'yyyy-MM-dd') ?? '';
     this.definirColumnas();
@@ -425,7 +433,9 @@ export class CargaComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.hideColumnFilter();
   }
 
@@ -439,21 +449,7 @@ export class CargaComponent extends BaseService implements OnInit {
         type: NotificationType.warning,
         text: 'Debe seleccionar al menos un monitoreo para enviar',
       });
-    }
-
-    //Se comenta ya que la etapa de evidencias cargadas es desde ebaseca
-    //let muestreosSinEvidencias = muestreosSeleccionados.filter(
-    //  (f) => f.estatus !== 'Evidencias cargadas'
-    //);
-
-    //if (muestreosSinEvidencias.length > 0) {
-    //  this.mostrarMensaje(
-    //    'Solo se pueden enviar a revisión los muestreos con evidencias cargadas.',
-    //    TIPO_MENSAJE.alerta
-    //  );
-    //  return this.hacerScroll();
-    //}
-    else if (
+    } else if (
       muestreosSeleccionados.filter((x) => x.fechaLimiteRevision == '').length >
       0
     ) {
@@ -588,13 +584,7 @@ export class CargaComponent extends BaseService implements OnInit {
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
-
-    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
-    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
-    this.filtros = filteredColumns;
-
     this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
-
     let esFiltroEspecial = this.IsCustomFilter(column);
 
     if (
@@ -649,7 +639,9 @@ export class CargaComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.consultarMonitoreos();
   }
 
@@ -657,6 +649,7 @@ export class CargaComponent extends BaseService implements OnInit {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
   }
+
   asignarFechaLimite() {
     let muestreosSeleccionados = this.obtenerSeleccionados();
     if (!(muestreosSeleccionados.length > 0)) {

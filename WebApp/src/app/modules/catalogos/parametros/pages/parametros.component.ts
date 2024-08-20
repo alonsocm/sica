@@ -227,13 +227,7 @@ export class ParametrosComponent extends BaseService implements OnInit {
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
-
-    //let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
-    // this.filtroHistorialService.updateFilter(filteredColumns); //Actualizamos la lista de filtros, para el componente de filtro
-    // this.filtros = filteredColumns;
-
     this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
-
     let esFiltroEspecial = this.IsCustomFilter(column);
 
     if (
