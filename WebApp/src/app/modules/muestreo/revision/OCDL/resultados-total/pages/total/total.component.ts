@@ -13,6 +13,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { TotalService } from '../../../../services/total.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 
 @Component({
@@ -226,9 +227,9 @@ export class TotalComponent extends BaseService implements OnInit {
   enviarVencidos(lstVencidos: Array<Resultado>): void {
     for (var i = 0; i < lstVencidos.length; i++) {
       let valr = {
-        estatusId: estatusMuestreo.PendienteDeEnvioAprobacionFinal,
+        estatusId: estatusMuestreo_1.PendienteDeEnvioAprobacionFinal,
         usuarioId: 0,
-        tipoAprobId: estatusMuestreo.EnviadoConExtensionFecha,
+        tipoAprobId: estatusMuestreo.Liberaciondemonitoreosconextencióndefecha,
         muestreoId: lstVencidos[i].muestreoId,
         lstparametros: lstVencidos[i].lstParametros,
         isOCDL: true,

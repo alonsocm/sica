@@ -29,7 +29,7 @@ namespace Application.Features.Resultados.Comands
         public async Task<Response<bool>> Handle(ActualizarResultadoCommand request, CancellationToken cancellationToken)
         {
             //Los resultados muestreos solo se actualizan si el estatus destino es 'Enviado'(2)
-            bool isEstatusEnviado = (request.Resultados.EstatusId == (int)Enums.EstatusMuestreo.Enviado);
+            bool isEstatusEnviado = (request.Resultados.EstatusId == (int)Enums.EstatusMuestreo.RevisiónOCDLSECAIA);
             if (isEstatusEnviado)
             {
                 var resultados = _repository.ObtenerElementosPorCriterio(c => request.Resultados.MuestreoId.Contains(Convert.ToInt32(c.MuestreoId))).ToList();
@@ -57,7 +57,7 @@ namespace Application.Features.Resultados.Comands
                     muestreo.FechaRevisionSecaia = (request.Resultados.EstatusSECAIAId != null) ? DateTime.Now : muestreo.FechaRevisionSecaia;
                     muestreo.UsuarioRevisionSecaiaid = (request.Resultados.EstatusSECAIAId != null) ? request.Resultados.IdUsuario : muestreo.UsuarioRevisionSecaiaid;
 
-                    muestreo.EstatusId = (muestreo.EstatusOcdl == (int)Enums.EstatusMuestreo.AprobacionFinal && muestreo.EstatusSecaia == (int)Enums.EstatusMuestreo.AprobacionFinal) ? (int)Enums.EstatusMuestreo.AprobacionResultado : muestreo.EstatusId;
+                    muestreo.EstatusId = (muestreo.EstatusOcdl == (int)Enums.EstatusOcdlSEcaia.AprobacionFinal && muestreo.EstatusSecaia == (int)Enums.EstatusOcdlSEcaia.AprobacionFinal) ? (int)Enums.EstatusMuestreo.Aprobaciónderesultados : muestreo.EstatusId;
                     _repositoryMuestreo.Actualizar(muestreo);
                 });
             }

@@ -6,7 +6,8 @@ import { MuestreoService } from '../../../../../liberacion/services/muestreo.ser
 import { FileService } from '../../../../../../../shared/services/file.service';
 import { TotalService } from '../../../../services/total.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
+import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSEcaia';
 import { BaseService } from 'src/app/shared/services/base.service';
 
 @Component({
@@ -64,7 +65,7 @@ export class ValidadosSecaiaComponent extends BaseService implements OnInit {
 
   consultarMonitoreos(): void {
     this.loading = true;
-    this.totalService.getResumenRevisionResultados(estatusMuestreo.Validado, false).subscribe({
+    this.totalService.getResumenRevisionResultados(estatusOcdlSecaia.Validado, false).subscribe({
       next: (response: any) => {
         //Para filtrado general es de diferente tipo que muetreos y muestreosFiltrados
         this.resultadosn = response.data;
@@ -132,7 +133,7 @@ export class ValidadosSecaiaComponent extends BaseService implements OnInit {
   guardarenvios(): void {
     this.muestreosFiltrados = this.obtenerSeleccionados();
     let muestreosModificar = [...new Set(this.muestreosFiltrados.map(m => m.muestreoId))];
-    let muestreos = { estatusSECAIAId: estatusMuestreo.AprobacionFinal, estatusId: estatusMuestreo.AprobacionFinal, muestreoId: [...new Set(muestreosModificar)], IdUsuario: localStorage.getItem('idUsuario'), };
+    let muestreos = { estatusSECAIAId: estatusOcdlSecaia.AprobacionFinal, estatusId: estatusOcdlSecaia.AprobacionFinal, muestreoId: [...new Set(muestreosModificar)], IdUsuario: localStorage.getItem('idUsuario'), };
     this.loading = true;
     this.totalService.actualizarResultado(muestreos)
       .subscribe({

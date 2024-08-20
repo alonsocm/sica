@@ -30,7 +30,7 @@ namespace Application.Features.RevisionResultados.Queries
                 resultadoBd.ObservacionesOcdl = resultado.ObservacionesOcdl;
                 resultadoBd.ObservacionesOcdlid = resultado.ObservacionesOcdlid;
                 resultadoBd.EsCorrectoOcdl = resultado.EsCorrectoOcdl;
-                resultadoBd.Muestreo.EstatusOcdl = (int)Enums.EstatusMuestreo.Validado;
+                resultadoBd.Muestreo.EstatusOcdl = (int)Enums.EstatusOcdlSEcaia.Validado;
                 //test.Muestreo.EstatusId = (int)Enums.EstatusMuestreo.Validado;
                 _repository.Actualizar(resultadoBd);
             }

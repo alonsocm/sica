@@ -25,7 +25,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
         {
             var estatus = new List<long>
             {
-                (int)Enums.EstatusMuestreo.Cargado,
+                (int)Enums.EstatusMuestreo.CargaResultados,
                 (int)Enums.EstatusMuestreo.EvidenciasCargadas
             };
 

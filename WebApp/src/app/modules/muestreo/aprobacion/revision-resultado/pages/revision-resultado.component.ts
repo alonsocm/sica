@@ -7,7 +7,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { AuthService } from '../../../../login/services/auth.service';
 import { Columna } from 'src/app/interfaces/columna-inferface';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1'
 
 
 const TIPO_MENSAJE = { alerta: 'warning', exito: 'success', error: 'danger' };
@@ -458,7 +458,7 @@ export class RevisionResultadoComponent extends BaseService implements OnInit {
 
       this.ResultadosAprobados = this.ResultadosAprobados.filter(
         (f) => f.apruebaResultado == 'SI'
-        && f.estatusResultadoId == estatusMuestreo.EnviadoResultadosAprobados
+          && f.estatusResultadoId == estatusMuestreo_1.EnviadoResultadosAprobados
       );    
       countAp = this.ResultadosAprobados.length;
 

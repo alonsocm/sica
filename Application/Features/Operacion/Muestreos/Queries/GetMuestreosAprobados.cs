@@ -22,7 +22,7 @@ namespace Application.Features.Operacion.Muestreos.Queries
         {
             var estatus = new List<long>
             {
-                (long)Application.Enums.EstatusMuestreo.OriginalesAprobados
+                (long)Application.Enums.EstatusMuestreo_1.OriginalesAprobados
             };
 
             var muestreos = await _repository.GetResumenMuestreosAsync(estatus);

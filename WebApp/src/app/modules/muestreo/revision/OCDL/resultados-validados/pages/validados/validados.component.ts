@@ -4,7 +4,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NumberService } from '../../../../../../../shared/services/number.service';
 import { TotalService } from '../../../../services/total.service';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSEcaia';
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje'
 import { FileService } from 'src/app/shared/services/file.service';
 
@@ -139,7 +140,7 @@ export class ValidadosComponent extends BaseService implements OnInit {
   }
   consultarMonitoreos(): void {
     this.loading = true;
-    this.totalService.getResumenRevisionResultados(estatusMuestreo.Validado, true).subscribe({
+    this.totalService.getResumenRevisionResultados(estatusOcdlSecaia.Validado, true).subscribe({
       next: (response: any) => {
         this.resultadosn = response.data;
         this.resultadosFiltradosn = this.resultadosn;
@@ -218,7 +219,7 @@ export class ValidadosComponent extends BaseService implements OnInit {
   }
   cambiarEstatusMuestreo(estatus: number): void {
     let muestreosModificar = [];
-    if (estatus === estatusMuestreo.AprobacionFinal) {
+    if (estatus === estatusOcdlSecaia.AprobacionFinal) {
       muestreosModificar = [
         ...new Set(this.resultadosSeleccionados.map((m) => m.muestreoId)),
       ];

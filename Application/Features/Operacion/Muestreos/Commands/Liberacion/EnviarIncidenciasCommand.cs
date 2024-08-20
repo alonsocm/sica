@@ -32,7 +32,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
             }
             else
             {
-                var data = await _muestreoRepository.GetResultadosMuestreoEstatusMuestreoAsync((int)EstatusMuestreo.ValidadoPorReglas);
+                var data = await _muestreoRepository.GetResultadosMuestreoEstatusMuestreoAsync((int)EstatusMuestreo.ResumenValidaciónReglas);
                 var expressions = QueryExpression<AcumuladosResultadoDto>.GetExpressionList(request.Filters);
                 List<AcumuladosResultadoDto> lstMuestreo = new();
 
@@ -70,7 +70,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
                 }
                 else
                 {
-                    muestreo.EstatusId = (int)EstatusMuestreo.EnviadoIncidencia;
+                    muestreo.EstatusId = (int)EstatusMuestreo_1.EnviadoIncidencia;
                     _muestreoRepository.Actualizar(muestreo);
                 }
             }

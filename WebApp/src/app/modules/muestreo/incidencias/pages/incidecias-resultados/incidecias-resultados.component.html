@@ -63,6 +63,13 @@
               [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : columna.color), 'z-index': '0'}">
             {{columna.label}}
           </th>
+          <th class="td-center no-border-bottom th-resize">hola</th>
+          <th columnResize scope="col" *ngFor="let columna of this.columnsAvance let i = index" id="{{columna.name}}"
+              class="no-border-bottom th-resize">
+            {{columna.label}}
+          </th>
+
+
         </tr>
         <tr>
           <th class="no-border-top td-center">
@@ -150,6 +157,9 @@
           </th>
         </tr>
       </thead>
+
+
+
       <tbody>
         <tr *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="td-center">
@@ -170,6 +180,22 @@
           <td></td>
           <td></td>
           <td></td>
+          <td>-</td>
+          <td></td>
+          <td>-</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>-</td>
+          <td></td>
+          <td>-</td>
+          <td></td>
+          <td></td>
+
+
+
           <td>-</td>
           <td></td>
           <td>-</td>

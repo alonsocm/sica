@@ -3,6 +3,7 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interface';
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { Column } from '../../../../../interfaces/filter/column';
 import { NotificationService } from 'src/app/shared/services/notification.service';
@@ -540,7 +541,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     this.loading = true;
     this.validacionService
       .getResultadosAcumuladosParametrosPaginados(
-        estatusMuestreo.ValidadoPorReglas,
+        estatusMuestreo.ResumenValidaciónReglas,
         page,
         pageSize,
         filter,
@@ -598,7 +599,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
     this.validacionService
       .exportExcelResumenResultados(
-        estatusMuestreo.ValidadoPorReglas,
+        estatusMuestreo.ResumenValidaciónReglas,
         registrosSeleccionados,
         this.cadena
       )
@@ -665,7 +666,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.validacionService
-        .getDistinctValuesFromColumn(column.name, this.cadena, estatusMuestreo.ValidadoPorReglas)
+        .getDistinctValuesFromColumn(column.name, this.cadena, estatusMuestreo.ResumenValidaciónReglas)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
@@ -694,7 +695,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     this.orderBy = { column, type };
     this.validacionService
       .getResultadosAcumuladosParametrosPaginados(
-        estatusMuestreo.ValidadoPorReglas,
+        estatusMuestreo.ResumenValidaciónReglas,
         this.page,
         this.NoPage,
         this.cadena,

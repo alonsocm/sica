@@ -281,7 +281,7 @@ namespace Persistence.Repository
         {
             var resultados = await (from r in _dbContext.ResultadoMuestreo
                                     where anios.Contains(r.Muestreo.AnioOperacion ?? 0)
-                                    && r.Muestreo.EstatusId == (int)Application.Enums.EstatusMuestreo.AprobacionResultado
+                                    && r.Muestreo.EstatusId == (int)Application.Enums.EstatusMuestreo.Aprobaciónderesultados
                                     select new ResultadoParaSustitucionLimitesDto
                                     {
                                         IdMuestreo = r.MuestreoId,

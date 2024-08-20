@@ -31,7 +31,7 @@ export class FormatoResultadoService {
       fromObject: {
         usuario: this.authService.getUser().usuarioId,
         tipoCuerpoAgua: tipoCuerpo,
-        estatus: estatusMuestreo.Cargado,
+        estatus: estatusMuestreo.CargaResultados,
         page,
         pageSize,
       },

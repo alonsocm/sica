@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Revision } from '../../../../../interfaces/Replicas/RevisionResultado';
 import { ResumenResultados } from '../../../../../interfaces/ResumenResultado.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1'
 
 @Injectable({
   providedIn: 'root',
@@ -54,7 +54,7 @@ export class RevisionResultadoService {
     var params = new HttpParams({
       fromObject: { 
         muestreoId:muestreoId,
-        estatus: estatusMuestreo.OriginalesAprobados 
+        estatus: estatusMuestreo_1.OriginalesAprobados 
       }});       
       //return this.http.post(environment.apiUrl +'/Muestreos/CambioEstatus?estatus='+estatusMuestreo.OriginalesAprobados + "&muestreoId="+ muestreoId,'');
       return this.http.get(environment.apiUrl +'/Muestreos/CambioEstatus',{ params}); 

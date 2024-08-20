@@ -2,7 +2,7 @@ import { Injectable} from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../../../../login/services/auth.service';
-import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo'
+import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1'
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class ConsultaResultadoService {
       fromObject: {  
         userId: this.authService.getUser().usuarioId,
         cuerpAId: tipoCuerpo,       
-        estausId: estatusMuestreo.OriginalesAprobados,
+        estausId: estatusMuestreo_1.OriginalesAprobados,
         anio: anio,
       },
     });

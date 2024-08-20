@@ -153,7 +153,7 @@ export class AdministracionMuestreoComponent extends BaseService implements OnIn
   }
   cargarDatos(estatus: number) {
 
-    this.isrevisionResultados = (estatus == estatusMuestreo.AprobacionResultado) ? true : false; 
+    this.isrevisionResultados = (estatus == estatusMuestreo.Aprobaciónderesultados) ? true : false; 
 
     this.validacionService.getResultadosAcumuladosParametros(estatus).subscribe({
       next: (response: any) => {
