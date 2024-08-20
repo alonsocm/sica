@@ -6,6 +6,7 @@ import { TotalService } from '../../../../services/total.service';
 import { NumberService } from 'src/app/shared/services/number.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { Resultado } from '../../../../../../../interfaces/Resultado.interface';
+import { estatusOcdlSecaia } from '../../../../../../../shared/enums/estatusOcdlSecaia';
 
 @Component({
   selector: 'app-resumen',
@@ -52,7 +53,7 @@ export class ResumenComponent extends BaseService implements OnInit {
   }  
   consultarMonitoreos(): void {
     this.loading = true;
-    this.resumenSrv.getResumenRevisionResultados(5, true).subscribe({
+    this.resumenSrv.getResumenRevisionResultados(estatusOcdlSecaia.AprobacionFinal, true).subscribe({
       next: (response: any) => {
         this.Data = response.data;
         this.resultadosFiltradosn = this.Data;

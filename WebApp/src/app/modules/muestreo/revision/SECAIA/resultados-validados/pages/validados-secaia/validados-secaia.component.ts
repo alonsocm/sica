@@ -1,4 +1,3 @@
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Filter } from 'src/app/interfaces/filtro.interface';
 import { Muestreo } from '../../../../../../../interfaces/Muestreo.interface';
@@ -6,8 +5,7 @@ import { MuestreoService } from '../../../../../liberacion/services/muestreo.ser
 import { FileService } from '../../../../../../../shared/services/file.service';
 import { TotalService } from '../../../../services/total.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
-import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSEcaia';
+import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 import { BaseService } from 'src/app/shared/services/base.service';
 
 @Component({

@@ -10,6 +10,7 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { TotalService } from '../../../../services/total.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje';
+import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 
 @Component({
   selector: 'app-total-secaia',
@@ -325,7 +326,7 @@ export class TotalSecaiaComponent extends BaseService implements OnInit {
   guardarEnvios(): void {
     for (var i = 0; i < this.muestreoSeleccionadoDatos.length; i++) {
       let valr = {
-        estatusId: 4,
+        estatusId: estatusOcdlSecaia.Validado,
         usuarioId: localStorage.getItem('idUsuario'),
         tipoAprobId: 0,
         muestreoId: this.muestreoSeleccionadoDatos[i].muestreoId,
