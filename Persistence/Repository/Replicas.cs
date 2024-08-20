@@ -26,7 +26,7 @@ namespace Persistence.Repository
                 IEnumerable<AprobacionResultadoMuestreoDto> revisionResultado = (
 
                         from result in _dbContext.VwReplicaRevisionResultado
-                        where result.EstatusMuestreoId == 8
+                        where result.EstatusMuestreoId == (int)Application.Enums.EstatusMuestreo.Aprobaciónderesultados
                            && result.EsCorrectoOcdl != null
                            && result.EsCorrectoSecaia != null
                            && (result.EstatusId == 13 || result.EstatusId == null)
