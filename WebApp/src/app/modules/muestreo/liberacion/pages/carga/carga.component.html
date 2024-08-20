@@ -51,14 +51,14 @@
         <i class="bi bi-cloud-download"></i>
         Descargar informaci&oacute;n
       </button>
-      <button class="btn btn-secondary btn-sm" (click)="this.onLimpiarFiltrosClick()">
+      <button class="btn btn-secondary btn-sm" type="button" (click)="this.onLimpiarFiltrosClick()">
         <i class="bi bi-funnel"></i>
         Limpiar filtros
       </button>
     </div>
     <div class="float-right col-md-2">
       <input id="fechaRevision" class="form-control" type="date" min="{{fechaActual}}" [(ngModel)]="fechaLimiteRevision"
-        (change)="seleccionar()" title="Seleccione fecha limite de revisión" />
+        title="Seleccione fecha limite de revisión" />
     </div>
     <div class="float-right" style="vertical-align:sub">
       <label>
@@ -96,7 +96,7 @@
         <tr>
           <th class="no-border-top td-center">
             <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-              (change)="onSelectPageClick(this.muestreos,this.muestreosFiltrados);"
+              (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);"
               title="Selecciona la página actual" />
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
@@ -184,7 +184,8 @@
         <tr
           *ngFor="let muestreo of this.muestreos| paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="checkBox-center">
-            <input type="checkbox" [(ngModel)]="muestreo.selected" (change)="seleccionar()" title="Seleccionar">
+            <input type="checkbox" [(ngModel)]="muestreo.selected" (change)="onSelectClick(muestreo)"
+              title="Seleccionar">
           </td>
           <td>{{muestreo.ocdl}}</td>
           <td>{{muestreo.claveSitio}}</td>

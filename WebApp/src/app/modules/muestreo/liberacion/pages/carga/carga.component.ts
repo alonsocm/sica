@@ -23,7 +23,7 @@ export class CargaComponent extends BaseService implements OnInit {
   archivo: any = null;
   archivos: any = null;
   muestreos: Array<Muestreo> = [];
-  muestreosFiltrados: Array<Muestreo> = [];
+  muestreosSeleccionados: Array<Muestreo> = [];
   fechaLimiteRevision: string = '';
   filtroSitio: string = '';
   fechaActual: string = '';
@@ -275,7 +275,7 @@ export class CargaComponent extends BaseService implements OnInit {
           this.muestreos = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(this.muestreos, this.muestreosFiltrados);
+          this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
           this.loading = false;
         },
@@ -389,7 +389,7 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   seleccionarTodos(): void {
-    this.muestreosFiltrados.map((m) => {
+    this.muestreosSeleccionados.map((m) => {
       if (this.seleccionarTodosChck) {
         m.isChecked ? true : (m.isChecked = true);
       } else {
@@ -400,10 +400,24 @@ export class CargaComponent extends BaseService implements OnInit {
     this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
   }
 
-  seleccionar(): void {
-    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
-    let muestreosSeleccionados = this.obtenerSeleccionados();
-    this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
+  onSelectClick(muestreo: Muestreo) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (muestreo.selected) {
+      this.muestreosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
+    } else {
+      let index = this.muestreosSeleccionados.findIndex(
+        (m) => m.muestreoId === muestreo.muestreoId
+      );
+
+      if (index > -1) {
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    }
   }
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
@@ -489,29 +503,32 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   exportarResultados(): void {
-    let muestreosSeleccionados = this.obtenerSeleccionados();
-
-    if (muestreosSeleccionados.length === 0) {
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un monitoreo',
+        text: 'No hay información seleccionada para descargar',
+      });
+    }
+
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
       });
     }
 
     this.muestreoService
-      .exportarResultadosExcel(muestreosSeleccionados)
+      .exportarResultadosExcel(true, registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
-          this.muestreosFiltrados = this.muestreosFiltrados.map((m) => {
-            m.isChecked = false;
-            return m;
-          });
-          this.muestreoService.muestreosSeleccionados =
-            this.obtenerSeleccionados();
-          this.seleccionarTodosChck = false;
           FileService.download(response, 'resultados.xlsx');
+          this.resetValues();
+          this.unselectMuestreos();
+          this.loading = false;
         },
         error: (response: any) => {
           this.hacerScroll();
@@ -522,6 +539,18 @@ export class CargaComponent extends BaseService implements OnInit {
           });
         },
       });
+  }
+
+  private unselectMuestreos() {
+    this.muestreos.forEach((m) => (m.selected = false));
+  }
+
+  private resetValues() {
+    this.muestreosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+    //this.getSummary();
   }
 
   confirmarEliminacion() {
