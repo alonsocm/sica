@@ -124,9 +124,9 @@ public partial class Muestreo
 
     public virtual EstatusMuestreo Estatus { get; set; } = null!;
 
-    public virtual EstatusMuestreo? EstatusOcdlNavigation { get; set; }
+    public virtual EstatusOcdlSecaia? EstatusOcdlNavigation { get; set; }
 
-    public virtual EstatusMuestreo? EstatusSecaiaNavigation { get; set; }
+    public virtual EstatusOcdlSecaia? EstatusSecaiaNavigation { get; set; }
 
     public virtual ICollection<EvidenciaMuestreo> EvidenciaMuestreo { get; set; } = new List<EvidenciaMuestreo>();
 

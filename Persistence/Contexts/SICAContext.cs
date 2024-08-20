@@ -48,13 +48,19 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }  
+    public virtual DbSet<Directorio> Directorio { get; set; } 
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
     public virtual DbSet<Estado> Estado { get; set; }
 
     public virtual DbSet<EstatusMuestreo> EstatusMuestreo { get; set; }
+
+    public virtual DbSet<EstatusMuestreo1> EstatusMuestreo1 { get; set; }
+
+    public virtual DbSet<EstatusOcdlSecaia> EstatusOcdlSecaia { get; set; }
+
+    public virtual DbSet<EstatusResultado> EstatusResultado { get; set; }
 
     public virtual DbSet<EvidenciaMuestreo> EvidenciaMuestreo { get; set; }
 
@@ -164,7 +170,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }    
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -200,8 +206,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
-
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -551,8 +557,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.PuestoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
-        });        
-
+        });
+        
         modelBuilder.Entity<Emergencia>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("pk_MuestreoEmergencia");
@@ -620,11 +626,39 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<EstatusMuestreo>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_EstatusMuestreos");
+
+            entity.ToTable("EstatusMuestreo", "cat");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(300);
+            entity.Property(e => e.Etiqueta).HasMaxLength(300);
+        });
+
+        modelBuilder.Entity<EstatusMuestreo1>(entity =>
+        {
+            entity.ToTable("EstatusMuestreo");
+
             entity.Property(e => e.Id).HasComment("Identificador de Estatus Muestreo");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(150)
                 .IsUnicode(false)
                 .HasComment("Campo que describe el estatus del muestreo");
+        });
+
+        modelBuilder.Entity<EstatusOcdlSecaia>(entity =>
+        {
+            entity.ToTable("EstatusOcdlSecaia", "cat");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(300);
+            entity.Property(e => e.Etiqueta).HasMaxLength(300);
+        });
+
+        modelBuilder.Entity<EstatusResultado>(entity =>
+        {
+            entity.ToTable("EstatusResultado", "cat");
+
+            entity.Property(e => e.Descripcion).HasMaxLength(300);
+            entity.Property(e => e.Etiqueta).HasMaxLength(300);
         });
 
         modelBuilder.Entity<EvidenciaMuestreo>(entity =>
@@ -1074,18 +1108,18 @@ public partial class SicaContext : DbContext
                 .HasColumnName("UsuarioRevisionSECAIAId");
             entity.Property(e => e.ValidacionEvidencias).HasComment("Campo que indica si se envia a la etapa de validación de evidencias");
 
-            entity.HasOne(d => d.Estatus).WithMany(p => p.MuestreoEstatus)
+            entity.HasOne(d => d.Estatus).WithMany(p => p.Muestreo)
                 .HasForeignKey(d => d.EstatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Muestreo_EstatusMuestreo");
 
             entity.HasOne(d => d.EstatusOcdlNavigation).WithMany(p => p.MuestreoEstatusOcdlNavigation)
                 .HasForeignKey(d => d.EstatusOcdl)
-                .HasConstraintName("FK_Muestreo_EstatusMuestreo1");
+                .HasConstraintName("FK_Muestreo_EstatusOcdlSecaia");
 
             entity.HasOne(d => d.EstatusSecaiaNavigation).WithMany(p => p.MuestreoEstatusSecaiaNavigation)
                 .HasForeignKey(d => d.EstatusSecaia)
-                .HasConstraintName("FK_Muestreo_EstatusMuestreo2");
+                .HasConstraintName("FK_Muestreo_EstatusOcdlSecaia1");
 
             entity.HasOne(d => d.ProgramaMuestreo).WithMany(p => p.Muestreo)
                 .HasForeignKey(d => d.ProgramaMuestreoId)
@@ -1868,8 +1902,8 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
-        });        
-
+        });
+        
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador principal se la tabla SubGrupoAnalitico");

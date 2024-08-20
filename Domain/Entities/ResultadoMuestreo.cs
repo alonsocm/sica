@@ -173,7 +173,7 @@ public partial class ResultadoMuestreo
 
     public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = new List<AprobacionResultadoMuestreo>();
 
-    public virtual EstatusMuestreo? EstatusResultadoNavigation { get; set; }
+    public virtual EstatusMuestreo1? EstatusResultadoNavigation { get; set; }
 
     public virtual ICollection<EvidenciaReplica> EvidenciaReplica { get; set; } = new List<EvidenciaReplica>();
 
