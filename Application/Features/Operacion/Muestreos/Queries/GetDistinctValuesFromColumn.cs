@@ -22,7 +22,7 @@ namespace Application.Features.Muestreos.Queries
 
         public async Task<Response<IEnumerable<object>>> Handle(GetDistinctValuesFromColumn request, CancellationToken cancellationToken)
         {
-            var data = await _repositoryAsync.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.CargaResultados, (long)Enums.EstatusMuestreo.EvidenciasCargadas });
+            var data = await _repositoryAsync.GetResumenMuestreosAsync(new List<int> { (int)Enums.EstatusMuestreo.CargaResultados, (int)Enums.EstatusMuestreo.EvidenciasCargadas });
             data = data.AsQueryable();
 
             if (request.Filters.Any())

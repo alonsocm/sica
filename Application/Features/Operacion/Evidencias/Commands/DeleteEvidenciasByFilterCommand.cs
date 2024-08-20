@@ -29,7 +29,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
 
         public async Task<Response<bool>> Handle(DeleteEvidenciasByFilterCommand request, CancellationToken cancellationToken)
         {
-            var muestreos = await _muestreoRepository.GetResumenMuestreosAsync(new List<long>() { (int)EstatusMuestreo.EvidenciasCargadas });
+            var muestreos = await _muestreoRepository.GetResumenMuestreosAsync(new List<int>() { (int)EstatusMuestreo.EvidenciasCargadas });
             muestreos = muestreos.AsQueryable();
 
             if (request.Filters.Any())

@@ -853,7 +853,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.muestreoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .getDistinctValuesFromColumn(column.name, this.cadena, false)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {

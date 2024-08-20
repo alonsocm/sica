@@ -155,7 +155,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetDistinctValuesFromColumn")]
-        public async Task<IActionResult> Get(string column, string? filter = "")
+        public IActionResult Get(string column, bool esLiberacion, string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -164,7 +164,13 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new GetDistinctValuesFromColumn { Column = column, Filters = filters }));
+            var data = Mediator.Send(new GetMuestreosPaginados
+            {
+                Filter = filters,
+                EsLiberacion = esLiberacion
+            }).Result.Data;
+
+            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
         }
 
         [HttpPut]

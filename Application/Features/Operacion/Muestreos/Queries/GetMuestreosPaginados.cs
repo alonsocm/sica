@@ -26,25 +26,25 @@ namespace Application.Features.Muestreos.Queries
 
         public async Task<PagedResponse<IEnumerable<MuestreoDto>>> Handle(GetMuestreosPaginados request, CancellationToken cancellationToken)
         {
-            var estatus = new List<long>();
+            var estatus = new List<int>();
 
             if (!request.EsLiberacion)
             {
-                estatus.Add((long)Enums.EstatusMuestreo.CargaResultados);
-                estatus.Add((long)Enums.EstatusMuestreo.EvidenciasCargadas);
+                estatus.Add((int)Enums.EstatusMuestreo.CargaResultados);
+                estatus.Add((int)Enums.EstatusMuestreo.EvidenciasCargadas);
             }
             else
             {
                 //Revisar porque se tiene los demas estatus
-                estatus.Add((long)Enums.EstatusMuestreo.Liberaciondemonitoreos);
+                estatus.Add((int)Enums.EstatusMuestreo.Liberaciondemonitoreos);
 
                 //se comenta porque ya no es necesario este estatus aqui ya que despues de ser evidencias cargadas deben de pasar por la
                 //validación de reglas
                 //estatus.Add((long)Enums.EstatusMuestreo.EvidenciasCargadas);
 
-                estatus.Add((long)Enums.EstatusMuestreo.RevisiónOCDLSECAIA);
-                estatus.Add((long)Enums.EstatusMuestreo.Liberaciondemonitoreosconextencióndefecha);
-                estatus.Add((long)Enums.EstatusOcdlSEcaia.Validado);
+                estatus.Add((int)Enums.EstatusMuestreo.RevisiónOCDLSECAIA);
+                estatus.Add((int)Enums.EstatusMuestreo.Liberaciondemonitoreosconextencióndefecha);
+                estatus.Add((int)Enums.EstatusOcdlSEcaia.Validado);
             }
 
             var data = await _repositoryAsync.GetResumenMuestreosAsync(estatus);
@@ -52,8 +52,8 @@ namespace Application.Features.Muestreos.Queries
 
             if (request.Filter.Any())
             {
-                var expressions = MuestreoExpression.GetExpressionList(request.Filter);
-                List<MuestreoDto> lstMuestreo = new List<MuestreoDto>();
+                var expressions = QueryExpression<MuestreoDto>.GetExpressionList(request.Filter);
+                List<MuestreoDto> lstMuestreo = new();
 
                 foreach (var filter in expressions)
                 {

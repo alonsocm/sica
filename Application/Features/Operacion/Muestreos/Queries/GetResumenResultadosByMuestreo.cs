@@ -27,7 +27,7 @@ namespace Application.Features.Muestreos.Queries
         {
             var response = new ResumenDTO();
 
-            var data = await _repository.GetResumenMuestreosAsync(new List<long> { (long)Enums.EstatusMuestreo.CargaResultados, (long)Enums.EstatusMuestreo.EvidenciasCargadas });
+            var data = await _repository.GetResumenMuestreosAsync(new List<int> { (int)Enums.EstatusMuestreo.CargaResultados, (int)Enums.EstatusMuestreo.EvidenciasCargadas });
 
             if (request.Filters.Any() || request.SelectAll)
             {

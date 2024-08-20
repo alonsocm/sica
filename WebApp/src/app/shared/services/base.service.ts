@@ -377,19 +377,17 @@ export class BaseService {
         m.checked = esFiltroEspecial
           ? false
           : column.selectedData.includes(m.value)
-            ? true
-            : false;
+          ? true
+          : false;
       });
   }
 
   onSelectAllPagesClick() {
     this.allSelected = true;
- 
   }
 
   onUnselectAllClick() {
     this.allSelected = false;
-    
   }
 
   onSpecialFiltersClick($event: MouseEvent, columnName: string) {
@@ -466,8 +464,8 @@ export class BaseService {
       this.cadena =
         this.cadena.indexOf('%') != -1
           ? this.deleteFilter(
-            !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
-          )
+              !isFiltroEspecial ? columna.name : this.columnaFiltroEspecial.name
+            )
           : '';
     }
 
@@ -500,8 +498,8 @@ export class BaseService {
         this.cadena =
           this.cadena != ''
             ? this.cadena.concat(
-              '%' + columna.name + '_' + columna.selectedData
-            )
+                '%' + columna.name + '_' + columna.selectedData
+              )
             : columna.name.concat('_' + columna.selectedData);
       }
     } else {
@@ -579,9 +577,6 @@ export class BaseService {
   }
 
   onSelectPageClick(muestreos: Array<any>, muestreosSeleccionados: Array<any>) {
-    console.log(muestreos);
-    console.log(muestreosSeleccionados);
-
     muestreos.map((m) => {
       m.selected = this.selectedPage;
 
@@ -659,7 +654,15 @@ export class BaseService {
   }
 
   validarCorreRegla(muestreo: acumuladosMuestreo): string {
-    return muestreo.correReglaValidacion = (muestreo.cumpleReglasCondic == "NO") ? "NO" : (((muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? "SI" : "NO")
+    return (muestreo.correReglaValidacion =
+      muestreo.cumpleReglasCondic == 'NO'
+        ? 'NO'
+        : (muestreo.muestreoCompletoPorResultados == 'SI' ||
+            muestreo.autorizacionIncompleto) &&
+          (muestreo.cumpleFechaEntrega == 'SI' ||
+            muestreo.autorizacionFechaEntrega)
+        ? 'SI'
+        : 'NO');
   }
 
   validarCaracteres(evento: any): void {
@@ -668,9 +671,10 @@ export class BaseService {
       evento.preventDefault();
     }
   }
-    //Función para validar caracteres  
+  //Función para validar caracteres
   validarCaracteres2(evento: any): void {
-    const pattern: RegExp = /^([a-zA-ZÀ-ÿ_\u00f1\u00d1\s0-9\.\,\-\/\(\)\:\;\'\"\?\&\%\$\€\+=\*\#\~\[\]\{\}\|\^\`\<\>\|\@])/; 
+    const pattern: RegExp =
+      /^([a-zA-ZÀ-ÿ_\u00f1\u00d1\s0-9\.\,\-\/\(\)\:\;\'\"\?\&\%\$\€\+=\*\#\~\[\]\{\}\|\^\`\<\>\|\@])/;
     if (!pattern.test(evento.key)) {
       evento.preventDefault();
     }

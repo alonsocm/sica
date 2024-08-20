@@ -23,7 +23,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
 
         public async Task<Response<bool>> Handle(ActualizarEstatusMuestreos request, CancellationToken cancellationToken)
         {
-            var estatus = new List<long>
+            var estatus = new List<int>
             {
                 (int)Enums.EstatusMuestreo.CargaResultados,
                 (int)Enums.EstatusMuestreo.EvidenciasCargadas
