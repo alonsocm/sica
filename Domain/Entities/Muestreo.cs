@@ -51,7 +51,7 @@ public partial class Muestreo
     public string? NumeroCarga { get; set; }
 
     /// <summary>
-    /// Llave foránea que hace referencia al catálogo de Estatus, indicando el estatus del muestreo
+    /// Llave foránea que hace referencia al catálogo de EstatusMuestreo, indicando el estatus del muestreo
     /// </summary>
     public int EstatusId { get; set; }
 
@@ -71,12 +71,12 @@ public partial class Muestreo
     public long? TipoAprobacionId { get; set; }
 
     /// <summary>
-    /// Campo que indica el estatus referente a revisión de OCDL
+    /// Llave foranea que hace referencia al catalogo de EstatusOcdlSecaia indicando el estatus de la revisión de OCDL
     /// </summary>
     public int? EstatusOcdl { get; set; }
 
     /// <summary>
-    /// Campo que indica el estatus referente a revisión de SECAIA
+    /// Llave foranea que hace referencia al catalogo de EstatusOcdlSecaia indicando el estatus de la revisión de SECAIA
     /// </summary>
     public int? EstatusSecaia { get; set; }
 
