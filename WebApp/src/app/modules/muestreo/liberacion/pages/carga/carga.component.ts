@@ -454,7 +454,7 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   enviarMonitoreos(): void {
-    let muestreosSeleccionados = this.obtenerSeleccionados();
+    let muestreosSeleccionados = this.muestreosSeleccionados;
 
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
@@ -680,47 +680,56 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   asignarFechaLimite() {
-    let muestreosSeleccionados = this.obtenerSeleccionados();
-    if (!(muestreosSeleccionados.length > 0)) {
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
         text: 'Debe seleccionar al menos un monitoreo para asignar la fecha límite',
       });
-    } else if (this.fechaLimiteRevision == '') {
+    }
+
+    if (this.fechaLimiteRevision == '') {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
         text: 'La fecha límite se encuentra vacía',
       });
-    } else {
-      this.loading = true;
-      this.muestreoService
-        .asignarFechaLimite(
-          muestreosSeleccionados.map((s) => ({
-            muestreoId: s.muestreoId,
-            fechaRevision: this.fechaLimiteRevision,
-          }))
-        )
-        .subscribe({
-          next: (response) => {
-            this.consultarMonitoreos();
-            this.fechaLimiteRevision = '';
-            this.loading = false;
-            this.seleccionarTodosChck = false;
-            this.hacerScroll();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.success,
-              text: 'Se asigno la fecha límite correctamente',
-            });
-          },
-          error: (error) => {
-            this.loading = false;
-          },
-        });
     }
+
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.muestreoService
+      .asignarFechaLimite(
+        registrosSeleccionados,
+        true,
+        this.fechaLimiteRevision,
+        this.cadena
+      )
+      .subscribe({
+        next: (response) => {
+          this.consultarMonitoreos();
+          this.fechaLimiteRevision = '';
+          this.resetValues();
+          this.hacerScroll();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Se asigno la fecha límite correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
   }
 }
