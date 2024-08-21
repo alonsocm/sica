@@ -153,8 +153,24 @@ export class MuestreoService {
     );
   }
 
-  asignarFechaLimite(muestreos: any): Observable<Object> {
-    return this.http.put(environment.apiUrl + '/muestreos', muestreos);
+  asignarFechaLimite(
+    muestreos: Array<number>,
+    esLiberacion: boolean,
+    fechaLimiteRevision: string,
+    filter: string
+  ): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        esLiberacion: esLiberacion,
+        fechaLimite: fechaLimiteRevision,
+        filter: filter,
+      },
+    });
+    return this.http.put(
+      environment.apiUrl + '/muestreos/SetFechaLimiteRevision',
+      muestreos,
+      { params }
+    );
   }
 
   obtenerResumenPorGpoParametros(
