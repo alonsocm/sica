@@ -473,5 +473,32 @@ namespace Shared.Utilities.Services
 
             package.SaveAs(new FileInfo(filePath));
         }
+
+        public static void ExportLiberacionExcel(IEnumerable<MuestreoDto> data, string filePath)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var package = new ExcelPackage(filePath);
+            ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
+            var fila = 2;
+
+            foreach (var registro in data)
+            {
+                worksheet.Cells[fila, 1].Value = registro.OCDL;
+                worksheet.Cells[fila, 2].Value = registro.ClaveSitio;
+                worksheet.Cells[fila, 3].Value = registro.ClaveMonitoreo;
+                worksheet.Cells[fila, 4].Value = registro.Estado;
+                worksheet.Cells[fila, 5].Value = registro.TipoCuerpoAgua;
+                worksheet.Cells[fila, 6].Value = registro.Laboratorio;
+                worksheet.Cells[fila, 7].Value = registro.FechaRealizacion;
+                worksheet.Cells[fila, 8].Value = registro.NumeroEntrega;
+                worksheet.Cells[fila, 9].Value = registro.FechaLimiteRevision;
+                worksheet.Cells[fila, 10].Value = registro.Estatus;
+                worksheet.Cells[fila, 11].Value = registro.TipoCargaResultados;
+                fila++;
+            }
+
+            package.SaveAs(new FileInfo(filePath));
+        }
     }
 }

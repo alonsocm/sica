@@ -172,11 +172,18 @@ export class MuestreoService {
     );
   }
 
-  exportarResultadosExcel(muestreos: Array<Muestreo> = []): Observable<Blob> {
+  exportarResultadosExcel(
+    esLiberacion: boolean,
+    muestreos: Array<number>,
+    cadena: string
+  ): Observable<Blob> {
+    const params = new HttpParams({
+      fromObject: { esLiberacion, filter: cadena },
+    });
     return this.http.post(
       environment.apiUrl + '/Muestreos/ExportarExcel',
       muestreos,
-      { responseType: 'blob' }
+      { params, responseType: 'blob' }
     );
   }
 

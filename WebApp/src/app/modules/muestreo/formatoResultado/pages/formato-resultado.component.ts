@@ -326,7 +326,7 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.muestreos = response.data;        
+          this.muestreos = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);

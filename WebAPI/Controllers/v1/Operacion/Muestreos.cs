@@ -92,32 +92,31 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("ExportarExcel")]
-        public IActionResult Post(List<MuestreoDto> muestreos)
+        public IActionResult ExportarExcel([FromQuery] bool esLiberacion, [FromQuery] string? filter, [FromBody] List<long> muestreos)
         {
-            List<MuestreoExcel> muestreosExcel = new();
+            var filters = new List<Filter>();
 
-            muestreos.ForEach(muestreo =>
-                muestreosExcel.Add(new MuestreoExcel
-                {
-                    OCDL = muestreo.OCDL,
-                    ClaveSitio = muestreo.ClaveSitio,
-                    ClaveMonitoreo = muestreo.ClaveMonitoreo,
-                    Estado = muestreo.Estado,
-                    TipoCuerpoAgua = muestreo.TipoCuerpoAgua,
-                    Laboratorio = muestreo.Laboratorio,
-                    FechaRealizacion = muestreo.FechaRealizacion,
-                    NumeroEntrega = muestreo.NumeroEntrega,
-                    FechaLimiteRevision = muestreo.FechaLimiteRevision,
-                    Estatus = muestreo.Estatus,
-                    TipoCargaResultados = muestreo.TipoCargaResultados,
-                }
-            ));
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var data = Mediator.Send(new GetMuestreosPaginados
+            {
+                EsLiberacion = esLiberacion,
+                Filter = filters
+            }).Result.Data;
+
+            if (muestreos != null && muestreos.Any())
+            {
+                data = data.Where(x => muestreos.Contains(x.MuestreoId)).ToList();
+            }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("LiberacionMonitoreos");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
 
-            ExcelService.ExportToExcel(muestreosExcel, fileInfo, true);
+            ExcelService.ExportLiberacionExcel(data, fileInfo.FullName);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));

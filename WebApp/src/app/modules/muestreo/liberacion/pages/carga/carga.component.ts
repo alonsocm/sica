@@ -12,6 +12,7 @@ import { NotificationType } from '../../../../../shared/enums/notification-type'
 import { NotificationService } from '../../../../../shared/services/notification.service';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 
 @Component({
   selector: 'app-carga',
@@ -22,7 +23,7 @@ export class CargaComponent extends BaseService implements OnInit {
   archivo: any = null;
   archivos: any = null;
   muestreos: Array<Muestreo> = [];
-  muestreosFiltrados: Array<Muestreo> = [];
+  muestreosSeleccionados: Array<Muestreo> = [];
   fechaLimiteRevision: string = '';
   filtroSitio: string = '';
   fechaActual: string = '';
@@ -241,12 +242,19 @@ export class CargaComponent extends BaseService implements OnInit {
   constructor(
     public numberService: NumberService,
     private muestreoService: MuestreoService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private filtroHistorialService: FiltroHistorialService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      if (columnName !== '') {
+        this.deleteFilter(columnName);
+        this.consultarMonitoreos();
+      }
+    });
     this.fechaActual =
       new DatePipe('en-US').transform(Date.now(), 'yyyy-MM-dd') ?? '';
     this.definirColumnas();
@@ -267,7 +275,7 @@ export class CargaComponent extends BaseService implements OnInit {
           this.muestreos = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(this.muestreos, this.muestreosFiltrados);
+          this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
           this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
           this.loading = false;
         },
@@ -381,7 +389,7 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   seleccionarTodos(): void {
-    this.muestreosFiltrados.map((m) => {
+    this.muestreosSeleccionados.map((m) => {
       if (this.seleccionarTodosChck) {
         m.selected ? true : (m.selected = true);
       } else {
@@ -392,10 +400,24 @@ export class CargaComponent extends BaseService implements OnInit {
     this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
   }
 
-  seleccionar(): void {
-    if (this.seleccionarTodosChck) this.seleccionarTodosChck = false;
-    let muestreosSeleccionados = this.obtenerSeleccionados();
-    this.muestreoService.muestreosSeleccionados = muestreosSeleccionados;
+  onSelectClick(muestreo: Muestreo) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (muestreo.selected) {
+      this.muestreosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected(this.muestreos) ? false : true;
+    } else {
+      let index = this.muestreosSeleccionados.findIndex(
+        (m) => m.muestreoId === muestreo.muestreoId
+      );
+
+      if (index > -1) {
+        this.muestreosSeleccionados.splice(index, 1);
+      }
+    }
   }
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
@@ -425,7 +447,9 @@ export class CargaComponent extends BaseService implements OnInit {
     }
 
     this.esHistorial = true;
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.hideColumnFilter();
   }
 
@@ -439,21 +463,7 @@ export class CargaComponent extends BaseService implements OnInit {
         type: NotificationType.warning,
         text: 'Debe seleccionar al menos un monitoreo para enviar',
       });
-    }
-
-    //Se comenta ya que la etapa de evidencias cargadas es desde ebaseca
-    //let muestreosSinEvidencias = muestreosSeleccionados.filter(
-    //  (f) => f.estatus !== 'Evidencias cargadas'
-    //);
-
-    //if (muestreosSinEvidencias.length > 0) {
-    //  this.mostrarMensaje(
-    //    'Solo se pueden enviar a revisión los muestreos con evidencias cargadas.',
-    //    TIPO_MENSAJE.alerta
-    //  );
-    //  return this.hacerScroll();
-    //}
-    else if (
+    } else if (
       muestreosSeleccionados.filter((x) => x.fechaLimiteRevision == '').length >
       0
     ) {
@@ -493,29 +503,32 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   exportarResultados(): void {
-    let muestreosSeleccionados = this.obtenerSeleccionados();
-
-    if (muestreosSeleccionados.length === 0) {
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un monitoreo',
+        text: 'No hay información seleccionada para descargar',
+      });
+    }
+
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
       });
     }
 
     this.muestreoService
-      .exportarResultadosExcel(muestreosSeleccionados)
+      .exportarResultadosExcel(true, registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
-          this.muestreosFiltrados = this.muestreosFiltrados.map((m) => {
-            m.selected = false;
-            return m;
-          });
-          this.muestreoService.muestreosSeleccionados =
-            this.obtenerSeleccionados();
-          this.seleccionarTodosChck = false;
           FileService.download(response, 'resultados.xlsx');
+          this.resetValues();
+          this.unselectMuestreos();
+          this.loading = false;
         },
         error: (response: any) => {
           this.hacerScroll();
@@ -526,6 +539,18 @@ export class CargaComponent extends BaseService implements OnInit {
           });
         },
       });
+  }
+
+  private unselectMuestreos() {
+    this.muestreos.forEach((m) => (m.selected = false));
+  }
+
+  private resetValues() {
+    this.muestreosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+    //this.getSummary();
   }
 
   confirmarEliminacion() {
@@ -588,13 +613,7 @@ export class CargaComponent extends BaseService implements OnInit {
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
-
-    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
-    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
-    this.filtros = filteredColumns;
-
     this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
-
     let esFiltroEspecial = this.IsCustomFilter(column);
 
     if (
@@ -649,7 +668,9 @@ export class CargaComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.consultarMonitoreos();
   }
 
@@ -657,6 +678,7 @@ export class CargaComponent extends BaseService implements OnInit {
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
   }
+
   asignarFechaLimite() {
     let muestreosSeleccionados = this.obtenerSeleccionados();
     if (!(muestreosSeleccionados.length > 0)) {
