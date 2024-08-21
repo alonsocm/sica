@@ -4,6 +4,7 @@ using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
+using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Muestreos.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
@@ -172,10 +173,28 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put(List<MuestreoRevisionDto> request)
+        [HttpPut("SetFechaLimiteRevision")]
+        public async Task<IActionResult> SetFechaLimiteRevision([FromBody] IEnumerable<long> request, [FromQuery] bool esLiberacion, [FromQuery] string fechaLimite, [FromQuery] string? filter = "")
         {
-            return Ok(await Mediator.Send(new AsignarFechaLimiteCommand { Muestreos = request }));
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            if (!request.Any())
+            {
+                var data = Mediator.Send(new GetMuestreosPaginados
+                {
+                    Filter = filters,
+                    EsLiberacion = esLiberacion
+                }).Result.Data;
+
+                request = data.Select(w => w.MuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new AsignarFechaLimiteCommand { Muestreos = request, FechaLimiteRevision = fechaLimite }));
         }
 
         [HttpDelete]
@@ -261,7 +280,9 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpPut("ActualizarMuestreos")]
         public async Task<IActionResult> ActualizarMuestreos(List<MuestreoDto> request)
-        { return Ok(await Mediator.Send(new ActualizarMuestreoCommand { lstMuestreos = request })); }
+        {
+            return Ok(await Mediator.Send(new ActualizarMuestreoCommand { lstMuestreos = request }));
+        }
 
         [HttpGet("obtenerPuntosPorMuestreo")]
         public async Task<IActionResult> obtenerPuntosPorMuestreo(string claveMuestreo)
