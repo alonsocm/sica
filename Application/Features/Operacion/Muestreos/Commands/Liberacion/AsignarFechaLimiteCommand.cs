@@ -1,39 +1,33 @@
-﻿using Application.DTOs;
-using Application.Enums;
-using Application.Interfaces.IRepositories;
+﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
-using Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Features.Muestreos.Commands.Liberacion
+namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 {
     public class AsignarFechaLimiteCommand : IRequest<Response<bool>>
     {
-        public List<MuestreoRevisionDto> Muestreos { get; set; }
+        public IEnumerable<long> Muestreos { get; set; }
+        public string FechaLimiteRevision { get; set; }
     }
 
-    public class EnvioRevisionMuestreosCommandHandler : IRequestHandler<AsignarFechaLimiteCommand, Response<bool>>
+    public class AsignarFechaLimiteCommandHandler : IRequestHandler<AsignarFechaLimiteCommand, Response<bool>>
     {
         private readonly IMuestreoRepository _repositoryAsync;
 
-        public EnvioRevisionMuestreosCommandHandler(IMuestreoRepository repositoryAsync)
+        public AsignarFechaLimiteCommandHandler(IMuestreoRepository repositoryAsync)
         {
             _repositoryAsync = repositoryAsync;
         }
 
         public async Task<Response<bool>> Handle(AsignarFechaLimiteCommand request, CancellationToken cancellationToken)
         {
-            foreach (var muestreoRequest in request.Muestreos)
+            foreach (var muestreoId in request.Muestreos)
             {
-                var muestreo = await _repositoryAsync.ObtenerElementoPorIdAsync(muestreoRequest.MuestreoId);
+                var muestreo = await _repositoryAsync.ObtenerElementoPorIdAsync(muestreoId);
+
                 if (muestreo != null)
                 {
-                    muestreo.FechaLimiteRevision = DateTime.TryParse(muestreoRequest.FechaRevision, out var fechaLimite) ? fechaLimite : DateTime.Now;
+                    muestreo.FechaLimiteRevision = DateTime.TryParse(request.FechaLimiteRevision, out var fechaLimite) ? fechaLimite : DateTime.Now;
                     _repositoryAsync.Actualizar(muestreo);
                 }
             }
