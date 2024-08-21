@@ -830,6 +830,12 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
 
   ngOnDestroy() {
     this.filtroHistorialServiceSub.unsubscribe();
+    this.muestreoService.updateSummaryOptions({
+      muestreos: [],
+      filter: '',
+      selectAll: false,
+      total: 0,
+    }); //Se limpian los muestreos seleccionados
   }
 
   onFilterIconClick(column: Column) {

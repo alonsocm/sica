@@ -3,6 +3,7 @@ import { GrupoParametro } from 'src/app/interfaces/grupoParametro.interface';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { MuestreoService } from '../../services/muestreo.service';
 import { SummaryOptions } from '../../models/summaryOptions';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-muestreos-totales',
@@ -10,6 +11,7 @@ import { SummaryOptions } from '../../models/summaryOptions';
   styleUrls: ['./muestreos-totales.component.css'],
 })
 export class MuestreosTotalesComponent implements OnInit {
+  private summaryOptionsSubscription: Subscription;
   filtroResumen: string;
   resultadosFiltro: any;
   totalResultadosPorFiltro = 0;
@@ -22,13 +24,15 @@ export class MuestreosTotalesComponent implements OnInit {
   constructor(private muestreoService: MuestreoService) {
     this.filtroResumen = 'Seleccionar filtro';
 
-    muestreoService.summaryOptions$.subscribe((summaryOptions) => {
-      this.muestreosFiltrados = summaryOptions.muestreos;
-      this.totalMuestreos = summaryOptions.selectAll
-        ? summaryOptions.total
-        : this.muestreosFiltrados.length;
-      this.generarResumenMonitoreosGpoParametro(summaryOptions);
-    });
+    this.summaryOptionsSubscription = muestreoService.summaryOptions$.subscribe(
+      (summaryOptions) => {
+        this.muestreosFiltrados = summaryOptions.muestreos;
+        this.totalMuestreos = summaryOptions.selectAll
+          ? summaryOptions.total
+          : this.muestreosFiltrados.length;
+        this.generarResumenMonitoreosGpoParametro(summaryOptions);
+      }
+    );
   }
 
   ngOnInit(): void {}
@@ -110,6 +114,12 @@ export class MuestreosTotalesComponent implements OnInit {
             );
           },
         });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.summaryOptionsSubscription) {
+      this.summaryOptionsSubscription.unsubscribe();
     }
   }
 }

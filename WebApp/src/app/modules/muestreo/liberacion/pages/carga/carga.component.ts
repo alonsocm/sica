@@ -418,6 +418,8 @@ export class CargaComponent extends BaseService implements OnInit {
         this.muestreosSeleccionados.splice(index, 1);
       }
     }
+
+    this.getSummary();
   }
 
   filtrar(columna: Column, isFiltroEspecial: boolean) {
@@ -731,5 +733,23 @@ export class CargaComponent extends BaseService implements OnInit {
           this.loading = false;
         },
       });
+  }
+
+  getSummary() {
+    this.muestreoService.updateSummaryOptions({
+      muestreos: this.muestreosSeleccionados,
+      filter: this.cadena,
+      selectAll: this.allSelected,
+      total: this.totalItems,
+    });
+  }
+
+  ngOnDestroy() {
+    this.muestreoService.updateSummaryOptions({
+      muestreos: [],
+      filter: '',
+      selectAll: false,
+      total: 0,
+    }); //Se limpian los muestreos seleccionados
   }
 }
