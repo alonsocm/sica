@@ -62,6 +62,11 @@ public partial class ResultadoMuestreo
     public int? EstatusResultado { get; set; }
 
     /// <summary>
+    /// Llave foranea que hace referencia al catalogo de EstatusResultado indicando el estatus en el que se encuentra el resultado del muestreo
+    /// </summary>
+    public int? EstatusResultadoId { get; set; }
+
+    /// <summary>
     /// Llave foránea hace referencia al catalogo de observaciones indicando las observaciones de SRENAMECA
     /// </summary>
     public long? ObservacionSrenamecaid { get; set; }
@@ -173,6 +178,8 @@ public partial class ResultadoMuestreo
 
     public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = new List<AprobacionResultadoMuestreo>();
 
+    public virtual EstatusResultado? EstatusResultado1 { get; set; }
+
     public virtual EstatusMuestreo1? EstatusResultadoNavigation { get; set; }
 
     public virtual ICollection<EvidenciaReplica> EvidenciaReplica { get; set; } = new List<EvidenciaReplica>();
@@ -190,4 +197,6 @@ public partial class ResultadoMuestreo
     public virtual Observaciones? ObservacionesSecaiaNavigation { get; set; }
 
     public virtual ParametrosGrupo Parametro { get; set; } = null!;
+
+    public virtual ICollection<ReplicasResultadosReglasValidacion> ReplicasResultadosReglasValidacion { get; set; } = new List<ReplicasResultadosReglasValidacion>();
 }

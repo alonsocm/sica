@@ -299,7 +299,7 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   private obtenerSeleccionados(): Array<Muestreo> {
-    return this.muestreos.filter((f) => f.isChecked);
+    return this.muestreos.filter((f) => f.selected);
   }
 
   seleccionarArchivo(event: any) {
@@ -391,9 +391,9 @@ export class CargaComponent extends BaseService implements OnInit {
   seleccionarTodos(): void {
     this.muestreosSeleccionados.map((m) => {
       if (this.seleccionarTodosChck) {
-        m.isChecked ? true : (m.isChecked = true);
+        m.selected ? true : (m.selected = true);
       } else {
-        m.isChecked ? (m.isChecked = false) : true;
+        m.selected ? (m.selected = false) : true;
       }
     });
     let muestreosSeleccionados = this.obtenerSeleccionados();

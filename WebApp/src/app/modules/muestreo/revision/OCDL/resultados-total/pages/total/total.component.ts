@@ -15,6 +15,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 
 @Component({
   selector: 'app-total',
@@ -333,7 +334,7 @@ export class TotalComponent extends BaseService implements OnInit {
       }
 
       let valr = {
-        estatusId: 4,
+        estatusId: estatusOcdlSecaia.Validado,
         usuarioId: localStorage.getItem('idUsuario'),
         tipoAprobId: tipoaprobacion,
         muestreoId: this.muestreoSeleccionadoDatos[i].muestreoId,

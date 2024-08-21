@@ -161,7 +161,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cambiarEstatusMuestreo(2)">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cambiarEstatusMuestreo(this.estatusEnviado)">
                 Aceptar
               </button>
             </div>
@@ -182,7 +182,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           <button id="btnAceptar" type="button" class="btn btn-primary" data-dismiss="modal"
-            (click)="cambiarEstatusMuestreo(5)">
+            (click)="cambiarEstatusMuestreo(this.estatusAprobacionFinal)">
             Aceptar
           </button>
         </div>

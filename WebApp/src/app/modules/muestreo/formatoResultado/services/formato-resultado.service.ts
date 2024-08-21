@@ -26,22 +26,6 @@ export class FormatoResultadoService {
     return this.http.get<any>(environment.apiUrl + '/ParametrosGrupo');
   }
 
-  getMuestreosParametros(tipoCuerpo: number, page: number, pageSize: number) {
-    const params = new HttpParams({
-      fromObject: {
-        usuario: this.authService.getUser().usuarioId,
-        tipoCuerpoAgua: tipoCuerpo,
-        estatus: estatusMuestreo.CargaResultados,
-        page,
-        pageSize,
-      },
-    });
-    return this.http.get<any>(
-      environment.apiUrl + '/resultados/ParametrosMuestreo',
-      { params }
-    );
-  }
-
   getMuestreosParametrosPaginados(
     page: number,
     pageSize: number,

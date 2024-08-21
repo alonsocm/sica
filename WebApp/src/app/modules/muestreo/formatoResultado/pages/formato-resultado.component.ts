@@ -352,20 +352,6 @@ export class FormatoResultadoComponent extends BaseService implements OnInit {
     });
   }
 
-  consultarMuestreos(tipoCuerpo: number, page: number) {
-    this.loading = !this.loading;
-    this.formatoService
-      .getMuestreosParametros(tipoCuerpo, page, this.pageSize)
-      .subscribe({
-        next: (response: any) => {
-          this.totalItems = response.totalRecords;
-          this.loading = false;
-          this.muestreos = response.data;
-        },
-        error: (error) => {},
-      });
-  }
-
   consultaCuerpoAgua() {
     this.formatoService.getCuerpoAgua().subscribe({
       next: (response: any) => {

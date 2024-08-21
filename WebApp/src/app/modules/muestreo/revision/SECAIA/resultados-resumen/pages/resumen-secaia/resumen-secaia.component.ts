@@ -5,6 +5,7 @@ import { ResumenResultados } from '../../../../../../../interfaces/ResumenResult
 import { FileService } from '../../../../../../../shared/services/file.service';
 import { TotalService } from '../../../../services/total.service';
 import { BaseService } from 'src/app/shared/services/base.service';
+import { estatusOcdlSecaia } from '../../../../../../../shared/enums/estatusOcdlSecaia';
 
 @Component({
   selector: 'app-resumen-secaia',
@@ -144,7 +145,7 @@ export class ResumenSecaiaComponent extends BaseService implements OnInit {
   }
 
   obtenerDatosResumenResultados() {
-    this.totalService.getResumenRevisionResultados(5, false).subscribe({
+    this.totalService.getResumenRevisionResultados(estatusOcdlSecaia.AprobacionFinal, false).subscribe({
       next: (response: any) => {
         this.datosResultados = response.data;
         this.datosResultadosFiltrados = this.datosResultados;        

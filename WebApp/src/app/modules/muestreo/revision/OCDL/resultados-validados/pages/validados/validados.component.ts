@@ -4,10 +4,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NumberService } from '../../../../../../../shared/services/number.service';
 import { TotalService } from '../../../../services/total.service';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSEcaia';
-import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
+import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 import { TipoMensaje } from 'src/app/shared/enums/tipoMensaje'
 import { FileService } from 'src/app/shared/services/file.service';
+import { estatusMuestreo } from '../../../../../../../shared/enums/estatusMuestreo';
 
 @Component({
   selector: 'app-validados',
@@ -25,11 +25,16 @@ export class ValidadosComponent extends BaseService implements OnInit {
   muestreosagrupados: Array<any> = [];
   resultadosSeleccionados: Array<Resultado> = [];
 
+  estatusAprobacionFinal: number = 0;
+  estatusEnviado: number = 0;
+
   constructor(
     public numberService: NumberService,
     private totalService: TotalService
   ) {
     super();
+    this.estatusAprobacionFinal = estatusOcdlSecaia.AprobacionFinal;
+    this.estatusEnviado = estatusMuestreo.RevisiónOCDLSECAIA;
   }
   ngOnInit(): void {
     this.consultarMonitoreos();

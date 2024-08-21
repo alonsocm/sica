@@ -283,7 +283,7 @@ namespace Persistence.Repository
                 TipoHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado == null ? string.Empty : m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion,
                 TipoSitio = m.ProgramaMuestreo.ProgramaSitio.TipoSitio.Descripcion??string.Empty,
                 EstatusId = m.EstatusId,
-                Estatus = m.Estatus.Descripcion,
+                Estatus = m.Estatus.Etiqueta,
                 Parametros = m.ResultadoMuestreo.Select(s =>
                               new ParametroDto
                               {
