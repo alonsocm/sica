@@ -206,7 +206,7 @@ export class CargaComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'tipoCarga',
+        name: 'tipoCargaResultados',
         label: 'TIPO CARGA RESULTADOS',
         order: 12,
         selectAll: true,
