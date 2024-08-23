@@ -51,7 +51,6 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
             }
             catch (Exception ex)
             {
-                return new Response<bool> { Succeded = true };
                 throw new ApplicationException(ex.Message);
             }
         }
