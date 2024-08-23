@@ -262,7 +262,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPut("cambioEstatusMuestreos")]
         public async Task<IActionResult> CambioEstatusMuestreos(ActualizarEstatusListMuestreos datos)
         {
-            return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { estatusId = datos.estatusId, muestreos = datos.muestreos }));
+            return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { EstatusId = datos.EstatusId, Muestreos = datos.Muestreos }));
         }
 
         [HttpPut("ActualizaEstatusMuestreos")]
