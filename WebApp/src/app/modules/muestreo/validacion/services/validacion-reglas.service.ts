@@ -229,13 +229,13 @@ export class ValidacionReglasService {
     );
   }
 
-  enviarIncidencias(muestreos: Array<number> = [], filter = '') {
+  enviarIncidencias(resultadosId: Array<number> = [], filter = '') {
     return this.http.post(
       environment.apiUrl +
         '/Resultados/EnviarIncidencias?' +
         'filter=' +
         filter,
-      muestreos
+      resultadosId
     );
   }
 }

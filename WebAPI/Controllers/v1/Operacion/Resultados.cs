@@ -972,7 +972,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("EnviarIncidencias")]
-        public async Task<IActionResult> EnviarIncidencias(List<long>? muestreos, [FromQuery] string? filter = "")
+        public async Task<IActionResult> EnviarIncidencias(List<long>? resultadosId, [FromQuery] string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -981,7 +981,7 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new EnviarIncidenciasCommand { Muestreos = muestreos, Filters = filters }));
+            return Ok(await Mediator.Send(new EnviarIncidenciasCommand { ResulatdosId = resultadosId, Filters = filters }));
         }
     }
 }

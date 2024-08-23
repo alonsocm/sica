@@ -1,10 +1,12 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
+using System.Linq;
 
 namespace Persistence.Repository
 {
@@ -251,6 +253,7 @@ namespace Persistence.Repository
                                    where m.EstatusId == estatusId
                                    select new AcumuladosResultadoDto
                                    {
+
                                        MuestreoId = m.Id,
                                        ClaveUnica = $"{vpm.ClaveMuestreo}{resMuestreo.Parametro.ClaveParametro}",
                                        ClaveMonitoreo = vpm.ClaveMuestreo ?? string.Empty,
@@ -334,10 +337,10 @@ namespace Persistence.Repository
                                        TipoCuerpoAguaId = resultados.TipoCuerpoAguaId,
                                        TipoSitioId = resultados.TipoSitioId,
                                        CumpleFechaEntrega = (resultados.NumFechasNoCumplidas > 0) ? "NO" : "SI",
-                                       AutorizacionIncompleto=resultados.AutorizacionIncompleto,
-                                       AutorizacionFechaEntrega=resultados.AutorizacionFechaEntrega,
+                                       AutorizacionIncompleto = resultados.AutorizacionIncompleto,
+                                       AutorizacionFechaEntrega = resultados.AutorizacionFechaEntrega,
                                        UsuarioValido = resultados.UsuarioValido,
-                                       PorcentajePago  = resultados.PorcentajePago.ToString() ?? string.Empty
+                                       PorcentajePago = resultados.PorcentajePago.ToString() ?? string.Empty
                                    }).ToListAsync();
 
             foreach (var dato in muestreos)
@@ -464,6 +467,29 @@ namespace Persistence.Repository
             }
             return puntosMuestreoDto;
 
+        }
+
+        public async Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(int EstatusResultadoId)
+        {
+            var replicasResultados = await (from res in _dbContext.ResultadoMuestreo
+                                            join m in _dbContext.Muestreo on res.MuestreoId equals m.Id
+                                            join vcm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
+                                            where res.EstatusResultadoId == EstatusResultadoId
+                                            select new ReplicasResultadosReglasValidacionDto
+                                            {
+                                                ClaveUnica = $"{vcm.ClaveMuestreo}{res.Parametro.ClaveParametro}",
+                                                ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                                ClaveMonitoreo = vcm.ClaveMuestreo ?? string.Empty,
+                                                Nombre = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
+                                                ClaveParametro = res.Parametro.ClaveParametro,
+                                                TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                                TipoHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion ?? string.Empty,
+                                                Resultado = res.Resultado,
+                                                CorrectoResultadoReglaValidacion = res.ResultadoReglas == "OK" ? true : false,
+                                                ObservacionReglaValidacion = res.ResultadoReglas
+                                            }).ToListAsync();
+
+            return replicasResultados;
         }
     }
 }

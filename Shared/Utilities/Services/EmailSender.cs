@@ -52,11 +52,8 @@
                 }
             }
 
-            smtpClient.Credentials = new NetworkCredential("sistemacapa@conagua.gob.mx", "Gifi21");
             smtpClient.EnableSsl = true;
-
-         
-
+            smtpClient.Credentials = new NetworkCredential("rolandooeinfotec@gmail.com", "jxnd vqsx zmfv dpob");
             smtpClient.Send(mailMessage);
         }
     }
