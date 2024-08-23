@@ -3,36 +3,40 @@ using Application.Enums;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
+using Domain.Entities;
 using FluentValidation;
 using MediatR;
+using EstatusResultado = Application.Enums.EstatusResultado;
 
 namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 {
     public class EnviarIncidenciasCommand : IRequest<Response<bool>>
     {
-        public List<long> Muestreos { get; set; } = new List<long>();
+        public List<long> ResulatdosId { get; set; } = new List<long>();
         public List<Filter> Filters { get; set; } = new List<Filter>();
     }
 
     public class EnviarIncidenciasCommandHandler : IRequestHandler<EnviarIncidenciasCommand, Response<bool>>
     {
         private readonly IMuestreoRepository _muestreoRepository;
+        private readonly IResultado _resultadosRepository;
 
-        public EnviarIncidenciasCommandHandler(IMuestreoRepository muestreoRepository)
+        public EnviarIncidenciasCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadosRepository)
         {
             _muestreoRepository = muestreoRepository;
+            _resultadosRepository = resultadosRepository;
         }
 
         public async Task<Response<bool>> Handle(EnviarIncidenciasCommand request, CancellationToken cancellationToken)
         {
-            if (request.Muestreos.Any())
+            if (request.ResulatdosId.Any())
             {
-                var muestreosIds = request.Muestreos.Distinct();
-                EnviarIncidencias(muestreosIds);
+                var resultadosIds = request.ResulatdosId.Distinct();
+                EnviarIncidencias(resultadosIds);
             }
             else
             {
-                var data = await _muestreoRepository.GetResultadosMuestreoEstatusMuestreoAsync((int)EstatusMuestreo.ResumenValidaciónReglas);
+                var data = await _muestreoRepository.GetResultadosMuestreoEstatusMuestreoAsync((int)Enums.EstatusMuestreo.ResumenValidaciónReglas);
                 var expressions = QueryExpression<AcumuladosResultadoDto>.GetExpressionList(request.Filters);
                 List<AcumuladosResultadoDto> lstMuestreo = new();
 
@@ -58,21 +62,16 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
             return new Response<bool>(true);
         }
 
-        private void EnviarIncidencias(IEnumerable<long> muestreosIds)
+        private void EnviarIncidencias(IEnumerable<long> resultadosIds)
         {
-            var muestreos = _muestreoRepository.ObtenerElementoConInclusiones(c => muestreosIds.Contains(c.Id), p => p.ProgramaMuestreo, i => i.ResultadoMuestreo);
+            var resultados = _resultadosRepository.ObtenerElementosPorCriterioAsync(x => resultadosIds.Contains(x.Id)).Result;
+           
 
-            foreach (var muestreo in muestreos)
+
+            foreach (var resultado in resultados)
             {
-                if (muestreo.ResultadoMuestreo.Any(a => a.ValidacionFinal == null || a.ValidacionFinal == true))
-                {
-                    throw new ValidationException($"Para enviar a incidencias el muestreo {muestreo.ProgramaMuestreo.NombreCorrectoArchivo}, no debe existir un \"OK\" en el campo Validación Final");
-                }
-                else
-                {
-                    muestreo.EstatusId = (int)EstatusMuestreo_1.EnviadoIncidencia;
-                    _muestreoRepository.Actualizar(muestreo);
-                }
+                resultado.EstatusResultadoId = (int)EstatusResultado.IncidenciasResultados;
+                _resultadosRepository.Actualizar(resultado);
             }
         }
     }

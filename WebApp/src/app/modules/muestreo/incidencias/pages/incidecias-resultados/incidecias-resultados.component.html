@@ -40,8 +40,8 @@
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
-    Los {{this.muestreos.length}} registros de esta página están seleccionados. <button type="button"
-                                                                                        (click)="onSelectAllPagesClick()" class="btn btn-link">
+    Los {{this.replicasResultados.length}} registros de esta página están seleccionados. <button type="button"
+                                                                                                 (click)="onSelectAllPagesClick()" class="btn btn-link">
       Seleccionar los {{this.totalItems}} registros
     </button>
   </div>
@@ -58,9 +58,10 @@
           <th columnResize class="td-center no-border-bottom th-resize">
             &nbsp;SELECCIONAR&nbsp;
           </th>
-          <th columnResize scope="col" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
+          <th columnResize scope="col" style="width" *ngFor="let columna of this.columns let i = index" id="{{columna.name}}"
               class="no-border-bottom th-resize"
-              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : columna.color), 'z-index': '0'}">
+              [ngStyle]="{ 'backgroundColor': (esfiltrofoco == this.columna.name && !this.cabeceroSeleccionado) || (this.columna.label.indexOf(esfiltrofoco) != -1 && this.esfiltrofoco != '' && !this.cabeceroSeleccionado )  ? 'lightblue' : ( (cabeceroSeleccionado && esfiltrofoco == this.columna.name ) ? 'yellow' : columna.color), 'z-index': '0',
+              'width.px':columna.width}">
             {{columna.label}}
           </th>
           <th class="td-center no-border-bottom th-resize">hola</th>
@@ -74,7 +75,7 @@
         <tr>
           <th class="no-border-top td-center">
             <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-                   (change)="onSelectPageClick(this.muestreos,this.muestreosSeleccionados);"
+                   (change)="onSelectPageClick(this.replicasResultados,this.resultadosFiltrados);"
                    title="Selecciona la página actual" />
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
@@ -161,23 +162,23 @@
 
 
       <tbody>
-        <tr *ngFor="let muestreo of this.muestreos | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
+        <tr *ngFor="let replica of this.replicasResultados | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="td-center">
-            <input type="checkbox" class="cursor-pointer" [(ngModel)]="muestreo.selected"
-                   (change)="onSelectClick(muestreo)" title="Seleccionar">
+            <input type="checkbox" class="cursor-pointer" [(ngModel)]="replica.selected"
+                   (change)="onSelectClick(replica)" title="Seleccionar">
           </td>
           <td></td>
+          <td>{{replica.claveUnica}}</td>
+          <td>{{replica.claveSitio}}</td>
+          <td>{{replica.claveMonitoreo}}</td>
+          <td>{{replica.nombre}}</td>
+          <td>{{replica.claveParametro}}</td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>-</td>
-          <td></td>
-          <td>-</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>{{replica.tipoCuerpoAgua}}</td>
+          <td>{{replica.tipoHomologado}}</td>
+          <td>{{replica.resultado}}</td>
+          <td>{{replica.correctoResultadoReglaValidacion ? "SI" : "NO"}} </td>
+          <td>{{replica.observacionReglaValidacion}}</td>
           <td></td>
           <td></td>
           <td>-</td>
@@ -211,7 +212,7 @@
           <td></td>
 
         </tr>
-        <tr *ngIf="this.muestreos.length==0">
+        <tr *ngIf="this.replicasResultados.length==0">
           <td class="td-center" colspan="22">No se encontraron registros</td>
         </tr>
       </tbody>

@@ -550,7 +550,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.registros = response.data;
+          this.registros = response.data;     
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.registros, this.registrosSeleccionados);
@@ -871,7 +871,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
     if (!this.allSelected) {
       registrosSeleccionados = this.registrosSeleccionados.map((s) => {
-        return s.muestreoId;
+        return s.resultadoMuestreoId;
       });
     }
 

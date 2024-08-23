@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Column } from '../../../../../interfaces/filter/column';
+import { ReplicasResultadosReglaVal } from '../../../../../interfaces/ReplicasResultadosReglaVal.interface';
+import { estatusResultado } from '../../../../../shared/enums/estatusResultado';
 import { BaseService } from '../../../../../shared/services/base.service';
+import { IncidenciasResultadosService } from '../../services/incidencias-resultados.service';
 
 @Component({
   selector: 'app-incidecias-resultados',
@@ -9,13 +12,14 @@ import { BaseService } from '../../../../../shared/services/base.service';
 })
 export class IncideciasResultadosComponent extends BaseService implements OnInit {
   columnsAvance: Array<Column> = [];
-  muestreos: Array<any> = [];
-  muestreosSeleccionados: Array<any> = [];
 
-  constructor() { super(); }
+  replicasResultados: Array<ReplicasResultadosReglaVal> = [];
+  resultadosFiltrados: Array<ReplicasResultadosReglaVal> = [];
+  constructor(private IncidenciasResultadoService: IncidenciasResultadosService) { super(); }
 
   ngOnInit(): void {
     this.definirColumnas();
+    this.consultarReplicas();
   }
 
   definirColumnas() {
@@ -34,7 +38,10 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#C9C9C9',
+        color: '#C9C9C9',        
+        width: 50.68,
+       
+
       },
       {
         name: 'claveUnica',
@@ -50,7 +57,9 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084'
+        color: '#F5B084',        
+        width:61.96,
+        
       },
       {
         name: 'claveSitio',
@@ -66,7 +75,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:66.95,
       },
       {
         name: 'claveMonitoreo',
@@ -82,7 +92,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:63.53,
       },
       {
         name: 'nombreParametro',
@@ -98,7 +109,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:244.76,
       },
       {
         name: 'claveParametro',
@@ -114,7 +126,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:65.79,
       },
       {
         name: 'laboratorio',
@@ -130,7 +143,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:75.79,
       },
       {
         name: 'tipoCuerpoAgua',
@@ -146,7 +160,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:104.93,
       },
       {
         name: 'tipoCuerpoAguaOriginal',
@@ -162,7 +177,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:104.94,
       },
       {
         name: 'resultado',
@@ -178,7 +194,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F5B084',
+        color: '#F5B084',        
+        width:85.96,
       },
       {
         name: 'esCorrecto',
@@ -194,7 +211,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#8EA9DB',
+        color: '#8EA9DB',        
+        width:127.93,
       },
       {
         name: 'observacionReglasValidacion',
@@ -210,7 +228,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#8EA9DB',
+        color: '#8EA9DB',        
+        width:151.9,
       },
       {
         name: 'aceptaRechazo',
@@ -226,7 +245,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#FF66FF',
+        color: '#FF66FF',        
+        width:51.24,
       },
       {
         name: 'resultadoReplica',
@@ -242,7 +262,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FF66FF',
+        color: '#FF66FF',        
+        width: 62.76,
       },
       {
         name: 'mismoResultado',
@@ -258,7 +279,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FF66FF',
+        color: '#FF66FF',        
+        width: 62.76,
       },
       {
         name: 'observacionLaboratorio',
@@ -272,7 +294,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FF66FF',
+        color: '#FF66FF',        
+        width: 75.81,
       },
       {
         name: 'fechaReplicaLaboratorio',
@@ -288,7 +311,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FF66FF',
+        color: '#FF66FF',        
+        width: 75.79,
       },
       {
         name: 'observacionSrenameca',
@@ -304,7 +328,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#00B0F0',
+        color: '#00B0F0',        
+        width: 75.81,
       },
       {
         name: 'esCorrectoDato',
@@ -320,7 +345,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#00B0F0',
+        color: '#00B0F0',        
+        width: 65.21,
       },
       {
         name: 'fechaObservacionSrenameca',
@@ -336,7 +362,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#00B0F0',
+        color: '#00B0F0',        
+        width: 75.81,
       },
       {
         name: 'observacionReglasReplica',
@@ -352,7 +379,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#F8CBAD',
+        color: '#F8CBAD',        
+        width: 211.8,
       },
       {
       name: 'aprobacíonResultado',
@@ -368,7 +396,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
       specialFilter: '',
       secondSpecialFilter: '',
         selectedData: '',
-        color:'#9966FF',
+        color: '#9966FF',        
+        width: 225.89
       },
       {
         name: 'fechaEstatusFinal',
@@ -384,7 +413,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#A9D08E',
+        color: '#A9D08E',        
+        width: 87.93,
       },
       {
         name: 'usuarioReviso',
@@ -400,7 +430,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#A9D08E',
+        color: '#A9D08E',        
+        width: 89.93,
       },
       {
         name: 'estatusResultado',
@@ -416,7 +447,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#FFFF00',
+        color: '#FFFF00',        
+        width: 453.43
       },
       {
         name: 'arcivo',
@@ -432,7 +464,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color:'#FF66FF',
+        color: '#FF66FF',        
+        width: 92.95,
       },
       {
         name: 'evidenciasReplica',
@@ -448,7 +481,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FF66FF',
+        color: '#FF66FF',        
+        width: 98.94
       }
     ];
 
@@ -467,7 +501,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#F4B084',
+        color: '#F4B084',        
+        width: 168.8,
       },
       {
         name: '',
@@ -483,7 +518,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#8EA9DB'
+        color: '#8EA9DB',        
+        width: 110.94,
       },
       {
         name: '',
@@ -499,7 +535,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FF66FF',
+        color: '#FF66FF',        
+        width: 214.8,
       },
       {
         name: '',
@@ -515,7 +552,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FF66FF',
+        color: '#FF66FF',        
+        width: 252.74,
       },
       {
         name: '',
@@ -531,7 +569,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#00B0F0',
+        color: '#00B0F0',        
+        width: 313.65
       },
       {
         name: '',
@@ -547,7 +586,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#00B0F0',
+        color: '#00B0F0',        
+        width: 387.55,
       },
       {
         name: '',
@@ -563,7 +603,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#99FFCC',
+        color: '#99FFCC',        
+        width: 161.88,
       },
       {
         name: '',
@@ -579,7 +620,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#99FFCC',
+        color: '#99FFCC',        
+        width: 188.84,
       },
       {
         name: '',
@@ -595,7 +637,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#99FFCC',
+        color: '#99FFCC',        
+        width: 214.8
       },
       {
         name: '',
@@ -611,7 +654,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#99FFCC',
+        color: '#99FFCC',        
+        width: 184.84,
       },
       {
         name: '',
@@ -627,7 +671,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#AA7EEA',
+        color: '#AA7EEA',        
+        width: 363.59
       },
       {
         name: '',
@@ -643,7 +688,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FFC000',
+        color: '#FFC000',        
+        width: 404.53,
       },
       {
         name: '',
@@ -659,13 +705,62 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
-        color: '#FFC000',
+        color: '#FFC000',        
+        width: 420.69
+       
       }     
     ];
 
     this.columns = nombresColumnas;
     this.columnsAvance = avanceEstatusColumnas;
     this.setHeadersList(this.columns);
+  }
+
+  consultarReplicas(
+    page: number = this.page,
+    pageSize: number = this.NoPage,
+    filter: string = this.cadena
+  ): void {
+    this.IncidenciasResultadoService
+      .getReplicasResultadosPaginados(
+        estatusResultado.IncidenciasResultados,
+        page,
+        pageSize,
+        filter,
+        this.orderBy
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.selectedPage = false;
+          this.replicasResultados = response.data;
+          console.log(response.data);
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.totalItems = response.totalRecords;
+          this.getPreviousSelected(
+            this.replicasResultados,
+            this.resultadosFiltrados
+          );
+          this.selectedPage = this.anyUnselected(this.replicasResultados)
+            ? false
+            : true;
+        },
+        error: (error) => { },
+      });
+  }
+
+  getPreviousSelected(
+    muestreos: Array<ReplicasResultadosReglaVal>,
+    muestreosSeleccionados: Array<ReplicasResultadosReglaVal>
+  ) {
+    muestreos.forEach((f) => {
+      let muestreoSeleccionado = muestreosSeleccionados.find(
+        (x) => f.resultadoMuestreoId === x.resultadoMuestreoId
+      );
+
+      if (muestreoSeleccionado != undefined) {
+        f.selected = true;
+      }
+    });
   }
 
   cargarArchivo(event: any) { }
