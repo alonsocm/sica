@@ -35,12 +35,12 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
                     {
                         dato.EstatusId = request.EstatusId;
                         // Si se envia al estatus 29 "Acumulados de resultados" se actualiza tambien la bandera de ValidacionEvidencias a true
-                        dato.ValidacionEvidencias = (request.EstatusId == (int)Application.Enums.EstatusMuestreo.AcumulacionResultados) ? true : false;
+                        dato.ValidacionEvidencias = request.EstatusId == (int)Enums.EstatusMuestreo.AcumulacionResultados;
                         //Estatusid 2 en "Enviado", pasa de Liberacion a revision OCDL SECAIA 
-                        if (request.EstatusId == (int)Application.Enums.EstatusMuestreo.RevisiónOCDLSECAIA)
+                        if (request.EstatusId == (int)Enums.EstatusMuestreo.RevisiónOCDLSECAIA)
                         {
-                            var lstnumeroentrega = _muestreoRepository.GetListNumeroEntrega().Result.ToList();
-                            dato.NumeroEntrega = (lstnumeroentrega.ToList()[lstnumeroentrega.ToList().Count - 1] == null) ? 1 : lstnumeroentrega.ToList()[lstnumeroentrega.ToList().Count - 1] +1;
+                            var lstNumeroEntrega = _muestreoRepository.GetListNumeroEntrega().Result.ToList();
+                            dato.NumeroEntrega = (lstNumeroEntrega.ToList()[lstNumeroEntrega.ToList().Count - 1] == null) ? 1 : lstNumeroEntrega.ToList()[lstNumeroEntrega.ToList().Count - 1] +1;
                         }
 
                         _muestreoRepository.Actualizar(dato);

@@ -456,52 +456,46 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   enviarMonitoreos(): void {
-    let muestreosSeleccionados = this.muestreosSeleccionados;
-
-    if (!(muestreosSeleccionados.length > 0)) {
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un monitoreo para enviar',
+        text: 'No hay información seleccionada para enviar',
       });
-    } else if (
-      muestreosSeleccionados.filter((x) => x.fechaLimiteRevision == '').length >
-      0
-    ) {
-      this.hacerScroll();
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'Los monitoreos enviados a revisión deben de contar con fecha límite de revisión',
-      });
-    } else {
-      this.loading = true;
-      this.muestreoService
-        .enviarMuestreoaSiguienteEtapa(
-          estatusMuestreo.RevisiónOCDLSECAIA,
-          muestreosSeleccionados.map((m) => {
-            return m.muestreoId;
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this.consultarMonitoreos();
-            this.fechaLimiteRevision = '';
-            this.loading = false;
-            this.seleccionarTodosChck = false;
-            this.hacerScroll();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.success,
-              text: 'Monitoreos enviados correctamente a revisión',
-            });
-          },
-          error: (error) => {
-            this.loading = false;
-          },
-        });
     }
+
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.muestreoService
+      .enviarMuestreoaSiguienteEtapa(
+        estatusMuestreo.RevisiónOCDLSECAIA,
+        registrosSeleccionados
+      )
+      .subscribe({
+        next: (response) => {
+          this.consultarMonitoreos();
+          this.fechaLimiteRevision = '';
+          this.loading = false;
+          this.seleccionarTodosChck = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Monitoreos enviados correctamente a revisión',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
   }
 
   exportarResultados(): void {
