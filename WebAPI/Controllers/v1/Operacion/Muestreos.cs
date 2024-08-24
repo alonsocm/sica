@@ -265,6 +265,30 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new ActualizarEstatusListMuestreos { EstatusId = datos.EstatusId, Muestreos = datos.Muestreos }));
         }
 
+        [HttpPut("LiberarRevisionSECAIAOCDL")]
+        public async Task<IActionResult> LiberarRevisionSECAIAOCDL([FromBody] IEnumerable<long> muestreos, [FromQuery] bool esLiberacion, [FromQuery] int estatusId, [FromQuery] string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            if (!muestreos.Any())
+            {
+                var data = Mediator.Send(new GetMuestreosPaginados
+                {
+                    Filter = filters,
+                    EsLiberacion = esLiberacion
+                }).Result.Data;
+
+                muestreos = data.Select(w => w.MuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new LiberarRevisionSECAIAOCDLCommand { EstatusId = estatusId, Muestreos = muestreos }));
+        }
+
         [HttpPut("ActualizaEstatusMuestreos")]
         public async Task<IActionResult> CambioEstatusMuestreos(UpdateStatusMuestreosDto datos)
         {
