@@ -247,6 +247,22 @@ export class MuestreoService {
     );
   }
 
+  liberarRevisionSECAIAOCDL(
+    esLiberacion: boolean,
+    estatusId: number,
+    muestreos: Array<number>,
+    filter: string
+  ) {
+    const params = new HttpParams({
+      fromObject: { esLiberacion, estatusId, filter },
+    });
+    return this.http.put(
+      environment.apiUrl + '/Muestreos/LiberarRevisionSECAIAOCDL',
+      muestreos,
+      { params }
+    );
+  }
+
   enviarTodosMuestreosAcumulados(estatus: number, filter: string) {
     let datos = { Status: estatus, Filter: filter };
     return this.http.put(
