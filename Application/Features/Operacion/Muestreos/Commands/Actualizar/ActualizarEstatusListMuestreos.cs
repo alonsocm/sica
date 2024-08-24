@@ -7,7 +7,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
     public class ActualizarEstatusListMuestreos : IRequest<Response<bool>>
     {
         public int EstatusId { get; set; }
-        public List<long> Muestreos { get; set; }
+        public IEnumerable<long> Muestreos { get; set; }
     }
 
     public class ActualizarEstatusListMuestreosHandler : IRequestHandler<ActualizarEstatusListMuestreos, Response<bool>>
@@ -29,21 +29,21 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
                 }
                 else
                 {
-                    var muestreo = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Muestreos.Contains(x.Id));
+                    var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Muestreos.Contains(x.Id));
 
-                    foreach (var dato in muestreo)
+                    foreach (var muestreo in muestreos)
                     {
-                        dato.EstatusId = request.EstatusId;
+                        muestreo.EstatusId = request.EstatusId;
                         // Si se envia al estatus 29 "Acumulados de resultados" se actualiza tambien la bandera de ValidacionEvidencias a true
-                        dato.ValidacionEvidencias = request.EstatusId == (int)Enums.EstatusMuestreo.AcumulacionResultados;
+                        muestreo.ValidacionEvidencias = request.EstatusId == (int)Enums.EstatusMuestreo.AcumulacionResultados;
                         //Estatusid 2 en "Enviado", pasa de Liberacion a revision OCDL SECAIA 
                         if (request.EstatusId == (int)Enums.EstatusMuestreo.RevisiónOCDLSECAIA)
                         {
                             var lstNumeroEntrega = _muestreoRepository.GetListNumeroEntrega().Result.ToList();
-                            dato.NumeroEntrega = (lstNumeroEntrega.ToList()[lstNumeroEntrega.ToList().Count - 1] == null) ? 1 : lstNumeroEntrega.ToList()[lstNumeroEntrega.ToList().Count - 1] +1;
+                            muestreo.NumeroEntrega = (lstNumeroEntrega.ToList()[lstNumeroEntrega.ToList().Count - 1] == null) ? 1 : lstNumeroEntrega.ToList()[lstNumeroEntrega.ToList().Count - 1] +1;
                         }
 
-                        _muestreoRepository.Actualizar(dato);
+                        _muestreoRepository.Actualizar(muestreo);
                     }
 
                     return new Response<bool> { Succeded = true };
