@@ -3,11 +3,11 @@ using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 
-namespace Application.Features.Muestreos.Commands.Liberacion
+namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 {
     public class EliminarMuestreoCommand : IRequest<Response<bool>>
     {
-        public List<int> Muestreos { get; set; }
+        public IEnumerable<long> Muestreos { get; set; }
     }
 
     public class EliminarMuestreoCommandHandler : IRequestHandler<EliminarMuestreoCommand, Response<bool>>
@@ -30,19 +30,19 @@ namespace Application.Features.Muestreos.Commands.Liberacion
 
         public async Task<Response<bool>> Handle(EliminarMuestreoCommand request, CancellationToken cancellationToken)
         {
-            if (request.Muestreos.Count > 0)
+            if (request.Muestreos.Any())
             {
-                foreach (var muestreo in request.Muestreos)
-                {
-                    var muestreoDb = await _muestreoRepository.ObtenerElementoPorIdAsync(muestreo);
+                var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Muestreos.Contains(x.Id) && x.TipoCargaId == (int)Enums.TipoCarga.Manual);
 
-                    if (muestreoDb is null)
+                foreach (var muestreo in muestreos)
+                {
+                    if (muestreo is null)
                     {
-                        throw new KeyNotFoundException($"No se encontró el identificador: {muestreo}");
+                        throw new KeyNotFoundException($"No se encontró el identificador: {muestreo.Id}");
                     }
 
-                    _evidenciaMuestreoRepository.EliminarEvidenciasMuestreo(muestreoDb.Id);
-                    var resultados = await _resultadoRepository.ObtenerElementosPorCriterioAsync(r => r.MuestreoId == muestreo);
+                    _evidenciaMuestreoRepository.EliminarEvidenciasMuestreo(muestreo.Id);
+                    var resultados = await _resultadoRepository.ObtenerElementosPorCriterioAsync(r => r.MuestreoId == muestreo.Id);
 
                     if (resultados.Any())
                     {
@@ -52,9 +52,9 @@ namespace Application.Features.Muestreos.Commands.Liberacion
                         });
                     }
 
-                    _muestreoRepository.Eliminar(muestreoDb);
+                    _muestreoRepository.Eliminar(muestreo);
 
-                    var datosMuestreo = _claveMonitoreo.ObtenerElementosPorCriterio(x => x.ProgramaMuestreoId == muestreoDb.ProgramaMuestreoId).FirstOrDefault();
+                    var datosMuestreo = _claveMonitoreo.ObtenerElementosPorCriterio(x => x.ProgramaMuestreoId == muestreo.ProgramaMuestreoId).FirstOrDefault();
 
                     if (datosMuestreo != null)
                     {
