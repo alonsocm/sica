@@ -570,9 +570,7 @@ export class CargaComponent extends BaseService implements OnInit {
   }
 
   eliminarMuestreos() {
-    let muestreosSeleccionados = this.obtenerSeleccionados();
-
-    if (!(muestreosSeleccionados.length > 0)) {
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -581,19 +579,18 @@ export class CargaComponent extends BaseService implements OnInit {
       });
     }
 
-    let muestreosAutomaticos = muestreosSeleccionados.filter(
-      (x) => x.tipoCargaResultados == 'Automático'
-    );
-    if (muestreosAutomaticos.length > 0) {
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'Debe seleccionar monitoreos cargados "Manualmente"',
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
       });
-    } else {
-      this.loading = true;
-      let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
-      this.muestreoService.eliminarMuestreos(muestreosEliminar).subscribe({
+    }
+
+    this.muestreoService
+      .eliminarMuestreos(registrosSeleccionados, true, this.cadena)
+      .subscribe({
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
           this.consultarMonitoreos();
@@ -611,7 +608,6 @@ export class CargaComponent extends BaseService implements OnInit {
           this.loading = false;
         },
       });
-    }
   }
 
   onFilterIconClick(column: Column) {
