@@ -1,13 +1,6 @@
-﻿using Application.Features.Muestreos.Commands.Liberacion;
-using Application.Interfaces.IRepositories;
+﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 {
@@ -30,7 +23,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
             var muestreo = await _resultadomuestreo.ObtenerElementoPorIdAsync(request.ResultadoMuestreoId);
 
             if (muestreo != null)
-            {               
+            {
                 muestreo.EstatusResultado = (int)request.EstatusId;
                 _resultadomuestreo.Actualizar(muestreo);
             }

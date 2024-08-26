@@ -1,12 +1,6 @@
-﻿using Application.Features.Muestreos.Commands.Liberacion;
-using Application.Interfaces.IRepositories;
+﻿using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.RevisionResultados.Commands
 {
@@ -27,7 +21,7 @@ namespace Application.Features.Operacion.RevisionResultados.Commands
 
             var clavesMuestreo = ObtenerClavesMuestreo().Result.ToList();
             var sitios = ObtenerSitios().Result.ToList();
-            var parametros = ObtenerParametros().Result.ToList();            
+            var parametros = ObtenerParametros().Result.ToList();
 
             RuleForEach(x => x.Parametros).ChildRules(parametro =>
             {
@@ -45,10 +39,10 @@ namespace Application.Features.Operacion.RevisionResultados.Commands
 
                 parametro.RuleFor(x => x.ClaveUnica).Cascade(CascadeMode.Stop)
                                             .NotEmpty().WithMessage(parametro => $"El campo {{PropertyName}} no puede estar vacío. Linea: {parametro.Linea}")
-                                            .Must((parametro, claveUnica) => { return ExisteClaveUnica(Convert.ToInt32(parametro.NumeroEntrega),claveUnica); })
+                                            .Must((parametro, claveUnica) => { return ExisteClaveUnica(Convert.ToInt32(parametro.NumeroEntrega), claveUnica); })
                                             .WithMessage(parametro => $"La clave unica {{PropertyValue}} no se encuentra en la tabla. Linea:{parametro.Linea}");
 
-                
+
             });
 
         }
@@ -57,6 +51,6 @@ namespace Application.Features.Operacion.RevisionResultados.Commands
         public async Task<IEnumerable<VwClaveMuestreo>> ObtenerClavesMuestreo() => await _claveMuestreoRepository.ObtenerTodosElementosAsync();
         public async Task<IEnumerable<ParametrosGrupo>> ObtenerParametros() => await _parametroRepository.ObtenerTodosElementosAsync();
         public async Task<IEnumerable<Sitio>> ObtenerSitios() => await _sitioRepository.ObtenerTodosElementosAsync();
-        public bool ExisteClaveUnica(int noEntrega,string claveUnica) => _resultadorepository.ExisteClaveUnica(noEntrega,claveUnica);
+        public bool ExisteClaveUnica(int noEntrega, string claveUnica) => _resultadorepository.ExisteClaveUnica(noEntrega, claveUnica);
     }
 }

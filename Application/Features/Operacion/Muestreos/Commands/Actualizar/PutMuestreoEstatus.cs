@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.DTOs;
-using Application.Features.Muestreos.Commands.Liberacion;
-using Application.Interfaces.IRepositories;
+﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 
@@ -32,7 +25,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
             {
                 return new Response<bool> { Succeded = false };
             }
-            var muestreo = await _muestreoRepository.ObtenerElementoPorIdAsync(request.muestreoId);        
+            var muestreo = await _muestreoRepository.ObtenerElementoPorIdAsync(request.muestreoId);
             if (muestreo != null)
             {
                 muestreo.EstatusId = request.estatus;
