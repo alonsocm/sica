@@ -203,14 +203,36 @@ export class MuestreoService {
     );
   }
 
-  eliminarMuestreos(muestreos: Array<number>): Observable<any> {
-    const options = { body: muestreos };
+  eliminarMuestreos(
+    muestreos: Array<number>,
+    esLiberacion: boolean,
+    filter: string
+  ): Observable<any> {
+    const params = new HttpParams({
+      fromObject: { esLiberacion, filter },
+    });
+    const options = {
+      params,
+      body: muestreos,
+    };
     return this.http.delete(environment.apiUrl + '/muestreos', options);
   }
 
-  deleteByFilter(filter: string): Observable<any> {
+  deleteByFilter(
+    muestreos: Array<number>,
+    esLiberacion: boolean,
+    filter: string
+  ): Observable<any> {
+    const params = new HttpParams({
+      fromObject: { esLiberacion, filter },
+    });
+    const options = {
+      params,
+      body: muestreos,
+    };
     return this.http.delete(
-      environment.apiUrl + '/muestreos/deleteall?filter=' + filter
+      environment.apiUrl + '/muestreos/deleteall',
+      options
     );
   }
 

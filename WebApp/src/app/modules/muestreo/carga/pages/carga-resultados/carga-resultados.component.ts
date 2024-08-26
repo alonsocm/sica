@@ -605,58 +605,43 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   }
 
   eliminarMuestreos() {
-    this.loading = true;
-    if (this.allSelected) {
-      this.muestreoService.deleteByFilter(this.cadena).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();
-          this.consultarMonitoreos();
-          this.loading = false;
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Monitoreos eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
-    } else {
-      let muestreosSeleccionados = this.Seleccionados(
-        this.muestreosSeleccionados
-      );
-
-      if (!(muestreosSeleccionados.length > 0)) {
-        this.hacerScroll();
-        return this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.warning,
-          text: 'Debe seleccionar al menos un monitoreo para eliminar',
-        });
-      }
-
-      let muestreosEliminar = muestreosSeleccionados.map((s) => s.muestreoId);
-      this.muestreoService.eliminarMuestreos(muestreosEliminar).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();
-          this.consultarMonitoreos();
-          this.loading = false;
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Monitoreos eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
+    if (this.muestreosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay información seleccionada para eliminar',
       });
     }
+
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.muestreosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.muestreoService
+      .deleteByFilter(registrosSeleccionados, false, this.cadena)
+      .subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.consultarMonitoreos();
+          this.loading = false;
+          this.resetValues();
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Monitoreos eliminados correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
   }
 
   //Cambiar cuando selecciona todos
