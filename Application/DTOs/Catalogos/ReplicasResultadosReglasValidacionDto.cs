@@ -51,6 +51,10 @@ namespace Application.DTOs.Catalogos
         public ReplicasResultadosReglasValidacionDto()
         {
             Evidencias = new List<EvidenciaDto>();
+            ResultadoReplica = string.Empty;
+            ObservacionLaboratorio = string.Empty;
+
+
         }
     }
 

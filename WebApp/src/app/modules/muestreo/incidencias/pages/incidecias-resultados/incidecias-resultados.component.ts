@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Column } from '../../../../../interfaces/filter/column';
+import { Item } from '../../../../../interfaces/filter/item';
 import { ReplicasResultadosReglaVal } from '../../../../../interfaces/ReplicasResultadosReglaVal.interface';
 import { estatusResultado } from '../../../../../shared/enums/estatusResultado';
+import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { BaseService } from '../../../../../shared/services/base.service';
+import { FileService } from '../../../../../shared/services/file.service';
+import { NotificationService } from '../../../../../shared/services/notification.service';
+import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { IncidenciasResultadosService } from '../../services/incidencias-resultados.service';
 
 @Component({
@@ -15,7 +20,9 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
 
   replicasResultados: Array<ReplicasResultadosReglaVal> = [];
   resultadosFiltrados: Array<ReplicasResultadosReglaVal> = [];
-  constructor(private IncidenciasResultadoService: IncidenciasResultadosService) { super(); }
+  constructor(private IncidenciasResultadoService: IncidenciasResultadosService,
+    private notificationService: NotificationService,
+    private muestreoService: MuestreoService) { super(); }
 
   ngOnInit(): void {
     this.definirColumnas();
@@ -765,11 +772,143 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
 
   cargarArchivo(event: any) { }
   enviarCorreo() { }
-  onFilterIconClick(column: Column) { }
-  sort(column: string, type: string) { }
-  onDeleteFilterClick(columName: string) { }
+  onFilterIconClick(column: Column) {
+    this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
+
+    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
+    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
+    this.filtros = filteredColumns;
+
+    this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
+
+    let esFiltroEspecial = this.IsCustomFilter(column);
+
+    if (
+      (!column.filtered && !this.existeFiltrado) ||
+      (column.isLatestFilter && this.filtros.length == 1)
+    ) {
+      this.cadena = '';
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+
+    if (this.requiresToRefreshColumnValues(column)) {
+      this.IncidenciasResultadoService
+        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => { },
+        });
+    }
+
+    if (esFiltroEspecial) {
+      column.selectAll = false;
+      this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+    }
+  }
+  sort(column: string, type: string) {
+    this.orderBy = { column, type };
+    this.IncidenciasResultadoService
+      .getReplicasResultadosPaginados(estatusResultado.IncidenciasResultados,this.page, this.NoPage, this.cadena, {
+        column: column,
+        type: type,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.replicasResultados = response.data;
+        },
+        error: (error) => { },
+      });
+  }
+  onDeleteFilterClick(columName: string) {
+    this.deleteFilter(columName);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.consultarReplicas();
+  }
   filtrar(columna: Column, isFiltroEspecial: boolean) { }
-  onSelectClick(muestreo: any) { }
+  onSelectClick(replica: ReplicasResultadosReglaVal) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    //Vamos a agregar este registro, a los seleccionados
+    if (replica.selected) {
+      this.resultadosFiltrados.push(replica);
+      this.selectedPage = this.anyUnselected(this.replicasResultados) ? false : true;
+    } else {
+      let index = this.resultadosFiltrados.findIndex(
+        (m) => m.resultadoMuestreoId === replica.resultadoMuestreoId
+      );
+
+      if (index > -1) {
+        this.resultadosFiltrados.splice(index, 1);
+      }
+    }
+  }
+
+  exportarResultados(): void {
+    console.log(this.resultadosFiltrados);
+
+    if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay información seleccionada para descargar',
+      });
+    }
+
+    this.loading = true;
+    //let registrosSeleccionados: Array<number> = [];
+
+    //if (!this.allSelected) {
+    //  registrosSeleccionados = this.resultadosFiltrados.map((s) => {
+    //    return s.id;
+    //  });
+    //}
+
+    this.IncidenciasResultadoService
+      .descargarInformacion(this.resultadosFiltrados)
+      .subscribe({
+        next: (response: any) => {
+          FileService.download(response, 'Prueba.xlsx');
+          this.resetValues();
+          this.unselectResultados();
+          this.loading = false;
+        },
+        error: (response: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible descargar la información',
+          });
+        },
+      });
+  }
+
+  private resetValues() {
+    this.resultadosFiltrados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+  }
+
+  private unselectResultados() {
+    this.replicasResultados.forEach((m) => (m.selected = false));
+  }
 
   
 
