@@ -198,8 +198,26 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(List<int> muestreos)
+        public async Task<IActionResult> Delete([FromBody] IEnumerable<long> muestreos, [FromQuery] bool esLiberacion, [FromQuery] string? filter = "")
         {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            if (!muestreos.Any())
+            {
+                var data = Mediator.Send(new GetMuestreosPaginados
+                {
+                    Filter = filters,
+                    EsLiberacion = esLiberacion
+                }).Result.Data;
+
+                muestreos = data.Select(w => w.MuestreoId);
+            }
+
             return Ok(await Mediator.Send(new EliminarMuestreoCommand { Muestreos = muestreos }));
         }
 
