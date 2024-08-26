@@ -1,46 +1,36 @@
 ﻿using Application.DTOs;
-using Application.DTOs.Users;
-using Application.Features.CargaMasivaEvidencias.Commands;
-using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Interfaces;
 using Application.Interfaces.IRepositories;
-using Application.Models;
 using Application.Wrappers;
 using Domain.Entities;
 //using Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Replicas.Commands
 {
-    public class CargaRevicionResultadoCommand : IRequest<Response<bool>>
+    public class CargaRevisionResultadoCommand : IRequest<Response<bool>>
     {
         public List<ResultadosconEstatus> Revision { get; set; } = new List<ResultadosconEstatus>();
         public long UsuairioId { get; set; }
     }
-    public class CargaRevicionResultadoHandler : IRequestHandler<CargaRevicionResultadoCommand, Response<bool>>
+    public class CargaRevicionResultadoHandler : IRequestHandler<CargaRevisionResultadoCommand, Response<bool>>
     {
-        private readonly IArchivoService _archivos;      
-        private readonly IMuestreoRepository _muestreoRepository;                
+        private readonly IArchivoService _archivos;
+        private readonly IMuestreoRepository _muestreoRepository;
         private readonly IReplicas _aprovacionResultado;
         private readonly IVwReplicaRevisionResultadoRepository _vwReplica;
 
         public CargaRevicionResultadoHandler(IArchivoService archivos, IMuestreoRepository muestreoRepository, IReplicas aprovacionResultado, IVwReplicaRevisionResultadoRepository vwReplica)
         {
-            _archivos = archivos;                 
-            _muestreoRepository = muestreoRepository;          
+            _archivos = archivos;
+            _muestreoRepository = muestreoRepository;
             _aprovacionResultado = aprovacionResultado;
             _vwReplica = vwReplica;
-        }  
-        public async Task<Response<bool>> Handle(CargaRevicionResultadoCommand request, CancellationToken cancellationToken)
+        }
+        public async Task<Response<bool>> Handle(CargaRevisionResultadoCommand request, CancellationToken cancellationToken)
         {
             if (request.Revision.Count > 0)
-            { 
+            {
                 foreach (var revision in request.Revision)
                 {
                     if (revision.Aprueba_Resultado== "")
@@ -65,7 +55,7 @@ namespace Application.Features.Operacion.Replicas.Commands
                             {
                                 continue;
                             }
-                            _aprovacionResultado.Insertar(aprobacion);                           
+                            _aprovacionResultado.Insertar(aprobacion);
                         }
                         else
                         {
