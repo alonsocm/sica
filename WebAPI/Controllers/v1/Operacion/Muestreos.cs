@@ -1,6 +1,5 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
-using Application.Features.Muestreos.Commands.Liberacion;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
@@ -222,7 +221,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpDelete("DeleteAll")]
-        public async Task<IActionResult> Delete(string? filter = "")
+        public async Task<IActionResult> DeleteAll([FromBody] IEnumerable<long> muestreos, [FromQuery] bool esLiberacion, [FromQuery] string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -231,7 +230,18 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new DeleteByFilterCommand { Filters = filters }));
+            if (!muestreos.Any())
+            {
+                var data = Mediator.Send(new GetMuestreosPaginados
+                {
+                    Filter = filters,
+                    EsLiberacion = esLiberacion
+                }).Result.Data;
+
+                muestreos = data.Select(w => w.MuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new DeleteByFilterCommand { Muestreos = muestreos }));
         }
 
         [HttpGet("ResumenResultadosPorMuestreo")]

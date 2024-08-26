@@ -227,7 +227,7 @@ namespace WebAPI.Controllers.v1.Operacion
             var archivos = ExcelService.Import<ResultadosconEstatus>(fileInfo, "ebaseca");
             System.IO.File.Delete(filePath);
 
-            return Ok(await Mediator.Send(new CargaRevicionResultadoCommand
+            return Ok(await Mediator.Send(new CargaRevisionResultadoCommand
             {
                 Revision = archivos,
                 UsuairioId = usuarioId
