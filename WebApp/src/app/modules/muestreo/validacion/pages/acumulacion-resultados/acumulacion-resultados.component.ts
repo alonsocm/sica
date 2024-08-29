@@ -566,38 +566,38 @@ export class AcumulacionResultadosComponent
       });
   }
 
-  enviarmonitoreos(): void {
-    let resuladosenviados = this.Seleccionados(this.datosAcumualdos).map(
-      (m) => {
-        return m.muestreoId;
-      }
-    );
-    let totalmuestreos = this.Seleccionados(this.datosAcumualdos).filter(
-      (x) => x.claveSitio
-    );
-    if (resuladosenviados.length == 0) {
+  enviarMonitoreos(): void {
+    if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debes de seleccionar al menos un muestreo con evidencias cargadas para ser enviados a la etapa de "Módulo incial reglas"',
+        text: 'No hay información seleccionada para enviar',
+      });
+    }
+
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.resultadosFiltrados.map((s) => {
+        return s.muestreoId;
       });
     }
 
     this.loading = true;
     this.validacionService
-      .enviarMuestreoaValidar(estatusMuestreo.MóduloInicialReglas, resuladosenviados)
+      .enviarModuloInicialReglas(registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
-          if (response.succeded) {
-            this.hacerScroll();
-            this.consultarMonitoreos();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.success,
-              text: 'Se enviaron los muestreos a la etapa de "Módulo inicial reglas" correctamente',
-            });
-          }
+          this.hacerScroll();
+          this.consultarMonitoreos();
+          this.resetValues();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Se enviaron los muestreos a la etapa de "Módulo inicial reglas" correctamente',
+          });
         },
         error: (response: any) => {
           this.loading = false;
@@ -609,8 +609,6 @@ export class AcumulacionResultadosComponent
           });
         },
       });
-
-    this.loading = false;
   }
 
   sort(column: string, type: string) {

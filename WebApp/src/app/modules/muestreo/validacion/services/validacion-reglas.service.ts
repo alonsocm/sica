@@ -140,11 +140,13 @@ export class ValidacionReglasService {
     );
   }
 
-  enviarMuestreoaValidar(estatusId: number, muestreos: Array<number>) {
-    let datos = { estatusId: estatusId, muestreos: muestreos };
+  enviarModuloInicialReglas(muestreos: Array<number>, filter: string) {
+    let params = new HttpParams({ fromObject: { filter: filter } });
+
     return this.http.put(
-      environment.apiUrl + '/Muestreos/cambioEstatusMuestreos',
-      datos
+      environment.apiUrl + '/Resultados/EnviarModuloInicialReglas',
+      muestreos,
+      { params }
     );
   }
 
