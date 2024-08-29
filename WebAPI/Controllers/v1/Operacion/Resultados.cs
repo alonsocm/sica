@@ -1,9 +1,11 @@
 ﻿using Application.DTOs;
+using Application.Enums;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Resultados.Comands;
+using Application.Features.Operacion.Resultados.Comands.Acumulacion;
 using Application.Features.Operacion.Resultados.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
@@ -621,6 +623,30 @@ namespace WebAPI.Controllers.v1.Operacion
                 OrderBy = orderBy
             }));
 
+        }
+
+        [HttpPut("EnviarModuloInicialReglas")]
+        public async Task<IActionResult> EnviarModuloInicialReglas([FromBody] IEnumerable<long> muestreos, [FromQuery] string? filter = "")
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            if (!muestreos.Any())
+            {
+                var response = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+                {
+                    EstatusId = (int)EstatusMuestreo.AcumulacionResultados,
+                    Filter = filters,
+                });
+
+                muestreos = response.Data.Select(s => s.MuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new EnviarInicialReglasCommand { Muestreos = muestreos.Distinct() }));
         }
 
         [HttpGet("GetColumnValuesResultadosAcumuladosParametros")]
