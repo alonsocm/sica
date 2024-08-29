@@ -629,9 +629,9 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         next: (response) => {
           document.getElementById('btnCancelarModal')?.click();
           this.consultarMonitoreos();
-          this.loading = false;
           this.resetValues();
           this.hacerScroll();
+          this.loading = false;
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.success,
