@@ -6,7 +6,6 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System.Linq;
 
 namespace Persistence.Repository
 {
@@ -490,6 +489,30 @@ namespace Persistence.Repository
                                             }).ToListAsync();
 
             return replicasResultados;
+        }
+
+        public async Task<bool> CambiarEstatusAsync(Application.Enums.EstatusMuestreo estatus, IEnumerable<long> muestreosIds)
+        {
+            var muestreos = await _dbContext.Muestreo.Where(m => muestreosIds.Contains(m.Id)).ToListAsync();
+
+            if (muestreos == null || !muestreos.Any())
+            {
+                return false;
+            }
+
+            muestreos.ForEach(x => x.EstatusId = (int)estatus);
+
+            try
+            {
+                _dbContext.UpdateRange(muestreos);
+                await _dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Ocurrió un error al actualizar el estatus de los muestreos: {ex.Message}");
+            }
         }
     }
 }
