@@ -23,7 +23,7 @@ namespace Application.Features.Operacion.Resultados.Comands.Acumulacion
         {
             if (request.Muestreos.Any())
             {
-                bool actualizados = await _muestreoRepository.CambiarEstatusAsync((int)Enums.EstatusMuestreo.MóduloInicialReglas, request.Muestreos);
+                bool actualizados = await _muestreoRepository.CambiarEstatusAsync(Enums.EstatusMuestreo.MóduloInicialReglas, request.Muestreos);
                 return new Response<bool> { Succeded = actualizados };
             }
             else
