@@ -25,5 +25,6 @@ namespace Application.Interfaces.IRepositories
         public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
 
         Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(int estatusId);
+        Task<bool> CambiarEstatusAsync(Enums.EstatusMuestreo estatus, IEnumerable<long> muestreosIds);
     }
 }
