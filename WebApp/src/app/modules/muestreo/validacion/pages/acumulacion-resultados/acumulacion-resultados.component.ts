@@ -31,8 +31,8 @@ export class AcumulacionResultadosComponent
   ) {
     super();
   }
-  datosAcumualdos: Array<acumuladosMuestreo> = [];
-  resultadosFiltrados: Array<acumuladosMuestreo> = [];
+  registros: Array<acumuladosMuestreo> = [];
+  registrosSeleccionados: Array<acumuladosMuestreo> = [];
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados seleccionados?',
@@ -511,16 +511,11 @@ export class AcumulacionResultadosComponent
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.datosAcumualdos = response.data;
+          this.registros = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(
-            this.datosAcumualdos,
-            this.resultadosFiltrados
-          );
-          this.selectedPage = this.anyUnselected(this.datosAcumualdos)
-            ? false
-            : true;
+          this.getPreviousSelected(this.registros, this.registrosSeleccionados);
+          this.selectedPage = this.anyUnselected(this.registros) ? false : true;
         },
         error: (error) => {},
       });
@@ -528,7 +523,7 @@ export class AcumulacionResultadosComponent
 
   //cambiar cuando selecciona todo
   onDownload(): void {
-    if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -541,8 +536,8 @@ export class AcumulacionResultadosComponent
     let registrosSeleccionados: Array<number> = [];
 
     if (!this.allSelected) {
-      registrosSeleccionados = this.resultadosFiltrados.map((s) => {
-        return s.muestreoId;
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.resultadoMuestreoId;
       });
     }
 
@@ -567,7 +562,7 @@ export class AcumulacionResultadosComponent
   }
 
   enviarMonitoreos(): void {
-    if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -579,7 +574,7 @@ export class AcumulacionResultadosComponent
     let registrosSeleccionados: Array<number> = [];
 
     if (!this.allSelected) {
-      registrosSeleccionados = this.resultadosFiltrados.map((s) => {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
         return s.muestreoId;
       });
     }
@@ -626,7 +621,7 @@ export class AcumulacionResultadosComponent
       )
       .subscribe({
         next: (response: any) => {
-          this.datosAcumualdos = response.data;
+          this.registros = response.data;
         },
         error: (error) => {},
       });
@@ -690,17 +685,15 @@ export class AcumulacionResultadosComponent
 
     //Vamos a agregar este registro, a los seleccionados
     if (muestreo.selected) {
-      this.resultadosFiltrados.push(muestreo);
-      this.selectedPage = this.anyUnselected(this.datosAcumualdos)
-        ? false
-        : true;
+      this.registrosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected(this.registros) ? false : true;
     } else {
-      let index = this.resultadosFiltrados.findIndex(
+      let index = this.registrosSeleccionados.findIndex(
         (m) => m.muestreoId === muestreo.muestreoId
       );
 
       if (index > -1) {
-        this.resultadosFiltrados.splice(index, 1);
+        this.registrosSeleccionados.splice(index, 1);
       }
     }
   }
@@ -740,7 +733,7 @@ export class AcumulacionResultadosComponent
         });
     } else {
       this.loading = false;
-      let muestreosSeleccionados = this.Seleccionados(this.datosAcumualdos);
+      let muestreosSeleccionados = this.Seleccionados(this.registros);
       let resultadosEliminar = muestreosSeleccionados.map(
         (s) => s.resultadoMuestreoId
       );
@@ -776,14 +769,14 @@ export class AcumulacionResultadosComponent
   }
 
   private resetValues() {
-    this.resultadosFiltrados = [];
+    this.registrosSeleccionados = [];
     this.selectAllOption = false;
     this.allSelected = false;
     this.selectedPage = false;
   }
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(this.datosAcumualdos);
+    let muestreosSeleccionados = this.Seleccionados(this.registros);
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -884,5 +877,31 @@ export class AcumulacionResultadosComponent
           },
         });
     }
+  }
+
+  override onSelectPageClick(
+    registros: Array<any>,
+    registrosSeleccionados: Array<any>
+  ) {
+    registros.map((m) => {
+      m.selected = this.selectedPage;
+
+      //Buscamos el registro en los seleccionados
+      let index = registrosSeleccionados.findIndex(
+        (d) => d.resultadoMuestreoId === m.resultadoMuestreoId
+      );
+
+      if (index == -1) {
+        //No existe en seleccionados, lo agremos
+        registrosSeleccionados.push(m);
+      } else if (!this.selectedPage) {
+        //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados
+        registrosSeleccionados.splice(index, 1);
+      }
+    });
+
+    this.showOrHideSelectAllOption();
+
+    //this.getSummary();
   }
 }
