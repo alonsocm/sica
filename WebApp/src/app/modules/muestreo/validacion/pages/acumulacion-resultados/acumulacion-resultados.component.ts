@@ -48,6 +48,7 @@ export class AcumulacionResultadosComponent
   archivo: any;
 
   ngOnInit(): void {
+    this.loading = true;
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarMonitoreos();
@@ -510,14 +511,18 @@ export class AcumulacionResultadosComponent
       )
       .subscribe({
         next: (response: any) => {
-          this.selectedPage = false;
           this.registros = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+        complete: () => {
           this.getPreviousSelected(this.registros, this.registrosSeleccionados);
           this.selectedPage = this.anyUnselected(this.registros) ? false : true;
+          this.loading = false;
         },
-        error: (error) => {},
       });
   }
 
@@ -545,18 +550,18 @@ export class AcumulacionResultadosComponent
       .exportarResultadosAcumuladosExcel(registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
-          this.loading = true;
           FileService.download(response, 'AcumulacionResultados.xlsx');
-          this.loading = false;
         },
         error: (response: any) => {
           this.loading = false;
-          this.hacerScroll();
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.danger,
             text: 'No fue posible descargar la información',
           });
+        },
+        complete: () => {
+          this.loading = false;
         },
       });
   }
