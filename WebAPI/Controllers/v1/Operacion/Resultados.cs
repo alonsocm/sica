@@ -761,7 +761,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             if (muestreos != null && muestreos.Any())
             {
-                data = data.Where(x => muestreos.Contains(x.MuestreoId)).ToList();
+                data = data.Where(x => muestreos.Contains(x.ResultadoMuestreoId)).ToList();
             }
 
             var plantilla = new Plantilla(_configuration, _env);
