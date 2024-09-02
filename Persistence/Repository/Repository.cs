@@ -57,8 +57,10 @@ namespace Persistence.Repository
 
             foreach (var record in records)
             {
-                Eliminar(record);
+                _dbContext.Set<T>().Remove(record);
             }
+
+            _dbContext.SaveChanges();
         }
 
         public long Insertar(T entidad)
