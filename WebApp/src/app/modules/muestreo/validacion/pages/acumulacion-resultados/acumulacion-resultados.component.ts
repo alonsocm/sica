@@ -709,59 +709,48 @@ export class AcumulacionResultadosComponent
   }
 
   eliminarResultados() {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un resultado para ser eliminado',
+      });
+    }
+
+    let registrosSeleccionados = new Array<number>();
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.resultadoMuestreoId;
+      });
+    }
+
     this.loading = true;
+
     if (this.allSelected) {
       this.validacionService
-        .deleteResultadosByFilter(
-          estatusMuestreo.AcumulacionResultados,
-          this.cadena
-        )
+        .deleteResultadosAcumulacion(registrosSeleccionados, this.cadena)
         .subscribe({
           next: (response) => {
             document.getElementById('btnCancelarModal')?.click();
-            this.consultarMonitoreos();
-            this.loading = false;
             document
               .getElementById('btnMdlConfirmacionCargaResultados')
               ?.click();
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+          complete: () => {
             this.resetValues();
             this.hacerScroll();
+            this.consultarMonitoreos();
+            this.loading = false;
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.success,
               text: 'Resultados eliminados correctamente',
             });
-          },
-          error: (error) => {
-            this.loading = false;
-          },
-        });
-    } else {
-      this.loading = false;
-      let muestreosSeleccionados = this.Seleccionados(this.registros);
-      let resultadosEliminar = muestreosSeleccionados.map(
-        (s) => s.resultadoMuestreoId
-      );
-      this.validacionService
-        .deleteResultadosById(resultadosEliminar)
-        .subscribe({
-          next: (response) => {
-            document.getElementById('btnCancelarModal')?.click();
-            this.consultarMonitoreos();
-            this.loading = false;
-            document
-              .getElementById('btnMdlConfirmacionCargaResultados')
-              ?.click();
-            this.resetValues();
-            this.hacerScroll();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.success,
-              text: 'Resultados eliminados correctamente',
-            });
-          },
-          error: (error) => {
-            this.loading = false;
           },
         });
     }
@@ -781,8 +770,7 @@ export class AcumulacionResultadosComponent
   }
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(this.registros);
-    if (!(muestreosSeleccionados.length > 0)) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -790,6 +778,7 @@ export class AcumulacionResultadosComponent
         text: 'Debe seleccionar al menos un resultado para ser eliminado',
       });
     }
+
     document.getElementById('btnMdlConfirmacion')?.click();
   }
 

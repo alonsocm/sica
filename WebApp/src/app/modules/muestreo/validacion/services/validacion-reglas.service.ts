@@ -163,6 +163,24 @@ export class ValidacionReglasService {
     );
   }
 
+  deleteResultadosAcumulacion(
+    resultados: Array<number>,
+    filter: string
+  ): Observable<any> {
+    let params = new HttpParams({
+      fromObject: {
+        Filters: filter,
+      },
+    });
+
+    let options = { body: resultados, params: params };
+
+    return this.http.delete(
+      environment.apiUrl + '/Resultados/DeleteAllResultados',
+      options
+    );
+  }
+
   deleteResultadosById(resultados: Array<number>): Observable<any> {
     const options = { body: resultados };
     return this.http.delete(environment.apiUrl + '/Resultados', options);
