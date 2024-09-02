@@ -890,16 +890,32 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpDelete]
         public async Task<IActionResult> Delete(List<long> resultados)
-        { return Ok(await Mediator.Send(new DeleteResultadosByIdCommand { lstResultadosId = resultados })); }
+        {
+            return Ok(await Mediator.Send(new DeleteResultadosByIdCommand { lstResultadosId = resultados }));
+        }
 
         [HttpDelete("DeleteAllResultados")]
-        public async Task<IActionResult> Delete(int estatusId, string? filter = "")
+        public async Task<IActionResult> Delete(IEnumerable<long> resultados, string? filter = "")
         {
-            var filters = new List<Filter>();
-            if (!string.IsNullOrEmpty(filter))
-            { filters = QueryParam.GetFilters(filter); }
+            if (!resultados.Any())
+            {
+                var filters = new List<Filter>();
 
-            return Ok(await Mediator.Send(new DeleteResultadosByFilterCommand { Filters = filters, estatusId = estatusId }));
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    filters = QueryParam.GetFilters(filter);
+                }
+
+                var response = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+                {
+                    EstatusId = (int)EstatusMuestreo.AcumulacionResultados,
+                    Filter = filters,
+                });
+
+                resultados = response.Data.Select(s => s.ResultadoMuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new DeleteResultadosByFilterCommand { ResultadosIds = resultados }));
         }
 
         [HttpDelete("DeleteByMuestreoId")]
