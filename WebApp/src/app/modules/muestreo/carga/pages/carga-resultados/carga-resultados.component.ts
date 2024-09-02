@@ -647,6 +647,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //Cambiar cuando selecciona todos
   enviarMonitoreos(): void {
     //Si todos los registros están seleccionados, vamos a utlizar otra función, donde pasamos el filtro actual
+    this.loading = true;
     if (this.allSelected) {
       this.muestreoService
         .enviarTodosMuestreosAcumulados(
@@ -696,6 +697,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         });
       }
 
+      this.loading = true;
       this.muestreoService
         .enviarMuestreoaSiguienteEtapa(
           estatusMuestreo.AcumulacionResultados,
@@ -703,7 +705,6 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         )
         .subscribe({
           next: (response: any) => {
-            this.loading = true;
             if (response.succeded) {
               this.resetValues();
               this.loading = false;
