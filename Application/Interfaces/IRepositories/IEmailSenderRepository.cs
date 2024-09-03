@@ -10,7 +10,7 @@ namespace Application.Interfaces.IRepositories
 {
     public interface IEmailSenderRepository
     {
-        public void SendEmail(string toAddress, string subject, string body, List<string> attachmentPaths);
+        public void SendEmail(string toAddress, string subject, string body, List<string> attachmentPaths, string cc);
         
     }
 }

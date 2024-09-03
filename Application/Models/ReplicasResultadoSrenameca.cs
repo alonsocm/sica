@@ -1,5 +1,4 @@
-﻿using Application.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Models
 {
-    public class ReplicasResultadosRegValidacionExcel  
+    public class ReplicasResultadoSrenameca
     {
         public string NumCarga { get; set; }
         public string ClaveUnica { get; set; }
@@ -28,17 +27,8 @@ namespace Application.Models
         public string MismoResultado { get; set; }
         public string ObservacionLaboratorio { get; set; } = null!;
         public DateTime FechaReplicaLaboratorio { get; set; }
-
-        //srenameca
         public string? ObservacionSrenameca { get; set; }
         public string? EsDatoCorrectoSrenameca { get; set; }
         public DateTime? FechaObservacionSrenameca { get; set; }
-
-        //general
-        public string? ObservacionesReglasReplica { get; set; }
-        public string? ApruebaResultadoReplica { get; set; }
-        public DateTime FechaEstatusFinal { get; set; }
-        public string UsuarioReviso { get; set; }
-        public string Estatus { get; set; }
     }
 }

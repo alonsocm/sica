@@ -161,11 +161,9 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("envioCorreo")]
-        public IActionResult extraerMuestenvioCorreoreosRechazados(string destinatario,string asunto, string body, List<string> attachmentPaths)
+        public IActionResult extraerMuestenvioCorreoreosRechazados(string destinatario,string asunto, string body, string cc, [FromBody] List<string> attachmentPaths)
         {
-            _email.SendEmail(destinatario,asunto,body,attachmentPaths);
-            //new EmailSender().SendEmail(destinatario,asunto,body,attachmentPaths);
-            // EmailSender.SendEmail(destinatario, asunto, body, attachmentPaths);
+            _email.SendEmail(destinatario,asunto,body,attachmentPaths,cc);           
             return (Ok(true));
         }
     }

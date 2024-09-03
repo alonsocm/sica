@@ -123,7 +123,8 @@ namespace Persistence
             services.AddTransient<IVwResultadosNoCumplenFechaEntregaRepository, VwResultadosNoCumplenFechaEntregaRepository>();
             services.AddTransient<ITipoCuerpoAguaRepository,TipoCuerpoAguaRepository>();
             services.AddTransient<ICuencaDireccionesLocalesRepository, CuencaDireccionesLocalesRepository>();
-        
+            services.AddTransient<IReplicasResultadosReglasValidacionRepository, ReplicasResultadosReglasValidacionRepository>();
+
 
 
 
