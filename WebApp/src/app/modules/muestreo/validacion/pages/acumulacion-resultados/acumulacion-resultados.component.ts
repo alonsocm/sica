@@ -3,7 +3,6 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interface';
-import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { Column } from '../../../../../interfaces/filter/column';
@@ -12,6 +11,9 @@ import { NotificationService } from '../../../../../shared/services/notification
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { Item } from 'src/app/interfaces/filter/item';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
 
 @Component({
   selector: 'app-acumulacion-resultados',
@@ -20,19 +22,15 @@ import { Item } from 'src/app/interfaces/filter/item';
 })
 export class AcumulacionResultadosComponent
   extends BaseService
-  implements OnInit
+  implements OnInit, ICommonMethods
 {
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
-    {} as ElementRef;
-  constructor(
-    private validacionService: ValidacionReglasService,
-    public muestreoService: MuestreoService,
-    private notificationService: NotificationService
-  ) {
-    super();
-  }
   registros: Array<acumuladosMuestreo> = [];
   registrosSeleccionados: Array<acumuladosMuestreo> = [];
+  archivo: any;
+  filtroHistorialServiceSub: Subscription;
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
+
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados seleccionados?',
@@ -45,11 +43,25 @@ export class AcumulacionResultadosComponent
     id: 'mdlCargaResultados',
   };
 
-  archivo: any;
+  constructor(
+    private validacionService: ValidacionReglasService,
+    public muestreoService: MuestreoService,
+    private notificationService: NotificationService,
+    private filtroHistorialService: FiltroHistorialService
+  ) {
+    super();
+    this.filtroHistorialServiceSub =
+      this.filtroHistorialService.columnName.subscribe((columnName) => {
+        if (columnName !== '') {
+          this.loading = true;
+          this.deleteFilter(columnName);
+          this.consultarMonitoreos();
+        }
+      });
+  }
 
   ngOnInit(): void {
     this.loading = true;
-    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarMonitoreos();
   }
@@ -634,7 +646,9 @@ export class AcumulacionResultadosComponent
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.consultarMonitoreos();
   }
 
@@ -653,7 +667,8 @@ export class AcumulacionResultadosComponent
     });
   }
 
-  filtrar(columna: Column, isFiltroEspecial: boolean) {
+  onFilterClick(columna: Column, isFiltroEspecial: boolean) {
+    this.loading = true;
     this.existeFiltrado = true;
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
@@ -678,8 +693,11 @@ export class AcumulacionResultadosComponent
             (m.isLatestFilter = true);
         });
     }
+
     this.esHistorial = true;
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.hideColumnFilter();
   }
 
@@ -703,7 +721,8 @@ export class AcumulacionResultadosComponent
     }
   }
 
-  pageClic(page: any) {
+  onPageClick(page: any) {
+    this.loading = true;
     this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
   }
@@ -784,13 +803,7 @@ export class AcumulacionResultadosComponent
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
-
-    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
-    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
-    this.filtros = filteredColumns;
-
     this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
-
     let esFiltroEspecial = this.IsCustomFilter(column);
 
     if (
@@ -810,7 +823,6 @@ export class AcumulacionResultadosComponent
         )
         .subscribe({
           next: (response: any) => {
-            this.loading = true;
             column.data = response.data.map((register: any) => {
               let item: Item = {
                 value: register,
@@ -818,13 +830,13 @@ export class AcumulacionResultadosComponent
               };
               return item;
             });
-
+          },
+          error: (error) => {},
+          complete: () => {
             column.filteredData = column.data;
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-            this.loading = false;
           },
-          error: (error) => {},
         });
     }
 
