@@ -27,7 +27,7 @@
             password = _configuration.GetValue<string>("EmailSettings:PassWord");
         }
 
-        public void SendEmail(string toAddress, string subject, string body, List<string> attachmentPaths)
+        public void SendEmail(string toAddress, string subject, string body, List<string> attachmentPaths, string cc)
         {
             var smtpClient = new SmtpClient(smtpHost, smtpPort)
             {
@@ -39,9 +39,12 @@
             {
                 From = new MailAddress(fromAddress),
                 Subject = subject,
-                Body = body
+                Body = body,
+                
             };
+           
             mailMessage.To.Add(toAddress);
+            mailMessage.CC.Add(cc);          
 
             foreach (var attachmentPath in attachmentPaths)
             {

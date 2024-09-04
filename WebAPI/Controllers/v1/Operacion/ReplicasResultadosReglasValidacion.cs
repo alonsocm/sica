@@ -1,14 +1,22 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Catalogos;
+using Application.DTOs.Users;
+using Application.Features.Catalogos.Sitios.Commands;
 using Application.Features.Muestreos.Queries;
+using Application.Features.Operacion.Muestreos.Commands.Carga;
+using Application.Features.Operacion.ReplicasResultadosReglasValidacion.Commands;
 using Application.Features.Operacion.ReplicasResultadosReglasValidacion.Queries;
 using Application.Features.Operacion.Resultados.Queries;
+using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
+using System.Collections.Generic;
 using System.Drawing.Printing;
 using WebAPI.Shared;
 
@@ -21,11 +29,13 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public ReplicasResultadosReglasValidacion(IMapper mapper, IConfiguration configuration, IWebHostEnvironment env)
+        private readonly IEmailSenderRepository _email;
+        public ReplicasResultadosReglasValidacion(IMapper mapper, IConfiguration configuration, IWebHostEnvironment env, IEmailSenderRepository email)
         {
             _mapper = mapper;
             _configuration = configuration;
             _env = env;
+            _email = email;
         }
 
         [HttpGet]
@@ -61,10 +71,9 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost]
-        public IActionResult extraerMuestreosAprobados(List<ReplicasResultadosReglasValidacionDto> resultados)
+        public IActionResult descargaReplicasResultados(List<ReplicasResultadosReglasValidacionDto> resultados)
         {
             List<ReplicasResultadosRegValidacionExcel> aprobados = _mapper.Map<List<ReplicasResultadosRegValidacionExcel>>(resultados);
-
             aprobados.ForEach(resumen =>
             {
                 resumen.AceptaRechazo = (resumen.AceptaRechazo == "True") ? "SI" : "NO";
@@ -75,9 +84,14 @@ namespace WebAPI.Controllers.v1.Operacion
             });
 
             var plantilla = new Plantilla(_configuration, _env);
-            string templatePath = plantilla.ObtenerRutaPlantilla("ReplicasResultadosExcel");
+            string templatePath = plantilla.ObtenerRutaPlantilla("ReplicasResultadosValidacionExcel");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
             ExcelService.ExportToExcel(aprobados, fileInfo, true);
+
+            string tempFilePath = Path.Combine(Path.GetTempPath(), "nombrearchivo.xlsx");
+            System.IO.File.Copy(temporalFilePath, tempFilePath, true);
+            FileInfo fileinfo = new(tempFilePath);
+
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
@@ -97,5 +111,54 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
         }
+
+        [HttpPost("SendEmailCreateFile")]
+        public IActionResult SendEmailCreateFile(List<ReplicasResultadosReglasValidacionDto> resultados, int tipoArchivo,string destinatario,
+        string asunto, string body, string cc)
+        {            
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla((tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno) ? "ReplicasLaboratorioExterno" : "ReplicasResultadosSrenameca");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+
+            if ((int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno == tipoArchivo)
+                ExcelService.ExportToExcel(_mapper.Map<List<ReplicasResultadoLabExterno>>(resultados), fileInfo, true);
+            else { ExcelService.ExportToExcel(_mapper.Map<List<ReplicasResultadoSrenameca>>(resultados), fileInfo, true); }
+
+            string tempFilePath = Path.Combine(Path.GetTempPath(), (tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno) ? "ReplicasLaboratorioExterno.xlsx" : "ReplicasSrenameca.xlsx");
+            System.IO.File.Copy(temporalFilePath, tempFilePath, true);
+            FileInfo fileinfo = new(tempFilePath);
+            
+            List<string> rutas = new List<string>();
+            rutas.Add(tempFilePath);
+            _email.SendEmail(destinatario, asunto, body, rutas, cc);
+         
+            return (Ok(true));
+        }
+
+        [HttpPost("uploadfileReplicas")]
+        [DisableRequestSizeLimit]
+        public async Task<IActionResult> uploadfileReplicas([FromForm] IFormFile archivo)
+        {
+            string filePath = string.Empty;
+
+            if (archivo.Length > 0)
+            {
+                filePath = Path.GetTempFileName();
+
+                using var stream = System.IO.File.Create(filePath);
+
+                await archivo.CopyToAsync(stream);
+            }
+
+            FileInfo fileInfo = new(filePath);
+
+            ExcelService.Mappings = ReplicasReglasValidacionLaboratorioSettings.KeyValues;
+
+            var registros = ExcelService.Import<ReplicasResultadoLabExterno>(fileInfo, "Hoja1");
+            System.IO.File.Delete(filePath);
+
+            return Ok(await Mediator.Send(new CargaReplicasCommand { Replicas = registros }));
+        }
+
     }
 }

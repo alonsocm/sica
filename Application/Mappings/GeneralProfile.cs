@@ -126,6 +126,10 @@ namespace Application.Mappings
                  .ForMember(x => x.SubtipoCuerpoAgua, o => o.MapFrom(src => src.SubtipoCuerpoAgua.Descripcion))
                  .ForMember(x => x.TipoCuerpoAgua, o => o.MapFrom(src => src.TipoCuerpoAgua.Descripcion));
             CreateMap<ReplicasResultadosReglasValidacionDto, ReplicasResultadosRegValidacionExcel>();
+            CreateMap<ReplicasResultadosReglasValidacionDto, ReplicasResultadoSrenameca>();
+            CreateMap<ReplicasResultadosReglasValidacionDto, ReplicasResultadoLabExterno>();
+           
+
 
 
             #endregion

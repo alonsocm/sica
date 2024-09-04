@@ -9,39 +9,52 @@
     <app-notification></app-notification>
   </div>
   <div class="clearfix">
-    <div class="float-lefth col-md-4">
+    <div class="float-lefth col-md-3">
       <app-busqueda-columna [esHistorialValor]="this.esHistorial" (mostrandocabecero)="this.cabeceroSeleccionado=$event"
                             (mostrandoesfiltrofoco)="this.esfiltrofoco=$event" [headerList]="this.headers">
       </app-busqueda-columna>
     </div>
     <div class="float-right">
+      <button class="btn btn-primary btn-sm mr-1" type="button"
+              (click)="this.resetCorreo(this.ReplicaLaboratorioExterno);">
+        <i class="bi bi-envelope"></i>&nbsp;Enviar correo a laboratorio externo
+      </button>
       <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
-             title="Seleccionar archivo" #inputExcelMonitoreos>
-      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelMonitoreos.click()"
+             title="Seleccionar archivo" #inputExcelLaboratorio>
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelLaboratorio.click()"
               title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
-        Seleccionar y procesar archivo...
+        Carga réplicas laboratorio externo
       </button>
-      <button class="btn btn-primary btn-sm mr-1" type="button" (click)="enviarCorreo()">
-        <i class="bi bi-send"></i>&nbsp;Enviar correo
+      <button class="btn btn-primary btn-sm mr-1" type="button" (click)="this.resetCorreo(this.ReplicaSrenameca);">
+        <i class="bi bi-envelope"></i>&nbsp;Enviar correo a SRENAMECA
       </button>
-      <button class="btn btn-secondary btn-sm mr-1" type="button">
-        <i class="bi bi-trash"></i>&nbsp;Eliminar monitoreos seleccionados
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelLaboratorio.click()"
+              title="Seleccionar archivo">
+        <i class="bi bi-cloud-upload"></i>
+        Carga archivo validación SRENAMECA
       </button>
-      <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="exportarResultados();">
-        <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
-      </button>
-      <button class="btn btn-secondary btn-sm" (click)="this.onLimpiarFiltrosClick()">
-        <i class="bi bi-funnel"></i>
-        Limpiar filtros
-      </button>
+    </div>
+  </div>
+  <div class="clearfix">
+    <div class="float-right col-md-12">
+      <div class="float-right">
+        <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="exportarResultados();">
+          <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
+        </button>
+        <button class="btn btn-secondary btn-sm" (click)="this.onLimpiarFiltrosClick()">
+          <i class="bi bi-funnel"></i>
+          Limpiar filtros
+        </button>
+      </div>
     </div>
   </div>
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
        *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
-    Los {{this.replicasResultados.length}} registros de esta página están seleccionados. <button type="button"
-                                                                                                 (click)="onSelectAllPagesClick()" class="btn btn-link">
+    Los {{this.replicasResultados.length}} registros de esta página están seleccionados.
+    <button type="button"
+            (click)="onSelectAllPagesClick()" class="btn btn-link">
       Seleccionar los {{this.totalItems}} registros
     </button>
   </div>
@@ -64,13 +77,11 @@
               'width.px':columna.width}">
             {{columna.label}}
           </th>
-          <th class="td-center no-border-bottom th-resize">hola</th>
+          <!--<th class="td-center no-border-bottom th-resize">hola</th>
           <th columnResize scope="col" *ngFor="let columna of this.columnsAvance let i = index" id="{{columna.name}}"
               class="no-border-bottom th-resize">
             {{columna.label}}
-          </th>
-
-
+          </th>-->
         </tr>
         <tr>
           <th class="no-border-top td-center">
@@ -159,15 +170,13 @@
         </tr>
       </thead>
 
-
-
       <tbody>
         <tr *ngFor="let replica of this.replicasResultados | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
           <td class="td-center">
             <input type="checkbox" class="cursor-pointer" [(ngModel)]="replica.selected"
                    (change)="onSelectClick(replica)" title="Seleccionar">
           </td>
-          <td></td>
+          <td style="text-align:center">1</td>
           <td>{{replica.claveUnica}}</td>
           <td>{{replica.claveSitio}}</td>
           <td>{{replica.claveMonitoreo}}</td>
@@ -179,27 +188,11 @@
           <td>{{replica.resultado}}</td>
           <td>{{replica.correctoResultadoReglaValidacion ? "SI" : "NO"}} </td>
           <td>{{replica.observacionReglaValidacion}}</td>
+          <td>SI</td>
+          <td>54</td>
+          <td>NO</td>
           <td></td>
-          <td></td>
-          <td>-</td>
-          <td></td>
-          <td>-</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>-</td>
-          <td></td>
-          <td>-</td>
-          <td></td>
-          <td></td>
-
-
-
-          <td>-</td>
-          <td></td>
-          <td>-</td>
+          <td>30/08/2024</td>
           <td></td>
           <td></td>
           <td></td>
@@ -211,11 +204,33 @@
           <td></td>
           <td></td>
 
+          <!--<td>-</td>
+          <td></td>
+          <td>-</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>-</td>
+          <td></td>
+          <td>-</td>
+          <td></td>
+          <td></td>-->
         </tr>
         <tr *ngIf="this.replicasResultados.length==0">
           <td class="td-center" colspan="22">No se encontraron registros</td>
         </tr>
       </tbody>
     </table>
+
+    <div class="row">
+      <div class="col-md-6 align-self-end">
+        <button id="btnMdlConfirmacion" class="btn btn-primary element-hidden" type="button" data-toggle="modal"
+                data-target="#mdlCorreo" title="Seleccionar"></button>
+      </div>
+    </div>
   </div>
+  <app-correo [correo]="this.envioCorreo" (changed)="this.enviarCorreo();"></app-correo>
 </div>
+

@@ -28,7 +28,6 @@
   <ItemGroup>
     <Folder Include="Features\Catalogos\Perfiles\Commands\" />
     <Folder Include="Features\Operacion\MuestreosEmergencias\Commands\" />
-    <Folder Include="Features\Operacion\ReplicasResultadosReglasValidacion\Commands\" />
     <Folder Include="Features\Seguridad\Usuarios\Commands\AuthenticateUsuario\" />
   </ItemGroup>
 

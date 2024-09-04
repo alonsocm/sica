@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { environment } from "../../../../../environments/environment";
 import { ReplicasResultadosReglaVal } from "../../../../interfaces/ReplicasResultadosReglaVal.interface";
+import { CorreoModel } from "../../../../shared/models/correo-model";
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +13,9 @@ export class IncidenciasResultadosService {
     ReplicasResultadosReglaVal[]
   >([]);
   constructor(private http: HttpClient) { }
-
   get resultadosReplicas() {
     return this.resultadosReplicaPrivate.asObservable();
   }
-
   set resultadosReplicasSeleccionados(muestreos: ReplicasResultadosReglaVal[]) {
     this.resultadosReplicaPrivate.next(muestreos);
   }
@@ -45,12 +44,12 @@ export class IncidenciasResultadosService {
 
   getDistinctValuesFromColumn(
     column: string,
-    filter: string    
+    filter: string
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
         column: column,
-        filter: filter      
+        filter: filter
       },
     });
     return this.http.get(
@@ -70,4 +69,26 @@ export class IncidenciasResultadosService {
     });
   }
 
+  sendEmailFile(resultados: Array<any>, tipoArchivo: number, correo: CorreoModel): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        resultados: resultados, tipoArchivo: tipoArchivo,
+        destinatario: correo.destinatarios,
+        asunto: correo.asunto,
+        body: correo.cuerpo,
+        cc: correo.copias
+      },
+    });
+    return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/SendEmailCreateFile', resultados,
+      { params }
+    );
+  }
+
+  cargarArchivo(
+    archivo: File
+  ): Observable<any> {
+    const formData = new FormData();
+    formData.append('archivo', archivo, archivo.name);
+    return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileReplicas', formData);
+  }
 }

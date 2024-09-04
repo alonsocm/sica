@@ -476,6 +476,7 @@ namespace Persistence.Repository
                                             where res.EstatusResultadoId == EstatusResultadoId
                                             select new ReplicasResultadosReglasValidacionDto
                                             {
+                                                ResultadoMuestreoId = res.Id,
                                                 ClaveUnica = $"{vcm.ClaveMuestreo}{res.Parametro.ClaveParametro}",
                                                 ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
                                                 ClaveMonitoreo = vcm.ClaveMuestreo ?? string.Empty,
@@ -487,6 +488,29 @@ namespace Persistence.Repository
                                                 CorrectoResultadoReglaValidacion = res.ResultadoReglas == "OK" ? true : false,
                                                 ObservacionReglaValidacion = res.ResultadoReglas
                                             }).ToListAsync();
+
+
+            var replicaResultValidacion = await (from e in _dbContext.ReplicasResultadosReglasValidacion
+                                    where replicasResultados.Select(s => s.ResultadoMuestreoId).Contains(e.ResultadoMuestreoId)
+                                    select new
+                                    {
+                                        e.ResultadoMuestreoId,
+                                        e.AceptaRechazo,
+                                        e.ResultadoReplica,
+                                        e.MismoResultado,
+                                        e.ObservacionLaboratorio,
+                                        e.FechaReplicaLaboratorio,
+                                        e.ObservacionSrenameca,
+                                        e.EsDatoCorrectoSrenameca,
+                                        e.FechaObservacionSrenameca,
+                                        e.ObservacionesReglasReplica,
+                                        e.ApruebaResultadoReplica,
+                                        e.FechaEstatusFinal,
+                                        e.UsuarioIdReviso
+                                    }).ToListAsync();
+
+            if (replicaResultValidacion != null) { }
+
 
             return replicasResultados;
         }
