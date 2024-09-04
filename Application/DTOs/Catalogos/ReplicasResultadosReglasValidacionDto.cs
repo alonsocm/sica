@@ -9,6 +9,9 @@ namespace Application.DTOs.Catalogos
     public class ReplicasResultadosReglasValidacionDto
     {
         public long Id { get; set; }
+        public string NumeroCarga { get; set; }
+
+        
         public long ResultadoMuestreoId { get; set; }
 
         public bool AceptaRechazo { get; set; }
@@ -47,6 +50,8 @@ namespace Application.DTOs.Catalogos
         public string Resultado { get; set; }
         public bool CorrectoResultadoReglaValidacion { get; set; }
         public string ObservacionReglaValidacion { get; set; }
+
+        public int EstatusResultadoId { get; set; }
 
         public ReplicasResultadosReglasValidacionDto()
         {

@@ -24,7 +24,7 @@ namespace Application.Interfaces.IRepositories
         Task<bool> ExisteSustitucionPrevia(int periodo);
         public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
 
-        Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(int estatusId);
+        Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(List<int> estatusId);
         Task<bool> CambiarEstatusAsync(Enums.EstatusMuestreo estatus, IEnumerable<long> muestreosIds);
     }
 }

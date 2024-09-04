@@ -22,13 +22,14 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
     {
 
         private readonly IReplicasResultadosReglasValidacionRepository _replicasRepository;
+        private readonly IResultado _resultadoMuestreoRepository;
 
 
-        public CargaReplicasHandler(IReplicasResultadosReglasValidacionRepository replicasRepository)
+        public CargaReplicasHandler(IReplicasResultadosReglasValidacionRepository replicasRepository, IResultado resultadoMuestreoRepository)
         {
 
             _replicasRepository = replicasRepository;
-
+            _resultadoMuestreoRepository = resultadoMuestreoRepository;
         }
 
         public async Task<Response<bool>> Handle(CargaReplicasCommand request, CancellationToken cancellationToken)
@@ -37,13 +38,18 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
             {
                 var nuevoRegistro = new Domain.Entities.ReplicasResultadosReglasValidacion()
                 {
+                    ResultadoMuestreoId = Convert.ToInt64(replica.ResultadoMuestreoId),
                     AceptaRechazo = (replica.AceptaRechazo.ToUpper() == "SI") ? true: false,
                     ResultadoReplica = replica.ResultadoReplica,
                     MismoResultado = (replica.MismoResultado.ToUpper() == "SI") ? true : false,
                     ObservacionLaboratorio = replica.ObservacionLaboratorio,
-                    FechaReplicaLaboratorio = replica.FechaReplicaLaboratorio
+                    FechaReplicaLaboratorio = Convert.ToDateTime(replica.FechaReplicaLaboratorio)
                 };
-                _replicasRepository.Insertar(nuevoRegistro);
+
+                var resultado = await _resultadoMuestreoRepository.ObtenerElementoPorIdAsync(Convert.ToInt64(replica.ResultadoMuestreoId));
+                resultado.EstatusResultadoId = (int?)Enums.EstatusResultado.CargaRéplicasLaboratorioExterno;
+                _resultadoMuestreoRepository.Actualizar(resultado);
+                _replicasRepository.Insertar(nuevoRegistro);               
 
             }
             return new Response<bool>(true);

@@ -30,16 +30,18 @@ namespace WebAPI.Controllers.v1.Operacion
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
         private readonly IEmailSenderRepository _email;
-        public ReplicasResultadosReglasValidacion(IMapper mapper, IConfiguration configuration, IWebHostEnvironment env, IEmailSenderRepository email)
+        private readonly IResultado _resultados;
+        public ReplicasResultadosReglasValidacion(IMapper mapper, IConfiguration configuration, IWebHostEnvironment env, IEmailSenderRepository email, IResultado resultados)
         {
             _mapper = mapper;
             _configuration = configuration;
             _env = env;
             _email = email;
+            _resultados = resultados;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get(int estatusId, int page, int pageSize, string? filter = "", string? order = "")
+        [HttpPost("GetResultadosReplicas")]
+        public async Task<IActionResult> Get(List<int> estatusId, int page, int pageSize, string? filter = "", string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -131,13 +133,23 @@ namespace WebAPI.Controllers.v1.Operacion
             List<string> rutas = new List<string>();
             rutas.Add(tempFilePath);
             _email.SendEmail(destinatario, asunto, body, rutas, cc);
+
+            var idResultados = resultados.Select(x => x.ResultadoMuestreoId).ToList();
+            var resultadosMuestreo = _resultados.ObtenerElementosPorCriterio(x => idResultados.Contains(x.Id));          
+
+            resultadosMuestreo.ToList().ForEach(resultado =>
+            {
+                resultado.EstatusResultadoId = (tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno) ? 
+                (int)Application.Enums.EstatusResultado.EnvíoLaboratorioExterno : (int)Application.Enums.EstatusResultado.EnvíoaSRENAMECA; 
+                _resultados.Actualizar(resultado);
+            });          
          
             return (Ok(true));
         }
 
         [HttpPost("uploadfileReplicas")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> uploadfileReplicas([FromForm] IFormFile archivo)
+        public async Task<IActionResult> uploadfileReplicas([FromForm] IFormFile archivo, int tipoArchivo)
         {
             string filePath = string.Empty;
 
@@ -152,12 +164,22 @@ namespace WebAPI.Controllers.v1.Operacion
 
             FileInfo fileInfo = new(filePath);
 
-            ExcelService.Mappings = ReplicasReglasValidacionLaboratorioSettings.KeyValues;
+            ExcelService.Mappings = (tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno) ?  
+                ReplicasReglasValidacionLaboratorioSettings.KeyValues : ReplicasReglasValidacionSRENAMECASettings.KeyValues;
 
-            var registros = ExcelService.Import<ReplicasResultadoLabExterno>(fileInfo, "Hoja1");
-            System.IO.File.Delete(filePath);
 
-            return Ok(await Mediator.Send(new CargaReplicasCommand { Replicas = registros }));
+
+            if (tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno)
+            { var registros = ExcelService.Import<ReplicasResultadoLabExterno>(fileInfo, "Hoja1");
+                System.IO.File.Delete(filePath);
+                return Ok(await Mediator.Send(new CargaReplicasCommand { Replicas = registros }));
+
+            }
+            else
+            { var datos = ExcelService.Import<ReplicasResultadoSrenameca>(fileInfo, "Hoja1");
+                System.IO.File.Delete(filePath);
+                return Ok(await Mediator.Send(new CargaSRENAMECACommand { Replicas = datos }));
+            }
         }
 
     }

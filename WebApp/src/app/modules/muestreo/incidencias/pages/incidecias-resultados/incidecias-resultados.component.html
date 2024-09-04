@@ -19,8 +19,11 @@
               (click)="this.resetCorreo(this.ReplicaLaboratorioExterno);">
         <i class="bi bi-envelope"></i>&nbsp;Enviar correo a laboratorio externo
       </button>
-      <input type="file" class="element-hidden" (change)="cargarArchivo($event)" accept=".xls, .xlsx"
+      <input type="file" class="element-hidden" (change)="cargarArchivo($event, this.ReplicaLaboratorioExterno)" accept=".xls, .xlsx"
              title="Seleccionar archivo" #inputExcelLaboratorio>
+      <input type="file" class="element-hidden" (change)="cargarArchivo($event, this.ReplicaSrenameca)" accept=".xls, .xlsx"
+             title="Seleccionar archivo" #inputExcelSRENAMECA>
+
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelLaboratorio.click()"
               title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
@@ -29,7 +32,7 @@
       <button class="btn btn-primary btn-sm mr-1" type="button" (click)="this.resetCorreo(this.ReplicaSrenameca);">
         <i class="bi bi-envelope"></i>&nbsp;Enviar correo a SRENAMECA
       </button>
-      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelLaboratorio.click()"
+      <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelSRENAMECA.click()"
               title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
         Carga archivo validación SRENAMECA
@@ -176,7 +179,7 @@
             <input type="checkbox" class="cursor-pointer" [(ngModel)]="replica.selected"
                    (change)="onSelectClick(replica)" title="Seleccionar">
           </td>
-          <td style="text-align:center">1</td>
+          <td style="text-align:center">{{replica.numeroCarga}}</td>
           <td>{{replica.claveUnica}}</td>
           <td>{{replica.claveSitio}}</td>
           <td>{{replica.claveMonitoreo}}</td>
@@ -188,14 +191,14 @@
           <td>{{replica.resultado}}</td>
           <td>{{replica.correctoResultadoReglaValidacion ? "SI" : "NO"}} </td>
           <td>{{replica.observacionReglaValidacion}}</td>
-          <td>SI</td>
-          <td>54</td>
-          <td>NO</td>
-          <td></td>
-          <td>30/08/2024</td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>{{(replica.aceptaRechazo) ? "SI" : "NO"}}</td>
+          <td>{{replica.resultadoReplica}}</td>
+          <td>{{(replica.mismoResultado) ? "SI" : "NO"}}</td>
+          <td>{{replica.observacionLaboratorio}}</td>
+          <td>{{replica.fechaReplicaLaboratorio|date: 'dd/MM/yyyy'}}</td>
+          <td>{{replica.observacionSrenameca}}</td>
+          <td>{{(replica.esDatoCorrectoSrenameca) ? "SI" : "NO"}}</td>
+          <td>{{replica.fechaObservacionSrenameca|date: 'dd/MM/yyyy'}} </td>
           <td></td>
           <td></td>
           <td>-</td>

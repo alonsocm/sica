@@ -310,7 +310,8 @@
     {
         private static List<KeyValuePair<string, string>> keyValues = new()
         {
-            new KeyValuePair<string, string>("No. CARGA","NumCarga"),
+            new KeyValuePair<string, string>("No. CARGA","NumeroCarga"),
+            new KeyValuePair<string, string>("RESULTADOMUESTREOID","ResultadoMuestreoId"),
             new KeyValuePair<string, string>("CLAVE ÚNICA","ClaveUnica"),
             new KeyValuePair<string, string>("CLAVE SITIO","ClaveSitio"),
             new KeyValuePair<string, string>("CLAVE MONITOREO","ClaveMonitoreo"),
@@ -328,6 +329,35 @@
             new KeyValuePair<string, string>("OBSERVACIÓN LABORATORIO","ObservacionLaboratorio"),
             new KeyValuePair<string, string>("FECHA DE RÉPLICA LABORATORIO","FechaReplicaLaboratorio")
         };
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
+    }
+
+    public static class ReplicasReglasValidacionSRENAMECASettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("No. CARGA","NumeroCarga"),
+            new KeyValuePair<string, string>("RESULTADOMUESTREOID","ResultadoMuestreoId"),
+            new KeyValuePair<string, string>("CLAVE ÚNICA","ClaveUnica"),
+            new KeyValuePair<string, string>("CLAVE SITIO","ClaveSitio"),
+            new KeyValuePair<string, string>("CLAVE MONITOREO","ClaveMonitoreo"),
+            new KeyValuePair<string, string>("NOMBRE","Nombre"),
+            new KeyValuePair<string, string>("CLAVE PARAMETRO","ClaveParametro"),
+            new KeyValuePair<string, string>("LABORATORIO","Laboratorio"),
+            new KeyValuePair<string, string>("TIPO DE CUERPO DE AGUA","TipoCuerpoAgua"),
+            new KeyValuePair<string, string>("TIPO DE CUERPO DE AGUA ORIGINAL","TipoHomologado"),
+            new KeyValuePair<string, string>("RESULTADO","Resultado"),
+            new KeyValuePair<string, string>("ES CORRECTO EL RESULTADO POR REGLAS DE VALIDACIÓN","CorrectoResultadoReglaValidacion"),
+            new KeyValuePair<string, string>("OBSERVACIÓN REGLAS DE VALIDACIÓN","ObservacionReglaValidacion"),
+            new KeyValuePair<string, string>("SE ACEPTA RECHAZO (SI/NO)","AceptaRechazo"),
+            new KeyValuePair<string, string>("RESULTADO RÉPLICA","ResultadoReplica"),
+            new KeyValuePair<string, string>("ES EL MISMO RESULTADO","MismoResultado"),
+            new KeyValuePair<string, string>("OBSERVACIÓN LABORATORIO","ObservacionLaboratorio"),
+            new KeyValuePair<string, string>("FECHA DE RÉPLICA LABORATORIO","FechaReplicaLaboratorio"),
+            new KeyValuePair<string, string>("OBSERVACIÓN SRENAMECA","ObservacionSrenameca"),
+            new KeyValuePair<string, string>("EL DATO ES CORRECTO?","EsDatoCorrectoSrenameca"),
+            new KeyValuePair<string, string>("FECHA DE OBSERVACIÓN SRENAMECA","FechaObservacionSrenameca"),
+    };
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
     }
 
