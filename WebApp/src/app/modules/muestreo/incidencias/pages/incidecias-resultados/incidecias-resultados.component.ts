@@ -25,7 +25,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
   envioCorreo: CorreoModel = {
     destinatarios: '',
     copias: '',
-    asunto: 'REPLICAS DE RESULTADOS VALIDADOS POR REGLAS',
+    asunto: 'Incidencias reglas de validación',
     cuerpo: '',
     archivos: []
   };
@@ -875,7 +875,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.IncidenciasResultadoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .getDistinctValuesFromColumn(column.name,this.estatusReplicas, this.cadena,)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {

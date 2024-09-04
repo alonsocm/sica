@@ -46,17 +46,19 @@ export class IncidenciasResultadosService {
   }
 
   getDistinctValuesFromColumn(
-    column: string,
-    filter: string
+    column: string,   
+    estatusId: Array<number>,
+    filter: string,
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
-        column: column,
-        filter: filter
+        column: column,        
+        estatusId: estatusId,
+        filter: filter,
       },
     });
-    return this.http.get(
-      environment.apiUrl + '/ReplicasResultadosReglasValidacion/GetDistinctValuesFromColumn',
+    return this.http.post(
+      environment.apiUrl + '/ReplicasResultadosReglasValidacion/GetDistinctValuesFromColumn', estatusId,
       { params }
     );
   }

@@ -98,8 +98,8 @@ namespace WebAPI.Controllers.v1.Operacion
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
-        [HttpGet("GetDistinctValuesFromColumn")]
-        public IActionResult Get(string column, string? filter = "")
+        [HttpPost("GetDistinctValuesFromColumn")]
+        public IActionResult Post(string column, List<int> estatusId, string? filter = "")
         {
             var filters = new List<Filter>();
 
@@ -109,7 +109,7 @@ namespace WebAPI.Controllers.v1.Operacion
             }
 
             var data = Mediator.Send(new GetReplicasResultadosReglaValByEstatus
-            { Filter = filters }).Result.Data;
+            { Filter = filters, EstatusId = estatusId}).Result.Data;
 
             return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
         }
