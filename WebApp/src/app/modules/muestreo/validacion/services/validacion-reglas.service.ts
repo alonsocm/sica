@@ -163,13 +163,15 @@ export class ValidacionReglasService {
     );
   }
 
-  deleteResultadosAcumulacion(
+  deleteResultados(
+    estatus: estatusMuestreo,
     resultados: Array<number>,
     filter: string
   ): Observable<any> {
     let params = new HttpParams({
       fromObject: {
-        Filters: filter,
+        estatus: estatus,
+        filter: filter,
       },
     });
 

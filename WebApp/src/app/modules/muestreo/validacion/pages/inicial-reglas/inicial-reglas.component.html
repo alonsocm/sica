@@ -45,7 +45,7 @@
   <app-historial></app-historial>
   <div class="alert alert-secondary" role="alert"
     *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
-    Los {{this.resultadosMuestreo.length}} registros de esta página están seleccionados.
+    Los {{this.registros.length}} registros de esta página están seleccionados.
     <button type="button" (click)="onSelectAllPagesClick()" class="btn btn-link">
       Seleccionar los {{this.totalItems}} registros
     </button>
@@ -72,7 +72,7 @@
         <tr>
           <th class="no-border-top td-center">
             <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-              (change)="onSelectPageClick(this.resultadosMuestreo,this.resultadosFiltradosn);"
+              (change)="onSelectPageClick(this.registros,this.registrosSeleccionados);"
               title="Selecciona la página actual" />
           </th>
           <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
@@ -160,7 +160,7 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let dato of this.resultadosMuestreo | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}"
+          *ngFor="let dato of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}"
           [ngStyle]="{ 'backgroundColor': (dato.numParametrosCargados == 0) ? '#FCF3CF' :  '#FFFFFF'}">
           <td class="td-center">
             <input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.selected" (change)="onSelectClick(dato)"
@@ -204,7 +204,7 @@
             dato.cumpleReglasCondic=='SI')?"SI" : validarCorreRegla(dato) }}
           </td> <!--se corre regla de validacion-->
         </tr>
-        <tr *ngIf="this.resultadosMuestreo.length==0">
+        <tr *ngIf="this.registros.length==0">
           <td colspan="23" class="td-center">
             No se encontraron registros
           </td>
@@ -219,7 +219,7 @@
     </div>
     <div class="col-md-2">
       <p class="total-items">
-        Registros por página: <span class="badge text-bg-primary">{{this.resultadosMuestreo.length}}</span>
+        Registros por página: <span class="badge text-bg-primary">{{this.registros.length}}</span>
       </p>
     </div>
     <div class="col-md-3">

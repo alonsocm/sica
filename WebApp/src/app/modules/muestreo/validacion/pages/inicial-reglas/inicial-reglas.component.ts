@@ -39,14 +39,14 @@ export class InicialReglasComponent
         if (columnName !== '') {
           this.loading = true;
           this.deleteFilter(columnName);
-          this.cargaResultados();
+          this.consultarMonitoreos();
         }
       });
   }
 
   filtroHistorialServiceSub: Subscription;
-  resultadosMuestreo: Array<acumuladosMuestreo> = [];
-  resultadosEnviados: Array<any> = [];
+  registros: Array<acumuladosMuestreo> = [];
+  registrosSeleccionados: Array<acumuladosMuestreo> = [];
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
@@ -61,7 +61,7 @@ export class InicialReglasComponent
 
   ngOnInit(): void {
     this.definirColumnas();
-    this.cargaResultados();
+    this.consultarMonitoreos();
   }
 
   definirColumnas() {
@@ -402,7 +402,7 @@ export class InicialReglasComponent
     this.setHeadersList(this.columns);
   }
 
-  cargaResultados(
+  consultarMonitoreos(
     page: number = this.page,
     pageSize: number = this.NoPage,
     filter: string = this.cadena
@@ -419,16 +419,11 @@ export class InicialReglasComponent
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.resultadosMuestreo = response.data;
+          this.registros = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(
-            this.resultadosMuestreo,
-            this.resultadosFiltradosn
-          );
-          this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
-            ? false
-            : true;
+          this.getPreviousSelected(this.registros, this.registrosSeleccionados);
+          this.selectedPage = this.anyUnselected(this.registros) ? false : true;
           this.loading = false;
         },
         error: (error) => {
@@ -438,7 +433,7 @@ export class InicialReglasComponent
   }
 
   onDownload(): void {
-    if (this.resultadosFiltradosn.length == 0 && !this.allSelected) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -447,13 +442,15 @@ export class InicialReglasComponent
       });
     }
     this.loading = true;
-    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
-    this.resultadosEnviados.map((s) => {
+    this.registrosSeleccionados = this.Seleccionados(
+      this.registrosSeleccionados
+    );
+    this.registrosSeleccionados.map((s) => {
       s.correReglaValidacion = s.correReglaValidacion ? 'SI' : 'NO';
     });
 
     this.validacionService
-      .exportExcelResultadosaValidar(this.resultadosEnviados)
+      .exportExcelResultadosaValidar(this.registrosSeleccionados)
       .subscribe({
         next: (response: any) => {
           this.loading = true;
@@ -473,7 +470,7 @@ export class InicialReglasComponent
   }
 
   enviaraValidacion(): void {
-    let datosSeleccionados = this.Seleccionados(this.resultadosFiltradosn);
+    let datosSeleccionados = this.Seleccionados(this.registrosSeleccionados);
     let muestreosConResultados = datosSeleccionados.filter(
       (m) => m.numParametrosCargados != 0
     );
@@ -507,7 +504,7 @@ export class InicialReglasComponent
           this.loading = true;
           if (response.succeded) {
             this.loading = false;
-            this.cargaResultados();
+            this.consultarMonitoreos();
             this.hacerScroll();
             return this.notificationService.updateNotification({
               show: true,
@@ -541,7 +538,7 @@ export class InicialReglasComponent
       })
       .subscribe({
         next: (response: any) => {
-          this.resultadosMuestreo = response.data;
+          this.registros = response.data;
         },
         error: (error) => {},
       });
@@ -552,7 +549,7 @@ export class InicialReglasComponent
     this.filtroHistorialService.updateFilteredColumns(
       this.getFilteredColumns()
     );
-    this.cargaResultados();
+    this.consultarMonitoreos();
   }
 
   getPreviousSelected(
@@ -570,11 +567,6 @@ export class InicialReglasComponent
     });
   }
 
-  pageClic(page: any) {
-    this.cargaResultados(page, this.NoPage, this.cadena);
-    this.page = page;
-  }
-
   onSelectClick(muestreo: acumuladosMuestreo) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
@@ -582,92 +574,88 @@ export class InicialReglasComponent
 
     //Vamos a agregar este registro, a los seleccionados
     if (muestreo.selected) {
-      this.resultadosFiltradosn.push(muestreo);
-      this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
-        ? false
-        : true;
+      this.registrosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected(this.registros) ? false : true;
     } else {
-      let index = this.resultadosFiltradosn.findIndex(
+      let index = this.registrosSeleccionados.findIndex(
         (m) => m.muestreoId === muestreo.muestreoId
       );
 
       if (index > -1) {
-        this.resultadosFiltradosn.splice(index, 1);
+        this.registrosSeleccionados.splice(index, 1);
       }
     }
   }
 
   private resetValues() {
-    this.resultadosFiltradosn = [];
+    this.registrosSeleccionados = [];
     this.selectAllOption = false;
     this.allSelected = false;
     this.selectedPage = false;
   }
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(this.resultadosMuestreo);
-    if (!(muestreosSeleccionados.length > 0)) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un muestreo para ser eliminados sus resultados corresondientes',
+        text: 'Debe seleccionar al menos un muestreo, para eliminar sus resultados correspondientes',
       });
     }
+
     document.getElementById('btnMdlConfirmacion')?.click();
   }
 
   eliminarResultados() {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un resultado para ser eliminado',
+      });
+    }
+
+    let registrosSeleccionados = new Array<number>();
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.resultadoMuestreoId;
+      });
+    }
+
     this.loading = true;
+
     if (this.allSelected) {
       this.validacionService
-        .deleteResultadosByFilter(
+        .deleteResultados(
           estatusMuestreo.MóduloInicialReglas,
+          registrosSeleccionados,
           this.cadena
         )
         .subscribe({
           next: (response) => {
             document.getElementById('btnCancelarModal')?.click();
-            this.cargaResultados();
-            this.loading = false;
             document
               .getElementById('btnMdlConfirmacionCargaResultados')
               ?.click();
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+          complete: () => {
             this.resetValues();
             this.hacerScroll();
+            this.consultarMonitoreos();
+            this.loading = false;
             return this.notificationService.updateNotification({
               show: true,
               type: NotificationType.success,
               text: 'Resultados eliminados correctamente',
             });
           },
-          error: (error) => {
-            this.loading = false;
-          },
         });
-    } else {
-      this.loading = false;
-
-      let ids = this.resultadosFiltradosn.map((s) => s.muestreoId);
-
-      this.validacionService.deleteResultadosByMuestreoId(ids).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();
-          this.cargaResultados();
-          this.loading = false;
-          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Resultados eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
     }
   }
 
@@ -727,7 +715,7 @@ export class InicialReglasComponent
             if (response.data.correcto) {
               this.loading = false;
               this.resetInputFile(this.inputExcelMonitoreos);
-              this.cargaResultados();
+              this.consultarMonitoreos();
               return this.notificationService.updateNotification({
                 show: true,
                 type: NotificationType.success,
@@ -756,7 +744,7 @@ export class InicialReglasComponent
   }
 
   onDownloadNoCumpleFechaEntrega(): void {
-    if (this.resultadosFiltradosn.length == 0) {
+    if (this.registrosSeleccionados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -764,10 +752,10 @@ export class InicialReglasComponent
         text: 'No existe selección para la descarga de muestreos que no cumplen con la fecha de entrega',
       });
     } else {
-      let filtrdosNoCumplen = this.resultadosFiltradosn.filter(
+      let filtrdosNoCumplen = this.registrosSeleccionados.filter(
         (x) => x.cumpleFechaEntrega == 'SI'
       );
-      if (filtrdosNoCumplen.length == this.resultadosFiltradosn.length) {
+      if (filtrdosNoCumplen.length == this.registrosSeleccionados.length) {
         this.hacerScroll();
         return this.notificationService.updateNotification({
           show: true,
@@ -778,7 +766,7 @@ export class InicialReglasComponent
         this.loading = true;
         this.muestreoService
           .obtenerResultadosNoCumplenFechaEntrega(
-            this.resultadosFiltradosn.map((s) => s.muestreoId)
+            this.registrosSeleccionados.map((s) => s.muestreoId)
           )
           .subscribe({
             next: (response: any) => {
@@ -809,7 +797,7 @@ export class InicialReglasComponent
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
-    this.cargaResultados();
+    this.consultarMonitoreos();
 
     this.columns
       .filter((x) => x.isLatestFilter)
@@ -839,7 +827,7 @@ export class InicialReglasComponent
 
   onPageClick(page: any): void {
     this.loading = true;
-    this.cargaResultados(page, this.NoPage, this.cadena);
+    this.consultarMonitoreos(page, this.NoPage, this.cadena);
     this.page = page;
   }
 

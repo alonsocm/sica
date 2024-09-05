@@ -749,7 +749,11 @@ export class AcumulacionResultadosComponent
 
     if (this.allSelected) {
       this.validacionService
-        .deleteResultadosAcumulacion(registrosSeleccionados, this.cadena)
+        .deleteResultados(
+          estatusMuestreo.AcumulacionResultados,
+          registrosSeleccionados,
+          this.cadena
+        )
         .subscribe({
           next: (response) => {
             document.getElementById('btnCancelarModal')?.click();
