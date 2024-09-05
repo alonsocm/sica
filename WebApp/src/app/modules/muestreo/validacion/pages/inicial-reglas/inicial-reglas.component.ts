@@ -3,7 +3,6 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from '../../../../../interfaces/acumuladosMuestreo.interface';
-import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { NotificationService } from '../../../../../shared/services/notification.service';
@@ -13,22 +12,39 @@ import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { Item } from 'src/app/interfaces/filter/item';
 import { Muestreo } from '../../../../../interfaces/Muestreo.interface';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
+import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-inicial-reglas',
   templateUrl: './inicial-reglas.component.html',
   styleUrls: ['./inicial-reglas.component.css'],
 })
-export class InicialReglasComponent extends BaseService implements OnInit {
+export class InicialReglasComponent
+  extends BaseService
+  implements OnInit, ICommonMethods
+{
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
   constructor(
     private validacionService: ValidacionReglasService,
     private notificationService: NotificationService,
+    private filtroHistorialService: FiltroHistorialService,
     public muestreoService: MuestreoService
   ) {
     super();
+    this.filtroHistorialServiceSub =
+      this.filtroHistorialService.columnName.subscribe((columnName) => {
+        if (columnName !== '') {
+          this.loading = true;
+          this.deleteFilter(columnName);
+          this.cargaResultados();
+        }
+      });
   }
+
+  filtroHistorialServiceSub: Subscription;
   resultadosMuestreo: Array<acumuladosMuestreo> = [];
   resultadosEnviados: Array<any> = [];
   notificacion: Notificacion = {
@@ -44,7 +60,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
   archivo: any;
 
   ngOnInit(): void {
-    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.cargaResultados();
   }
@@ -534,7 +549,9 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
     this.cargaResultados();
   }
 
@@ -551,37 +568,6 @@ export class InicialReglasComponent extends BaseService implements OnInit {
         f.isChecked = true;
       }
     });
-  }
-
-  filtrar(columna: Column, isFiltroEspecial: boolean) {
-    this.existeFiltrado = true;
-    this.cadena = !isFiltroEspecial
-      ? this.obtenerCadena(columna, false)
-      : this.obtenerCadena(this.columnaFiltroEspecial, true);
-    this.cargaResultados();
-
-    this.columns
-      .filter((x) => x.isLatestFilter)
-      .map((m) => {
-        m.isLatestFilter = false;
-      });
-
-    if (!isFiltroEspecial) {
-      columna.filtered = true;
-      columna.isLatestFilter = true;
-    } else {
-      this.columns
-        .filter((x) => x.name == this.columnaFiltroEspecial.name)
-        .map((m) => {
-          (m.filtered = true),
-            (m.selectedData = this.columnaFiltroEspecial.selectedData),
-            (m.isLatestFilter = true);
-        });
-    }
-
-    this.esHistorial = true;
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
-    this.hideColumnFilter();
   }
 
   pageClic(page: any) {
@@ -635,7 +621,10 @@ export class InicialReglasComponent extends BaseService implements OnInit {
     this.loading = true;
     if (this.allSelected) {
       this.validacionService
-        .deleteResultadosByFilter(estatusMuestreo.MóduloInicialReglas, this.cadena)
+        .deleteResultadosByFilter(
+          estatusMuestreo.MóduloInicialReglas,
+          this.cadena
+        )
         .subscribe({
           next: (response) => {
             document.getElementById('btnCancelarModal')?.click();
@@ -684,13 +673,7 @@ export class InicialReglasComponent extends BaseService implements OnInit {
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions(); //Ocultamos el div de los filtros especiales, que se encuetren visibles
-
-    let filteredColumns = this.getFilteredColumns(); //Obtenemos la lista de columnas que están filtradas
-    this.muestreoService.filtrosSeleccionados = filteredColumns; //Actualizamos la lista de filtros, para el componente de filtro
-    this.filtros = filteredColumns;
-
     this.obtenerLeyendaFiltroEspecial(column.dataType); //Se define el arreglo opcionesFiltros dependiendo del tipo de dato de la columna para mostrar las opciones correspondientes de filtrado
-
     let esFiltroEspecial = this.IsCustomFilter(column);
 
     if (
@@ -717,12 +700,13 @@ export class InicialReglasComponent extends BaseService implements OnInit {
               };
               return item;
             });
-
+          },
+          error: (error) => {},
+          complete: () => {
             column.filteredData = column.data;
             this.ordenarAscedente(column.filteredData);
             this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
           },
-          error: (error) => {},
         });
     }
 
@@ -817,5 +801,50 @@ export class InicialReglasComponent extends BaseService implements OnInit {
           });
       }
     }
+  }
+
+  onFilterClick(columna: Column, isFiltroEspecial: boolean) {
+    this.loading = true;
+    this.existeFiltrado = true;
+    this.cadena = !isFiltroEspecial
+      ? this.obtenerCadena(columna, false)
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
+    this.cargaResultados();
+
+    this.columns
+      .filter((x) => x.isLatestFilter)
+      .map((m) => {
+        m.isLatestFilter = false;
+      });
+
+    if (!isFiltroEspecial) {
+      columna.filtered = true;
+      columna.isLatestFilter = true;
+    } else {
+      this.columns
+        .filter((x) => x.name == this.columnaFiltroEspecial.name)
+        .map((m) => {
+          (m.filtered = true),
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
+        });
+    }
+
+    this.esHistorial = true;
+    this.filtroHistorialService.updateFilteredColumns(
+      this.getFilteredColumns()
+    );
+    this.hideColumnFilter();
+  }
+
+  onPageClick(page: any): void {
+    this.loading = true;
+    this.cargaResultados(page, this.NoPage, this.cadena);
+    this.page = page;
+  }
+
+  ngOnDestroy() {
+    this.filtroHistorialService.updateFilteredColumns([]);
+    this.filtroHistorialServiceSub.unsubscribe();
   }
 }

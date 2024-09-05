@@ -910,4 +910,9 @@ export class AcumulacionResultadosComponent
 
     //this.getSummary();
   }
+
+  ngOnDestroy() {
+    this.filtroHistorialService.updateFilteredColumns([]);
+    this.filtroHistorialServiceSub.unsubscribe();
+  }
 }
