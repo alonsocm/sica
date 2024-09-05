@@ -21,7 +21,7 @@ export class IncidenciasResultadosService {
   }
 
   getReplicasResultadosPaginados(
-    estatusId: number,
+    estatusId: Array<number>,
     page: number,
     pageSize: number,
     filter: string,
@@ -36,24 +36,29 @@ export class IncidenciasResultadosService {
         order: order != null ? order.column + '_' + order.type : '',
       },
     });
-    return this.http.get(
-      environment.apiUrl + '/ReplicasResultadosReglasValidacion',
+    return this.http.post(
+      environment.apiUrl + '/ReplicasResultadosReglasValidacion/GetResultadosReplicas', estatusId,
       { params }
     );
+
+
+
   }
 
   getDistinctValuesFromColumn(
-    column: string,
-    filter: string
+    column: string,   
+    estatusId: Array<number>,
+    filter: string,
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
-        column: column,
-        filter: filter
+        column: column,        
+        estatusId: estatusId,
+        filter: filter,
       },
     });
-    return this.http.get(
-      environment.apiUrl + '/ReplicasResultadosReglasValidacion/GetDistinctValuesFromColumn',
+    return this.http.post(
+      environment.apiUrl + '/ReplicasResultadosReglasValidacion/GetDistinctValuesFromColumn', estatusId,
       { params }
     );
   }
@@ -85,10 +90,20 @@ export class IncidenciasResultadosService {
   }
 
   cargarArchivo(
-    archivo: File
+    archivo: File,
+    tipoArchivo: number
   ): Observable<any> {
     const formData = new FormData();
     formData.append('archivo', archivo, archivo.name);
-    return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileReplicas', formData);
+
+    const params = new HttpParams({
+      fromObject: {
+        tipoArchivo: tipoArchivo
+    
+      },
+    });
+
+
+    return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileReplicas', formData, { params });
   }
 }

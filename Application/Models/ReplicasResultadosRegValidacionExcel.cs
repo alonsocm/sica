@@ -9,7 +9,7 @@ namespace Application.Models
 {
     public class ReplicasResultadosRegValidacionExcel  
     {
-        public string NumCarga { get; set; }
+        public string NumeroCarga { get; set; }
         public string ClaveUnica { get; set; }
         public string ClaveSitio { get; set; }
         public string ClaveMonitoreo { get; set; }

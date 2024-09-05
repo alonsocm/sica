@@ -25,7 +25,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
   envioCorreo: CorreoModel = {
     destinatarios: '',
     copias: '',
-    asunto: 'REPLICAS DE RESULTADOS VALIDADOS POR REGLAS',
+    asunto: 'Incidencias reglas de validación',
     cuerpo: '',
     archivos: []
   };
@@ -37,6 +37,12 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
   archivo: any;
   @ViewChild('inputExcelLaboratorio') inputExcelLaboratorio: ElementRef =
     {} as ElementRef;
+  @ViewChild('inputExcelSRENAMECA') inputExcelSRENAMECA: ElementRef =
+    {} as ElementRef;
+  
+
+  estatusReplicas: Array<number> = [estatusResultado.IncidenciasResultados, estatusResultado.EnvíoLaboratorioExterno, estatusResultado.CargaRéplicasLaboratorioExterno,
+  estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA];
 
   constructor(private IncidenciasResultadoService: IncidenciasResultadosService,
     private notificationService: NotificationService,
@@ -744,7 +750,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
   ): void {
     this.IncidenciasResultadoService
       .getReplicasResultadosPaginados(
-        estatusResultado.IncidenciasResultados,
+        this.estatusReplicas,
         page,
         pageSize,
         filter,
@@ -753,8 +759,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.replicasResultados = response.data;
-
+          this.replicasResultados = response.data;         
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
 
@@ -785,18 +790,18 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     });
   }
 
-  cargarArchivo(event: Event) {
+  cargarArchivo(event: Event, tipoArchivo: number) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     if (this.archivo) {
       this.loading = true;
 
       this.IncidenciasResultadoService
-        .cargarArchivo(this.archivo[0])
+        .cargarArchivo(this.archivo[0], tipoArchivo)
         .subscribe({
-          next: (response: any) => {
-            if (response.data.correcto) {
+          next: (response: any) => {          
+            if (response.data) {
               this.loading = false;
-              this.resetInputFile(this.inputExcelLaboratorio);
+              this.resetInputFile((tipoArchivo == this.ReplicaLaboratorioExterno) ? this.inputExcelLaboratorio : this.inputExcelSRENAMECA);
               this.consultarReplicas();
               return this.notificationService.updateNotification({
                 show: true,
@@ -870,7 +875,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.IncidenciasResultadoService
-        .getDistinctValuesFromColumn(column.name, this.cadena)
+        .getDistinctValuesFromColumn(column.name,this.estatusReplicas, this.cadena,)
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
@@ -898,7 +903,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.IncidenciasResultadoService
-      .getReplicasResultadosPaginados(estatusResultado.IncidenciasResultados, this.page, this.NoPage, this.cadena, {
+      .getReplicasResultadosPaginados(this.estatusReplicas, this.page, this.NoPage, this.cadena, {
         column: column,
         type: type,
       })
@@ -952,7 +957,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
       .descargarInformacion(this.resultadosFiltrados)
       .subscribe({
         next: (response: any) => {
-          FileService.download(response, 'ReplicasResultadosValidadosReplas.xlsx');
+          FileService.download(response, 'ReplicasResultadosValidados.xlsx');
           this.resetValues();
           this.unselectResultados();
           this.loading = false;

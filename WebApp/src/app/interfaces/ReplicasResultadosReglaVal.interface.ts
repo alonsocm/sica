@@ -3,6 +3,7 @@ import { Evidencia } from "./evidencia";
 
 export interface ReplicasResultadosReglaVal extends Row {
   id: number,
+  numeroCarga: number,
   resultadoMuestreoId: number,
   aceptaRechazo: boolean,
   resultadoReplica: string,

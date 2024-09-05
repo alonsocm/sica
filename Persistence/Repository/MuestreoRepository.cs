@@ -6,6 +6,7 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
+using System.Linq;
 
 namespace Persistence.Repository
 {
@@ -468,14 +469,16 @@ namespace Persistence.Repository
 
         }
 
-        public async Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(int EstatusResultadoId)
-        {
+        public async Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(List<int> EstatusResultadoId)
+        {           
             var replicasResultados = await (from res in _dbContext.ResultadoMuestreo
                                             join m in _dbContext.Muestreo on res.MuestreoId equals m.Id
                                             join vcm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
-                                            where res.EstatusResultadoId == EstatusResultadoId
+                                            where EstatusResultadoId.Contains((int)res.EstatusResultadoId)
                                             select new ReplicasResultadosReglasValidacionDto
                                             {
+                                                EstatusResultadoId = (int)res.EstatusResultadoId,
+                                                NumeroCarga = m.NumeroCarga.ToString(),
                                                 ResultadoMuestreoId = res.Id,
                                                 ClaveUnica = $"{vcm.ClaveMuestreo}{res.Parametro.ClaveParametro}",
                                                 ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
@@ -486,32 +489,38 @@ namespace Persistence.Repository
                                                 TipoHomologado = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion ?? string.Empty,
                                                 Resultado = res.Resultado,
                                                 CorrectoResultadoReglaValidacion = res.ResultadoReglas == "OK" ? true : false,
-                                                ObservacionReglaValidacion = res.ResultadoReglas
+                                                ObservacionReglaValidacion = res.ResultadoReglas,
+                                               
                                             }).ToListAsync();
 
 
-            var replicaResultValidacion = await (from e in _dbContext.ReplicasResultadosReglasValidacion
-                                    where replicasResultados.Select(s => s.ResultadoMuestreoId).Contains(e.ResultadoMuestreoId)
-                                    select new
-                                    {
-                                        e.ResultadoMuestreoId,
-                                        e.AceptaRechazo,
-                                        e.ResultadoReplica,
-                                        e.MismoResultado,
-                                        e.ObservacionLaboratorio,
-                                        e.FechaReplicaLaboratorio,
-                                        e.ObservacionSrenameca,
-                                        e.EsDatoCorrectoSrenameca,
-                                        e.FechaObservacionSrenameca,
-                                        e.ObservacionesReglasReplica,
-                                        e.ApruebaResultadoReplica,
-                                        e.FechaEstatusFinal,
-                                        e.UsuarioIdReviso
-                                    }).ToListAsync();
-
-            if (replicaResultValidacion != null) { }
+        
 
 
+            replicasResultados.ForEach(async replica =>
+            {
+                List<int> lstEstatus = new List<int>();
+            lstEstatus.Add((int)Application.Enums.EstatusResultado.IncidenciasResultados);
+            lstEstatus.Add((int)Application.Enums.EstatusResultado.EnvíoLaboratorioExterno);
+
+                if (!lstEstatus.Contains(replica.EstatusResultadoId)) {
+
+                    var dato = _dbContext.ReplicasResultadosReglasValidacion.Where(x => x.ResultadoMuestreoId.Equals(replica.ResultadoMuestreoId)).FirstOrDefault();
+
+                    replica.AceptaRechazo = dato.AceptaRechazo;
+                    replica.ResultadoReplica = dato.ResultadoReplica;
+                    replica.MismoResultado = dato.MismoResultado;
+                    replica.ObservacionLaboratorio = dato.ObservacionLaboratorio;
+                    replica.FechaReplicaLaboratorio = dato.FechaReplicaLaboratorio;
+                    replica.ObservacionSrenameca = dato.ObservacionSrenameca;
+                    replica.EsDatoCorrectoSrenameca = dato.EsDatoCorrectoSrenameca;
+                    replica.FechaObservacionSrenameca = dato.FechaObservacionSrenameca;
+                    replica.ObservacionesReglasReplica = dato.ObservacionesReglasReplica;
+                    replica.ApruebaResultadoReplica = dato.ApruebaResultadoReplica;
+                    replica.FechaEstatusFinal = dato.FechaEstatusFinal;
+                    replica.UsuarioIdReviso = dato.UsuarioIdReviso;
+                }
+            });
             return replicasResultados;
         }
 

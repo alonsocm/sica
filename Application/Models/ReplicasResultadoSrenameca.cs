@@ -8,7 +8,8 @@ namespace Application.Models
 {
     public class ReplicasResultadoSrenameca
     {
-        public string NumCarga { get; set; }
+        public string NumeroCarga { get; set; }       
+        public string ResultadoMuestreoId { get; set; }
         public string ClaveUnica { get; set; }
         public string ClaveSitio { get; set; }
         public string ClaveMonitoreo { get; set; }
@@ -26,9 +27,9 @@ namespace Application.Models
         public string ResultadoReplica { get; set; } = null!;
         public string MismoResultado { get; set; }
         public string ObservacionLaboratorio { get; set; } = null!;
-        public DateTime FechaReplicaLaboratorio { get; set; }
+        public string FechaReplicaLaboratorio { get; set; }
         public string? ObservacionSrenameca { get; set; }
         public string? EsDatoCorrectoSrenameca { get; set; }
-        public DateTime? FechaObservacionSrenameca { get; set; }
+        public string? FechaObservacionSrenameca { get; set; }
     }
 }

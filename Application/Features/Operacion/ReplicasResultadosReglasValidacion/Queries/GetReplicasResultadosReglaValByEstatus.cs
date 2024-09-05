@@ -16,7 +16,7 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Quer
     public class GetReplicasResultadosReglaValByEstatus: IRequest<PagedResponse<IEnumerable<ReplicasResultadosReglasValidacionDto>>>
     {
 
-        public int EstatusId { get; set; }
+        public List<int> EstatusId { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
