@@ -6,7 +6,6 @@ using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System.Linq;
 
 namespace Persistence.Repository
 {
@@ -244,13 +243,13 @@ namespace Persistence.Repository
         }
 
 
-        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId)
+        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoByStatusAsync(Application.Enums.EstatusMuestreo estatus)
         {
             var muestreos = await (from m in _dbContext.Muestreo
                                    join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
                                    join resMuestreo in _dbContext.ResultadoMuestreo on m.Id equals resMuestreo.MuestreoId
                                    //join costo in _dbContext.ParametrosCostos on resMuestreo.ParametroId equals costo.ParametroId
-                                   where m.EstatusId == estatusId
+                                   where m.EstatusId == (int)estatus
                                    select new AcumuladosResultadoDto
                                    {
 
@@ -470,7 +469,7 @@ namespace Persistence.Repository
         }
 
         public async Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(List<int> EstatusResultadoId)
-        {           
+        {
             var replicasResultados = await (from res in _dbContext.ResultadoMuestreo
                                             join m in _dbContext.Muestreo on res.MuestreoId equals m.Id
                                             join vcm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
@@ -490,20 +489,21 @@ namespace Persistence.Repository
                                                 Resultado = res.Resultado,
                                                 CorrectoResultadoReglaValidacion = res.ResultadoReglas == "OK" ? true : false,
                                                 ObservacionReglaValidacion = res.ResultadoReglas,
-                                               
+
                                             }).ToListAsync();
 
 
-        
+
 
 
             replicasResultados.ForEach(async replica =>
             {
                 List<int> lstEstatus = new List<int>();
-            lstEstatus.Add((int)Application.Enums.EstatusResultado.IncidenciasResultados);
-            lstEstatus.Add((int)Application.Enums.EstatusResultado.EnvíoLaboratorioExterno);
+                lstEstatus.Add((int)Application.Enums.EstatusResultado.IncidenciasResultados);
+                lstEstatus.Add((int)Application.Enums.EstatusResultado.EnvíoLaboratorioExterno);
 
-                if (!lstEstatus.Contains(replica.EstatusResultadoId)) {
+                if (!lstEstatus.Contains(replica.EstatusResultadoId))
+                {
 
                     var dato = _dbContext.ReplicasResultadosReglasValidacion.Where(x => x.ResultadoMuestreoId.Equals(replica.ResultadoMuestreoId)).FirstOrDefault();
 

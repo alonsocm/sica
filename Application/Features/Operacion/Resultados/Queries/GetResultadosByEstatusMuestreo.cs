@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Enums;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
@@ -6,16 +7,16 @@ using MediatR;
 
 namespace Application.Features.Operacion.Resultados.Queries
 {
-    public class GetResultadosMuestreoEstatusMuestreoPaginadosQuery : IRequest<PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
+    public class GetResultadosByEstatusMuestreo : IRequest<PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
-        public int EstatusId { get; set; }
+        public EstatusMuestreo Estatus { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter> Filter { get; set; }
         public OrderBy? OrderBy { get; set; }
     }
 
-    public class GetResultadosMuestreoEstatusMuestreoQueryHandler : IRequestHandler<GetResultadosMuestreoEstatusMuestreoPaginadosQuery, PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
+    public class GetResultadosMuestreoEstatusMuestreoQueryHandler : IRequestHandler<GetResultadosByEstatusMuestreo, PagedResponse<IEnumerable<AcumuladosResultadoDto>>>
     {
         private readonly IMuestreoRepository _repositoryAsync;
 
@@ -24,9 +25,9 @@ namespace Application.Features.Operacion.Resultados.Queries
             _repositoryAsync = repository;
         }
 
-        public async Task<PagedResponse<IEnumerable<AcumuladosResultadoDto>>> Handle(GetResultadosMuestreoEstatusMuestreoPaginadosQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<AcumuladosResultadoDto>>> Handle(GetResultadosByEstatusMuestreo request, CancellationToken cancellationToken)
         {
-            var data = await _repositoryAsync.GetResultadosMuestreoEstatusMuestreoAsync(request.EstatusId);
+            var data = await _repositoryAsync.GetResultadosMuestreoByStatusAsync(request.Estatus);
 
             if (request.Filter.Any())
             {

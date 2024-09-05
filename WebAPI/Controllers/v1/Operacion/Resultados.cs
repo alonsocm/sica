@@ -596,6 +596,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ResultadosAcumuladosParametros")]
         public async Task<IActionResult> GetActionAsync(int estatusId, int page, int pageSize, string? filter = "", string? order = "")
         {
+            EstatusMuestreo estatus = GetEstatus(estatusId);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -614,15 +615,14 @@ namespace WebAPI.Controllers.v1.Operacion
                 };
             }
 
-            return Ok(await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            return Ok(await Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                EstatusId = estatusId,
+                Estatus = estatus,
                 Page = page,
                 PageSize = pageSize,
                 Filter = filters,
                 OrderBy = orderBy
             }));
-
         }
 
         [HttpPut("EnviarModuloInicialReglas")]
@@ -637,9 +637,9 @@ namespace WebAPI.Controllers.v1.Operacion
 
             if (!muestreos.Any())
             {
-                var response = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+                var response = await Mediator.Send(new GetResultadosByEstatusMuestreo
                 {
-                    EstatusId = (int)EstatusMuestreo.AcumulacionResultados,
+                    Estatus = EstatusMuestreo.AcumulacionResultados,
                     Filter = filters,
                 });
 
@@ -652,6 +652,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("GetColumnValuesResultadosAcumuladosParametros")]
         public IActionResult GetColumnValuesResultadosAcumuladosParametros(int estatusId, string column, string? filter = "", string? order = "")
         {
+            EstatusMuestreo estatus = GetEstatus(estatusId);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -670,9 +671,9 @@ namespace WebAPI.Controllers.v1.Operacion
                 };
             }
 
-            var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            var data = Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                EstatusId = estatusId,
+                Estatus = estatus,
                 Filter = filters,
                 OrderBy = orderBy
             }).Result.Data;
@@ -746,6 +747,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost("exportExcelValidaciones")]
         public IActionResult ExportExcelValidaciones([FromQuery] int estatusId, [FromQuery] string? filter, [FromBody] List<long> muestreos)
         {
+            EstatusMuestreo estatus = GetEstatus(estatusId);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -753,9 +755,9 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            var data = Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                EstatusId = estatusId,
+                Estatus = estatus,
                 Filter = filters,
             }).Result.Data;
 
@@ -847,6 +849,7 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost("exportExcelResumenResultados")]
         public IActionResult ExportExcelResumenResultados([FromQuery] int estatus, List<long>? resultados, [FromQuery] string? filter = "")
         {
+            EstatusMuestreo estatusMuestreo = GetEstatus(estatus);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -854,9 +857,9 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            var data = Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+            var data = Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                EstatusId = estatus,
+                Estatus = estatusMuestreo,
                 Filter = filters
             }).Result.Data;
 
@@ -906,9 +909,9 @@ namespace WebAPI.Controllers.v1.Operacion
                     filters = QueryParam.GetFilters(filter);
                 }
 
-                var response = await Mediator.Send(new GetResultadosMuestreoEstatusMuestreoPaginadosQuery
+                var response = await Mediator.Send(new GetResultadosByEstatusMuestreo
                 {
-                    EstatusId = (int)EstatusMuestreo.AcumulacionResultados,
+                    Estatus = EstatusMuestreo.AcumulacionResultados,
                     Filter = filters,
                 });
 
@@ -1023,7 +1026,23 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            return Ok(await Mediator.Send(new EnviarIncidenciasCommand { ResulatdosId = resultadosId, Filters = filters }));
+            return Ok(await Mediator.Send(new EnviarIncidenciasCommand { ResultadosId = resultadosId, Filters = filters }));
+        }
+
+        private static EstatusMuestreo GetEstatus(int estatusId)
+        {
+            EstatusMuestreo estatus;
+
+            try
+            {
+                estatus = (EstatusMuestreo)Enum.Parse(typeof(EstatusMuestreo), estatusId.ToString());
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Estatus no válido");
+            }
+
+            return estatus;
         }
     }
 }

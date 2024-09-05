@@ -1,9 +1,7 @@
 ﻿using Application.DTOs;
-using Application.Enums;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
-using Domain.Entities;
 using FluentValidation;
 using MediatR;
 using EstatusResultado = Application.Enums.EstatusResultado;
@@ -12,7 +10,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 {
     public class EnviarIncidenciasCommand : IRequest<Response<bool>>
     {
-        public List<long> ResulatdosId { get; set; } = new List<long>();
+        public List<long> ResultadosId { get; set; } = new List<long>();
         public List<Filter> Filters { get; set; } = new List<Filter>();
     }
 
@@ -29,14 +27,14 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 
         public async Task<Response<bool>> Handle(EnviarIncidenciasCommand request, CancellationToken cancellationToken)
         {
-            if (request.ResulatdosId.Any())
+            if (request.ResultadosId.Any())
             {
-                var resultadosIds = request.ResulatdosId.Distinct();
+                var resultadosIds = request.ResultadosId.Distinct();
                 EnviarIncidencias(resultadosIds);
             }
             else
             {
-                var data = await _muestreoRepository.GetResultadosMuestreoEstatusMuestreoAsync((int)Enums.EstatusMuestreo.ResumenValidaciónReglas);
+                var data = await _muestreoRepository.GetResultadosMuestreoByStatusAsync(Enums.EstatusMuestreo.ResumenValidaciónReglas);
                 var expressions = QueryExpression<AcumuladosResultadoDto>.GetExpressionList(request.Filters);
                 List<AcumuladosResultadoDto> lstMuestreo = new();
 
@@ -65,7 +63,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
         private void EnviarIncidencias(IEnumerable<long> resultadosIds)
         {
             var resultados = _resultadosRepository.ObtenerElementosPorCriterioAsync(x => resultadosIds.Contains(x.Id)).Result;
-           
+
 
 
             foreach (var resultado in resultados)

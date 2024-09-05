@@ -32,7 +32,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
             }
             else
             {
-                var data = await _muestreoRepository.GetResultadosMuestreoEstatusMuestreoAsync((int)EstatusMuestreo.ResumenValidaciónReglas);
+                var data = await _muestreoRepository.GetResultadosMuestreoByStatusAsync(EstatusMuestreo.ResumenValidaciónReglas);
                 var expressions = QueryExpression<AcumuladosResultadoDto>.GetExpressionList(request.Filters);
                 List<AcumuladosResultadoDto> lstMuestreo = new();
 

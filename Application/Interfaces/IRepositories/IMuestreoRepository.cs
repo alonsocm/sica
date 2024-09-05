@@ -19,7 +19,7 @@ namespace Application.Interfaces.IRepositories
         string GetTipoCuerpoAguaHomologado(string claveMuestreo);
         Task<List<int?>> GetListAniosConRegistro();
         Task<List<int?>> GetListNumeroEntrega();
-        Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoEstatusMuestreoAsync(int estatusId);
+        Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoByStatusAsync(Enums.EstatusMuestreo estatusId);
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId);
         Task<bool> ExisteSustitucionPrevia(int periodo);
         public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
