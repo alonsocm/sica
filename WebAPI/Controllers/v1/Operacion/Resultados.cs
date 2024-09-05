@@ -898,8 +898,10 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpDelete("DeleteAllResultados")]
-        public async Task<IActionResult> Delete(IEnumerable<long> resultados, string? filter = "")
+        public async Task<IActionResult> Delete(int estatus, IEnumerable<long> resultados, string? filter = "")
         {
+            EstatusMuestreo estatusMuestreo = GetEstatus(estatus);
+
             if (!resultados.Any())
             {
                 var filters = new List<Filter>();
@@ -911,7 +913,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
                 var response = await Mediator.Send(new GetResultadosByEstatusMuestreo
                 {
-                    Estatus = EstatusMuestreo.AcumulacionResultados,
+                    Estatus = estatusMuestreo,
                     Filter = filters,
                 });
 
@@ -1029,20 +1031,18 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new EnviarIncidenciasCommand { ResultadosId = resultadosId, Filters = filters }));
         }
 
-        private static EstatusMuestreo GetEstatus(int estatusId)
+        private static EstatusMuestreo GetEstatus(int estatus)
         {
-            EstatusMuestreo estatus;
+            bool isValid = Enum.IsDefined(typeof(EstatusMuestreo), estatus);
 
-            try
+            if (isValid)
             {
-                estatus = (EstatusMuestreo)Enum.Parse(typeof(EstatusMuestreo), estatusId.ToString());
+                return (EstatusMuestreo)estatus;
             }
-            catch (Exception)
+            else
             {
-                throw new ArgumentException("Estatus no válido");
+                throw new ValidationException("Estatus no válido");
             }
-
-            return estatus;
         }
     }
 }
