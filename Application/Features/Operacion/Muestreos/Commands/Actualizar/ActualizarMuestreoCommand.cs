@@ -1,21 +1,12 @@
-﻿using Application.DTOs;
-using Application.Expressions;
-using Application.Interfaces.IRepositories;
+﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
-using AutoMapper;
-using Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
 {
-    public class ActualizarMuestreoCommand: IRequest<Response<bool>>
+    public class ActualizarMuestreoCommand : IRequest<Response<bool>>
     {
-        public List<MuestreoDto> lstMuestreos { get; set; }
+        public IEnumerable<long> Muestreos { get; set; }
     }
 
     public class ActualizarMuestreoHandler : IRequestHandler<ActualizarMuestreoCommand, Response<bool>>
@@ -28,20 +19,26 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
         }
 
         public async Task<Response<bool>> Handle(ActualizarMuestreoCommand request, CancellationToken cancellationToken)
-        {           
-            foreach (var muestreos in request.lstMuestreos)
+        {
+            //Consultamos los muestreos por id y contengan resultados
+            var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Muestreos.Contains((int)x.Id) && x.ResultadoMuestreo.Count > 0);
+
+            if (!muestreos.Any())
             {
-                Muestreo muestreo = _muestreoRepository.ObtenerElementoPorIdAsync(muestreos.MuestreoId).Result;
-                muestreo.EstatusId = muestreos.EstatusId;
-                muestreo.AutorizacionIncompleto = muestreos.AutorizacionIncompleto;
-                muestreo.AutorizacionFechaEntrega = muestreos.AutorizacionFechaEntrega;
-                _muestreoRepository.Actualizar(muestreo);
+                throw new ArgumentException("No se pueden actualizar los muestreos seleccionados, ya que no contienen resultados");
             }
-          
-            return new Response<bool>(true);
+            else
+            {
+                foreach (var muestreo in muestreos)
+                {
+                    muestreo.EstatusId = (int)Enums.EstatusMuestreo.MóduloReglas;
+                    //muestreo.AutorizacionIncompleto = muestreos.AutorizacionIncompleto;
+                    //muestreo.AutorizacionFechaEntrega = muestreos.AutorizacionFechaEntrega;                    
+                }
+
+                await _muestreoRepository.ActualizarAsync(muestreos);
+                return new Response<bool>(true);
+            }
         }
     }
-
-
-
 }
