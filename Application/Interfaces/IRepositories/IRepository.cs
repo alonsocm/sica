@@ -8,6 +8,7 @@ namespace Application.Interfaces.IRepositories
         long InsertarRango(List<T> entidades);
         Task<bool> InsertarBulkAsync(IEnumerable<T> entidad);
         void Actualizar(T entidad);
+        Task ActualizarAsync(IEnumerable<T> entidades);
         Task ActualizarBulkAsync(List<T> entidad);
         void Eliminar(T entidad);
         void Eliminar(Expression<Func<T, bool>> predicado);

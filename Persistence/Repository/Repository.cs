@@ -21,6 +21,16 @@ namespace Persistence.Repository
             _dbContext.Entry(entidad).State = EntityState.Detached;
         }
 
+        public async Task ActualizarAsync(IEnumerable<T> entidades)
+        {
+            foreach (var entidad in entidades)
+            {
+                _dbContext.Set<T>().Update(entidad);
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task ActualizarBulkAsync(List<T> entidad)
         {
             await _dbContext.Set<T>().BulkUpdateAsync(entidad);
