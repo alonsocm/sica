@@ -470,36 +470,28 @@ export class InicialReglasComponent
   }
 
   enviaraValidacion(): void {
-    let datosSeleccionados = this.Seleccionados(this.registrosSeleccionados);
-    let muestreosConResultados = datosSeleccionados.filter(
-      (m) => m.numParametrosCargados != 0
-    );
-
-    if (datosSeleccionados.length == 0) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debes de seleccionar al menos un muestreos para enviar a validar',
+        text: 'No hay información seleccionada para enviar',
       });
-    } else if (muestreosConResultados.length == 0) {
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'Debes de seleccionar muestreos que cuenten con resultados para poder ser enviados a la etapa de "Módulo de reglas"',
-      });
-    } else {
-      let lstMuestreos = muestreosConResultados.map(
-        (m) =>
-          <Muestreo>{
-            estatusId: estatusMuestreo.MóduloReglas,
-            autorizacionIncompleto: m.autorizacionIncompleto,
-            autorizacionFechaEntrega: m.autorizacionFechaEntrega,
-            muestreoId: m.muestreoId,
-          }
-      );
+    }
 
-      this.muestreoService.actualizarMuestreos(lstMuestreos).subscribe({
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.loading = true;
+
+    this.muestreoService
+      .actualizarMuestreos(registrosSeleccionados, this.cadena)
+      .subscribe({
         next: (response: any) => {
           this.loading = true;
           if (response.succeded) {
@@ -523,7 +515,6 @@ export class InicialReglasComponent
           });
         },
       });
-    }
   }
 
   limpiarFiltros() {}
