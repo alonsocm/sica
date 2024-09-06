@@ -321,10 +321,17 @@ export class MuestreoService {
     );
   }
 
-  actualizarMuestreos(muestreos: any): Observable<Object> {
+  actualizarMuestreos(muestreos: any, filter: string): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: { filter },
+    });
+
     return this.http.put(
       environment.apiUrl + '/muestreos/ActualizarMuestreos',
-      muestreos
+      muestreos,
+      {
+        params,
+      }
     );
   }
 
