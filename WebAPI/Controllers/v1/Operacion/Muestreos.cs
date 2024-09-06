@@ -1,10 +1,12 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Users;
+using Application.Enums;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Muestreos.Queries;
+using Application.Features.Operacion.Resultados.Queries;
 using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
@@ -53,7 +55,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             System.IO.File.Delete(filePath);
 
-            return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar = cargaMuestreos.Reemplazar, TipoCarga=cargaMuestreos.tipocarga }));
+            return Ok(await Mediator.Send(new CargaMuestreosCommand { Muestreos = registros, Validado = cargaMuestreos.Validado, Reemplazar = cargaMuestreos.Reemplazar, TipoCarga = cargaMuestreos.tipocarga }));
         }
 
         [HttpPost("CargaEmergencias")]
@@ -331,9 +333,27 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPut("ActualizarMuestreos")]
-        public async Task<IActionResult> ActualizarMuestreos(List<MuestreoDto> request)
+        public async Task<IActionResult> ActualizarMuestreos([FromBody] IEnumerable<long> muestreos, [FromQuery] string? filter = "")
         {
-            return Ok(await Mediator.Send(new ActualizarMuestreoCommand { lstMuestreos = request }));
+            if (!muestreos.Any())
+            {
+                var filters = new List<Filter>();
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    filters = QueryParam.GetFilters(filter);
+                }
+
+                var result = await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+                {
+                    EstatusId = (int)EstatusMuestreo.MóduloInicialReglas,
+                    Filter = filters,
+                });
+
+                muestreos = result.Data.Select(s => s.MuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new ActualizarMuestreoCommand { Muestreos = muestreos }));
         }
 
         [HttpGet("obtenerPuntosPorMuestreo")]
