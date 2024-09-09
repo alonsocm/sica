@@ -469,11 +469,9 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpGet("obtenerTotalesAdministracion")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> obtenerTotalesAdministracion()
+        public async Task<IActionResult> ObtenerTotalesAdministracion()
         {
-
             return Ok(await Mediator.Send(new GetTotalesMuestreosAdministracionQuery()));
-
         }
     }
 }
