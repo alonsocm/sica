@@ -328,7 +328,7 @@ namespace Persistence.Repository
                                        NumParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
                                        //muestreoCompletoPorResultados = (resultados.MuestreoCompletoPorResultados == null) ? "SI" : resultados.MuestreoCompletoPorResultados.ToString(),
                                        MuestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
-                                       CumpleReglasCondic = (resultados.CumpleConLasReglasCondicionantes == null) ? "SI" : resultados.CumpleConLasReglasCondicionantes,
+                                       CumpleReglasCondic = resultados.CumpleConLasReglasCondicionantes ??"SI",
                                        AnioOperacion = resultados.AnioOperacion ?? 0,
                                        NumeroCarga = resultados.NumeroCarga.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,
