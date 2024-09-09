@@ -160,48 +160,48 @@
       </thead>
       <tbody>
         <tr
-          *ngFor="let dato of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}"
-          [ngStyle]="{ 'backgroundColor': (dato.numParametrosCargados == 0) ? '#FCF3CF' :  '#FFFFFF'}">
+          *ngFor="let registro of this.registros | paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}"
+          [ngStyle]="{ 'backgroundColor': (registro.numParametrosCargados == 0) ? '#FCF3CF' :  '#FFFFFF'}">
           <td class="td-center">
-            <input type="checkbox" class="cursor-pointer" [(ngModel)]="dato.selected" (change)="onSelectClick(dato)"
-              title="Seleccionar">
+            <input type="checkbox" class="cursor-pointer" [(ngModel)]="registro.selected"
+              (change)="onSelectClick(registro)" title="Seleccionar">
           </td>
-          <td>{{dato.numeroCarga}}</td>
-          <td>{{dato.claveSitio}}</td>
-          <td>{{dato.claveMonitoreo}}</td>
-          <td>{{dato.nombreSitio}}</td>
-          <td>{{dato.fechaRealizacion}}</td>
-          <td>{{dato.fechaProgramada}}</td>
-          <td>{{dato.diferenciaDias}}</td>
-          <td>{{dato.fechaEntregaTeorica}}</td>
-          <td>{{dato.laboratorioRealizoMuestreo}}</td>
-          <td>{{dato.cuerpoAgua}}</td>
-          <td>{{dato.tipoCuerpoAgua}}</td>
-          <td>{{dato.subTipoCuerpoAgua}}</td>
-          <td style="text-align:center">{{dato.numParametrosEsperados}}</td>
-          <td style="text-align:center">{{dato.numParametrosCargados}}</td>
-          <td style="text-align:center">{{dato.muestreoCompletoPorResultados}}</td><!--validar-->
-          <td style="text-align:center">{{dato.cumpleReglasCondic}}</td><!--validar-->
-          <td>{{dato.claveParametro}}</td>
-          <td style="text-align:center">{{dato.cumpleFechaEntrega}}</td><!--validar-->
-          <td style="text-align:center">{{(dato.cumpleTodosCriterios) ? "SI": "NO"}}</td>
+          <td>{{registro.numeroCarga}}</td>
+          <td>{{registro.claveSitio}}</td>
+          <td>{{registro.claveMonitoreo}}</td>
+          <td>{{registro.nombreSitio}}</td>
+          <td>{{registro.fechaRealizacion}}</td>
+          <td>{{registro.fechaProgramada}}</td>
+          <td>{{registro.diferenciaDias}}</td>
+          <td>{{registro.fechaEntregaTeorica}}</td>
+          <td>{{registro.laboratorioRealizoMuestreo}}</td>
+          <td>{{registro.cuerpoAgua}}</td>
+          <td>{{registro.tipoCuerpoAgua}}</td>
+          <td>{{registro.subTipoCuerpoAgua}}</td>
+          <td style="text-align:center">{{registro.numParametrosEsperados}}</td>
+          <td style="text-align:center">{{registro.numParametrosCargados}}</td>
+          <td style="text-align:center">{{registro.muestreoCompletoPorResultados}}</td><!--validar-->
+          <td style="text-align:center">{{registro.cumpleReglasCondic}}</td><!--validar-->
+          <td>{{registro.claveParametro}}</td>
+          <td style="text-align:center">{{registro.cumpleFechaEntrega}}</td><!--validar-->
+          <td style="text-align:center">{{(registro.cumpleTodosCriterios) ? "SI": "NO"}}</td>
           <!--cumple con todos los criterios-->
           <td style="text-align:center">
             <!--{{dato.muestreoCompletoPorResultados}}-->
-            <input type="checkbox" (change)="validarCorreRegla(dato);"
-              [disabled]="(dato.muestreoCompletoPorResultados=='SI')?true:false" class="cursor-pointer"
-              [(ngModel)]="dato.autorizacionIncompleto">
+            <input type="checkbox" (change)="validarCorreRegla(registro);"
+              [disabled]="(registro.muestreoCompletoPorResultados=='SI')?true:false" class="cursor-pointer"
+              [(ngModel)]="registro.autorizacionIncompleto">
 
 
           <td style="text-align:center">
             <!--{{dato.cumpleFechaEntrega}}-->
-            <input type="checkbox" (change)="validarCorreRegla(dato);"
-              [disabled]="(dato.cumpleFechaEntrega=='SI')?true:false" class="cursor-pointer"
-              [(ngModel)]="dato.autorizacionFechaEntrega">
+            <input type="checkbox" (change)="validarCorreRegla(registro);"
+              [disabled]="(registro.cumpleFechaEntrega=='SI')?true:false" class="cursor-pointer"
+              [(ngModel)]="registro.autorizacionFechaEntrega">
           </td>
           <td style="text-align:center">
-            {{(dato.muestreoCompletoPorResultados=='SI' && dato.cumpleFechaEntrega=='SI' &&
-            dato.cumpleReglasCondic=='SI')?"SI" : validarCorreRegla(dato) }}
+            {{(registro.muestreoCompletoPorResultados=='SI' && registro.cumpleFechaEntrega=='SI' &&
+            registro.cumpleReglasCondic=='SI')?"SI" : validarCorreRegla(registro) }}
           </td> <!--se corre regla de validacion-->
         </tr>
         <tr *ngIf="this.registros.length==0">
