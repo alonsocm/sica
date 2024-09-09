@@ -185,16 +185,11 @@
           <td>{{registro.claveParametro}}</td>
           <td class="td-center">{{registro.cumpleFechaEntrega}}</td><!--validar-->
           <td class="td-center">{{(registro.cumpleTodosCriterios) ? "SI": "NO"}}</td>
-          <!--cumple con todos los criterios-->
           <td class="td-center">
-            <!--{{dato.muestreoCompletoPorResultados}}-->
             <input type="checkbox" (change)="validarCorreRegla(registro);" title="Seleccionar"
               [disabled]="(registro.muestreoCompletoPorResultados=='SI')?true:false" class="cursor-pointer"
               [(ngModel)]="registro.autorizacionIncompleto">
-
-
           <td class="td-center">
-            <!--{{dato.cumpleFechaEntrega}}-->
             <input type="checkbox" (change)="validarCorreRegla(registro);" title="Seleccionar"
               [disabled]="(registro.cumpleFechaEntrega=='SI')?true:false" class="cursor-pointer"
               [(ngModel)]="registro.autorizacionFechaEntrega">
@@ -202,7 +197,7 @@
           <td class="td-center">
             {{(registro.muestreoCompletoPorResultados=='SI' && registro.cumpleFechaEntrega=='SI' &&
             registro.cumpleReglasCondic=='SI')?"SI" : validarCorreRegla(registro) }}
-          </td> <!--se corre regla de validacion-->
+          </td>
         </tr>
         <tr *ngIf="this.registros.length==0">
           <td colspan="23" class="td-center">
