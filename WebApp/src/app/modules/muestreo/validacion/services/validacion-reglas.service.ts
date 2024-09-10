@@ -260,4 +260,24 @@ export class ValidacionReglasService {
       resultadosId
     );
   }
+
+  actualizarAutorizacionReglasIncompleto(registro: {
+    muestreo: number;
+    autorizacionIncompleto: boolean;
+  }): Observable<any> {
+    return this.http.post(
+      environment.apiUrl + '/Muestreos/AutorizacionReglasIncompleto',
+      registro
+    );
+  }
+
+  actualizarAutorizacionReglasNoCumpleFechaEntrega(registro: {
+    muestreo: number;
+    AutorizacionNoCumpleFechaEntrega: boolean;
+  }): Observable<any> {
+    return this.http.post(
+      environment.apiUrl + '/Muestreos/AutorizacionReglasNoCumpleFechaEntrega',
+      registro
+    );
+  }
 }

@@ -826,4 +826,52 @@ export class InicialReglasComponent
     this.filtroHistorialService.updateFilteredColumns([]);
     this.filtroHistorialServiceSub.unsubscribe();
   }
+
+  //Method to change autorizacionIncompleto value from acumuladosMuestreo interface when the checkbox is clicked
+  onAutorizacionIncompletoChange(muestreo: acumuladosMuestreo) {
+    this.loading = true;
+    this.validacionService
+      .actualizarAutorizacionReglasIncompleto({
+        muestreo: muestreo.muestreoId,
+        autorizacionIncompleto: muestreo.autorizacionIncompleto,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.loading = false;
+        },
+        error: (error: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible actualizar la autorización de reglas incompleto',
+          });
+        },
+      });
+  }
+
+  //Method to change autorizacionFechaEntrega value from acumuladosMuestreo interface when the checkbox is clicked
+  onAutorizacionFechaEntregaChange(muestreo: acumuladosMuestreo) {
+    this.loading = true;
+    this.validacionService
+      .actualizarAutorizacionReglasNoCumpleFechaEntrega({
+        muestreo: muestreo.muestreoId,
+        AutorizacionNoCumpleFechaEntrega: muestreo.autorizacionFechaEntrega,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.loading = false;
+        },
+        error: (error: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible actualizar la autorización de fecha de entrega',
+          });
+        },
+      });
+  }
 }
