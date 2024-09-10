@@ -466,12 +466,19 @@ namespace WebAPI.Controllers.v1.Operacion
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
-
         [HttpGet("obtenerTotalesAdministracion")]
         [DisableRequestSizeLimit]
         public async Task<IActionResult> ObtenerTotalesAdministracion()
         {
             return Ok(await Mediator.Send(new GetTotalesMuestreosAdministracionQuery()));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ActualizarAutorizacionReglasIncompleto([FromBody] AutorizacionReglasIncompletoDTO registro)
+        {
+            var result = await Mediator.Send(new ActualizarAutorizacionReglasIncompleto { Registro = registro });
+
+            return Ok(result);
         }
     }
 }
