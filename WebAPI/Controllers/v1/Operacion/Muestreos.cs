@@ -473,10 +473,18 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetTotalesMuestreosAdministracionQuery()));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> ActualizarAutorizacionReglasIncompleto([FromBody] AutorizacionReglasIncompletoDTO registro)
+        [HttpPost("AutorizacionReglasIncompleto")]
+        public async Task<IActionResult> AutorizacionReglasIncompleto([FromBody] AutorizacionReglasIncompletoDTO registro)
         {
-            var result = await Mediator.Send(new ActualizarAutorizacionReglasIncompleto { Registro = registro });
+            var result = await Mediator.Send(new AutorizacionReglasIncompleto { Registro = registro });
+
+            return Ok(result);
+        }
+
+        [HttpPost("AutorizacionReglasNoCumpleFechaEntrega")]
+        public async Task<IActionResult> AutorizacionReglasNoCumpleFechaEntrega([FromBody] AutorizacionReglasNoCumpleFechaEntregaDTO registro)
+        {
+            var result = await Mediator.Send(new AutorizacionReglasNoCumpleFechaEntrega { Registro = registro });
 
             return Ok(result);
         }

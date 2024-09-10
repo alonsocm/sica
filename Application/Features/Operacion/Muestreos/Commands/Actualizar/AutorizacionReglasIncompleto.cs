@@ -5,12 +5,12 @@ using MediatR;
 
 namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
 {
-    public class ActualizarAutorizacionReglasIncompleto : IRequest<Response<bool>>
+    public class AutorizacionReglasIncompleto : IRequest<Response<bool>>
     {
         public AutorizacionReglasIncompletoDTO Registro { get; set; } = new AutorizacionReglasIncompletoDTO();
     }
 
-    public class ActualizarAutorizacionReglasIncompletoHandler : IRequestHandler<ActualizarAutorizacionReglasIncompleto, Response<bool>>
+    public class ActualizarAutorizacionReglasIncompletoHandler : IRequestHandler<AutorizacionReglasIncompleto, Response<bool>>
     {
         private readonly IMuestreoRepository _muestreoRepository;
 
@@ -19,7 +19,7 @@ namespace Application.Features.Operacion.Muestreos.Commands.Actualizar
             _muestreoRepository=muestreoRepository;
         }
 
-        public async Task<Response<bool>> Handle(ActualizarAutorizacionReglasIncompleto request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(AutorizacionReglasIncompleto request, CancellationToken cancellationToken)
         {
             var muestreo = await _muestreoRepository.ObtenerElementoPorIdAsync(request.Registro.Muestreo);
 
