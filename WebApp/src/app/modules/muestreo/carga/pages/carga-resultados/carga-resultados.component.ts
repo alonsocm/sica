@@ -4,7 +4,6 @@ import { FileService } from 'src/app/shared/services/file.service';
 import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Column } from 'src/app/interfaces/filter/column';
 import { BaseService } from 'src/app/shared/services/base.service';
-import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { tipoCarga } from 'src/app/shared/enums/tipoCarga';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';

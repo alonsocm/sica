@@ -921,7 +921,36 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     this.consultarReplicas();
   }
 
-  filtrar(columna: Column, isFiltroEspecial: boolean) { }
+  filtrar(columna: Column, isFiltroEspecial: boolean) {
+    this.existeFiltrado = true;
+    this.cadena = !isFiltroEspecial
+      ? this.obtenerCadena(columna, false)
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
+    this.consultarReplicas();
+
+    this.columns
+      .filter((x) => x.isLatestFilter)
+      .map((m) => {
+        m.isLatestFilter = false;
+      });
+
+    if (!isFiltroEspecial) {
+      columna.filtered = true;
+      columna.isLatestFilter = true;
+    } else {
+      this.columns
+        .filter((x) => x.name == this.columnaFiltroEspecial.name)
+        .map((m) => {
+          (m.filtered = true),
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
+        });
+    }
+
+    this.esHistorial = true;
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.hideColumnFilter();
+  }
 
   onSelectClick(replica: ReplicasResultadosReglaVal) {
     if (this.selectedPage) this.selectedPage = false;
