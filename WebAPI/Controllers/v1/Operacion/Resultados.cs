@@ -960,18 +960,33 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
 
-        [HttpPost("obtenerResultadosNoCumplenFechaEntrega")]
-        [DisableRequestSizeLimit]
-        public async Task<IActionResult> obtenerResultadosNoCumplenFechaEntrega(List<long> muestreosId)
+        [HttpPost("ObtenerResultadosNoCumplenFechaEntrega")]
+        public async Task<IActionResult> ObtenerResultadosNoCumplenFechaEntrega([FromBody] IEnumerable<int> muestreos, [FromQuery] string? filter = "")
         {
-            //var parametros = new GetVwResultadosNoCumplenFechaEntregaQuery { muestreosId = muestreosId };
+            var filters = new List<Filter>();
 
-            var parametros = Mediator.Send(new GetVwResultadosNoCumplenFechaEntregaQuery { muestreosId = muestreosId }).Result.Data;
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            if (!muestreos.Any())
+            {
+                var responseMediator = await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+                {
+                    EstatusId = (int)EstatusMuestreo.MóduloInicialReglas,
+                    Filter = filters,
+                });
+
+                muestreos = responseMediator.Data.Select(s => (int)s.MuestreoId);
+            }
+
+            var response = await Mediator.Send(new GetVwResultadosNoCumplenFechaEntregaQuery { Muestreos = muestreos });
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("ParametrosNoCumplenFechaEntrega");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
-            ExcelService.ExportToExcel(parametros.Select(x => new { x.ClaveMuestreo, x.FechaEntrega, x.FechaMaxima, x.ClaveParametro }), fileInfo, true);
+            ExcelService.ExportToExcel(response.Data.Select(x => new { x.ClaveMuestreo, x.FechaEntrega, x.FechaMaxima, x.ClaveParametro }), fileInfo, true);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }

@@ -335,11 +335,17 @@ export class MuestreoService {
     );
   }
 
-  obtenerResultadosNoCumplenFechaEntrega(muestreosId: Array<number> = []) {
+  obtenerResultadosNoCumplenFechaEntrega(
+    muestreos: Array<number> = [],
+    filter: string
+  ): Observable<Blob> {
+    const params = new HttpParams({
+      fromObject: { filter },
+    });
     return this.http.post(
       environment.apiUrl + '/Resultados/obtenerResultadosNoCumplenFechaEntrega',
-      muestreosId,
-      { responseType: 'blob' }
+      muestreos,
+      { params, responseType: 'blob' }
     );
   }
 }
