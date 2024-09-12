@@ -735,51 +735,48 @@ export class InicialReglasComponent
   }
 
   onDownloadNoCumpleFechaEntrega(): void {
-    if (this.registrosSeleccionados.length == 0) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'No existe selección para la descarga de muestreos que no cumplen con la fecha de entrega',
+        text: 'No hay información seleccionada para descargar',
       });
-    } else {
-      let filtrdosNoCumplen = this.registrosSeleccionados.filter(
-        (x) => x.cumpleFechaEntrega == 'SI'
-      );
-      if (filtrdosNoCumplen.length == this.registrosSeleccionados.length) {
-        this.hacerScroll();
-        return this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.warning,
-          text: 'Los muestreos seleccionados si cumplen con la fecha de entrega, no es necesaria la descarga ',
-        });
-      } else {
-        this.loading = true;
-        this.muestreoService
-          .obtenerResultadosNoCumplenFechaEntrega(
-            this.registrosSeleccionados.map((s) => s.muestreoId)
-          )
-          .subscribe({
-            next: (response: any) => {
-              this.loading = true;
-              FileService.download(
-                response,
-                'ParametrosNoCumplenFechaEntrega.xlsx'
-              );
-              this.loading = false;
-            },
-            error: (response: any) => {
-              this.loading = false;
-              this.hacerScroll();
-              return this.notificationService.updateNotification({
-                show: true,
-                type: NotificationType.danger,
-                text: 'No fue posible descargar la información',
-              });
-            },
-          });
-      }
     }
+
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.loading = true;
+    this.muestreoService
+      .obtenerResultadosNoCumplenFechaEntrega(
+        registrosSeleccionados,
+        this.cadena
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.loading = true;
+          FileService.download(
+            response,
+            'ParametrosNoCumplenFechaEntrega.xlsx'
+          );
+          this.loading = false;
+        },
+        error: (response: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible descargar la información',
+          });
+        },
+      });
   }
 
   onFilterClick(columna: Column, isFiltroEspecial: boolean) {
