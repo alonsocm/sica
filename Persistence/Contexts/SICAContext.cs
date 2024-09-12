@@ -30,6 +30,10 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<BrigadaMuestreo> BrigadaMuestreo { get; set; }
 
+    public virtual DbSet<CargaSitiosBase7145> CargaSitiosBase7145 { get; set; }
+
+    public virtual DbSet<CatCuerpoaguaFinal> CatCuerpoaguaFinal { get; set; }
+
     public virtual DbSet<ClasificacionCriterio> ClasificacionCriterio { get; set; }
 
     public virtual DbSet<ClasificacionRegla> ClasificacionRegla { get; set; }
@@ -48,7 +52,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<DireccionLocal> DireccionLocal { get; set; }
 
-    public virtual DbSet<Directorio> Directorio { get; set; }  
+    public virtual DbSet<Directorio> Directorio { get; set; }
 
     public virtual DbSet<Emergencia> Emergencia { get; set; }
 
@@ -174,7 +178,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<TipoSustitucion> TipoSustitucion { get; set; }
 
-    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }   
+    public virtual DbSet<UnidadMedida> UnidadMedida { get; set; }
 
     public virtual DbSet<Usuario> Usuario { get; set; }
 
@@ -210,7 +214,7 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
@@ -283,7 +287,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.FechaCarga)
                 .HasComment("Campo que describe la fecha en la que se cargo el archivo")
                 .HasColumnType("datetime");
-            entity.Property(e => e.InformeMensualSupervisionId).HasComment("Llave foránea que hace referencia a la tabla de InformeMensualSupervision");
+            entity.Property(e => e.InformeMensualSupervisionId).HasComment("Llave foránea que hace referencia al catálogo de TipoArchivoInformeMensualSupervision ");
             entity.Property(e => e.NombreArchivo)
                 .IsUnicode(false)
                 .HasComment("Campo que describe el nombre del archivo");
@@ -379,7 +383,7 @@ public partial class SicaContext : DbContext
             entity.HasOne(d => d.Laboratorio).WithMany(p => p.BrigadaMuestreo)
                 .HasForeignKey(d => d.LaboratorioId)
                 .HasConstraintName("FK_BrigadaMuestreo_Laboratorios");
-        });
+        });        
 
         modelBuilder.Entity<ClasificacionCriterio>(entity =>
         {
@@ -503,7 +507,7 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CuerpoTipoSubtipoAgua_TipoCuerpoAgua");
         });
-
+        
         modelBuilder.Entity<DestinatariosAtencion>(entity =>
         {
             entity.ToTable("DestinatariosAtencion", "cat");
@@ -1742,9 +1746,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.FechaObservacionSrenameca)
                 .HasColumnType("date")
                 .HasColumnName("FechaObservacionSRENAMECA");
-            entity.Property(e => e.FechaReplicaLaboratorio)
-                .HasDefaultValueSql("('')")
-                .HasColumnType("date");
+            entity.Property(e => e.FechaReplicaLaboratorio).HasColumnType("date");
             entity.Property(e => e.ObservacionLaboratorio).HasDefaultValueSql("('')");
             entity.Property(e => e.ObservacionSrenameca).HasColumnName("ObservacionSRENAMECA");
             entity.Property(e => e.ObservacionesReglasReplica)
@@ -1965,7 +1967,7 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
-        });        
+        });
 
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
@@ -2746,7 +2748,7 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });        
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
