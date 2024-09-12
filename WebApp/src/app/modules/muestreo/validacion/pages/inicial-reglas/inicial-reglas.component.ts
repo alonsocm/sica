@@ -493,17 +493,7 @@ export class InicialReglasComponent
       .actualizarMuestreos(registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
-          this.loading = true;
-          if (response.succeded) {
-            this.loading = false;
-            this.consultarMonitoreos();
-            this.hacerScroll();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.success,
-              text: 'Los muestreos fueron enviados a validar correctamente',
-            });
-          }
+          // Handle the response if needed
         },
         error: (response: any) => {
           this.loading = false;
@@ -512,6 +502,16 @@ export class InicialReglasComponent
             show: true,
             type: NotificationType.danger,
             text: 'Error al enviar los muestreos a validar',
+          });
+        },
+        complete: () => {
+          this.resetValues();
+          this.consultarMonitoreos();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Los muestreos fueron enviados a validar correctamente',
           });
         },
       });
