@@ -46,13 +46,13 @@ export class IncidenciasResultadosService {
   }
 
   getDistinctValuesFromColumn(
-    column: string,   
+    column: string,
     estatusId: Array<number>,
     filter: string,
   ): Observable<Object> {
     const params = new HttpParams({
       fromObject: {
-        column: column,        
+        column: column,
         estatusId: estatusId,
         filter: filter,
       },
@@ -99,11 +99,10 @@ export class IncidenciasResultadosService {
     const params = new HttpParams({
       fromObject: {
         tipoArchivo: tipoArchivo
-    
       },
     });
-
-
     return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileReplicas', formData, { params });
   }
+
+
 }

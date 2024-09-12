@@ -1,5 +1,6 @@
 export enum tipoReplicasValidacion {
   ReplicaValidacionGeneral = 1,
   ReplicaLaboratorioExterno = 2,
-  ReplicaSrenameca = 3
+  ReplicaSrenameca = 3,
+  ReplicasAprobacion = 4
 }

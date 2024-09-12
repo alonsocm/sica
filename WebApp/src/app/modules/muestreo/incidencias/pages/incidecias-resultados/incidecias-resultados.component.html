@@ -24,6 +24,9 @@
       <input type="file" class="element-hidden" (change)="cargarArchivo($event, this.ReplicaSrenameca)" accept=".xls, .xlsx"
              title="Seleccionar archivo" #inputExcelSRENAMECA>
 
+      <input type="file" class="element-hidden" accept=".xls, .xlsx"
+             title="Seleccionar archivo" inputExcelAprobacionRechazo>
+
       <button type="button" class="btn btn-primary btn-sm mr-1" (click)="inputExcelLaboratorio.click()"
               title="Seleccionar archivo">
         <i class="bi bi-cloud-upload"></i>
@@ -42,6 +45,12 @@
   <div class="clearfix">
     <div class="float-right col-md-12">
       <div class="float-right">
+        <button type="button" class="btn btn-primary btn-sm mr-1"
+                title="Seleccionar archivo">
+          <i class="bi bi-cloud-upload"></i>
+         Aprobación-Rechazo de resulado por archivo
+        </button>
+
         <button class="btn btn-secondary btn-sm mr-1" type="button" (click)="exportarResultados();">
           <i class="bi bi-cloud-download"></i> Descargar informaci&oacute;n
         </button>

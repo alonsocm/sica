@@ -128,7 +128,8 @@ namespace Application.Mappings
             CreateMap<ReplicasResultadosReglasValidacionDto, ReplicasResultadosRegValidacionExcel>();
             CreateMap<ReplicasResultadosReglasValidacionDto, ReplicasResultadoSrenameca>();
             CreateMap<ReplicasResultadosReglasValidacionDto, ReplicasResultadoLabExterno>();
-           
+            CreateMap<ReplicasResultadosReglasValidacionDto, ReplicasResultadosAprobacion>();
+
 
 
 

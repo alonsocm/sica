@@ -120,7 +120,7 @@ namespace WebAPI.Controllers.v1.Operacion
         {            
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla((tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno) ? "ReplicasLaboratorioExterno" : "ReplicasResultadosSrenameca");
-            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);         
 
             if ((int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno == tipoArchivo)
                 ExcelService.ExportToExcel(_mapper.Map<List<ReplicasResultadoLabExterno>>(resultados), fileInfo, true);
@@ -164,22 +164,34 @@ namespace WebAPI.Controllers.v1.Operacion
 
             FileInfo fileInfo = new(filePath);
 
-            ExcelService.Mappings = (tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno) ?  
-                ReplicasReglasValidacionLaboratorioSettings.KeyValues : ReplicasReglasValidacionSRENAMECASettings.KeyValues;
+            switch (tipoArchivo)
+            {
 
+                case (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno:
+                    ExcelService.Mappings = ReplicasReglasValidacionLaboratorioSettings.KeyValues;
+                    var registros = ExcelService.Import<ReplicasResultadoLabExterno>(fileInfo, "Hoja1");
+                    System.IO.File.Delete(filePath);
+                    Ok(await Mediator.Send(new CargaReplicasCommand { Replicas = registros }));
+                    break;
 
+                    case (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaSrenameca:
+                         ExcelService.Mappings = ReplicasReglasValidacionSRENAMECASettings.KeyValues;
+                    var datos = ExcelService.Import<ReplicasResultadoSrenameca>(fileInfo, "Hoja1");
+                    System.IO.File.Delete(filePath);
+                    Ok(await Mediator.Send(new CargaSRENAMECACommand { Replicas = datos }));
+                    break;
 
-            if (tipoArchivo == (int)Application.Enums.TipoReplicaReglaValidacion.ReplicaLaboratorioExterno)
-            { var registros = ExcelService.Import<ReplicasResultadoLabExterno>(fileInfo, "Hoja1");
-                System.IO.File.Delete(filePath);
-                return Ok(await Mediator.Send(new CargaReplicasCommand { Replicas = registros }));
+                    case (int)Application.Enums.TipoReplicaReglaValidacion.RepilcasAprobacion:
+                    ExcelService.Mappings = ReplicasReglasValidacionAprobacionSettings.KeyValues;
+                    var aprobacion = ExcelService.Import<ReplicasResultadosAprobacion>(fileInfo, "Hoja1");
+                    System.IO.File.Delete(filePath);
+                    Ok(await Mediator.Send(new CargaAprobacionCommand { Replicas = aprobacion }));
 
+                    break;
+                default:
+                    break; 
             }
-            else
-            { var datos = ExcelService.Import<ReplicasResultadoSrenameca>(fileInfo, "Hoja1");
-                System.IO.File.Delete(filePath);
-                return Ok(await Mediator.Send(new CargaSRENAMECACommand { Replicas = datos }));
-            }
+            return Ok(true);
         }
 
     }

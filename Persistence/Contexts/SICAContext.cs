@@ -30,10 +30,6 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<BrigadaMuestreo> BrigadaMuestreo { get; set; }
 
-    public virtual DbSet<CargaSitiosBase7145> CargaSitiosBase7145 { get; set; }
-
-    public virtual DbSet<CatCuerpoaguaFinal> CatCuerpoaguaFinal { get; set; }
-
     public virtual DbSet<ClasificacionCriterio> ClasificacionCriterio { get; set; }
 
     public virtual DbSet<ClasificacionRegla> ClasificacionRegla { get; set; }
