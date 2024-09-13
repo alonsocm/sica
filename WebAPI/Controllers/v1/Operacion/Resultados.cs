@@ -572,10 +572,24 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new GetDistinctValuesParametro { Usuario = usuario, ClaveParametro = parametro, Filter = filters }));
         }
 
-        [HttpGet("ValidarResultadosPorReglas")]
-        public async Task<IActionResult> Get([FromQuery] ValidarResultadosPorReglasCommand request)
+        [HttpPost("ValidarResultadosPorReglas")]
+        public async Task<IActionResult> ValidarResultadosPorReglas([FromBody] IEnumerable<int> muestreos, [FromQuery] string? filter = "")
         {
-            return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Muestreos = request.Muestreos }));
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var filters = new List<Filter>();
+                filters = QueryParam.GetFilters(filter);
+
+                var queryResponse = await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+                {
+                    EstatusId = (int)EstatusMuestreo.MóduloReglas,
+                    Filter = filters,
+                });
+
+                muestreos = queryResponse.Data.Select(s => (int)s.MuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new ValidarResultadosPorReglasCommand { Muestreos = muestreos }));
         }
 
         [HttpGet("ExportarResumenValidacion")]
