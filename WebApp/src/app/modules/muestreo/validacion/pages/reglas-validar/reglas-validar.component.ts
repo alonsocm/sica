@@ -19,7 +19,8 @@ import { Item } from 'src/app/interfaces/filter/item';
   styleUrls: ['./reglas-validar.component.css'],
 })
 export class ReglasValidarComponent extends BaseService implements OnInit {
-  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef = {} as ElementRef;
+  @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
+    {} as ElementRef;
   constructor(
     private validacionService: ValidacionReglasService,
     public muestreoService: MuestreoService,
@@ -33,12 +34,12 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
-    id: 'mdlConfirmacion'
+    id: 'mdlConfirmacion',
   };
   notificacionConfirmacion: Notificacion = {
     title: 'Confirmar carga resultados',
     text: '¿Desea cargar los resultados de los muestreos eliminados?',
-    id: 'mdlCargaResultados'
+    id: 'mdlCargaResultados',
   };
   archivo: any;
   ngOnInit(): void {
@@ -371,8 +372,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.resultadosMuestreo = response.data;      
-           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+          this.resultadosMuestreo = response.data;
+          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
 
           this.getPreviousSelected(
@@ -391,7 +392,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
           this.loading = false;
         },
       });
-
   }
 
   getPreviousSelected(
@@ -409,8 +409,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     });
   }
 
-  onDownload(): void {   
-    if (this.resultadosFiltradosn.length == 0) {  
+  onDownload(): void {
+    if (this.resultadosFiltradosn.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -421,10 +421,12 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
     this.loading = true;
     this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
-      this.validacionService
-      .exportExcelResultadosValidados((this.resultadosEnviados.length > 0) ? this.resultadosEnviados
+    this.validacionService
+      .exportExcelResultadosValidados(
+        this.resultadosEnviados.length > 0
+          ? this.resultadosEnviados
           : this.resultadosFiltradosn
-    )
+      )
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'ResultadosaValidar.xlsx');
@@ -443,28 +445,26 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
   aplicarReglas(): void {
     let datosSeleccionados = this.Seleccionados(this.resultadosSeleccionados);
-    let muestreosConResultados = datosSeleccionados.filter(m => m.numParametrosCargados != 0);
-        if (datosSeleccionados.length == 0) {
+    let muestreosConResultados = datosSeleccionados.filter(
+      (m) => m.numParametrosCargados != 0
+    );
+    if (datosSeleccionados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
         text: 'Debes de seleccionar al menos un muestreos para aplicar reglas',
       });
-    }
-    else if (muestreosConResultados.length == 0) {
+    } else if (muestreosConResultados.length == 0) {
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
         text: 'Debes de seleccionar muestreos que cuenten con resultados para poder aplicar las reglas',
       });
-    }
-    
-    else {
-
+    } else {
       ////Validacion para aplicar reglas debe de ser si en correr regla y haber sido validado por el area de supervisión
 
-     /* ******Se comenta por el momento para que pueda realizar la validacion el area uduaria de Stephania en pruebas de QA sin depender de la otra area *******/
+      /* ******Se comenta por el momento para que pueda realizar la validacion el area uduaria de Stephania en pruebas de QA sin depender de la otra area *******/
 
       //let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
       //let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == null);
@@ -476,13 +476,14 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       //  });
       //}
 
-      this.resultadosEnviados = muestreosConResultados.map(
-        (m) => { return m.muestreoId; });
+      this.resultadosEnviados = muestreosConResultados.map((m) => {
+        return m.muestreoId;
+      });
       this.loading = true;
       this.validacionService
         .obtenerResultadosValidadosPorReglas(this.resultadosEnviados)
         .subscribe({
-          next: (response: any) => {          
+          next: (response: any) => {
             this.loading = false;
             this.hacerScroll();
             return this.notificationService.updateNotification({
@@ -618,7 +619,11 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.validacionService
-        .getDistinctValuesFromColumnporMuestreo(column.name, this.cadena, estatusMuestreo.MóduloReglas)
+        .getDistinctValuesFromColumnporMuestreo(
+          column.name,
+          this.cadena,
+          estatusMuestreo.MóduloReglas
+        )
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
@@ -645,29 +650,35 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
   eliminarResultados() {
     this.loading = true;
-    if (this.allSelected) {      
-      this.validacionService.deleteResultadosByFilter(estatusMuestreo.MóduloReglas, this.cadena).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();
-          this.cargaResultados();
-          this.loading = false;
-          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Resultados eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
+    if (this.allSelected) {
+      this.validacionService
+        .deleteResultadosByFilter(estatusMuestreo.MóduloReglas, this.cadena)
+        .subscribe({
+          next: (response) => {
+            document.getElementById('btnCancelarModal')?.click();
+            this.cargaResultados();
+            this.loading = false;
+            document
+              .getElementById('btnMdlConfirmacionCargaResultados')
+              ?.click();
+            this.resetValues();
+            this.hacerScroll();
+            return this.notificationService.updateNotification({
+              show: true,
+              type: NotificationType.success,
+              text: 'Resultados eliminados correctamente',
+            });
+          },
+          error: (error) => {
+            this.loading = false;
+          },
+        });
     } else {
       this.loading = false;
 
-      let ids = this.resultadosFiltradosn.filter(x => x.selected).map((s) => s.muestreoId);
+      let ids = this.resultadosFiltradosn
+        .filter((x) => x.selected)
+        .map((s) => s.muestreoId);
 
       this.validacionService.deleteResultadosByMuestreoId(ids).subscribe({
         next: (response) => {
@@ -701,39 +712,49 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     this.loading = true;
     if (this.archivo) {
-      this.muestreoService.cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico).subscribe({
-        next: (response: any) => {
-          if (response.data.correcto) {
+      this.muestreoService
+        .cargarArchivo(this.archivo[0], false, true, tipoCarga.Automatico)
+        .subscribe({
+          next: (response: any) => {
+            if (response.data.correcto) {
+              this.loading = false;
+              this.resetInputFile(this.inputExcelMonitoreos);
+              this.cargaResultados();
+              return this.notificationService.updateNotification({
+                show: true,
+                type: NotificationType.success,
+                text: 'Se sustituyeron los datos correctamente.',
+              });
+            } else {
+              this.loading = false;
+            }
+          },
+          error: (error: any) => {
             this.loading = false;
+            let archivoErrores = this.generarArchivoDeErrores(
+              error.error.Errors
+            );
+            this.hacerScroll();
+            FileService.download(archivoErrores, 'errores.txt');
             this.resetInputFile(this.inputExcelMonitoreos);
-            this.cargaResultados();
             return this.notificationService.updateNotification({
               show: true,
-              type: NotificationType.success,
-              text: 'Se sustituyeron los datos correctamente.',
+              type: NotificationType.danger,
+              text: 'Se encontraron errores en el archivo procesado.',
             });
-          } else {
-            this.loading = false;
-          }
-        },
-        error: (error: any) => {
-          this.loading = false;
-          let archivoErrores = this.generarArchivoDeErrores(error.error.Errors);
-          this.hacerScroll();
-          FileService.download(archivoErrores, 'errores.txt');
-          this.resetInputFile(this.inputExcelMonitoreos);
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.danger,
-            text: 'Se encontraron errores en el archivo procesado.',
-          });
-        },
-      });
+          },
+        });
     }
   }
 
   validarCorreReglaAutorizaciones(muestreo: acumuladosMuestreo) {
-    return muestreo.correReglaValidacion = ((muestreo.cumpleReglasCondic == "SI" || muestreo.autorizacionCondicionantes) && (muestreo.muestreoCompletoPorResultados == "SI" || muestreo.autorizacionIncompleto) && (muestreo.cumpleFechaEntrega == "SI" || muestreo.autorizacionFechaEntrega)) ? "SI" : "NO";
+    return (muestreo.correReglaValidacion =
+      (muestreo.cumpleReglasCondic == 'SI' ||
+        muestreo.autorizacionCondicionantes) &&
+      (muestreo.muestreoCompletoPorResultados == 'SI' ||
+        muestreo.autorizacionIncompleto) &&
+      (muestreo.cumpleFechaEntrega == 'SI' || muestreo.autorizacionFechaEntrega)
+        ? 'SI'
+        : 'NO');
   }
-
 }
