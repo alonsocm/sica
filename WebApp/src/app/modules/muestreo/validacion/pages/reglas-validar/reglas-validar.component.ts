@@ -28,8 +28,8 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   ) {
     super();
   }
-  resultadosMuestreo: Array<acumuladosMuestreo> = [];
-  resultadosSeleccionados: Array<acumuladosMuestreo> = [];
+  registros: Array<acumuladosMuestreo> = [];
+  registrosSeleccionados: Array<acumuladosMuestreo> = [];
   resultadosEnviados: Array<any> = [];
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
@@ -372,20 +372,11 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.resultadosMuestreo = response.data;
+          this.registros = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-
-          this.getPreviousSelected(
-            this.resultadosMuestreo,
-            this.resultadosFiltradosn
-          );
-          this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
-            ? false
-            : true;
-
-          this.resultadosFiltradosn = this.resultadosMuestreo;
-          this.resultadosn = this.resultadosMuestreo;
+          this.getPreviousSelected(this.registros, this.registrosSeleccionados);
+          this.selectedPage = this.anyUnselected(this.registros) ? false : true;
           this.loading = false;
         },
         error: (error) => {
@@ -410,7 +401,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   onDownload(): void {
-    if (this.resultadosFiltradosn.length == 0) {
+    if (this.registrosSeleccionados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -444,7 +435,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   aplicarReglas(): void {
-    let datosSeleccionados = this.Seleccionados(this.resultadosSeleccionados);
+    let datosSeleccionados = this.Seleccionados(this.registrosSeleccionados);
     let muestreosConResultados = datosSeleccionados.filter(
       (m) => m.numParametrosCargados != 0
     );
@@ -515,7 +506,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          this.resultadosMuestreo = response.data;
+          this.registros = response.data;
         },
         error: (error) => {},
       });
@@ -564,7 +555,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(this.resultadosMuestreo);
+    let muestreosSeleccionados = this.Seleccionados(this.registros);
     if (!(muestreosSeleccionados.length > 0)) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -583,17 +574,15 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
 
     //Vamos a agregar este registro, a los seleccionados
     if (muestreo.selected) {
-      this.resultadosSeleccionados.push(muestreo);
-      this.selectedPage = this.anyUnselected(this.resultadosMuestreo)
-        ? false
-        : true;
+      this.registrosSeleccionados.push(muestreo);
+      this.selectedPage = this.anyUnselected(this.registros) ? false : true;
     } else {
-      let index = this.resultadosSeleccionados.findIndex(
+      let index = this.registrosSeleccionados.findIndex(
         (m) => m.muestreoId === muestreo.muestreoId
       );
 
       if (index > -1) {
-        this.resultadosSeleccionados.splice(index, 1);
+        this.registrosSeleccionados.splice(index, 1);
       }
     }
   }
@@ -702,7 +691,7 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   private resetValues() {
-    this.resultadosSeleccionados = [];
+    this.registrosSeleccionados = [];
     this.selectAllOption = false;
     this.allSelected = false;
     this.selectedPage = false;
