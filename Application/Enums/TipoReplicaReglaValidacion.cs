@@ -10,6 +10,7 @@ namespace Application.Enums
     {
         ReplicaValidacionGeneral = 1,
         ReplicaLaboratorioExterno = 2,
-        ReplicaSrenameca = 3
+        ReplicaSrenameca = 3,
+        RepilcasAprobacion = 4
     }
 }

@@ -361,4 +361,25 @@
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
     }
 
+    public static class ReplicasReglasValidacionAprobacionSettings
+    {
+        private static List<KeyValuePair<string, string>> keyValues = new()
+        {
+            new KeyValuePair<string, string>("No. CARGA","NumeroCarga"),
+            new KeyValuePair<string, string>("RESULTADOMUESTREOID","ResultadoMuestreoId"),
+            new KeyValuePair<string, string>("CLAVE ÚNICA","ClaveUnica"),
+            new KeyValuePair<string, string>("CLAVE SITIO","ClaveSitio"),
+            new KeyValuePair<string, string>("CLAVE MONITOREO","ClaveMonitoreo"),
+            new KeyValuePair<string, string>("NOMBRE","Nombre"),
+            new KeyValuePair<string, string>("CLAVE PARAMETRO","ClaveParametro"),
+            new KeyValuePair<string, string>("LABORATORIO","Laboratorio"),
+            new KeyValuePair<string, string>("TIPO DE CUERPO DE AGUA","TipoCuerpoAgua"),
+            new KeyValuePair<string, string>("TIPO DE CUERPO DE AGUA ORIGINAL","TipoHomologado"),
+            new KeyValuePair<string, string>("RESULTADO","Resultado"),
+            new KeyValuePair<string, string>("SE APRUEBA EL RESULTADO DESPUES DE LA RÉPLICA","AprobacionResultadoReplica"),
+            
+    };
+        public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
+    }
+
 }

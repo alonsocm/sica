@@ -34,12 +34,17 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
   tipoArchivo: number = 0;
   ReplicaSrenameca: number = tipoReplicasValidacion.ReplicaSrenameca;
   ReplicaLaboratorioExterno: number = tipoReplicasValidacion.ReplicaLaboratorioExterno;
+  ReplicaAprobacion: number = tipoReplicasValidacion.ReplicasAprobacion;
   archivo: any;
   @ViewChild('inputExcelLaboratorio') inputExcelLaboratorio: ElementRef =
     {} as ElementRef;
   @ViewChild('inputExcelSRENAMECA') inputExcelSRENAMECA: ElementRef =
     {} as ElementRef;
+  @ViewChild('inputExcelAprobacionRechazo') inputExcelAprobacionRechazo: ElementRef =
+    {} as ElementRef;
+
   
+
 
   estatusReplicas: Array<number> = [estatusResultado.IncidenciasResultados, estatusResultado.EnvíoLaboratorioExterno, estatusResultado.CargaRéplicasLaboratorioExterno,
   estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA];
@@ -790,6 +795,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     });
   }
 
+
+
   cargarArchivo(event: Event, tipoArchivo: number) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     if (this.archivo) {
@@ -798,10 +805,23 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
       this.IncidenciasResultadoService
         .cargarArchivo(this.archivo[0], tipoArchivo)
         .subscribe({
-          next: (response: any) => {          
+          next: (response: any) => {
             if (response.data) {
               this.loading = false;
-              this.resetInputFile((tipoArchivo == this.ReplicaLaboratorioExterno) ? this.inputExcelLaboratorio : this.inputExcelSRENAMECA);
+              switch (tipoArchivo) {
+                case this.ReplicaLaboratorioExterno:
+                  this.resetInputFile(this.inputExcelLaboratorio);
+                  break;
+                case this.ReplicaSrenameca:
+                  this.resetInputFile(this.inputExcelSRENAMECA);
+                  break;
+                case this.ReplicaAprobacion:
+                  this.resetInputFile(this.inputExcelAprobacionRechazo);
+                  break;
+                default:
+                  break;
+              }
+              
               this.consultarReplicas();
               return this.notificationService.updateNotification({
                 show: true,

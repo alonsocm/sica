@@ -14,15 +14,15 @@ namespace Application.DTOs.Catalogos
         
         public long ResultadoMuestreoId { get; set; }
 
-        public bool AceptaRechazo { get; set; }
+        public bool? AceptaRechazo { get; set; }
 
         public string ResultadoReplica { get; set; } = null!;
 
-        public bool MismoResultado { get; set; }
+        public bool? MismoResultado { get; set; }
 
         public string ObservacionLaboratorio { get; set; } = null!;
 
-        public DateTime FechaReplicaLaboratorio { get; set; }
+        public DateTime? FechaReplicaLaboratorio { get; set; }
 
         public string? ObservacionSrenameca { get; set; }
 
