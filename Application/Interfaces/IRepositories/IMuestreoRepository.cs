@@ -20,7 +20,7 @@ namespace Application.Interfaces.IRepositories
         Task<List<int?>> GetListAniosConRegistro();
         Task<List<int?>> GetListNumeroEntrega();
         Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosMuestreoByStatusAsync(Enums.EstatusMuestreo estatusId);
-        Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId);
+        Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(Enums.EstatusMuestreo estatus);
         Task<bool> ExisteSustitucionPrevia(int periodo);
         public Task<IEnumerable<PuntosMuestreoDto>> GetPuntoPR_PMAsync(string claveMuestreo);
 

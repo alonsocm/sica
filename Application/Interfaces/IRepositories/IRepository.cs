@@ -11,7 +11,7 @@ namespace Application.Interfaces.IRepositories
         Task ActualizarAsync(IEnumerable<T> entidades);
         Task ActualizarBulkAsync(List<T> entidad);
         void Eliminar(T entidad);
-        void Eliminar(Expression<Func<T, bool>> predicado);
+        Task EliminarAsync(Expression<Func<T, bool>> predicado);
         Task<T> ObtenerElementoPorIdAsync(long id);
         Task<IEnumerable<T>> ObtenerTodosElementosAsync();
         IEnumerable<T> ObtenerElementosPorCriterio(Expression<Func<T, bool>> predicado);
