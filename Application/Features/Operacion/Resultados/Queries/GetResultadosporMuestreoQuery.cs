@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Enums;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
@@ -26,7 +27,8 @@ namespace Application.Features.Operacion.Resultados.Queries
 
         public async Task<PagedResponse<IEnumerable<AcumuladosResultadoDto>>> Handle(GetResultadosporMuestreoPaginadosQuery request, CancellationToken cancellationToken)
         {
-            var data = await _repositoryAsync.GetResultadosporMuestreoAsync(request.EstatusId);
+            var estatus = EstatusAux.GetEstatus(request.EstatusId);
+            var data = await _repositoryAsync.GetResultadosporMuestreoAsync(estatus);
             data = data.AsQueryable();
 
             if (request.Filter.Any())
