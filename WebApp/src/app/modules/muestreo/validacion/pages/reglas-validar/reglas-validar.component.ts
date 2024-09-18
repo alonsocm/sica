@@ -12,13 +12,17 @@ import { NotificationService } from '../../../../../shared/services/notification
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { Item } from 'src/app/interfaces/filter/item';
+import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
 
 @Component({
   selector: 'app-reglas-validar',
   templateUrl: './reglas-validar.component.html',
   styleUrls: ['./reglas-validar.component.css'],
 })
-export class ReglasValidarComponent extends BaseService implements OnInit {
+export class ReglasValidarComponent
+  extends BaseService
+  implements OnInit, ICommonMethods
+{
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
   constructor(
@@ -36,12 +40,15 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
     id: 'mdlConfirmacion',
   };
+
   notificacionConfirmacion: Notificacion = {
     title: 'Confirmar carga resultados',
     text: '¿Desea cargar los resultados de los muestreos eliminados?',
     id: 'mdlCargaResultados',
   };
+
   archivo: any;
+
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
@@ -435,59 +442,82 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
   }
 
   aplicarReglas(): void {
-    let datosSeleccionados = this.Seleccionados(this.registrosSeleccionados);
-    let muestreosConResultados = datosSeleccionados.filter(
-      (m) => m.numParametrosCargados != 0
-    );
-    if (datosSeleccionados.length == 0) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debes de seleccionar al menos un muestreos para aplicar reglas',
+        text: 'Debes de seleccionar al menos un muestreo para aplicar reglas',
       });
-    } else if (muestreosConResultados.length == 0) {
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'Debes de seleccionar muestreos que cuenten con resultados para poder aplicar las reglas',
-      });
-    } else {
-      ////Validacion para aplicar reglas debe de ser si en correr regla y haber sido validado por el area de supervisión
-
-      /* ******Se comenta por el momento para que pueda realizar la validacion el area uduaria de Stephania en pruebas de QA sin depender de la otra area *******/
-
-      //let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
-      //let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == null);
-      //if (resultadosNoAplicaRegla.length > 0 || novalidadoMuestreo.length > 0) {
-      //  return this.notificationService.updateNotification({
-      //    show: true,
-      //    type: NotificationType.warning,
-      //    text: 'Debes de seleccionar muestreos que se encuentre validados por el área de Supervisión de muestreo y ser aprobado para correr la regla',
-      //  });
-      //}
-
-      this.resultadosEnviados = muestreosConResultados.map((m) => {
-        return m.muestreoId;
-      });
-      this.loading = true;
-      this.validacionService
-        .obtenerResultadosValidadosPorReglas(this.resultadosEnviados)
-        .subscribe({
-          next: (response: any) => {
-            this.loading = false;
-            this.hacerScroll();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.success,
-              text: 'Se aplicaron las reglas de validación correctamente',
-            });
-          },
-          error: (error) => {
-            this.loading = false;
-          },
-        });
     }
+
+    let registrosSeleccionados = new Array<number>();
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.loading = true;
+
+    // let datosSeleccionados = this.Seleccionados(this.registrosSeleccionados);
+    // let muestreosConResultados = datosSeleccionados.filter(
+    //   (m) => m.numParametrosCargados != 0
+    // );
+    // if (datosSeleccionados.length == 0) {
+    //   this.hacerScroll();
+    //   return this.notificationService.updateNotification({
+    //     show: true,
+    //     type: NotificationType.warning,
+    //     text: 'Debes de seleccionar al menos un muestreos para aplicar reglas',
+    //   });
+    // } else if (muestreosConResultados.length == 0) {
+    //   return this.notificationService.updateNotification({
+    //     show: true,
+    //     type: NotificationType.warning,
+    //     text: 'Debes de seleccionar muestreos que cuenten con resultados para poder aplicar las reglas',
+    //   });
+    // } else {
+    ////Validacion para aplicar reglas debe de ser si en correr regla y haber sido validado por el area de supervisión
+
+    /* ******Se comenta por el momento para que pueda realizar la validacion el area uduaria de Stephania en pruebas de QA sin depender de la otra area *******/
+
+    //let resultadosNoAplicaRegla = muestreosConResultados.filter(x => x.correReglaValidacion == false);
+    //let novalidadoMuestreo = muestreosConResultados.filter(x => x.usuarioValido == null);
+    //if (resultadosNoAplicaRegla.length > 0 || novalidadoMuestreo.length > 0) {
+    //  return this.notificationService.updateNotification({
+    //    show: true,
+    //    type: NotificationType.warning,
+    //    text: 'Debes de seleccionar muestreos que se encuentre validados por el área de Supervisión de muestreo y ser aprobado para correr la regla',
+    //  });
+    //}
+
+    // this.resultadosEnviados = muestreosConResultados.map((m) => {
+    //   return m.muestreoId;
+    // });
+    this.loading = true;
+    this.validacionService
+      .obtenerResultadosValidadosPorReglas(registrosSeleccionados, this.cadena)
+      .subscribe({
+        next: (response: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Se aplicaron las reglas de validación correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+          this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: `${error.error.Message}`,
+          });
+        },
+      });
   }
 
   sort(column: string, type: string) {
@@ -518,53 +548,58 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     this.cargaResultados();
   }
 
-  filtrar(columna: Column, isFiltroEspecial: boolean) {
-    this.existeFiltrado = true;
-    this.cadena = !isFiltroEspecial
-      ? this.obtenerCadena(columna, false)
-      : this.obtenerCadena(this.columnaFiltroEspecial, true);
-    this.cargaResultados();
-
-    this.columns
-      .filter((x) => x.isLatestFilter)
-      .map((m) => {
-        m.isLatestFilter = false;
-      });
-
-    if (!isFiltroEspecial) {
-      columna.filtered = true;
-      columna.isLatestFilter = true;
-    } else {
-      this.columns
-        .filter((x) => x.name == this.columnaFiltroEspecial.name)
-        .map((m) => {
-          (m.filtered = true),
-            (m.selectedData = this.columnaFiltroEspecial.selectedData),
-            (m.isLatestFilter = true);
-        });
-    }
-
-    this.esHistorial = true;
-    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
-    this.hideColumnFilter();
-  }
-
-  pageClic(page: any) {
-    this.cargaResultados(page, this.NoPage, this.cadena);
-    this.page = page;
-  }
-
   confirmarEliminacion() {
-    let muestreosSeleccionados = this.Seleccionados(this.registros);
-    if (!(muestreosSeleccionados.length > 0)) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un resultado para ser eliminado',
+        text: 'Debes de seleccionar al menos un muestreo para eliminar',
       });
     }
+
     document.getElementById('btnMdlConfirmacion')?.click();
+  }
+
+  eliminarResultados() {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debes de seleccionar al menos un muestreo para eliminar sus resultados',
+      });
+    }
+
+    this.loading = true;
+    let registrosSeleccionados = new Array<number>();
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.validacionService
+      .deleteResultadosByMuestreoId(registrosSeleccionados, this.cadena)
+      .subscribe({
+        next: (response) => {
+          document.getElementById('btnCancelarModal')?.click();
+          this.cargaResultados();
+          this.loading = false;
+          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
+          this.resetValues();
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Resultados eliminados correctamente',
+          });
+        },
+        error: (error) => {
+          this.loading = false;
+        },
+      });
   }
 
   onSelectClick(muestreo: acumuladosMuestreo) {
@@ -637,59 +672,6 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
     }
   }
 
-  eliminarResultados() {
-    this.loading = true;
-    if (this.allSelected) {
-      this.validacionService
-        .deleteResultadosByFilter(estatusMuestreo.MóduloReglas, this.cadena)
-        .subscribe({
-          next: (response) => {
-            document.getElementById('btnCancelarModal')?.click();
-            this.cargaResultados();
-            this.loading = false;
-            document
-              .getElementById('btnMdlConfirmacionCargaResultados')
-              ?.click();
-            this.resetValues();
-            this.hacerScroll();
-            return this.notificationService.updateNotification({
-              show: true,
-              type: NotificationType.success,
-              text: 'Resultados eliminados correctamente',
-            });
-          },
-          error: (error) => {
-            this.loading = false;
-          },
-        });
-    } else {
-      this.loading = false;
-
-      let ids = this.resultadosFiltradosn
-        .filter((x) => x.selected)
-        .map((s) => s.muestreoId);
-
-      this.validacionService.deleteResultadosByMuestreoId(ids).subscribe({
-        next: (response) => {
-          document.getElementById('btnCancelarModal')?.click();
-          this.cargaResultados();
-          this.loading = false;
-          document.getElementById('btnMdlConfirmacionCargaResultados')?.click();
-          this.resetValues();
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Resultados eliminados correctamente',
-          });
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
-    }
-  }
-
   private resetValues() {
     this.registrosSeleccionados = [];
     this.selectAllOption = false;
@@ -745,5 +727,41 @@ export class ReglasValidarComponent extends BaseService implements OnInit {
       (muestreo.cumpleFechaEntrega == 'SI' || muestreo.autorizacionFechaEntrega)
         ? 'SI'
         : 'NO');
+  }
+
+  onFilterClick(columna: Column, isFiltroEspecial: boolean): void {
+    this.existeFiltrado = true;
+    this.cadena = !isFiltroEspecial
+      ? this.obtenerCadena(columna, false)
+      : this.obtenerCadena(this.columnaFiltroEspecial, true);
+    this.cargaResultados();
+
+    this.columns
+      .filter((x) => x.isLatestFilter)
+      .map((m) => {
+        m.isLatestFilter = false;
+      });
+
+    if (!isFiltroEspecial) {
+      columna.filtered = true;
+      columna.isLatestFilter = true;
+    } else {
+      this.columns
+        .filter((x) => x.name == this.columnaFiltroEspecial.name)
+        .map((m) => {
+          (m.filtered = true),
+            (m.selectedData = this.columnaFiltroEspecial.selectedData),
+            (m.isLatestFilter = true);
+        });
+    }
+
+    this.esHistorial = true;
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
+    this.hideColumnFilter();
+  }
+
+  onPageClick(page: any): void {
+    this.cargaResultados(page, this.NoPage, this.cadena);
+    this.page = page;
   }
 }
