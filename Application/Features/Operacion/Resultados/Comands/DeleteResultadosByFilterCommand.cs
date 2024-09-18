@@ -20,7 +20,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         {
             if (request.ResultadosIds.Any())
             {
-                _resultadoRepository.Eliminar(x => request.ResultadosIds.Contains(x.Id));
+                await _resultadoRepository.EliminarAsync(x => request.ResultadosIds.Contains(x.Id));
                 return new Response<bool> { Succeded = true };
             }
 

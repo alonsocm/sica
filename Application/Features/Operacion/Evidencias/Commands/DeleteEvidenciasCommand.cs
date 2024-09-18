@@ -39,7 +39,7 @@ namespace Application.Features.CargaMasivaEvidencias.Commands
                 if (muestreo == null)
                     throw new KeyNotFoundException($"No se encontraron los datos del muestreo: {claveMuestreo}");
 
-                _evidenciaMuestreoRepository.Eliminar(x => x.MuestreoId == muestreo.Id);
+                await _evidenciaMuestreoRepository.EliminarAsync(x => x.MuestreoId == muestreo.Id);
                 _archivos.EliminarEvidencias(claveMuestreo);
 
                 muestreo.EstatusId = (int)Enums.EstatusMuestreo.CargaResultados;

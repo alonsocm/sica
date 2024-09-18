@@ -48,7 +48,7 @@ namespace Application.Features.Operacion.Resultados.Comands
         {
             List<ResultadoValidacionReglasDto> resultadosValidacion = new();
 
-            var muestreos = await _muestreoRepository.ObtenerElementosPorCriterioAsync(x => request.Muestreos.Contains((int)x.Id));
+            var muestreos = _muestreoRepository.ObtenerElementoConInclusiones(x => request.Muestreos.Contains((int)x.Id), w => w.ResultadoMuestreo).Where(x => x.ResultadoMuestreo.Any());
 
             if (muestreos.Any())
             {
@@ -79,9 +79,13 @@ namespace Application.Features.Operacion.Resultados.Comands
                 }
 
                 resultadosValidacion = await _resultadosRepository.ObtenerResultadosValidacion(muestreos.Select(x => x.Id).ToList());
-            }
 
-            return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion);
+                return new Response<List<ResultadoValidacionReglasDto>>(resultadosValidacion);
+            }
+            else
+            {
+                throw new ArgumentException("No se encontraron muestreos con resultados para validar");
+            }
         }
 
         public void AplicarReglasDeRelacion(IEnumerable<ResultadoParametroReglasDto> resultadosMuestreo)
