@@ -18,12 +18,16 @@ export class ValidacionReglasService {
     return this.http.get(environment.apiUrl + '/Muestreos/NumerosEntrega');
   }
 
-  obtenerResultadosValidadosPorReglas(Muestreos: Array<number>) {
+  obtenerResultadosValidadosPorReglas(
+    Muestreos: Array<number>,
+    filter: string
+  ): Observable<Object> {
     let params = new HttpParams({
-      fromObject: { Muestreos: Muestreos },
+      fromObject: { filter: filter },
     });
-    return this.http.get(
+    return this.http.post(
       environment.apiUrl + '/Resultados/ValidarResultadosPorReglas',
+      Muestreos,
       { params }
     );
   }
@@ -188,8 +192,17 @@ export class ValidacionReglasService {
     return this.http.delete(environment.apiUrl + '/Resultados', options);
   }
 
-  deleteResultadosByMuestreoId(lstMuestreosId: Array<number>): Observable<any> {
-    const options = { body: lstMuestreosId };
+  deleteResultadosByMuestreoId(
+    lstMuestreosId: Array<number>,
+    filter: string
+  ): Observable<any> {
+    let params = new HttpParams({
+      fromObject: {
+        filter: filter,
+      },
+    });
+
+    let options = { body: lstMuestreosId, params: params };
     return this.http.delete(
       environment.apiUrl + '/Resultados/DeleteByMuestreoId',
       options
