@@ -575,10 +575,14 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost("ValidarResultadosPorReglas")]
         public async Task<IActionResult> ValidarResultadosPorReglas([FromBody] IEnumerable<int> muestreos, [FromQuery] string? filter = "")
         {
-            if (!string.IsNullOrEmpty(filter))
+            if (!muestreos.Any())
             {
                 var filters = new List<Filter>();
-                filters = QueryParam.GetFilters(filter);
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    filters = QueryParam.GetFilters(filter);
+                }
 
                 var queryResponse = await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
                 {
@@ -610,7 +614,6 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("ResultadosAcumuladosParametros")]
         public async Task<IActionResult> GetActionAsync(int estatusId, int page, int pageSize, string? filter = "", string? order = "")
         {
-            EstatusMuestreo estatus = GetEstatus(estatusId);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -631,7 +634,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                Estatus = estatus,
+                Estatus = estatusId,
                 Page = page,
                 PageSize = pageSize,
                 Filter = filters,
@@ -653,7 +656,7 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 var response = await Mediator.Send(new GetResultadosByEstatusMuestreo
                 {
-                    Estatus = EstatusMuestreo.AcumulacionResultados,
+                    Estatus = (int)EstatusMuestreo.AcumulacionResultados,
                     Filter = filters,
                 });
 
@@ -666,7 +669,6 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpGet("GetColumnValuesResultadosAcumuladosParametros")]
         public IActionResult GetColumnValuesResultadosAcumuladosParametros(int estatusId, string column, string? filter = "", string? order = "")
         {
-            EstatusMuestreo estatus = GetEstatus(estatusId);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -687,7 +689,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             var data = Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                Estatus = estatus,
+                Estatus = estatusId,
                 Filter = filters,
                 OrderBy = orderBy
             }).Result.Data;
@@ -761,7 +763,6 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost("exportExcelValidaciones")]
         public IActionResult ExportExcelValidaciones([FromQuery] int estatusId, [FromQuery] string? filter, [FromBody] List<long> muestreos)
         {
-            EstatusMuestreo estatus = GetEstatus(estatusId);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -771,7 +772,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             var data = Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                Estatus = estatus,
+                Estatus = estatusId,
                 Filter = filters,
             }).Result.Data;
 
@@ -863,7 +864,6 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpPost("exportExcelResumenResultados")]
         public IActionResult ExportExcelResumenResultados([FromQuery] int estatus, List<long>? resultados, [FromQuery] string? filter = "")
         {
-            EstatusMuestreo estatusMuestreo = GetEstatus(estatus);
             var filters = new List<Filter>();
 
             if (!string.IsNullOrEmpty(filter))
@@ -873,7 +873,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
             var data = Mediator.Send(new GetResultadosByEstatusMuestreo
             {
-                Estatus = estatusMuestreo,
+                Estatus = estatus,
                 Filter = filters
             }).Result.Data;
 
@@ -914,8 +914,6 @@ namespace WebAPI.Controllers.v1.Operacion
         [HttpDelete("DeleteAllResultados")]
         public async Task<IActionResult> Delete(int estatus, IEnumerable<long> resultados, string? filter = "")
         {
-            EstatusMuestreo estatusMuestreo = GetEstatus(estatus);
-
             if (!resultados.Any())
             {
                 var filters = new List<Filter>();
@@ -927,7 +925,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
                 var response = await Mediator.Send(new GetResultadosByEstatusMuestreo
                 {
-                    Estatus = estatusMuestreo,
+                    Estatus = estatus,
                     Filter = filters,
                 });
 
@@ -938,8 +936,28 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpDelete("DeleteByMuestreoId")]
-        public async Task<IActionResult> DeleteByMuestreoId(List<long> lstMuestreosId)
-        { return Ok(await Mediator.Send(new DeleteResultadosByMuestreoIdCommand { lstMuestreoId = lstMuestreosId })); }
+        public async Task<IActionResult> DeleteByMuestreoId([FromBody] IEnumerable<int> muestreos, [FromQuery] string? filter = "")
+        {
+            if (!muestreos.Any())
+            {
+                var filters = new List<Filter>();
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    filters = QueryParam.GetFilters(filter);
+                }
+
+                var response = await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+                {
+                    EstatusId = (int)EstatusMuestreo.MóduloReglas,
+                    Filter = filters,
+                });
+
+                muestreos = response.Data.Select(s => (int)s.MuestreoId);
+            }
+
+            return Ok(await Mediator.Send(new DeleteResultadosByMuestreoIdCommand { Muestreos = muestreos }));
+        }
 
         [HttpPost("ExportConsultaRegistroOriginal")]
         public async Task<IActionResult> ExportConsultaRegistroOriginal([FromQuery] int usuario, List<long>? muestreos, [FromQuery] string? filter = "")
@@ -1058,20 +1076,6 @@ namespace WebAPI.Controllers.v1.Operacion
             }
 
             return Ok(await Mediator.Send(new EnviarIncidenciasCommand { ResultadosId = resultadosId, Filters = filters }));
-        }
-
-        private static EstatusMuestreo GetEstatus(int estatus)
-        {
-            bool isValid = Enum.IsDefined(typeof(EstatusMuestreo), estatus);
-
-            if (isValid)
-            {
-                return (EstatusMuestreo)estatus;
-            }
-            else
-            {
-                throw new ValidationException("Estatus no válido");
-            }
         }
     }
 }
