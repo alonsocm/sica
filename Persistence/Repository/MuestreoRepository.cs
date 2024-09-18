@@ -307,10 +307,10 @@ namespace Persistence.Repository
             return muestreos;
         }
 
-        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(int estatusId)
+        public async Task<IEnumerable<AcumuladosResultadoDto>> GetResultadosporMuestreoAsync(Application.Enums.EstatusMuestreo estatus)
         {
             var muestreos = await (from resultados in _dbContext.VwResultadosInicialReglas
-                                   where resultados.EstatusId == estatusId
+                                   where resultados.EstatusId == (int)estatus
                                    select new AcumuladosResultadoDto
                                    {
                                        ClaveSitio = resultados.ClaveSitio,
@@ -344,7 +344,6 @@ namespace Persistence.Repository
 
             foreach (var dato in muestreos)
             {
-
                 string[] valor = { dato.CumpleReglasCondic, dato.MuestreoCompletoPorResultados, dato.CumpleFechaEntrega };
                 dato.CumpleTodosCriterios = valor.Contains("NO") ? false : true;
 
@@ -352,7 +351,8 @@ namespace Persistence.Repository
                 dato.Observaciones = (datParam.Count > 0) ? datParam[0] : string.Empty;
                 dato.ClaveParametro = (datParam.Count > 0) ? datParam[1] : string.Empty;
             }
-            return muestreos.ToList();
+
+            return muestreos;
         }
 
         protected List<string> GetParametrosFaltantes(long tipoSitioId, long tipoCuerpoAguaId, long muestreoId)

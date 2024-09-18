@@ -61,7 +61,7 @@ namespace Persistence.Repository
             _dbContext.SaveChanges();
         }
 
-        public void Eliminar(Expression<Func<T, bool>> predicado)
+        public async Task EliminarAsync(Expression<Func<T, bool>> predicado)
         {
             var records = ObtenerElementosPorCriterio(predicado).ToList();
 
@@ -70,7 +70,7 @@ namespace Persistence.Repository
                 _dbContext.Set<T>().Remove(record);
             }
 
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
         public long Insertar(T entidad)
