@@ -13,6 +13,7 @@ import { NotificationType } from '../../../../../shared/enums/notification-type'
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { Item } from 'src/app/interfaces/filter/item';
 import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
+import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 
 @Component({
   selector: 'app-reglas-validar',
@@ -25,16 +26,10 @@ export class ReglasValidarComponent
 {
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
-  constructor(
-    private validacionService: ValidacionReglasService,
-    public muestreoService: MuestreoService,
-    private notificationService: NotificationService
-  ) {
-    super();
-  }
   registros: Array<acumuladosMuestreo> = [];
   registrosSeleccionados: Array<acumuladosMuestreo> = [];
   resultadosEnviados: Array<any> = [];
+  archivo: any;
   notificacion: Notificacion = {
     title: 'Confirmar eliminación',
     text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
@@ -47,7 +42,21 @@ export class ReglasValidarComponent
     id: 'mdlCargaResultados',
   };
 
-  archivo: any;
+  constructor(
+    private validacionService: ValidacionReglasService,
+    public muestreoService: MuestreoService,
+    private notificationService: NotificationService,
+    private filtroHistorialService: FiltroHistorialService
+  ) {
+    super();
+    this.filtroHistorialService.columnName.subscribe((columnName) => {
+      if (columnName !== '') {
+        this.loading = true;
+        this.deleteFilter(columnName);
+        this.cargaResultados();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.muestreoService.filtrosSeleccionados = [];
