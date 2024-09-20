@@ -667,7 +667,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetColumnValuesResultadosAcumuladosParametros")]
-        public IActionResult GetColumnValuesResultadosAcumuladosParametros(int estatusId, string column, string? filter = "", string? order = "")
+        public async Task<IActionResult> GetColumnValuesResultadosAcumuladosParametros(int estatusId, string column, string? filter = "", string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -687,14 +687,14 @@ namespace WebAPI.Controllers.v1.Operacion
                 };
             }
 
-            var data = Mediator.Send(new GetResultadosByEstatusMuestreo
+            var mediatorResponse = await Mediator.Send(new GetResultadosByEstatusMuestreo
             {
                 Estatus = estatusId,
                 Filter = filters,
                 OrderBy = orderBy
-            }).Result.Data;
+            });
 
-            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
+            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, mediatorResponse.Data)));
         }
 
         [HttpGet("ResultadosporMuestreo")]

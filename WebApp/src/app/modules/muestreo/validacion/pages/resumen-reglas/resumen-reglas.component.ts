@@ -468,7 +468,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'observacionesReglas',
+        name: 'resultadoreglas',
         label: 'OBSERVACIONES REGLAS',
         order: 29,
         selectAll: true,
@@ -550,7 +550,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.registros = response.data;     
+          this.registros = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.registros, this.registrosSeleccionados);
@@ -666,7 +666,11 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
     if (this.requiresToRefreshColumnValues(column)) {
       this.validacionService
-        .getDistinctValuesFromColumn(column.name, this.cadena, estatusMuestreo.ResumenValidaciónReglas)
+        .getDistinctValuesFromColumn(
+          column.name,
+          this.cadena,
+          estatusMuestreo.ResumenValidaciónReglas
+        )
         .subscribe({
           next: (response: any) => {
             column.data = response.data.map((register: any) => {
