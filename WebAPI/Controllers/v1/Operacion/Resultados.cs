@@ -831,32 +831,30 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("exportExcelResultadosValidados")]
-        public IActionResult ExportExcelResultadosValidados(List<AcumuladosResultadoDto> muestreos)
+        public async Task<IActionResult> ExportExcelResultadosValidados([FromBody] IEnumerable<int> muestreos, [FromQuery] string? filter = "")
         {
-            List<ResultadosValidadosExcel> lstmuestreosExcel = new();
-            foreach (var dato in muestreos)
-            {
-                ResultadosValidadosExcel resultadosValidados = new()
-                {
-                    ClaveSitio = dato.ClaveSitio,
-                    ClaveMonitoreo = dato.ClaveMonitoreo,
-                    NombreSitio = dato.NombreSitio,
-                    FechaRealizacion = dato.FechaRealizacion,
-                    FechaProgramada = dato.FechaProgramada,
-                    LaboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
-                    CuerpoAgua = dato.CuerpoAgua,
-                    TipoCuerpoAgua = dato.TipoCuerpoAgua,
-                    SubTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    MuestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados
-                };
+            var filters = new List<Filter>();
 
-                lstmuestreosExcel.Add(resultadosValidados);
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var mediatorResponse = await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+            {
+                EstatusId = (int)EstatusMuestreo.MóduloReglas,
+                Filter = filters,
+            });
+
+            if (muestreos.Any())
+            {
+                mediatorResponse.Data = mediatorResponse.Data.Where(w => muestreos.ToList().Contains((int)w.MuestreoId)).ToList();
             }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("ResumenCargaResultadosAValidar");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
-            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+            ExcelService.ExportResumenResultadosValidar(mediatorResponse.Data, fileInfo.FullName);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }

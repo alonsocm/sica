@@ -339,7 +339,7 @@ namespace Persistence.Repository
                                        AutorizacionIncompleto = resultados.AutorizacionIncompleto,
                                        AutorizacionFechaEntrega = resultados.AutorizacionFechaEntrega,
                                        UsuarioValido = resultados.UsuarioValido,
-                                       PorcentajePago = resultados.PorcentajePago.ToString() ?? string.Empty
+                                       PorcentajePago = resultados.PorcentajePago.ToString() ?? string.Empty,
                                    }).ToListAsync();
 
             foreach (var dato in muestreos)

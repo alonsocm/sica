@@ -500,5 +500,38 @@ namespace Shared.Utilities.Services
 
             package.SaveAs(new FileInfo(filePath));
         }
+        public static void ExportResumenResultadosValidar(IEnumerable<AcumuladosResultadoDto> data, string filePath)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using var package = new ExcelPackage(filePath);
+            ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
+            var fila = 2;
+
+            foreach (var registro in data)
+            {
+                int columna = 1;
+                worksheet.Cells[fila, columna++].Value = registro.ClaveSitio;
+                worksheet.Cells[fila, columna++].Value = registro.ClaveMonitoreo;
+                worksheet.Cells[fila, columna++].Value = registro.NombreSitio;
+                worksheet.Cells[fila, columna++].Value = registro.FechaRealizacion;
+                worksheet.Cells[fila, columna++].Value = registro.FechaProgramada;
+                worksheet.Cells[fila, columna++].Value = registro.Laboratorio;
+                worksheet.Cells[fila, columna++].Value = registro.CuerpoAgua;
+                worksheet.Cells[fila, columna++].Value = registro.TipoCuerpoAgua;
+                worksheet.Cells[fila, columna++].Value = registro.SubTipoCuerpoAgua;
+                worksheet.Cells[fila, columna++].Value = registro.MuestreoCompletoPorResultados;
+                worksheet.Cells[fila, columna++].Value = registro.CumpleReglasCondic;
+                worksheet.Cells[fila, columna++].Value = registro.CumpleFechaEntrega;
+                worksheet.Cells[fila, columna++].Value = registro.CorreReglaValidacion;
+                worksheet.Cells[fila, columna++].Value = registro.AutorizacionIncompleto;
+                worksheet.Cells[fila, columna++].Value = registro.CumpleTodosCriterios;
+                worksheet.Cells[fila, columna++].Value = string.Empty;
+                worksheet.Cells[fila, columna++].Value = registro.PorcentajePago;
+                fila++;
+            }
+
+            package.SaveAs(new FileInfo(filePath));
+        }
     }
 }
