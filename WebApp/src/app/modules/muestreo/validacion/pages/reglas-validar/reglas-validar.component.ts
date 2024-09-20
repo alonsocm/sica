@@ -417,23 +417,26 @@ export class ReglasValidarComponent
   }
 
   onDownload(): void {
-    if (this.registrosSeleccionados.length == 0) {
+    if (this.registrosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'No hay información existente para descargar',
+        text: 'Debes de seleccionar al menos un muestreo para descargar',
       });
     }
 
     this.loading = true;
-    this.resultadosEnviados = this.Seleccionados(this.resultadosFiltradosn);
+    let registrosSeleccionados = new Array<number>();
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
     this.validacionService
-      .exportExcelResultadosValidados(
-        this.resultadosEnviados.length > 0
-          ? this.resultadosEnviados
-          : this.resultadosFiltradosn
-      )
+      .exportExcelResultadosValidados(registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
           FileService.download(response, 'ResultadosaValidar.xlsx');
