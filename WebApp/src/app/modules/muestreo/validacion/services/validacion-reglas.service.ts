@@ -272,12 +272,15 @@ export class ValidacionReglasService {
   }
 
   enviarIncidencias(resultadosId: Array<number> = [], filter = '') {
+    let params = new HttpParams({
+      fromObject: {
+        filter: filter,
+      },
+    });
     return this.http.post(
-      environment.apiUrl +
-        '/Resultados/EnviarIncidencias?' +
-        'filter=' +
-        filter,
-      resultadosId
+      environment.apiUrl + '/Resultados/EnviarIncidencias',
+      resultadosId,
+      { params }
     );
   }
 

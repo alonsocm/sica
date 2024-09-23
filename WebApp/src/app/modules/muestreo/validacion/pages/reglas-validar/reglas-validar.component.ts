@@ -513,8 +513,9 @@ export class ReglasValidarComponent
       .obtenerResultadosValidadosPorReglas(registrosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
-          this.loading = false;
           this.hacerScroll();
+          this.cargaResultados();
+          this.loading = false;
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.success,
