@@ -790,42 +790,32 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("exportExcelResultadosaValidar")]
-        public IActionResult ExportExcelResultadosaValidar(List<AcumuladosResultadoDto> muestreos)
+        public async Task<IActionResult> ExportExcelResultadosaValidar([FromBody] IEnumerable<long> muestreos, [FromQuery] string? filter)
         {
-            List<ResultadosValidarExcel> lstmuestreosExcel = new();
-            foreach (var dato in muestreos)
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
             {
-                ResultadosValidarExcel resultadosaValidar = new()
-                {
-                    ClaveSitio = dato.ClaveSitio,
-                    ClaveMonitoreo = dato.ClaveMonitoreo,
-                    NombreSitio = dato.NombreSitio,
-                    FechaRealizacion = dato.FechaRealizacion,
-                    FechaProgramada = dato.FechaProgramada,
-                    DiferenciaDias = dato.DiferenciaDias,
-                    FechaEntregaTeorica = dato.FechaEntregaTeorica,
-                    LaboratorioRealizoMuestreo = dato.LaboratorioRealizoMuestreo,
-                    CuerpoAgua = dato.CuerpoAgua,
-                    TipoCuerpoAgua = dato.TipoCuerpoAgua,
-                    SubTipoCuerpoAgua = dato.SubTipoCuerpoAgua,
-                    NumParametrosEsperados = dato.NumParametrosEsperados,
-                    NumParametrosCargados = dato.NumParametrosCargados,
-                    MuestreoCompletoPorResultados = dato.MuestreoCompletoPorResultados,
-                    CumpleReglasCond = dato.CumpleReglasCondic,
-                    Observaciones = dato.ClaveParametro,
-                    CumpleFechaEntrega = dato.CumpleFechaEntrega,
-                    CumpleTodosCriteriosAplicarReglas = dato.CumpleTodosCriterios ? "SI" : "NO",
-                    AutorizacionIncompleto = dato.AutorizacionIncompleto ? "SI" : "NO",
-                    AutorizacionFechaEntrega = dato.AutorizacionFechaEntrega ? "SI" : "NO",
-                    CorreReglaValidacion = dato.CorreReglaValidacion
-                };
-                lstmuestreosExcel.Add(resultadosaValidar);
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var mediatorResponse = await Mediator.Send(new GetResultadosporMuestreoPaginadosQuery
+            {
+                EstatusId = (int)EstatusMuestreo.MóduloInicialReglas,
+                Filter = filters,
+            });
+
+            var data = mediatorResponse.Data;
+
+            if (muestreos.Any())
+            {
+                data = data.Where(w => muestreos.Contains(w.MuestreoId));
             }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("InicioReglas");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
-            ExcelService.ExportToExcel(lstmuestreosExcel, fileInfo, true);
+            ExcelService.ExportInicialReglasExcel(data, fileInfo.FullName);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
