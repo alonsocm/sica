@@ -813,6 +813,8 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
         },
         error: (response: any) => {
           this.hacerScroll();
+          this.loading = false;
+          console.log(`${response.error.Message}`);
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.danger,

@@ -57,11 +57,18 @@ export class ValidacionReglasService {
     );
   }
 
-  exportExcelResultadosaValidar(muestreos: Array<any> = []) {
+  exportExcelResultadosaValidar(
+    muestreos: Array<number> = [],
+    filter: string = ''
+  ) {
+    let params = new HttpParams({
+      fromObject: { filter: filter },
+    });
+
     return this.http.post(
       environment.apiUrl + '/Resultados/exportExcelResultadosaValidar',
       muestreos,
-      { responseType: 'blob' }
+      { params, responseType: 'blob' }
     );
   }
 

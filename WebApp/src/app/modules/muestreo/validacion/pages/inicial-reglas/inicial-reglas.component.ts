@@ -11,7 +11,6 @@ import { Column } from '../../../../../interfaces/filter/column';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { Item } from 'src/app/interfaces/filter/item';
-import { Muestreo } from '../../../../../interfaces/Muestreo.interface';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -25,8 +24,23 @@ export class InicialReglasComponent
   extends BaseService
   implements OnInit, ICommonMethods
 {
+  archivo: any;
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
+  filtroHistorialServiceSub: Subscription;
+  registros: Array<acumuladosMuestreo> = [];
+  registrosSeleccionados: Array<acumuladosMuestreo> = [];
+  notificacion: Notificacion = {
+    title: 'Confirmar eliminación',
+    text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
+    id: 'mdlConfirmacion',
+  };
+  notificacionConfirmacion: Notificacion = {
+    title: 'Confirmar carga resultados',
+    text: '¿Desea cargar los resultados de los muestreos eliminados?',
+    id: 'mdlCargaResultados',
+  };
+
   constructor(
     private validacionService: ValidacionReglasService,
     private notificationService: NotificationService,
@@ -43,21 +57,6 @@ export class InicialReglasComponent
         }
       });
   }
-
-  filtroHistorialServiceSub: Subscription;
-  registros: Array<acumuladosMuestreo> = [];
-  registrosSeleccionados: Array<acumuladosMuestreo> = [];
-  notificacion: Notificacion = {
-    title: 'Confirmar eliminación',
-    text: '¿Está seguro de eliminar los resultados de los muestreos seleccionados?',
-    id: 'mdlConfirmacion',
-  };
-  notificacionConfirmacion: Notificacion = {
-    title: 'Confirmar carga resultados',
-    text: '¿Desea cargar los resultados de los muestreos eliminados?',
-    id: 'mdlCargaResultados',
-  };
-  archivo: any;
 
   ngOnInit(): void {
     this.definirColumnas();
@@ -418,15 +417,16 @@ export class InicialReglasComponent
       )
       .subscribe({
         next: (response: any) => {
-          this.selectedPage = false;
           this.registros = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
-          this.getPreviousSelected(this.registros, this.registrosSeleccionados);
-          this.selectedPage = this.anyUnselected(this.registros) ? false : true;
-          this.loading = false;
         },
         error: (error) => {
+          this.loading = false;
+        },
+        complete: () => {
+          this.getPreviousSelected(this.registros, this.registrosSeleccionados);
+          this.selectedPage = this.anyUnselected(this.registros) ? false : true;
           this.loading = false;
         },
       });
@@ -441,19 +441,20 @@ export class InicialReglasComponent
         text: 'No hay información seleccionada para descargar',
       });
     }
+
     this.loading = true;
-    this.registrosSeleccionados = this.Seleccionados(
-      this.registrosSeleccionados
-    );
-    this.registrosSeleccionados.map((s) => {
-      s.correReglaValidacion = s.correReglaValidacion ? 'SI' : 'NO';
-    });
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.registrosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
 
     this.validacionService
-      .exportExcelResultadosaValidar(this.registrosSeleccionados)
+      .exportExcelResultadosaValidar(registrosSeleccionados)
       .subscribe({
         next: (response: any) => {
-          this.loading = true;
           FileService.download(response, 'ResultadosaValidar.xlsx');
           this.loading = false;
         },
