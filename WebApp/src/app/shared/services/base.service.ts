@@ -580,9 +580,8 @@ export class BaseService {
     muestreos.map((m) => {
       m.selected = this.selectedPage;
 
-      //Buscamos el registro en los seleccionados
       let index = muestreosSeleccionados.findIndex(
-        (d) => d.muestreoId === m.muestreoId
+        (d) => d.claveSitio === m.claveSitio
       );
 
       if (index == -1) {
@@ -595,7 +594,6 @@ export class BaseService {
     });
 
     this.showOrHideSelectAllOption();
-
     //this.getSummary();
   }
 
@@ -679,4 +677,16 @@ export class BaseService {
       evento.preventDefault();
     }
   }
+
+  validarTamanoArchivos(archivos: FileList): string {
+    let error: string = '';
+    for (let index = 0; index < archivos.length; index++) {
+      const element = archivos[index];
+      if (element.size === 0) {
+        error += 'El archivo ' + element.name + ' está vacío,';
+      }
+    }
+    return error;
+  }
+
 }

@@ -27,7 +27,7 @@ namespace Application.Models
         public string ResultadoReplica { get; set; } = null!;
         public string MismoResultado { get; set; }
         public string ObservacionLaboratorio { get; set; } = null!;
-        public DateTime FechaReplicaLaboratorio { get; set; }
+        public DateTime? FechaReplicaLaboratorio { get; set; }
 
         //srenameca
         public string? ObservacionSrenameca { get; set; }
@@ -37,7 +37,7 @@ namespace Application.Models
         //general
         public string? ObservacionesReglasReplica { get; set; }
         public string? ApruebaResultadoReplica { get; set; }
-        public DateTime FechaEstatusFinal { get; set; }
+        public DateTime? FechaEstatusFinal { get; set; }
         public string UsuarioReviso { get; set; }
         public string Estatus { get; set; }
     }

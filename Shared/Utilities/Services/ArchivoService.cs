@@ -46,6 +46,21 @@ namespace Shared.Utilities.Services
             return true;
         }
 
+        //CAMBIAR POR METODO GENERAL
+        public bool GuardarEvidencias(EvidenciasReplicasResultado evidenciasReplicas)
+        {
+            var ruta = ObtenerRutaBaseEvidenciaReplica();
+            var directorioMuestreo = Directory.CreateDirectory(Path.Combine(ruta, evidenciasReplicas.ClaveUnica));
+
+            foreach (var archivo in evidenciasReplicas.Archivos)
+            {
+                using var stream = File.Create(Path.Combine(directorioMuestreo.FullName, archivo.FileName));
+                archivo.CopyTo(stream);
+            }
+
+            return true;
+        }
+
 
         public List<string> GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo)
         {
@@ -87,6 +102,11 @@ namespace Shared.Utilities.Services
         public string ObtenerRutaBase()
         {
             return _configuration.GetValue<string>("Archivos:EvidenciasMuestreo");
+        }
+
+        public string ObtenerRutaBaseEvidenciaReplica()
+        {
+            return _configuration.GetValue<string>("Archivos:EvidenciasReplicas");
         }
 
         public string ObtenerRutaBaseSupervision()
@@ -204,6 +224,23 @@ namespace Shared.Utilities.Services
             using var memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
             return memoryStream.ToArray();
+        }
+
+        public List<EvidenciasReplicasResultado> OrdenarEvidenciasClaveUnica(List<IFormFile> archivos)
+        {
+            var evidencias = new List<EvidenciasReplicasResultado>();
+            foreach (var archivo in archivos)
+            {
+                var claveUnica = archivo.FileName[..archivo.FileName.LastIndexOf("_")];
+              
+                if (!evidencias.Any(a => a.ClaveUnica == claveUnica))
+                {
+                    evidencias.Add(new EvidenciasReplicasResultado { ClaveUnica = claveUnica });
+                }
+                var evidencia = evidencias.Find(a => a.ClaveUnica == claveUnica);
+                evidencia?.Archivos.Add(archivo);
+            }
+            return evidencias;
         }
     }
 }

@@ -124,7 +124,7 @@ namespace Persistence
             services.AddTransient<ITipoCuerpoAguaRepository,TipoCuerpoAguaRepository>();
             services.AddTransient<ICuencaDireccionesLocalesRepository, CuencaDireccionesLocalesRepository>();
             services.AddTransient<IReplicasResultadosReglasValidacionRepository, ReplicasResultadosReglasValidacionRepository>();
-
+            services.AddTransient<IEvidenciasReplicasResultadoReglasValidacionRepository, EvidenciasReplicasResultadoReglasValidacionRepository>();
 
 
 
