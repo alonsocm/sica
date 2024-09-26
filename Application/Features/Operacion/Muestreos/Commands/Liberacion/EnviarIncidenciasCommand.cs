@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using EstatusResultado = Application.Enums.EstatusResultado;
 
 namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 {
@@ -12,12 +11,10 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
 
     public class EnviarIncidenciasCommandHandler : IRequestHandler<EnviarIncidenciasCommand, Response<bool>>
     {
-        private readonly IMuestreoRepository _muestreoRepository;
         private readonly IResultado _resultadosRepository;
 
-        public EnviarIncidenciasCommandHandler(IMuestreoRepository muestreoRepository, IResultado resultadosRepository)
+        public EnviarIncidenciasCommandHandler(IResultado resultadosRepository)
         {
-            _muestreoRepository = muestreoRepository;
             _resultadosRepository = resultadosRepository;
         }
 
@@ -25,16 +22,19 @@ namespace Application.Features.Operacion.Muestreos.Commands.Liberacion
         {
             if (request.ResultadosId.Any())
             {
-                var resultados = await _resultadosRepository.ObtenerElementosPorCriterioAsync(x => request.ResultadosId.Contains(x.Id));
+                var resultadosEnviados = await _resultadosRepository.EnviarResultadoAIncidencias(request.ResultadosId);
 
-                foreach (var resultado in resultados)
+                if (resultadosEnviados == 0)
                 {
-                    resultado.EstatusResultadoId = (int)EstatusResultado.IncidenciasResultados;
-                    _resultadosRepository.Actualizar(resultado);
+                    throw new ArgumentException("No se han podido enviar los resultados a incidencias.");
                 }
-            }
 
-            return new Response<bool>(true);
+                return new Response<bool>(true);
+            }
+            else
+            {
+                throw new ArgumentException("No se han proporcionado resultados para enviar a incidencias.");
+            }
         }
     }
 }

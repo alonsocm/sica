@@ -297,5 +297,16 @@ namespace Persistence.Repository
 
             return resultados;
         }
+        public async Task<int> EnviarResultadoAIncidencias(IEnumerable<long> resultados)
+        {
+            return await _dbContext.ResultadoMuestreo.Where(b => resultados.Contains(b.Id) && b.ValidacionFinal == false)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
+        }
+        public async Task<int> LiberarResultados(IEnumerable<long> resultados)
+        {
+            //TODO: Cambiar el estatus. Falta agregar uno en la tabla EstatusResultado, aquí no aplica el IncidenciasResultados
+            return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
+        }
     }
 }
