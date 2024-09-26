@@ -34,7 +34,7 @@ namespace Application.DTOs.Catalogos
 
         public bool? ApruebaResultadoReplica { get; set; }
 
-        public DateTime FechaEstatusFinal { get; set; }
+        public DateTime? FechaEstatusFinal { get; set; }
 
         public long UsuarioIdReviso { get; set; }
 

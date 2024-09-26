@@ -511,16 +511,7 @@ export class EvidenciasComponent extends BaseService implements OnInit {
     });
   }
 
-  validarTamanoArchivos(archivos: FileList): string {
-    let error: string = '';
-    for (let index = 0; index < archivos.length; index++) {
-      const element = archivos[index];
-      if (element.size === 0) {
-        error += 'El archivo ' + element.name + ' está vacío,';
-      }
-    }
-    return error;
-  }
+
 
   limpiarFiltros() {
     // this.columnas.forEach((f) => {

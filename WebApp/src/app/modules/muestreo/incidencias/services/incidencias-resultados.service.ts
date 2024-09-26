@@ -104,5 +104,17 @@ export class IncidenciasResultadosService {
     return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileReplicas', formData, { params });
   }
 
+  cargarEvidencias(archivos: FileList): Observable<any> {
+    const formData = new FormData();
+    Array.from(archivos).forEach((archivo) => {
+      formData.append('archivos', archivo);
+    });
+
+    return this.http.post(
+      environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileEvidencias',
+      formData
+    );
+  }
+
 
 }

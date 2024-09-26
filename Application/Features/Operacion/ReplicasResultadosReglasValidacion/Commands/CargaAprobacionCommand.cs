@@ -39,7 +39,7 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
                 _replicasRepository.Actualizar(replicaResultado);
 
                 var resultado = await _resultadoMuestreoRepository.ObtenerElementoPorIdAsync(Convert.ToInt64(replica.ResultadoMuestreoId));
-                resultado.EstatusResultadoId = (replicaResultado.ApruebaResultadoReplica == true) ? (int?)Enums.EstatusResultado.AcumulaciónResultadosReplica : (int?)Enums.EstatusResultado.RechazoResultadosPorArchivo;
+                resultado.EstatusResultadoId = (replicaResultado.ApruebaResultadoReplica == true) ? (int?)Enums.EstatusResultado.AprobaciónResultadosPorArchivo : (int?)Enums.EstatusResultado.RechazoResultadosPorArchivo;
                 _resultadoMuestreoRepository.Actualizar(resultado);
             }
             return new Response<bool>(true);

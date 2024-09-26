@@ -306,17 +306,6 @@ export class CargaComponent extends BaseService implements OnInit {
     this.archivo = event.target.files[0];
   }
 
-  validarTamanoArchivos(archivos: FileList) {
-    let error: any = '';
-    for (let index = 0; index < archivos.length; index++) {
-      const element = archivos[index];
-      if (element.size === 0) {
-        error += 'El archivo ' + element.name + ' está vacío,';
-      }
-    }
-    return error;
-  }
-
   cargarEvidencias(event: Event) {
     let archivos = (event.target as HTMLInputElement).files ?? new FileList();
     let errores = this.validarTamanoArchivos(archivos);

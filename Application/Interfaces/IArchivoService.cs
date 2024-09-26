@@ -13,9 +13,12 @@ namespace Application.Interfaces
         public ArchivoDto ObtenerArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
         public bool GuardarInformeSupervision(string informe, IFormFile archivo);
         bool GuardarEvidencias(EvidenciasMuestreo evidenciasMuestreo);
+        bool GuardarEvidencias(EvidenciasReplicasResultado evidenciasMuestreo);
         bool EliminarEvidencias(string muestreo);
         bool EliminarArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
         List<string> GuardarEvidenciasSupervision(ArchivosSupervisionDto evidenciasMuestreo);
         public Task<byte[]> ConvertIFormFileToByteArray(IFormFile file);
+
+        List<EvidenciasReplicasResultado> OrdenarEvidenciasClaveUnica(List<IFormFile> archivos);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Catalogos;
 using Application.DTOs.Users;
+using Application.Features.CargaMasivaEvidencias.Commands;
 using Application.Features.Catalogos.Sitios.Commands;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
@@ -14,6 +15,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
 using System.Collections.Generic;
@@ -78,11 +80,11 @@ namespace WebAPI.Controllers.v1.Operacion
             List<ReplicasResultadosRegValidacionExcel> aprobados = _mapper.Map<List<ReplicasResultadosRegValidacionExcel>>(resultados);
             aprobados.ForEach(resumen =>
             {
-                resumen.AceptaRechazo = (resumen.AceptaRechazo == "True") ? "SI" : "NO";
-                resumen.CorrectoResultadoReglaValidacion = (resumen.CorrectoResultadoReglaValidacion == "True") ? "SI" : "NO";
-                resumen.MismoResultado = (resumen.MismoResultado == "True") ? "SI" : "NO";
-                resumen.EsDatoCorrectoSrenameca = (resumen.EsDatoCorrectoSrenameca == "True") ? "SI" : "NO" ?? string.Empty;
-                resumen.ApruebaResultadoReplica = (resumen.ApruebaResultadoReplica == "True") ? "SI" : "NO" ?? string.Empty;
+                resumen.AceptaRechazo = (resumen.AceptaRechazo.IsNullOrEmpty()) ? "" : ((resumen.AceptaRechazo == "True") ? "SI" : "NO");
+                resumen.CorrectoResultadoReglaValidacion = (resumen.CorrectoResultadoReglaValidacion.IsNullOrEmpty()) ? "" :((resumen.CorrectoResultadoReglaValidacion == "True") ? "SI" : "NO");
+                resumen.MismoResultado = (resumen.MismoResultado.IsNullOrEmpty()) ? "" : ((resumen.MismoResultado == "True") ? "SI" : "NO");
+                resumen.EsDatoCorrectoSrenameca = (resumen.EsDatoCorrectoSrenameca.IsNullOrEmpty()) ? "" : ((resumen.EsDatoCorrectoSrenameca == "True") ? "SI" : "NO");
+                resumen.ApruebaResultadoReplica = (resumen.ApruebaResultadoReplica.IsNullOrEmpty()) ? "" : ((resumen.ApruebaResultadoReplica == "True") ? "SI" : "NO");
             });
 
             var plantilla = new Plantilla(_configuration, _env);
@@ -192,6 +194,17 @@ namespace WebAPI.Controllers.v1.Operacion
                     break; 
             }
             return Ok(true);
+        }
+
+        [HttpPost("uploadfileEvidencias")]
+        public async Task<IActionResult> Post(List<IFormFile> archivos)
+        {
+            if (!archivos.Any())
+            {
+                return BadRequest("No se encontraron archivos para procesar.");
+            }
+
+            return Ok(await Mediator.Send(new CargaEvidenciaCommand { Archivos = archivos }));
         }
 
     }

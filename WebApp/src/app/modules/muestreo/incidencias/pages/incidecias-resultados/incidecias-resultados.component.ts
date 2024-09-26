@@ -42,12 +42,11 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     {} as ElementRef;
   @ViewChild('inputExcelAprobacionRechazo') inputExcelAprobacionRechazo: ElementRef =
     {} as ElementRef;
-
-  
-
+  @ViewChild('fileUpload') fileUpload: ElementRef =
+    {} as ElementRef;
 
   estatusReplicas: Array<number> = [estatusResultado.IncidenciasResultados, estatusResultado.EnvíoLaboratorioExterno, estatusResultado.CargaRéplicasLaboratorioExterno,
-  estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA];
+  estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA, estatusResultado.AprobaciónResultadosPorArchivo, estatusResultado.RechazoResultadosPorArchivo];
 
   constructor(private IncidenciasResultadoService: IncidenciasResultadosService,
     private notificationService: NotificationService,
@@ -795,8 +794,6 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     });
   }
 
-
-
   cargarArchivo(event: Event, tipoArchivo: number) {
     this.archivo = (event.target as HTMLInputElement).files ?? new FileList();
     if (this.archivo) {
@@ -806,7 +803,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         .cargarArchivo(this.archivo[0], tipoArchivo)
         .subscribe({
           next: (response: any) => {
-            if (response.data) {
+            if (response) {
               this.loading = false;
               switch (tipoArchivo) {
                 case this.ReplicaLaboratorioExterno:
@@ -992,7 +989,6 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
   }
 
   exportarResultados(): void {
-
     if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -1044,4 +1040,43 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     this.envioCorreo.archivos.push({ ruta: '', nombreArchivo: nombreArchivo, extension: 'xlsx' });
     document.getElementById('btnMdlConfirmacion')?.click();
   }
+
+  cargarEvidencias(
+    event: Event,
+    nombreEvidencia: string = ''
+  ) {
+    let evidencias = (event.target as HTMLInputElement).files ?? new FileList();
+    let errores = this.validarTamanoArchivos(evidencias);   
+
+    if (errores !== '') {
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text:
+          'Se encontraron errores en las evidencias seleccionadas: ' + errores,
+      });
+    }
+
+    this.loading = !this.loading;
+    this.IncidenciasResultadoService.cargarEvidencias(evidencias).subscribe({
+      next: (response) => {
+        this.resetInputFile(this.fileUpload);
+        this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.success,
+          text: 'Evidencias cargadas correctamente',
+        });
+        this.loading = !this.loading;
+      },
+      error: (response: any) => {
+        this.resetInputFile(this.fileUpload);        
+        this.loading = !this.loading;
+        let archivo = this.generarArchivoDeErrores(
+          response.error.Errors.toString()
+        );
+        FileService.download(archivo, 'errores.txt');
+      },
+    });
+  }
+  descargarEvidencias() { }
 }
