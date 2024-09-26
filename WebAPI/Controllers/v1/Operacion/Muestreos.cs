@@ -94,7 +94,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("ExportarExcel")]
-        public IActionResult ExportarExcel([FromQuery] bool esLiberacion, [FromQuery] string? filter, [FromBody] List<long> muestreos)
+        public async Task<IActionResult> ExportarExcel([FromQuery] bool esLiberacion, [FromQuery] string? filter, [FromBody] List<long> muestreos)
         {
             var filters = new List<Filter>();
 
@@ -103,22 +103,22 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            var data = Mediator.Send(new GetMuestreosPaginados
+            var mediatorResponse = await Mediator.Send(new GetMuestreosPaginados
             {
                 EsLiberacion = esLiberacion,
                 Filter = filters
-            }).Result.Data;
+            });
 
-            if (muestreos != null && muestreos.Any())
+            if (muestreos.Any())
             {
-                data = data.Where(x => muestreos.Contains(x.MuestreoId)).ToList();
+                mediatorResponse.Data = mediatorResponse.Data.Where(x => muestreos.Contains(x.MuestreoId)).ToList();
             }
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("LiberacionMonitoreos");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
 
-            ExcelService.ExportLiberacionExcel(data, fileInfo.FullName);
+            ExcelService.ExportLiberacionExcel(mediatorResponse.Data, fileInfo.FullName);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
 
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
