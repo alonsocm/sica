@@ -3,7 +3,6 @@ import { ValidacionReglasService } from '../../services/validacion-reglas.servic
 import { FileService } from 'src/app/shared/services/file.service';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { acumuladosMuestreo } from 'src/app/interfaces/acumuladosMuestreo.interface';
-import { estatusMuestreo_1 } from 'src/app/shared/enums/estatusMuestreo_1';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
 import { Column } from '../../../../../interfaces/filter/column';
 import { NotificationService } from 'src/app/shared/services/notification.service';
@@ -793,7 +792,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
 
     if (!this.allSelected) {
       registrosSeleccionados = this.registrosSeleccionados.map((s) => {
-        return s.muestreoId;
+        return s.resultadoMuestreoId;
       });
     }
 
@@ -818,7 +817,7 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
           return this.notificationService.updateNotification({
             show: true,
             type: NotificationType.danger,
-            text: 'Ocurrió un error al realizar la liberación',
+            text: `Ocurrió un error al realizar la liberación: ${response.error.Message}`,
           });
         },
       });

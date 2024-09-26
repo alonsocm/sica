@@ -271,10 +271,10 @@ export class ValidacionReglasService {
     );
   }
 
-  liberar(muestreos: Array<number> = [], filter = '') {
+  liberar(resultados: Array<number> = [], filter = '') {
     return this.http.post(
       environment.apiUrl + '/Resultados/Liberar?' + 'filter=' + filter,
-      muestreos
+      resultados
     );
   }
 
