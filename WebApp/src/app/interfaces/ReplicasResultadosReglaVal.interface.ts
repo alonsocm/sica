@@ -17,7 +17,7 @@ export interface ReplicasResultadosReglaVal extends Row {
   apruebaResultadoReplica: boolean | null,
   fechaEstatusFinal: string | null,
   usuarioIdReviso: number | null,
-  evidencias: Evidencia | null,
+  evidencias: Array<Evidencia>,
   claveUnica: string,
   claveSitio: string,
   claveMonitoreo: string,
@@ -27,7 +27,10 @@ export interface ReplicasResultadosReglaVal extends Row {
   tipoHomologado: string,
   resultado: string;
   correctoResultadoReglaValidacion: boolean,
-  observacionReglaValidacion: string
+  observacionReglaValidacion: string,
+  nombreEstatus: string,
+  nombreEvidencias: string,
+  usuarioReviso: string
 
 
 }

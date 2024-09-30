@@ -3,6 +3,7 @@ using Application.DTOs.Catalogos;
 using Application.DTOs.Users;
 using Application.Features.CargaMasivaEvidencias.Commands;
 using Application.Features.Catalogos.Sitios.Commands;
+using Application.Features.Evidencias.Queries;
 using Application.Features.Muestreos.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.ReplicasResultadosReglasValidacion.Commands;
@@ -151,7 +152,7 @@ namespace WebAPI.Controllers.v1.Operacion
 
         [HttpPost("uploadfileReplicas")]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> uploadfileReplicas([FromForm] IFormFile archivo, int tipoArchivo)
+        public async Task<IActionResult> uploadfileReplicas([FromForm] IFormFile archivo, int tipoArchivo, int? usuarioIdValido)
         {
             string filePath = string.Empty;
 
@@ -187,7 +188,7 @@ namespace WebAPI.Controllers.v1.Operacion
                     ExcelService.Mappings = ReplicasReglasValidacionAprobacionSettings.KeyValues;
                     var aprobacion = ExcelService.Import<ReplicasResultadosAprobacion>(fileInfo, "Hoja1");
                     System.IO.File.Delete(filePath);
-                    Ok(await Mediator.Send(new CargaAprobacionCommand { Replicas = aprobacion }));
+                    Ok(await Mediator.Send(new CargaAprobacionCommand { Replicas = aprobacion, usuarioIdValido = usuarioIdValido }));
 
                     break;
                 default:
@@ -206,6 +207,45 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new CargaEvidenciaCommand { Archivos = archivos }));
         }
+
+        [HttpGet("downloadfileEvidencias")]
+        public async Task<ActionResult> Get([FromQuery] List<int> replicas)
+        {
+            if (!replicas.Any())
+            {
+                return BadRequest("Debe especificar al menos un muestreo");
+            }
+
+            var archivos = await Mediator.Send(new GetEvidenciasByReplica { lstReplicasResultadosId = replicas });
+
+            if (archivos is null)
+            {
+                throw new ApplicationException("No se encontró el archivo de la evidencia solicitada");
+            }
+
+            var archivoZip = ZipService.GenerarZip(archivos.Data);
+
+            return File(archivoZip, "application/octet-stream", "evidencias.zip");
+        }
+
+        [HttpPost("enviarResumenResultados")]
+
+        public async Task<ActionResult> enviarResumenResultados([FromQuery] List<int> replicas)
+        {
+            
+
+            var archivos = await Mediator.Send(new GetEvidenciasByReplica { lstReplicasResultadosId = replicas });
+
+            if (archivos is null)
+            {
+                throw new ApplicationException("No se encontró el archivo de la evidencia solicitada");
+            }
+
+            var archivoZip = ZipService.GenerarZip(archivos.Data);
+
+            return File(archivoZip, "application/octet-stream", "evidencias.zip");
+        }
+
 
     }
 }

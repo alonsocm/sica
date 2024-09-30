@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ArchivoDat } from '../../../../../interfaces/correo.interface';
+import { Evidencia } from '../../../../../interfaces/evidencia';
 import { Column } from '../../../../../interfaces/filter/column';
 import { Item } from '../../../../../interfaces/filter/item';
 import { ReplicasResultadosReglaVal } from '../../../../../interfaces/ReplicasResultadosReglaVal.interface';
@@ -10,6 +11,7 @@ import { CorreoModel } from '../../../../../shared/models/correo-model';
 import { BaseService } from '../../../../../shared/services/base.service';
 import { FileService } from '../../../../../shared/services/file.service';
 import { NotificationService } from '../../../../../shared/services/notification.service';
+import { AuthService } from '../../../../login/services/auth.service';
 import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { IncidenciasResultadosService } from '../../services/incidencias-resultados.service';
 
@@ -50,11 +52,14 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
 
   constructor(private IncidenciasResultadoService: IncidenciasResultadosService,
     private notificationService: NotificationService,
-    private muestreoService: MuestreoService) { super(); }
+    private muestreoService: MuestreoService,
+   private authService: AuthService,) { super(); }
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarReplicas();
+
+   
   }
 
   definirColumnas() {
@@ -761,9 +766,9 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         this.orderBy
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: any) => {          
           this.selectedPage = false;
-          this.replicasResultados = response.data;         
+          this.replicasResultados = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
 
@@ -800,7 +805,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
       this.loading = true;
 
       this.IncidenciasResultadoService
-        .cargarArchivo(this.archivo[0], tipoArchivo)
+        .cargarArchivo(this.archivo[0], tipoArchivo, this.authService.getUser().usuarioId)
         .subscribe({
           next: (response: any) => {
             if (response) {
@@ -1078,5 +1083,79 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
       },
     });
   }
-  descargarEvidencias() { }
+  descargarEvidencias() {
+    if (this.resultadosFiltrados.length === 0) {
+      this.notificationService.updateNotification({
+        show: true,
+        text: 'No ha seleccionado ningúna replica',
+        type: NotificationType.warning,
+      });
+      return this.hacerScroll();
+    }
+
+    this.loading = true;
+    this.IncidenciasResultadoService
+      .descargarArchivos(this.resultadosFiltrados.map((m) => m.id))
+      .subscribe({
+        next: (response: any) => {
+          this.loading = !this.loading;
+          this.seleccionarTodosChck = false;
+          this.resultadosFiltrados.map((m) => (m.selected = false));
+          FileService.download(response, 'EvidenciasReplicas.zip');
+        },
+        error: (response: any) => {
+          this.loading = !this.loading;
+          this.resultadosFiltrados.map((m) => (m.selected = false));
+          this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible descargar la información',
+          });
+          this.hacerScroll();
+        },
+      });
+
+    this.resetValues();
+    this.unselectResultados();
+  }
+  onPreviewOrDownloadFileClick() { }
+  existeEvidencia(evidencias: Array<Evidencia>) {
+    if (evidencias.length > 1) {
+      return 'zip';
+    }
+    return evidencias.find((f) => f.sufijo);
+    
+  }
+  enviarResumen() {
+
+    if (this.resultadosFiltrados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay información seleccionada para ser eviada a resumen de resultados',
+      });
+    }
+    this.loading = true;
+    this.IncidenciasResultadoService
+      .enviarResumenResultados(this.resultadosFiltrados)
+      .subscribe({
+        next: (response: any) => {
+         
+          this.resetValues();
+          this.unselectResultados();
+          this.loading = false;
+        },
+        error: (response: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible descargar la información',
+          });
+        },
+      });
+
+  }
 }

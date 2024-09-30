@@ -91,14 +91,16 @@ export class IncidenciasResultadosService {
 
   cargarArchivo(
     archivo: File,
-    tipoArchivo: number
+    tipoArchivo: number,
+    usuarioIdValido: number
   ): Observable<any> {
     const formData = new FormData();
     formData.append('archivo', archivo, archivo.name);
 
     const params = new HttpParams({
       fromObject: {
-        tipoArchivo: tipoArchivo
+        tipoArchivo: tipoArchivo,
+        usuarioIdValido: usuarioIdValido
       },
     });
     return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileReplicas', formData, { params });
@@ -114,6 +116,27 @@ export class IncidenciasResultadosService {
       environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileEvidencias',
       formData
     );
+  }
+
+  descargarArchivos(replicas: Array<number>) {
+    const params = new HttpParams({
+      fromObject: { replicas: replicas },
+    });
+    return this.http.get(environment.apiUrl + '/ReplicasResultadosReglasValidacion/downloadfileEvidencias', {
+      params,
+      responseType: 'blob',
+    });
+  }
+
+  enviarResumenResultados(resultados: Array<any>): Observable<Blob> {
+    const params = new HttpParams({
+      fromObject: { resultados: resultados },
+    });
+
+    return this.http.post(environment.apiUrl + '/ReplicasResultadosReglasValidacion/enviarResumenResultados', resultados, {
+      params,
+      responseType: 'blob',
+    });
   }
 
 
