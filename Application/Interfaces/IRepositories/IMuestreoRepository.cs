@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
+using Application.DTOs.RevisionOCDL;
 using Application.DTOs.Users;
 using Domain.Entities;
 
@@ -26,5 +27,6 @@ namespace Application.Interfaces.IRepositories
 
         Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(List<int> estatusId);
         Task<bool> CambiarEstatusAsync(Enums.EstatusMuestreo estatus, IEnumerable<long> muestreosIds);
+        Task<IQueryable<MonitoreoOCDL>> GetMonitoreosOCDL(int userId);
     }
 }
