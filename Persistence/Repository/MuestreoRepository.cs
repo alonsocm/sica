@@ -5,6 +5,7 @@ using Application.DTOs.RevisionOCDL;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
+using FluentValidation.Validators;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
 
@@ -471,13 +472,16 @@ namespace Persistence.Repository
 
         public async Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(List<int> EstatusResultadoId)
         {
+            
             var replicasResultados = await (from res in _dbContext.ResultadoMuestreo
                                             join m in _dbContext.Muestreo on res.MuestreoId equals m.Id
                                             join vcm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
+                                            join estatus in _dbContext.EstatusResultado on res.EstatusResultadoId equals estatus.Id
                                             where EstatusResultadoId.Contains((int)res.EstatusResultadoId)
                                             select new ReplicasResultadosReglasValidacionDto
-                                            {
+                                            {                                               
                                                 EstatusResultadoId = (int)res.EstatusResultadoId,
+                                                NombreEstatus = estatus.Etiqueta,
                                                 NumeroCarga = m.NumeroCarga.ToString(),
                                                 ResultadoMuestreoId = res.Id,
                                                 ClaveUnica = $"{vcm.ClaveMuestreo}{res.Parametro.ClaveParametro}",
@@ -490,6 +494,7 @@ namespace Persistence.Repository
                                                 Resultado = res.Resultado,
                                                 CorrectoResultadoReglaValidacion = res.ResultadoReglas == "OK" ? true : false,
                                                 ObservacionReglaValidacion = res.ResultadoReglas,
+                                               
 
                                             }).ToListAsync();
 
@@ -503,11 +508,12 @@ namespace Persistence.Repository
                 lstEstatus.Add((int)Application.Enums.EstatusResultado.IncidenciasResultados);
                 lstEstatus.Add((int)Application.Enums.EstatusResultado.EnvíoLaboratorioExterno);
 
+
                 if (!lstEstatus.Contains(replica.EstatusResultadoId))
                 {
 
                     var dato = _dbContext.ReplicasResultadosReglasValidacion.Where(x => x.ResultadoMuestreoId.Equals(replica.ResultadoMuestreoId)).FirstOrDefault();
-
+                    replica.Id = dato.Id;
                     replica.AceptaRechazo = dato.AceptaRechazo;
                     replica.ResultadoReplica = dato.ResultadoReplica;
                     replica.MismoResultado = dato.MismoResultado;
@@ -520,6 +526,17 @@ namespace Persistence.Repository
                     replica.ApruebaResultadoReplica = dato.ApruebaResultadoReplica;
                     replica.FechaEstatusFinal = dato.FechaEstatusFinal;
                     replica.UsuarioIdReviso = dato.UsuarioIdReviso;
+
+                    if (dato.UsuarioIdReviso != 0) { 
+                        var usuarioValido = _dbContext.Usuario.Where(x => x.Id.Equals(replica.UsuarioIdReviso)).FirstOrDefault();
+                        replica.UsuarioReviso = usuarioValido.Nombre + ' ' + usuarioValido.ApellidoPaterno + ' ' + usuarioValido.ApellidoPaterno;
+                    }
+                    
+                    var evidenciasReplicas = _dbContext.EvidenciasReplicasResultadoReglasValidacion.Where(x => x.ReplicasResultadoReglasValidacionId.Equals(replica.Id)).ToList();
+                    evidenciasReplicas.ForEach(nombre => replica.NombreEvidencias += nombre.NombreArchivo + " ");
+                    replica.Evidencias.AddRange(evidenciasReplicas.Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo , Sufijo = s.NombreArchivo.Substring(s.NombreArchivo.LastIndexOf('.'), s.NombreArchivo.Length - s.NombreArchivo.LastIndexOf('.'))}));
+                    
+
                 }
             });
             return replicasResultados;

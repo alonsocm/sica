@@ -37,8 +37,11 @@ namespace Application.DTOs.Catalogos
         public DateTime? FechaEstatusFinal { get; set; }
 
         public long UsuarioIdReviso { get; set; }
+        public string? UsuarioReviso { get; set; }
 
         public List<EvidenciaDto> Evidencias { get; set; }
+        public string? NombreEvidencias { get; set; }
+        public List<string>? lstNombreArchivos { get; set; }
 
         public string ClaveUnica { get; set; }
         public string ClaveSitio { get; set; }
@@ -52,12 +55,14 @@ namespace Application.DTOs.Catalogos
         public string ObservacionReglaValidacion { get; set; }
 
         public int EstatusResultadoId { get; set; }
+        public string NombreEstatus { get; set; }    
 
         public ReplicasResultadosReglasValidacionDto()
         {
             Evidencias = new List<EvidenciaDto>();
             ResultadoReplica = string.Empty;
             ObservacionLaboratorio = string.Empty;
+            NombreEstatus =string.Empty;
 
 
         }

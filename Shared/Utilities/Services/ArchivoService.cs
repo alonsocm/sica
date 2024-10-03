@@ -172,6 +172,29 @@ namespace Shared.Utilities.Services
             return archivos;
         }
 
+       //Se puede realizar un metodo general para descargar conforme al nombre de la carpeta
+        public List<ArchivoDto> ObtenerEvidenciasPorReplica(string nombreCarpeta)
+        {
+            var rutaBase = ObtenerRutaBaseEvidenciaReplica();
+            var rutaEvidenciasReplicas = Path.Combine(rutaBase, nombreCarpeta);
+            DirectoryInfo carpetaEvidenciasMuestreo = new(rutaEvidenciasReplicas);
+            List<ArchivoDto> archivos = new();
+
+            if (carpetaEvidenciasMuestreo.Exists)
+            {
+                foreach (var archivo in carpetaEvidenciasMuestreo.GetFiles())
+                {
+                    archivos.Add(new ArchivoDto
+                    {
+                        Archivo = File.ReadAllBytes(archivo.FullName),
+                        NombreArchivo = archivo.Name
+                    });
+                }
+            }
+
+            return archivos;
+        }
+
         public ArchivoDto ObtenerArchivoSupervisionMuestreo(string nombreArchivo, string supervision)
         {
             var rutaBase = ObtenerRutaBaseSupervision();

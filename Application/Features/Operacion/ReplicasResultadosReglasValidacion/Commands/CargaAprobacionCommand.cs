@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.IRepositories;
 using Application.Models;
 using Application.Wrappers;
+using Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
     public class CargaAprobacionCommand: IRequest<Response<bool>>
     {
         public List<ReplicasResultadosAprobacion> Replicas { get; set; }
+        public int? usuarioIdValido { get; set; }
     }
 
     public class CargaAprobacionHandler : IRequestHandler<CargaAprobacionCommand, Response<bool>>
@@ -35,7 +37,9 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
             foreach (var replica in request.Replicas)
             {
                 var replicaResultado = _replicasRepository.ObtenerElementosPorCriterioAsync(x => x.ResultadoMuestreoId.Equals(Convert.ToInt64(replica.ResultadoMuestreoId))).Result.FirstOrDefault();
-                replicaResultado.ApruebaResultadoReplica = (replica.AprobacionResultadoReplica.ToUpper() == "SI") ? true : false;                
+                replicaResultado.ApruebaResultadoReplica = (replica.AprobacionResultadoReplica.ToUpper() == "SI") ? true : false;
+                replicaResultado.FechaEstatusFinal = DateTime.Now;
+                replicaResultado.UsuarioIdReviso = Convert.ToInt64(request.usuarioIdValido);
                 _replicasRepository.Actualizar(replicaResultado);
 
                 var resultado = await _resultadoMuestreoRepository.ObtenerElementoPorIdAsync(Convert.ToInt64(replica.ResultadoMuestreoId));
