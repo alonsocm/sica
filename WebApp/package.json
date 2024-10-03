@@ -28,7 +28,6 @@
     "pdfmake": "^0.2.9",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
-    "web-app": "file:",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
