@@ -28,6 +28,7 @@
   <ItemGroup>
     <Folder Include="Features\Catalogos\Perfiles\Commands\" />
     <Folder Include="Features\Operacion\MuestreosEmergencias\Commands\" />
+    <Folder Include="Features\Operacion\RevisionOCDL\Queries\" />
     <Folder Include="Features\Seguridad\Usuarios\Commands\AuthenticateUsuario\" />
   </ItemGroup>
 
