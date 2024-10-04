@@ -103,6 +103,35 @@ namespace WebAPI.Controllers.v1.Operacion
             }));
         }
 
+        [HttpGet("MuestreosPorFiltroyPaginados")]
+        public async Task<IActionResult> Get(int estatusId, int userId, bool isOCDL, string? filter, int page, int pageSize, string? order)
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            OrderBy orderBy = null;
+
+            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
+            {
+                orderBy = new OrderBy
+                {
+                    Column = order.Split('_')[0],
+                    Type = order.Split('_')[1]
+                };
+            }
+
+            return Ok(await Mediator.Send(new GetResumenRevisionResultadosPaginados
+            {
+                EstatusId = estatusId,
+                UserId = userId,
+                IsOCDL = isOCDL
+            }));
+        }
+
         [HttpGet("ResultadosMuestreoParametros")]
         public async Task<IActionResult> GetActionAsync(int id, bool isOCDL)
         {
