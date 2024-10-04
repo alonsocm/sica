@@ -103,21 +103,6 @@ namespace WebAPI.Controllers.v1.Operacion
             }));
         }
 
-        [HttpGet("MuestreosxFiltroyPaginados")]
-        public async Task<IActionResult> Get(int estatusId, int userId, bool isOCDL, [FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] List<Filter>? filter = null, [FromQuery] OrderBy? orderBy = null)
-        {
-            return Ok(await Mediator.Send(new GetResumenRevisionResultadosPaginados
-            {
-                EstatusId = estatusId,
-                UserId = userId,
-                isOCDL = isOCDL,
-                Page = page,
-                PageSize = pageSize,
-                Filter = filter,
-                OrderBy = orderBy
-            }));
-        }
-
         [HttpGet("ResultadosMuestreoParametros")]
         public async Task<IActionResult> GetActionAsync(int id, bool isOCDL)
         {
