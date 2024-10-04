@@ -11,14 +11,19 @@ public partial class EvidenciasReplicasResultadoReglasValidacion
     public long Id { get; set; }
 
     /// <summary>
-    /// Llave foranea que hace referencia a la tabla de ReplicasResultadoReglasValidacion
-    /// </summary>
-    public long ReplicasResultadoReglasValidacionId { get; set; }
-
-    /// <summary>
     /// Campo que indica el nombre del archivo de la evidencia
     /// </summary>
     public string NombreArchivo { get; set; } = null!;
 
-    public virtual ReplicasResultadosReglasValidacion ReplicasResultadoReglasValidacion { get; set; } = null!;
+    /// <summary>
+    /// Campo que indica si ha sido cargado el archivo
+    /// </summary>
+    public bool Cargado { get; set; }
+
+    /// <summary>
+    /// Campo que describe la fecha en la que fue cargado el archivo
+    /// </summary>
+    public DateTime FechaCarga { get; set; }
+
+    public virtual ICollection<RelacionEvidenciasReplicaResultadosReglas> RelacionEvidenciasReplicaResultadosReglas { get; set; } = new List<RelacionEvidenciasReplicaResultadosReglas>();
 }

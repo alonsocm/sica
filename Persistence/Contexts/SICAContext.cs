@@ -29,7 +29,6 @@ public partial class SicaContext : DbContext
     public virtual DbSet<AvisoRealizacion> AvisoRealizacion { get; set; }
 
     public virtual DbSet<BrigadaMuestreo> BrigadaMuestreo { get; set; }
-
     public virtual DbSet<ClasificacionCriterio> ClasificacionCriterio { get; set; }
 
     public virtual DbSet<ClasificacionRegla> ClasificacionRegla { get; set; }
@@ -142,6 +141,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<ReglasReporteLeyendas> ReglasReporteLeyendas { get; set; }
 
+    public virtual DbSet<RelacionEvidenciasReplicaResultadosReglas> RelacionEvidenciasReplicaResultadosReglas { get; set; }
+
     public virtual DbSet<ReplicasResultadosReglasValidacion> ReplicasResultadosReglasValidacion { get; set; }
 
     public virtual DbSet<ResultadoMuestreo> ResultadoMuestreo { get; set; }
@@ -210,8 +211,8 @@ public partial class SicaContext : DbContext
 
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
-    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }    
-
+    public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -283,11 +284,11 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.FechaCarga)
                 .HasComment("Campo que describe la fecha en la que se cargo el archivo")
                 .HasColumnType("datetime");
-            entity.Property(e => e.InformeMensualSupervisionId).HasComment("Llave foránea que hace referencia al catálogo de TipoArchivoInformeMensualSupervision ");
+            entity.Property(e => e.InformeMensualSupervisionId).HasComment("Llave foránea que hace referencia a la tabla de InformeMensualSupervision");
             entity.Property(e => e.NombreArchivo)
                 .IsUnicode(false)
                 .HasComment("Campo que describe el nombre del archivo");
-            entity.Property(e => e.TipoArchivoInformeMensualSupervisionId).HasComment("Llave foránea que hace referencia a la catálogo de TipoArchivoInformeMensualSupervision ");
+            entity.Property(e => e.TipoArchivoInformeMensualSupervisionId).HasComment("Llave foránea que hace referencia al catálogo de TipoArchivoInformeMensualSupervision");
             entity.Property(e => e.UsuarioCargaId).HasComment("Llave foránea que hace relación a la tabla de Usuario describiendo el usuario que cargo el archivo");
 
             entity.HasOne(d => d.InformeMensualSupervision).WithMany(p => p.ArchivoInformeMensualSupervision)
@@ -304,7 +305,7 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<AvisoRealizacion>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador de la tabla AvisoRealizacion");
-            entity.Property(e => e.BrigadaMuestreoId).HasComment("Llave foránea que hace referencia al catalogo de Brigada de muestreo");
+            entity.Property(e => e.BrigadaMuestreoId).HasComment("Llave foránea que hace referencia al catálogo de Brigada de muestreo");
             entity.Property(e => e.ClaveMuestreo)
                 .HasMaxLength(100)
                 .HasComment("Campo que describe la clave muestreo");
@@ -379,7 +380,7 @@ public partial class SicaContext : DbContext
             entity.HasOne(d => d.Laboratorio).WithMany(p => p.BrigadaMuestreo)
                 .HasForeignKey(d => d.LaboratorioId)
                 .HasConstraintName("FK_BrigadaMuestreo_Laboratorios");
-        });        
+        });
 
         modelBuilder.Entity<ClasificacionCriterio>(entity =>
         {
@@ -395,7 +396,7 @@ public partial class SicaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_CloasificacionRegla");
 
-            entity.Property(e => e.Id).HasComment("Identificador de catalogo ClasificacionRegla");
+            entity.Property(e => e.Id).HasComment("Identificador principal de catálogo ClasificacionRegla");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Descripción de la clasificación de regla");
@@ -424,7 +425,7 @@ public partial class SicaContext : DbContext
         {
             entity.ToTable("CriteriosSupervisionMuestreo", "cat");
 
-            entity.Property(e => e.Id).HasComment("Identificador principal de catalogo de criterios de supervisión de muestreo");
+            entity.Property(e => e.Id).HasComment("Identificador principal de catálogo de criterios de supervisión de muestreo");
             entity.Property(e => e.ClasificacionCriterioId).HasComment("Llave foránea que hace relación al catálogo de ClasificacionCriterios");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(250)
@@ -503,12 +504,12 @@ public partial class SicaContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CuerpoTipoSubtipoAgua_TipoCuerpoAgua");
         });
-        
+
         modelBuilder.Entity<DestinatariosAtencion>(entity =>
         {
             entity.ToTable("DestinatariosAtencion", "cat");
 
-            entity.Property(e => e.Id).HasComment("Identificador principal del catalogo DestinatariosAtencion");
+            entity.Property(e => e.Id).HasComment("Identificador principal del catálogo DestinatariosAtencion");
             entity.Property(e => e.Activo).HasComment("Campo que describe si se encuentra activo el destinatario");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
@@ -798,15 +799,14 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<EvidenciasReplicasResultadoReglasValidacion>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador principal de la tabla EvidenciasReplicasResultadoReglasValidacion");
+            entity.Property(e => e.Cargado).HasComment("Campo que indica si ha sido cargado el archivo");
+            entity.Property(e => e.FechaCarga)
+                .HasDefaultValueSql("('')")
+                .HasComment("Campo que describe la fecha en la que fue cargado el archivo")
+                .HasColumnType("datetime");
             entity.Property(e => e.NombreArchivo)
                 .IsUnicode(false)
                 .HasComment("Campo que indica el nombre del archivo de la evidencia");
-            entity.Property(e => e.ReplicasResultadoReglasValidacionId).HasComment("Llave foranea que hace referencia a la tabla de ReplicasResultadoReglasValidacion");
-
-            entity.HasOne(d => d.ReplicasResultadoReglasValidacion).WithMany(p => p.EvidenciasReplicasResultadoReglasValidacion)
-                .HasForeignKey(d => d.ReplicasResultadoReglasValidacionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_EvidenciasReplicasResultadoReglasValidacion_ReplicasResultadosReglasValidacion");
         });
 
         modelBuilder.Entity<FormaReporteEspecifica>(entity =>
@@ -860,7 +860,7 @@ public partial class SicaContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Historia__3214EC07E25AC404");
 
-            entity.Property(e => e.Id).HasComment("Identificador principal del catalogo del historial de limites");
+            entity.Property(e => e.Id).HasComment("Identificador principal del catálogo del historial de limites");
             entity.Property(e => e.Fecha)
                 .HasComment("Campo que indica la fecha en la que se esta realizando la sustitución del limite")
                 .HasColumnType("datetime");
@@ -1651,7 +1651,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.ClasificacionReglaId).HasComment("Llave foránea que hace referencia al catálogo ClasificacionRegla");
             entity.Property(e => e.ClaveRegla)
                 .HasMaxLength(10)
-                .HasComment("Capo que describe la clave de la regla");
+                .HasComment("Campo que describe la clave de la regla");
             entity.Property(e => e.Leyenda)
                 .HasMaxLength(110)
                 .HasComment("Campo que describe a leenda que se mostrara en caso de que no se cumple la regla");
@@ -1664,8 +1664,8 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<ReglasRelacionParametro>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador principal de la tabla ReglasRelacionParametro");
-            entity.Property(e => e.ParametroId).HasComment("Llave foránea que hace referencia al catalogo ParametrosGrupo");
-            entity.Property(e => e.ReglasRelacionId).HasComment("Llave foránea que hace referencia al  catalogo ReglasRelacion");
+            entity.Property(e => e.ParametroId).HasComment("Llave foránea que hace referencia al catálogo ParametrosGrupo");
+            entity.Property(e => e.ReglasRelacionId).HasComment("Llave foránea que hace referencia al catálogo ReglasRelacion");
 
             entity.HasOne(d => d.Parametro).WithMany(p => p.ReglasRelacionParametro)
                 .HasForeignKey(d => d.ParametroId)
@@ -1681,7 +1681,7 @@ public partial class SicaContext : DbContext
         modelBuilder.Entity<ReglasReporte>(entity =>
         {
             entity.Property(e => e.Id).HasComment("Identificador principal de la tabla ReglasReporte\r\n");
-            entity.Property(e => e.ClasificacionReglaId).HasComment("Llave foránea que hace referencia al catalogo ClasificacionRegla");
+            entity.Property(e => e.ClasificacionReglaId).HasComment("Llave foránea que hace referencia al catálogo ClasificacionRegla");
             entity.Property(e => e.ClaveRegla)
                 .HasMaxLength(10)
                 .HasComment("Campo que describe la clave de la regla");
@@ -1709,7 +1709,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.EsValidoResultadoNe)
                 .HasComment("Bandera que indica si el resultado es valido a un NE")
                 .HasColumnName("EsValidoResultadoNE");
-            entity.Property(e => e.ParametroId).HasComment("Llave foránea que hace relación al catalogo de ParametroGrupo");
+            entity.Property(e => e.ParametroId).HasComment("Llave foránea que hace relación al catálogo de ParametroGrupo");
 
             entity.HasOne(d => d.ClasificacionRegla).WithMany(p => p.ReglasReporte)
                 .HasForeignKey(d => d.ClasificacionReglaId)
@@ -1733,25 +1733,62 @@ public partial class SicaContext : DbContext
                 .HasComment("Campo que describe la leyenda de la regla de reporte");
         });
 
+        modelBuilder.Entity<RelacionEvidenciasReplicaResultadosReglas>(entity =>
+        {
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasComment("Llave primaria de la tabla de relación que existe entre las evidencias y las replicas de resultados de reglas de validación");
+            entity.Property(e => e.EvidenciasReplicasResultadoReglasValidacionId).HasComment("Llave foranea que hace referencia a la tabla de EvidenciaReplicaResultadosReglas");
+            entity.Property(e => e.ReplicasResultadosReglasValidacionId).HasComment("Llave foranea que hace referencia a la tabla de ReplicaResultadosReglasValidación describe la replica que ocupa dicha evidencia");
+
+            entity.HasOne(d => d.EvidenciasReplicasResultadoReglasValidacion).WithMany(p => p.RelacionEvidenciasReplicaResultadosReglas)
+                .HasForeignKey(d => d.EvidenciasReplicasResultadoReglasValidacionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RelacionEvidenciasReplicaResultadosReglas_EvidenciasReplicasResultadoReglasValidacion");
+
+            entity.HasOne(d => d.ReplicasResultadosReglasValidacion).WithMany(p => p.RelacionEvidenciasReplicaResultadosReglas)
+                .HasForeignKey(d => d.ReplicasResultadosReglasValidacionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RelacionEvidenciasReplicaResultadosReglas_ReplicasResultadosReglasValidacion");
+        });
+
         modelBuilder.Entity<ReplicasResultadosReglasValidacion>(entity =>
         {
-            entity.Property(e => e.EsDatoCorrectoSrenameca).HasColumnName("EsDatoCorrectoSRENAMECA");
+            entity.Property(e => e.Id).HasComment("Identificador de llave primaria para la tabla de ReplicasResultadosReglasValidacion");
+            entity.Property(e => e.AceptaRechazo).HasComment("Campo que describe si la replica acepa el rechazo");
+            entity.Property(e => e.ApruebaResultadoReplica).HasComment("Campo que indica si se aprueba el resultado de la replica");
+            entity.Property(e => e.EsDatoCorrectoSrenameca)
+                .HasComment("Campo que indica si el dato es correcto por parte del area de SRENAMECA")
+                .HasColumnName("EsDatoCorrectoSRENAMECA");
             entity.Property(e => e.FechaEstatusFinal)
                 .HasDefaultValueSql("('')")
+                .HasComment("Campo que indica la fecha del estatus final")
                 .HasColumnType("date");
             entity.Property(e => e.FechaObservacionSrenameca)
+                .HasComment("Campo que describe la fecha en la que se realizó las observaciones por parte del área de SRENAMECA")
                 .HasColumnType("date")
                 .HasColumnName("FechaObservacionSRENAMECA");
-            entity.Property(e => e.FechaReplicaLaboratorio).HasColumnType("date");
-            entity.Property(e => e.ObservacionLaboratorio).HasDefaultValueSql("('')");
-            entity.Property(e => e.ObservacionSrenameca).HasColumnName("ObservacionSRENAMECA");
+            entity.Property(e => e.FechaReplicaLaboratorio)
+                .HasComment("Campo que describe la fecha en la que se elaboro la replica por parte del laboratorio")
+                .HasColumnType("date");
+            entity.Property(e => e.MismoResultado).HasComment("Campo que describe si es el mismo resultado de la replica vs con el resultado anterior del parámetro de muestreo correspondiente");
+            entity.Property(e => e.ObservacionLaboratorio)
+                .HasDefaultValueSql("('')")
+                .HasComment("Campo que describe las observaciones que realizó el laboratorio");
+            entity.Property(e => e.ObservacionSrenameca)
+                .HasComment("Campo que describe las obervaciones por parte de SRENAMECA")
+                .HasColumnName("ObservacionSRENAMECA");
             entity.Property(e => e.ObservacionesReglasReplica)
                 .HasMaxLength(250)
-                .IsUnicode(false);
+                .IsUnicode(false)
+                .HasComment("Campo que describe las observaciones al aplicar la regla en la replica en el módulo de Resumen de resultados");
+            entity.Property(e => e.ResultadoMuestreoId).HasComment("Llave foranea que hace referencia a la tabla de ResuladosMuestreo, este campo describe el resultado del cual es la replica");
             entity.Property(e => e.ResultadoReplica)
                 .HasMaxLength(50)
                 .IsUnicode(false)
-                .HasDefaultValueSql("('')");
+                .HasDefaultValueSql("('')")
+                .HasComment("Campo que describe el resulado de la replica");
+            entity.Property(e => e.UsuarioIdReviso).HasComment("Llave foranea que hace relación a la tabla de Usuarios indicando el personal que realizó la revisión");
 
             entity.HasOne(d => d.ResultadoMuestreo).WithMany(p => p.ReplicasResultadosReglasValidacion)
                 .HasForeignKey(d => d.ResultadoMuestreoId)
@@ -1963,7 +2000,7 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
-        });
+        });        
 
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
@@ -2172,7 +2209,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });        
+        });      
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -2744,7 +2781,7 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });
+        });                
 
         OnModelCreatingPartial(modelBuilder);
     }
