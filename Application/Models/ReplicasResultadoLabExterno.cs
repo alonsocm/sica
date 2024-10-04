@@ -26,5 +26,6 @@ namespace Application.Models
         public string MismoResultado { get; set; }
         public string ObservacionLaboratorio { get; set; } = null!;
         public string FechaReplicaLaboratorio { get; set; }
+        public string NombreArchivoEvidencia { get; set; }
     }
 }

@@ -48,7 +48,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     {} as ElementRef;
 
   estatusReplicas: Array<number> = [estatusResultado.IncidenciasResultados, estatusResultado.EnvíoLaboratorioExterno, estatusResultado.CargaRéplicasLaboratorioExterno,
-  estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA, estatusResultado.AprobaciónResultadosPorArchivo, estatusResultado.RechazoResultadosPorArchivo];
+  estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA, estatusResultado.EnviadoResumenResultados];
 
   constructor(private IncidenciasResultadoService: IncidenciasResultadosService,
     private notificationService: NotificationService,

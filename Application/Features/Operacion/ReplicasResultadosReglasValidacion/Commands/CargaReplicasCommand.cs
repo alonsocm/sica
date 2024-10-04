@@ -23,17 +23,22 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
 
         private readonly IReplicasResultadosReglasValidacionRepository _replicasRepository;
         private readonly IResultado _resultadoMuestreoRepository;
+        private readonly IRepositoryAsync<EvidenciasReplicasResultadoReglasValidacion> _evidenciaReplicaRepository;
 
 
-        public CargaReplicasHandler(IReplicasResultadosReglasValidacionRepository replicasRepository, IResultado resultadoMuestreoRepository)
+        public CargaReplicasHandler(IReplicasResultadosReglasValidacionRepository replicasRepository, IResultado resultadoMuestreoRepository, 
+            IRepositoryAsync<EvidenciasReplicasResultadoReglasValidacion> evidenciaReplicaRepository)
         {
 
             _replicasRepository = replicasRepository;
             _resultadoMuestreoRepository = resultadoMuestreoRepository;
+            _evidenciaReplicaRepository = evidenciaReplicaRepository;
         }
 
         public async Task<Response<bool>> Handle(CargaReplicasCommand request, CancellationToken cancellationToken)
         {
+
+            List<string> archivos = new List<string>();
             foreach (var replica in request.Replicas)
             {
                 var nuevoRegistro = new Domain.Entities.ReplicasResultadosReglasValidacion()
@@ -43,8 +48,14 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
                     ResultadoReplica = replica.ResultadoReplica,
                     MismoResultado = (replica.MismoResultado.ToUpper() == "SI") ? true : false,
                     ObservacionLaboratorio = replica.ObservacionLaboratorio,
-                    FechaReplicaLaboratorio = Convert.ToDateTime(replica.FechaReplicaLaboratorio)
+                    FechaReplicaLaboratorio = Convert.ToDateTime(replica.FechaReplicaLaboratorio),
+                    
                 };
+
+                if (replica.NombreArchivoEvidencia != string.Empty)
+                {
+                    archivos.AddRange(replica.NombreArchivoEvidencia.Split('/'));
+                }
 
                 var resultado = await _resultadoMuestreoRepository.ObtenerElementoPorIdAsync(Convert.ToInt64(replica.ResultadoMuestreoId));
                 resultado.EstatusResultadoId = (int?)Enums.EstatusResultado.CargaRéplicasLaboratorioExterno;
@@ -52,6 +63,11 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
                 _replicasRepository.Insertar(nuevoRegistro);               
 
             }
+
+            archivos.Distinct().ToList().ForEach(x => _evidenciaReplicaRepository.AddAsync(new Domain.Entities.EvidenciasReplicasResultadoReglasValidacion()
+            {
+                NombreArchivo = x
+            })); ;
             return new Response<bool>(true);
         }
     }

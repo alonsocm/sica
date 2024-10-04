@@ -84,7 +84,6 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
                     {
                         var nuevoRegistro = new EvidenciasReplicasResultadoReglasValidacion()
                         {
-                            ReplicasResultadoReglasValidacionId = replicaResultado.FirstOrDefault().Id,
                             NombreArchivo = archivo.FileName
                     
                         };

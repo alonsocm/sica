@@ -512,29 +512,33 @@ namespace Persistence.Repository
                 {
 
                     var dato = _dbContext.ReplicasResultadosReglasValidacion.Where(x => x.ResultadoMuestreoId.Equals(replica.ResultadoMuestreoId)).FirstOrDefault();
-                    replica.Id = dato.Id;
-                    replica.AceptaRechazo = dato.AceptaRechazo;
-                    replica.ResultadoReplica = dato.ResultadoReplica;
-                    replica.MismoResultado = dato.MismoResultado;
-                    replica.ObservacionLaboratorio = dato.ObservacionLaboratorio;
-                    replica.FechaReplicaLaboratorio = dato.FechaReplicaLaboratorio;
-                    replica.ObservacionSrenameca = dato.ObservacionSrenameca;
-                    replica.EsDatoCorrectoSrenameca = dato.EsDatoCorrectoSrenameca;
-                    replica.FechaObservacionSrenameca = dato.FechaObservacionSrenameca;
-                    replica.ObservacionesReglasReplica = dato.ObservacionesReglasReplica;
-                    replica.ApruebaResultadoReplica = dato.ApruebaResultadoReplica;
-                    replica.FechaEstatusFinal = dato.FechaEstatusFinal;
-                    replica.UsuarioIdReviso = dato.UsuarioIdReviso;
 
-                    if (dato.UsuarioIdReviso != 0) { 
-                        var usuarioValido = _dbContext.Usuario.Where(x => x.Id.Equals(replica.UsuarioIdReviso)).FirstOrDefault();
-                        replica.UsuarioReviso = usuarioValido.Nombre + ' ' + usuarioValido.ApellidoPaterno + ' ' + usuarioValido.ApellidoPaterno;
+                    if (dato != null)
+                    {
+                        replica.Id = dato.Id;
+                        replica.AceptaRechazo = dato.AceptaRechazo;
+                        replica.ResultadoReplica = dato.ResultadoReplica;
+                        replica.MismoResultado = dato.MismoResultado;
+                        replica.ObservacionLaboratorio = dato.ObservacionLaboratorio;
+                        replica.FechaReplicaLaboratorio = dato.FechaReplicaLaboratorio;
+                        replica.ObservacionSrenameca = dato.ObservacionSrenameca;
+                        replica.EsDatoCorrectoSrenameca = dato.EsDatoCorrectoSrenameca;
+                        replica.FechaObservacionSrenameca = dato.FechaObservacionSrenameca;
+                        replica.ObservacionesReglasReplica = dato.ObservacionesReglasReplica;
+                        replica.ApruebaResultadoReplica = dato.ApruebaResultadoReplica;
+                        replica.FechaEstatusFinal = dato.FechaEstatusFinal;
+                        replica.UsuarioIdReviso = dato.UsuarioIdReviso;
+
+                        if (dato.UsuarioIdReviso != 0)
+                        {
+                            var usuarioValido = _dbContext.Usuario.Where(x => x.Id.Equals(replica.UsuarioIdReviso)).FirstOrDefault();
+                            replica.UsuarioReviso = usuarioValido.Nombre + ' ' + usuarioValido.ApellidoPaterno + ' ' + usuarioValido.ApellidoPaterno;
+                        }
+
+                        //var evidenciasReplicas = _dbContext.EvidenciasReplicasResultadoReglasValidacion.Where(x => x.ReplicasResultadoReglasValidacionId.Equals(replica.Id)).ToList();
+                        //evidenciasReplicas.ForEach(nombre => replica.NombreEvidencias += nombre.NombreArchivo + " ");
+                        //replica.Evidencias.AddRange(evidenciasReplicas.Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo , Sufijo = s.NombreArchivo.Substring(s.NombreArchivo.LastIndexOf('.'), s.NombreArchivo.Length - s.NombreArchivo.LastIndexOf('.'))}));
                     }
-                    
-                    var evidenciasReplicas = _dbContext.EvidenciasReplicasResultadoReglasValidacion.Where(x => x.ReplicasResultadoReglasValidacionId.Equals(replica.Id)).ToList();
-                    evidenciasReplicas.ForEach(nombre => replica.NombreEvidencias += nombre.NombreArchivo + " ");
-                    replica.Evidencias.AddRange(evidenciasReplicas.Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo , Sufijo = s.NombreArchivo.Substring(s.NombreArchivo.LastIndexOf('.'), s.NombreArchivo.Length - s.NombreArchivo.LastIndexOf('.'))}));
-                    
 
                 }
             });
