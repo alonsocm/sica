@@ -11,10 +11,12 @@ import { MuestreoService } from '../../../liberacion/services/muestreo.service';
 import { NotificationType } from 'src/app/shared/enums/notification-type';
 import { FileService } from 'src/app/shared/services/file.service';
 
+
+
 @Component({
   selector: 'app-validado',
   templateUrl: './validado.component.html',
-  styleUrls: ['./validado.component.css'],
+  styleUrls: ['./validado.component.css']
 })
 export class ValidadoComponent extends BaseService implements OnInit {
   muestreos: Array<Muestreo> = [];
@@ -27,8 +29,10 @@ export class ValidadoComponent extends BaseService implements OnInit {
     private totalService: TotalService,
     private filtroHistorialService: FiltroHistorialService,
     private notificationService: NotificationService,
-    private muestreoService: MuestreoService
-  ) {
+    private muestreoService: MuestreoService,
+
+  )
+  {
     super();
   }
 
@@ -40,9 +44,9 @@ export class ValidadoComponent extends BaseService implements OnInit {
       }
     });
     this.definirColumnas();
-    this.consultarMonitoreos();
+    this.consultarMonitoreos()
   }
-  definirColumnas() {
+  definirColumnas(){
     let nombresColumnas: Array<Column> = [
       {
         name: 'noEntregaOCDL',
@@ -275,33 +279,24 @@ export class ValidadoComponent extends BaseService implements OnInit {
   consultarMonitoreos(
     page: number = this.page,
     pageSize: number = this.NoPage,
-    filter: string = this.cadena
-  ): void {
+    filter: string = this.cadena):
+    void {
     this.totalService
-      .getMuestresxParametro(
-        estatusOcdlSecaia.Validado,
-        true,
-        page,
-        pageSize,
-        filter,
-        this.orderBy
-      )
-      .subscribe({
-        next: (response: any) => {
-          this.selectedPage = false;
-          this.resultadosn = response.data;
-          this.resultadosFiltradosn = this.resultadosn;
-          this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
-          this.totalItems = response.totalRecords;
-          this.getPreviousSelected();
-          this.selectedPage = this.anyUnselected(this.resultadosn)
-            ? false
-            : true;
-        },
-        error: (error) => {
-          this.loading = false;
-        },
-      });
+    .getMuestresxParametro(estatusOcdlSecaia.Validado, true, page, pageSize, filter, this.orderBy)
+    .subscribe({
+      next: (response: any) => {
+        this.selectedPage = false;
+        this.resultadosn = response.data;
+        this.resultadosFiltradosn = this.resultadosn;
+        this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
+        this.totalItems = response.totalRecords;
+        this.getPreviousSelected();
+        this.selectedPage = this.anyUnselected(this.resultadosn) ? false : true;
+      },
+      error: (error) => {
+        this.loading = false;
+      },
+    });
   }
 
   pageClic(page: any) {
@@ -311,17 +306,10 @@ export class ValidadoComponent extends BaseService implements OnInit {
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.totalService
-      .getMuestresxParametro(
-        estatusOcdlSecaia.Validado,
-        true,
-        this.page,
-        this.pageSize,
-        this.cadena,
-        {
-          column: column,
-          type: type,
-        }
-      )
+      .getMuestresxParametro(estatusOcdlSecaia.Validado, true,this.page, this.pageSize, this.cadena,{
+        column: column,
+        type: type,
+      })
       .subscribe({
         next: (response: any) => {
           this.resultadosn = response.data;
@@ -346,22 +334,24 @@ export class ValidadoComponent extends BaseService implements OnInit {
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.totalService.getDistinct(column.name, this.cadena).subscribe({
-        next: (response: any) => {
-          column.data = response.data.map((register: any) => {
-            let item: Item = {
-              value: register,
-              checked: true,
-            };
-            return item;
-          });
+      this.totalService
+        .getDistinct(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
 
-          column.filteredData = column.data;
-          this.ordenarAscedente(column.filteredData);
-          this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-        },
-        error: (error) => {},
-      });
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => {},
+        });
     }
     if (esFiltroEspecial) {
       column.selectAll = false;
@@ -392,8 +382,8 @@ export class ValidadoComponent extends BaseService implements OnInit {
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
-    this.consultarMonitoreos();
-    this.columns
+      this.consultarMonitoreos();
+      this.columns
       .filter((x) => x.isLatestFilter)
       .map((m) => {
         m.isLatestFilter = false;
@@ -417,7 +407,7 @@ export class ValidadoComponent extends BaseService implements OnInit {
     this.hideColumnFilter();
   }
 
-  exportarResultados(): void {
+   exportarResultados(): void {
     if (this.resultadosFiltradosn.length == 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
@@ -431,7 +421,7 @@ export class ValidadoComponent extends BaseService implements OnInit {
       .exportarResultadosValidados(this.resultadosFiltradosn)
       .subscribe({
         next: (response: any) => {
-          FileService.download(response, 'ResultadosValidados.xlsx');
+          FileService.download(response, 'ReplicasResultadosValidados.xlsx');
           this.resetValues();
           this.unselectResultados();
           this.loading = false;
@@ -450,15 +440,17 @@ export class ValidadoComponent extends BaseService implements OnInit {
 
   private resetValues() {
     this.resultadosFiltradosn = [];
-    location.reload();
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
   }
 
   private unselectResultados() {
     this.resultadosFiltradosn.forEach((m) => (m.selected = false));
   }
-  consultarMonitoreosmuestreo() {}
-  enviarMonitoreos() {}
-  cambiarEstatusMuestreo() {}
+  consultarMonitoreosmuestreo(){}
+  enviarMonitoreos(){}
+  cambiarEstatusMuestreo(){}
 
   onSelectClick(validado: Muestreo) {
     if (this.selectedPage) this.selectedPage = false;
