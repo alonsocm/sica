@@ -76,4 +76,46 @@ export class TotalService {
       responseType: 'blob',
     });
   }
+  getMuestresxParametro(
+    idEstatus: number,
+    isOCDL: boolean,
+    page: number,
+    pageSize: number,
+    filter: string,
+    orderBy: { column: string; type: string  }
+): Observable<Object> {
+  let userId = localStorage.getItem('idUsuario') || '';
+    let params = new HttpParams({
+        fromObject: {
+            estatusId: idEstatus,
+            userId: userId, // Use the userId variable here
+            isOCDL: isOCDL,
+            page: page,
+            pageSize: pageSize,
+        },
+    });
+
+    if (filter != null) {
+      params = params.append('filter', JSON.stringify(filter));
+    }
+
+    if (orderBy != null) {
+      params = params.append('orderBy', JSON.stringify(orderBy));
+    }
+
+    return this.http.get(environment.apiUrl + '/resultados/MuestreosxFiltroyPaginados', { params });
+  }
+
+  getDistinct(column: string, filter: string): Observable<Object> {
+    const params = new HttpParams({
+      fromObject: {
+        column: column,
+        filter: filter,
+      },
+    });
+    return this.http.get(
+      environment.apiUrl + '/resultados/GetDistinctValuesFromColumn',
+      { params }
+    );
+  }
 }
