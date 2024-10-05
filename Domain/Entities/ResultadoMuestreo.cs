@@ -77,7 +77,7 @@ public partial class ResultadoMuestreo
     public string? ObservacionSrenameca { get; set; }
 
     /// <summary>
-    /// Campoq eu indica la fecha en la que se realizaron las observaciones por parte de SRENAMECA
+    /// Campo que indica la fecha en la que se realizaron las observaciones por parte de SRENAMECA
     /// </summary>
     public DateTime? FechaObservacionSrenameca { get; set; }
 
@@ -117,7 +117,7 @@ public partial class ResultadoMuestreo
     public bool? EsMismoResultado { get; set; }
 
     /// <summary>
-    /// Campoq ue describe las observaciones por parte del laboratorio
+    /// Campo que describe las observaciones por parte del laboratorio
     /// </summary>
     public string? ObservacionLaboratorio { get; set; }
 

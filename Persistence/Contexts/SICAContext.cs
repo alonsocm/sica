@@ -29,6 +29,7 @@ public partial class SicaContext : DbContext
     public virtual DbSet<AvisoRealizacion> AvisoRealizacion { get; set; }
 
     public virtual DbSet<BrigadaMuestreo> BrigadaMuestreo { get; set; }
+
     public virtual DbSet<ClasificacionCriterio> ClasificacionCriterio { get; set; }
 
     public virtual DbSet<ClasificacionRegla> ClasificacionRegla { get; set; }
@@ -381,7 +382,7 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.LaboratorioId)
                 .HasConstraintName("FK_BrigadaMuestreo_Laboratorios");
         });
-
+        
         modelBuilder.Entity<ClasificacionCriterio>(entity =>
         {
             entity.ToTable("ClasificacionCriterio", "cat");
@@ -562,7 +563,7 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.PuestoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
-        });        
+        });       
 
         modelBuilder.Entity<Emergencia>(entity =>
         {
@@ -1479,7 +1480,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Anio)
                 .HasMaxLength(4)
                 .HasComment("Campo que describe el año");
-        });
+        });        
 
         modelBuilder.Entity<ProgramaMuestreo>(entity =>
         {
@@ -1735,9 +1736,7 @@ public partial class SicaContext : DbContext
 
         modelBuilder.Entity<RelacionEvidenciasReplicaResultadosReglas>(entity =>
         {
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasComment("Llave primaria de la tabla de relación que existe entre las evidencias y las replicas de resultados de reglas de validación");
+            entity.Property(e => e.Id).HasComment("Llave primaria de la tabla de relación que existe entre las evidencias y las replicas de resultados de reglas de validación");
             entity.Property(e => e.EvidenciasReplicasResultadoReglasValidacionId).HasComment("Llave foranea que hace referencia a la tabla de EvidenciaReplicaResultadosReglas");
             entity.Property(e => e.ReplicasResultadosReglasValidacionId).HasComment("Llave foranea que hace referencia a la tabla de ReplicaResultadosReglasValidación describe la replica que ocupa dicha evidencia");
 
@@ -2209,7 +2208,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });      
+        });       
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -2781,7 +2780,7 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });                
+        });        
 
         OnModelCreatingPartial(modelBuilder);
     }
