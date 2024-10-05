@@ -125,6 +125,8 @@ namespace Persistence
             services.AddTransient<ICuencaDireccionesLocalesRepository, CuencaDireccionesLocalesRepository>();
             services.AddTransient<IReplicasResultadosReglasValidacionRepository, ReplicasResultadosReglasValidacionRepository>();
             services.AddTransient<IEvidenciasReplicasResultadoReglasValidacionRepository, EvidenciasReplicasResultadoReglasValidacionRepository>();
+            services.AddTransient<IRelacionEvidenciasReplicaResultadosReglasRepository, RelacionEvidenciasReplicaResultadosReglasRepository>();
+
 
 
 
