@@ -18,6 +18,7 @@ using Application.Wrappers;
 using Domain.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
 using System.Reflection;
 using WebAPI.Shared;
@@ -104,7 +105,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("MuestreosPorFiltroyPaginados")]
-        public async Task<IActionResult> Get(int estatusId, int userId, bool isOCDL, string? filter, int page, int pageSize, string? order)
+        public async Task<IActionResult> Get(int estatusId, int userId, bool isOCDL, int page, int pageSize, string? filter = "", string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -128,8 +129,34 @@ namespace WebAPI.Controllers.v1.Operacion
             {
                 EstatusId = estatusId,
                 UserId = userId,
-                IsOCDL = isOCDL
+                IsOCDL = isOCDL,
+                Page = page,
+                PageSize = pageSize,
+                Filter = filters,
+                OrderBy = orderBy
             }));
+
+        }
+
+        [HttpGet("GetDistinctValuesFromColumnRevisionResultados")]
+        public IActionResult Get(int estatusId, int userId, bool isOCDL, string? filter, string column)
+        {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
+            var data = Mediator.Send(new GetResumenRevisionResultadosPaginados
+            {
+                Filter = filters,
+                EstatusId = estatusId,
+                UserId = userId,
+                IsOCDL = isOCDL
+            }).Result.Data;
+
+            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
         }
 
         [HttpGet("ResultadosMuestreoParametros")]
