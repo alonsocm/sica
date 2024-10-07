@@ -327,7 +327,9 @@
             new KeyValuePair<string, string>("RESULTADO RÉPLICA","ResultadoReplica"),
             new KeyValuePair<string, string>("ES EL MISMO RESULTADO","MismoResultado"),
             new KeyValuePair<string, string>("OBSERVACIÓN LABORATORIO","ObservacionLaboratorio"),
-            new KeyValuePair<string, string>("FECHA DE RÉPLICA LABORATORIO","FechaReplicaLaboratorio")
+            new KeyValuePair<string, string>("FECHA DE RÉPLICA LABORATORIO","FechaReplicaLaboratorio"),
+            new KeyValuePair<string, string>("NOMBRE(s) ARCHIVO EVIDENCIA","NombreArchivoEvidencia")
+
         };
         public static List<KeyValuePair<string, string>> KeyValues { get => keyValues; set => keyValues = value; }
     }

@@ -16,7 +16,7 @@ public partial class ArchivoInformeMensualSupervision
     public long InformeMensualSupervisionId { get; set; }
 
     /// <summary>
-    /// Llave foránea que hace referencia al catálogo de TipoArchivoInformeMensualSupervision 
+    /// Llave foránea que hace referencia al catálogo de TipoArchivoInformeMensualSupervision
     /// </summary>
     public int TipoArchivoInformeMensualSupervisionId { get; set; }
 

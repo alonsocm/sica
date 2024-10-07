@@ -31,7 +31,7 @@ public partial class LimiteParametroLaboratorio
     public long? LaboratorioMuestreoId { get; set; }
 
     /// <summary>
-    /// Campo que indica el periodo
+    /// Llave foranea que hace relación al catalogo de Mes donde describe el periodo 
     /// </summary>
     public int? PeriodoId { get; set; }
 

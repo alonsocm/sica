@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
+using Application.DTOs.RevisionOCDL;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
@@ -512,29 +513,33 @@ namespace Persistence.Repository
                 {
 
                     var dato = _dbContext.ReplicasResultadosReglasValidacion.Where(x => x.ResultadoMuestreoId.Equals(replica.ResultadoMuestreoId)).FirstOrDefault();
-                    replica.Id = dato.Id;
-                    replica.AceptaRechazo = dato.AceptaRechazo;
-                    replica.ResultadoReplica = dato.ResultadoReplica;
-                    replica.MismoResultado = dato.MismoResultado;
-                    replica.ObservacionLaboratorio = dato.ObservacionLaboratorio;
-                    replica.FechaReplicaLaboratorio = dato.FechaReplicaLaboratorio;
-                    replica.ObservacionSrenameca = dato.ObservacionSrenameca;
-                    replica.EsDatoCorrectoSrenameca = dato.EsDatoCorrectoSrenameca;
-                    replica.FechaObservacionSrenameca = dato.FechaObservacionSrenameca;
-                    replica.ObservacionesReglasReplica = dato.ObservacionesReglasReplica;
-                    replica.ApruebaResultadoReplica = dato.ApruebaResultadoReplica;
-                    replica.FechaEstatusFinal = dato.FechaEstatusFinal;
-                    replica.UsuarioIdReviso = dato.UsuarioIdReviso;
 
-                    if (dato.UsuarioIdReviso != 0) { 
-                        var usuarioValido = _dbContext.Usuario.Where(x => x.Id.Equals(replica.UsuarioIdReviso)).FirstOrDefault();
-                        replica.UsuarioReviso = usuarioValido.Nombre + ' ' + usuarioValido.ApellidoPaterno + ' ' + usuarioValido.ApellidoPaterno;
+                    if (dato != null)
+                    {
+                        replica.Id = dato.Id;
+                        replica.AceptaRechazo = dato.AceptaRechazo;
+                        replica.ResultadoReplica = dato.ResultadoReplica;
+                        replica.MismoResultado = dato.MismoResultado;
+                        replica.ObservacionLaboratorio = dato.ObservacionLaboratorio;
+                        replica.FechaReplicaLaboratorio = dato.FechaReplicaLaboratorio;
+                        replica.ObservacionSrenameca = dato.ObservacionSrenameca;
+                        replica.EsDatoCorrectoSrenameca = dato.EsDatoCorrectoSrenameca;
+                        replica.FechaObservacionSrenameca = dato.FechaObservacionSrenameca;
+                        replica.ObservacionesReglasReplica = dato.ObservacionesReglasReplica;
+                        replica.ApruebaResultadoReplica = dato.ApruebaResultadoReplica;
+                        replica.FechaEstatusFinal = dato.FechaEstatusFinal;
+                        replica.UsuarioIdReviso = dato.UsuarioIdReviso;
+
+                        if (dato.UsuarioIdReviso != 0)
+                        {
+                            var usuarioValido = _dbContext.Usuario.Where(x => x.Id.Equals(replica.UsuarioIdReviso)).FirstOrDefault();
+                            replica.UsuarioReviso = usuarioValido.Nombre + ' ' + usuarioValido.ApellidoPaterno + ' ' + usuarioValido.ApellidoPaterno;
+                        }
+
+                        //var evidenciasReplicas = _dbContext.EvidenciasReplicasResultadoReglasValidacion.Where(x => x.ReplicasResultadoReglasValidacionId.Equals(replica.Id)).ToList();
+                        //evidenciasReplicas.ForEach(nombre => replica.NombreEvidencias += nombre.NombreArchivo + " ");
+                        //replica.Evidencias.AddRange(evidenciasReplicas.Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo , Sufijo = s.NombreArchivo.Substring(s.NombreArchivo.LastIndexOf('.'), s.NombreArchivo.Length - s.NombreArchivo.LastIndexOf('.'))}));
                     }
-                    
-                    var evidenciasReplicas = _dbContext.EvidenciasReplicasResultadoReglasValidacion.Where(x => x.ReplicasResultadoReglasValidacionId.Equals(replica.Id)).ToList();
-                    evidenciasReplicas.ForEach(nombre => replica.NombreEvidencias += nombre.NombreArchivo + " ");
-                    replica.Evidencias.AddRange(evidenciasReplicas.Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo , Sufijo = s.NombreArchivo.Substring(s.NombreArchivo.LastIndexOf('.'), s.NombreArchivo.Length - s.NombreArchivo.LastIndexOf('.'))}));
-                    
 
                 }
             });
@@ -563,6 +568,53 @@ namespace Persistence.Repository
             {
                 throw new ApplicationException($"Ocurrió un error al actualizar el estatus de los muestreos: {ex.Message}");
             }
+        }
+        public async Task<IQueryable<MonitoreoOCDL>> GetMonitoreosOCDL(int userId)
+        {
+            var usuario = await _dbContext.Usuario
+                .Where(u => u.Id == userId)
+                .Include(u => u.DireccionLocal)
+                .Include(u => u.Cuenca)
+                .FirstOrDefaultAsync();
+
+            if (usuario == null)
+            {
+                throw new ArgumentException("No se encontró el usuario en la base de datos");
+            }
+
+            IQueryable<Muestreo> muestreos = _dbContext.Muestreo.Where(m => m.EstatusId == (int)Application.Enums.EstatusMuestreo.RevisiónOCDLSECAIA ||
+                                                m.EstatusId == (int)Application.Enums.EstatusMuestreo.Liberaciondemonitoreosconextencióndefecha);
+
+            if (usuario.DireccionLocalId != null)
+            {
+                muestreos = muestreos.Where(m => m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usuario.DireccionLocalId);
+            }
+            else if (usuario.CuencaId != null)
+            {
+                muestreos = muestreos.Where(m => m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usuario.CuencaId);
+            }
+
+            var registros = from m in muestreos
+                            join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
+                            select new MonitoreoOCDL
+                            {
+                                MonitoreoId = m.Id,
+                                NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
+                                OCDL =  m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal != null ?
+                                        m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion :
+                                        m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Descripcion,
+                                ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                ClaveMonitoreo = vpm.ClaveMuestreo,
+                                Sitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
+                                FechaRealizacion = m.FechaRealVisita.HasValue ? m.FechaRealVisita.Value.ToString("dd/MM/yyyy") : string.Empty,
+                                FechaLimiteRevison = m.FechaLimiteRevision.HasValue ? m.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") : string.Empty,
+                                Laboratorio = m.ProgramaMuestreo.ProgramaSitio.Laboratorio == null ? "Sin laboratorio asignado" : m.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion,
+                                TipoCuerpoAguaOriginal = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                                TipoCuerpoAgua = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado == null ? string.Empty :
+                                                 m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.TipoHomologado.Descripcion,
+                            };
+
+            return registros;
         }
     }
 }

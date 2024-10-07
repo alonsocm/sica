@@ -581,7 +581,7 @@ export class BaseService {
       m.selected = this.selectedPage;
 
       let index = muestreosSeleccionados.findIndex(
-        (d) => d.claveSitio === m.claveSitio
+        (d) => d.claveUnica === m.claveUnica
       );
 
       if (index == -1) {

@@ -8,18 +8,32 @@ namespace Application.Enums
 {
     public enum EstatusResultado
     {
-        IncidenciasResultados = 1,
-        EnvíoLaboratorioExterno = 2,
-        CargaRéplicasLaboratorioExterno = 3,
-        EnvíoaSRENAMECA = 4,
-        CargaValidaciónSRENAMECA = 5,
-        AcumulaciónResultadosReplica = 6,
-        MóduloInicialReglasReplica = 7,
-        MóduloReglasReplica = 8,
-        ResumenValidaciónReglasReplica = 9,
-        RechazoResultadosPorArchivo = 10,
-        AprobaciónResultadosPorArchivo = 11,
-        LiberaciónResultadosReplica = 12,
-        EnviadoaPenalizaciónReplica = 13
+        
+
+
+        Liberaciondemonitoreos = 1,
+        Liberaciondemonitoreosconextencióndefecha = 2,
+        RevisiónOCDLSECAIA = 3,
+        Aprobaciónderesultados = 4,
+
+
+        IncidenciasResultados = 5,
+        EnvíoLaboratorioExterno = 6,
+        CargaRéplicasLaboratorioExterno = 7,
+        EnvíoaSRENAMECA = 8,
+        CargaValidaciónSRENAMECA = 9,
+        AcumulaciónResultadosReplica = 10,
+        MóduloInicialReglasReplica = 11,
+        MóduloReglasReplica = 12,
+        ResumenValidaciónReglasReplica = 13,
+        EnviadoResumenResultados = 14,
+        LiberaciónResultadosReplica = 15,
+        EnviadoaPenalizaciónReplica = 16
+
+
+
+
+
+
     }
 }
