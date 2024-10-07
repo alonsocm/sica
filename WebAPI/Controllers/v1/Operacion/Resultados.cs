@@ -135,7 +135,6 @@ namespace WebAPI.Controllers.v1.Operacion
                 Filter = filters,
                 OrderBy = orderBy
             }));
-
         }
 
         [HttpGet("GetDistinctValuesFromColumnRevisionResultados")]

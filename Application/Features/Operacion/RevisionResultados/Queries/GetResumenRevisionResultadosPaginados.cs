@@ -19,7 +19,6 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
         public List<Filter>? Filter { get; set; }
         public OrderBy? OrderBy { get; set; }
     }
-
     public class GetResumenRevisionResultadosPaginadosHandler : IRequestHandler<GetResumenRevisionResultadosPaginados, PagedResponse<IEnumerable<ResultadoMuestreoDto>>>
     {
         private readonly IResumenResRepository _repositoryAsync;
@@ -28,7 +27,6 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
         {
             _repositoryAsync = repository;
         }
-
         public async Task<PagedResponse<IEnumerable<ResultadoMuestreoDto>>> Handle(GetResumenRevisionResultadosPaginados request, CancellationToken cancellationToken)
         {
             var datos = await _repositoryAsync.GetResumenResultadosMuestreoAsync(request.EstatusId, request.UserId, request.IsOCDL);
@@ -51,9 +49,9 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
                 datos = filteredDatos.ToList();
             }
 
-
             if (request.OrderBy != null)
             {
+
                 if (request.OrderBy.Type == "asc")
                 {
                     datos = datos.AsQueryable().OrderBy(QueryExpression<ResultadoMuestreoDto>.GetOrderByExpression(request.OrderBy.Column)).ToList();
@@ -62,6 +60,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
                 {
                     datos = datos.AsQueryable().OrderByDescending(QueryExpression<ResultadoMuestreoDto>.GetOrderByExpression(request.OrderBy.Column)).ToList();
                 }
+
             }
             return PagedResponse<ResultadoMuestreoDto>.CreatePagedReponse(datos, request.Page, request.PageSize);
         }
