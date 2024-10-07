@@ -1,15 +1,13 @@
 ﻿using Application.DTOs;
-using Application.DTOs.Catalogos;
+using Application.DTOs.RevisionOCDL;
 using Application.Expressions;
 using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace Application.Features.Operacion.RevisionResultados.Queries
 {
-    public class GetResumenRevisionResultadosPaginados : IRequest<PagedResponse<IEnumerable<ResultadoMuestreoDto>>>
+    public class ResultadosValidadosPorOCDL : IRequest<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>>
     {
         public int EstatusId { get; set; }
         public int UserId { get; set; }
@@ -19,17 +17,17 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
         public List<Filter>? Filter { get; set; }
         public OrderBy? OrderBy { get; set; }
     }
-    public class GetResumenRevisionResultadosPaginadosHandler : IRequestHandler<GetResumenRevisionResultadosPaginados, PagedResponse<IEnumerable<ResultadoMuestreoDto>>>
+    public class ResultadosValidadosPorOCDLHandler : IRequestHandler<ResultadosValidadosPorOCDL, PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>>
     {
         private readonly IResumenResRepository _repositoryAsync;
 
-        public GetResumenRevisionResultadosPaginadosHandler(IResumenResRepository repository)
+        public ResultadosValidadosPorOCDLHandler(IResumenResRepository repository)
         {
             _repositoryAsync = repository;
         }
-        public async Task<PagedResponse<IEnumerable<ResultadoMuestreoDto>>> Handle(GetResumenRevisionResultadosPaginados request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>> Handle(ResultadosValidadosPorOCDL request, CancellationToken cancellationToken)
         {
-            var datos = await _repositoryAsync.GetResumenResultadosMuestreoAsync(request.EstatusId, request.UserId, request.IsOCDL);
+            var datos = await _repositoryAsync.ResultadosValidadosPorOCDLAsync(request.EstatusId, request.IsOCDL);
 
             if (datos == null || !datos.Any())
             {
@@ -39,7 +37,7 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
             if (request.Filter != null && request.Filter.Any())
             {
                 var filteredDatos = datos.AsQueryable();
-                var expressions = QueryExpression<ResultadoMuestreoDto>.GetExpressionList(request.Filter);
+                var expressions = QueryExpression<ResultadosValidadosPorOCDLDTO>.GetExpressionList(request.Filter);
 
                 foreach (var filter in expressions)
                 {
@@ -54,15 +52,15 @@ namespace Application.Features.Operacion.RevisionResultados.Queries
 
                 if (request.OrderBy.Type == "asc")
                 {
-                    datos = datos.AsQueryable().OrderBy(QueryExpression<ResultadoMuestreoDto>.GetOrderByExpression(request.OrderBy.Column)).ToList();
+                    datos = datos.AsQueryable().OrderBy(QueryExpression<ResultadosValidadosPorOCDLDTO>.GetOrderByExpression(request.OrderBy.Column)).ToList();
                 }
                 else if (request.OrderBy.Type == "desc")
                 {
-                    datos = datos.AsQueryable().OrderByDescending(QueryExpression<ResultadoMuestreoDto>.GetOrderByExpression(request.OrderBy.Column)).ToList();
+                    datos = datos.AsQueryable().OrderByDescending(QueryExpression<ResultadosValidadosPorOCDLDTO>.GetOrderByExpression(request.OrderBy.Column)).ToList();
                 }
 
             }
-            return PagedResponse<ResultadoMuestreoDto>.CreatePagedReponse(datos, request.Page, request.PageSize);
+            return PagedResponse<ResultadosValidadosPorOCDLDTO>.CreatePagedReponse(datos, request.Page, request.PageSize);
         }
     }
 }

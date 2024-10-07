@@ -104,8 +104,8 @@ namespace WebAPI.Controllers.v1.Operacion
             }));
         }
 
-        [HttpGet("MuestreosPorFiltroyPaginados")]
-        public async Task<IActionResult> Get(int estatusId, int userId, bool isOCDL, int page, int pageSize, string? filter = "", string? order = "")
+        [HttpGet("ResultadosValidadosPorOCDL")]
+        public async Task<IActionResult> Get(int estatusId, bool isOCDL, int page, int pageSize, string? filter = "", string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -125,10 +125,9 @@ namespace WebAPI.Controllers.v1.Operacion
                 };
             }
 
-            return Ok(await Mediator.Send(new GetResumenRevisionResultadosPaginados
+            return Ok(await Mediator.Send(new ResultadosValidadosPorOCDL
             {
                 EstatusId = estatusId,
-                UserId = userId,
                 IsOCDL = isOCDL,
                 Page = page,
                 PageSize = pageSize,
@@ -137,8 +136,8 @@ namespace WebAPI.Controllers.v1.Operacion
             }));
         }
 
-        [HttpGet("GetDistinctValuesFromColumnRevisionResultados")]
-        public IActionResult Get(int estatusId, int userId, bool isOCDL, string? filter, string column)
+        [HttpGet("GetDistinctValuesFromColumnOCDL")]
+        public IActionResult Get(int estatusId, bool isOCDL, string? filter, string column)
         {
             var filters = new List<Filter>();
 
@@ -147,11 +146,10 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            var data = Mediator.Send(new GetResumenRevisionResultadosPaginados
+            var data = Mediator.Send(new ResultadosValidadosPorOCDL
             {
                 Filter = filters,
                 EstatusId = estatusId,
-                UserId = userId,
                 IsOCDL = isOCDL
             }).Result.Data;
 

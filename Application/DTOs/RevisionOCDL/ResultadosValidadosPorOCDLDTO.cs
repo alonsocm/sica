@@ -23,6 +23,7 @@ namespace Application.DTOs.RevisionOCDL
         public string EstatusResultado { get; set; } = string.Empty;
         public int EstatusId { get; set; }
         public int? EstatusOCDL { get; set; }
+        public int? EstatusSECAIA { get; set; }
 
     }    
 }
