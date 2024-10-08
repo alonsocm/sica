@@ -304,9 +304,8 @@ namespace Persistence.Repository
         }
         public async Task<int> LiberarResultados(IEnumerable<long> resultados)
         {
-            //TODO: Cambiar el estatus. Falta agregar uno en la tabla EstatusResultado, aquí no aplica el IncidenciasResultados
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
-                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
+                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos));
         }
     }
 }

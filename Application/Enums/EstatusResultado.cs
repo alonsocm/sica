@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Enums
+﻿namespace Application.Enums
 {
     public enum EstatusResultado
     {
-        
-
-
         Liberaciondemonitoreos = 1,
         Liberaciondemonitoreosconextencióndefecha = 2,
         RevisiónOCDLSECAIA = 3,
@@ -29,11 +20,5 @@ namespace Application.Enums
         EnviadoResumenResultados = 14,
         LiberaciónResultadosReplica = 15,
         EnviadoaPenalizaciónReplica = 16
-
-
-
-
-
-
     }
 }
