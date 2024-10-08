@@ -71,6 +71,7 @@ import { LaboratoriosComponent } from './modules/catalogos/laboratorios/pages/la
 import { LimiteLaboratoriosComponent } from './modules/catalogos/limitesLaboratorios/pages/limite-laboratorios.component';
 import { IncideciasResultadosComponent } from './modules/muestreo/incidencias/pages/incidecias-resultados/incidecias-resultados.component';
 import { CorreoComponent } from './shared/correo/correo.component';
+import { LiberacionResultadosComponent } from './modules/muestreo/liberacion/pages/liberacion-resultados/liberacion-resultados.component';
 
 
 @NgModule({
@@ -130,7 +131,7 @@ import { CorreoComponent } from './shared/correo/correo.component';
     NotificacionEmergenteComponent,
     ParametrosComponent,
     NotificacionEmergenteComponent,  
-    SitiosComponent, TipoCuerpoAguaComponent, LaboratoriosComponent, LimiteLaboratoriosComponent, IncideciasResultadosComponent, CorreoComponent,
+    SitiosComponent, TipoCuerpoAguaComponent, LaboratoriosComponent, LimiteLaboratoriosComponent, IncideciasResultadosComponent, CorreoComponent, LiberacionResultadosComponent,
   ],
   imports: [
     BrowserModule,

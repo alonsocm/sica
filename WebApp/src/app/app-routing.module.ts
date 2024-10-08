@@ -48,6 +48,7 @@ import { TipoCuerpoAguaComponent } from './modules/catalogos/tipoCuerpoAgua/page
 import { LaboratoriosComponent } from './modules/catalogos/laboratorios/pages/laboratorios.component';
 import { LimiteLaboratoriosComponent } from './modules/catalogos/limitesLaboratorios/pages/limite-laboratorios.component';
 import { IncideciasResultadosComponent } from './modules/muestreo/incidencias/pages/incidecias-resultados/incidecias-resultados.component';
+import { LiberacionResultadosComponent } from './modules/muestreo/liberacion/pages/liberacion-resultados/liberacion-resultados.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -297,13 +298,16 @@ const routes: Routes = [
     component: LimiteLaboratoriosComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
-
   {
     path: 'incidencias-resultados',
     component: IncideciasResultadosComponent,
     children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
   },
-
+  {
+    path: 'liberacion-resultados',
+    component: LiberacionResultadosComponent,
+    children: [{ path: '', outlet: 'menu', component: NavRootComponent }],
+  },
   { path: '**', component: NotFoundComponent },
 ];
 
