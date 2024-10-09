@@ -5,29 +5,27 @@ using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 
-namespace Application.Features.Operacion.RevisionResultados.Queries
+namespace Application.Features.Operacion.RevisionOCDL.Queries
 {
-    public class ResultadosValidadosPorOCDL : IRequest<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>>
+    public class GetResultadosValidadosPorOCDL : IRequest<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>>
     {
-        public int EstatusId { get; set; }
-        public int UserId { get; set; }
         public bool IsOCDL { get; set; } = false;
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter>? Filter { get; set; }
         public OrderBy? OrderBy { get; set; }
     }
-    public class ResultadosValidadosPorOCDLHandler : IRequestHandler<ResultadosValidadosPorOCDL, PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>>
+    public class GetResultadosValidadosPorOCDLHandler : IRequestHandler<GetResultadosValidadosPorOCDL, PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>>
     {
-        private readonly IResumenResRepository _repositoryAsync;
+        private readonly IResultado _repositoryAsync;
 
-        public ResultadosValidadosPorOCDLHandler(IResumenResRepository repository)
+        public GetResultadosValidadosPorOCDLHandler(IResultado repository)
         {
             _repositoryAsync = repository;
         }
-        public async Task<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>> Handle(ResultadosValidadosPorOCDL request, CancellationToken cancellationToken)
+        public async Task<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>> Handle(GetResultadosValidadosPorOCDL request, CancellationToken cancellationToken)
         {
-            var datos = await _repositoryAsync.ResultadosValidadosPorOCDLAsync(request.EstatusId, request.IsOCDL);
+            var datos = await _repositoryAsync.GetResultadosValidadosPorOCDLAsync(request.IsOCDL);
 
             if (datos == null || !datos.Any())
             {

@@ -5,21 +5,21 @@ namespace Application.DTOs.RevisionOCDL
     public class ResultadosValidadosPorOCDLDTO
     {
         public string NoEntregaOCDL { get; set; } = string.Empty;
-        public string? ClaveUnica { get; set; }
+        public string ClaveUnica { get; set; } = string.Empty;
         public string ClaveSitio { get; set; } = string.Empty;
         public string ClaveMonitoreo { get; set; } = string.Empty;
         public string NombreSitio { get; set; } = string.Empty;
-        public string? ClaveParametro { get; set; }
+        public string ClaveParametro { get; set; } = string.Empty;
         public string Laboratorio { get; set; } = string.Empty;        
-        public string? TipoCuerpoAgua{ get; set; }
-        public string? TipoCuerpoAguaOriginal { get; set; }
-        public string? Resultado { get; set; }
+        public string TipoCuerpoAgua { get; set; } = string.Empty;
+        public string TipoCuerpoAguaOriginal { get; set; } = string.Empty;
+        public string Resultado { get; set; } = string.Empty;
         public string TipoAprobacion { get; set; } = string.Empty;
-        public string? EsCorrectoResultado { get; set; }
-        public string? Observaciones { get; set; }
-        public string? FechaLimiteRevision { get; set; }
+        public string EsCorrectoResultado { get; set; } = string.Empty;
+        public string Observaciones { get; set; } = string.Empty;
+        public string FechaLimiteRevision { get; set; } = string.Empty;
         public string NombreUsuario { get; set; } = string.Empty;
-        public string? FechaRealizacion { get; set; }
+        public string FechaRealizacion { get; set; } = string.Empty;
         public string EstatusResultado { get; set; } = string.Empty;
         public int EstatusId { get; set; }
         public int? EstatusOCDL { get; set; }

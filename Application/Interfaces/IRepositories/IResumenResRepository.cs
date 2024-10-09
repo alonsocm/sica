@@ -12,7 +12,5 @@ namespace Application.Interfaces.IRepositories
         List<ResultadoMuestreo> ConvertMuestreosParamsListSECAIA(List<UpdateMuestreoSECAIAExcelDto> updateMuestreoExcelDtoList);
         Task<IEnumerable<RegistroOriginalDto>> GetResumenResultadosTemp(int userId, int? estatusId);
         Task<IEnumerable<ResultadoMuestreoDto>> GetResultadosParametrosEstatus(long userId, long estatusId);
-        Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> ResultadosValidadosPorOCDLAsync(int estatusId, bool isOCDL);
-
     }
 }

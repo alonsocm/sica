@@ -1,9 +1,13 @@
 ﻿using Application.DTOs;
+using Application.DTOs.RevisionOCDL;
 using Application.DTOs.Users;
+using Application.Enums;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
+using EstatusMuestreo = Application.Enums.EstatusMuestreo;
+
 
 namespace Persistence.Repository
 {
@@ -307,6 +311,52 @@ namespace Persistence.Repository
             //TODO: Cambiar el estatus. Falta agregar uno en la tabla EstatusResultado, aquí no aplica el IncidenciasResultados
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
+        }
+        public async Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync(bool isOCDL)
+        {
+            IEnumerable<ResultadosValidadosPorOCDLDTO> resultadosMuestreos = Enumerable.Empty<ResultadosValidadosPorOCDLDTO>();
+            /*EL ESTATUS QUE TENIA ES EL “ 9 “.   ID = 9	DESCRIPCIÓN  = REVISIÓN OCDL/SECAIA	ETIQUETA = ENVIADO, SE PONE EL 6 POR MODIFICACIONES EN LOS ENUMS*/
+            if (await _dbContext.Muestreo
+                .AnyAsync(x => isOCDL ?
+                (x.EstatusOcdl == (int)EstatusMuestreo.ResumenValidaciónReglas)  
+                : (x.EstatusSecaia == (int)EstatusMuestreo.ResumenValidaciónReglas)))
+            {
+                resultadosMuestreos = (from rm in _dbContext.ResultadoMuestreo
+                                       join vcm in _dbContext.VwClaveMuestreo on rm.Muestreo.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
+                                       join users in _dbContext.Usuario on rm.Muestreo.UsuarioRevisionOcdlid equals users.Id into usuario
+                                       from usr in usuario.DefaultIfEmpty()
+                                       where rm.EsCorrectoOcdl != null &&
+                                        (isOCDL ? (rm.Muestreo.EstatusOcdl == (int)EstatusOcdlSEcaia.Validado || rm.Muestreo.EstatusOcdl == 
+                                        (int)EstatusMuestreo.ResumenValidaciónReglas) 
+                                        : (rm.Muestreo.EstatusSecaia == (int)EstatusOcdlSEcaia.Validado || rm.Muestreo.EstatusSecaia == 
+                                        (int)EstatusMuestreo.ResumenValidaciónReglas))
+                                       orderby rm.Parametro.ClaveParametro ascending
+                                       select new ResultadosValidadosPorOCDLDTO
+                                       {
+                                           Resultado = rm.Resultado,
+                                           Observaciones = (rm.ObservacionesOcdlid == null || rm.ObservacionesOcdlid == 11) ? rm.ObservacionesOcdl : rm.ObservacionesOcdlNavigation.Descripcion,
+                                           NoEntregaOCDL = rm.Muestreo.NumeroEntrega.ToString() ?? "0",
+                                           ClaveUnica = $"{vcm.ClaveMuestreo}{rm.Parametro.ClaveParametro}" ?? string.Empty,
+                                           ClaveSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                           ClaveMonitoreo = $"{vcm.ClaveMuestreo}",
+                                           NombreSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
+                                           ClaveParametro = rm.Parametro.ClaveParametro,
+                                           Laboratorio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
+                                           TipoCuerpoAgua = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                                           TipoCuerpoAguaOriginal = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                                           NombreUsuario = isOCDL ? $"{usr.Nombre} {usr.ApellidoPaterno} {usr.ApellidoMaterno}" : $"{rm.Muestreo.UsuarioRevisionSecaia.Nombre} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoPaterno} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoMaterno}",
+                                           EstatusResultado = isOCDL ? rm.Muestreo.EstatusOcdlNavigation.Descripcion : rm.Muestreo.EstatusSecaiaNavigation.Descripcion,
+                                           TipoAprobacion = rm.Muestreo.TipoAprobacion != null ? rm.Muestreo.TipoAprobacion.Descripcion.ToString() : string.Empty,
+                                           EstatusId = rm.Muestreo.EstatusId,
+                                           EsCorrectoResultado = (rm.EsCorrectoOcdl == true) ? "SI" : "NO",
+                                           FechaRealizacion = rm.Muestreo.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                                           FechaLimiteRevision = rm.Muestreo.FechaLimiteRevision.Value.ToString("dd/MM/yyyy"),
+                                           EstatusOCDL = rm.Muestreo.EstatusOcdl,
+                                           EstatusSECAIA = rm.Muestreo.EstatusSecaia
+                                       });
+            }
+
+            return resultadosMuestreos;
         }
     }
 }

@@ -388,57 +388,5 @@ namespace Persistence.Repository
             });
             return lstResultados;
         }
-        public async Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> ResultadosValidadosPorOCDLAsync(int estatusId, bool isOCDL)
-        {
-            List<ResultadosValidadosPorOCDLDTO> resultadosMuestreos = new();
-            int userId = 0;
-            var usuarioDl = await _dbContext.Usuario
-                    .Include(t => t.DireccionLocal)
-                    .Include(t => t.Cuenca)
-                    .FirstOrDefaultAsync(t => t.Id == userId);
-
-            if (_dbContext.Muestreo.Any(x => (isOCDL) ? (x.EstatusOcdl == estatusId) : (x.EstatusSecaia == estatusId)))
-            {
-                // Asumiendo que 'userId' está definido en algún lugar
-
-                resultadosMuestreos = (from rm in _dbContext.ResultadoMuestreo
-                                       join vcm in _dbContext.VwClaveMuestreo on rm.Muestreo.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
-                                       join users in _dbContext.Usuario on rm.Muestreo.UsuarioRevisionOcdlid equals users.Id into usuario
-                                       from usr in usuario.DefaultIfEmpty()
-                                       where
-                                           (isOCDL ? (rm.Muestreo.EstatusOcdl == estatusId || rm.Muestreo.EstatusOcdl == estatusVencido)
-                                                   : (rm.Muestreo.EstatusSecaia == estatusId || rm.Muestreo.EstatusSecaia == estatusVencido))
-                                       //&&  Puedes descomentar y ajustar esta sección si necesitas filtrar por Cuenca o Dirección Local
-                                       //      (rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.OcuencaId == usuarioDl.CuencaId ||
-                                       //       rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.DlocalId == usuarioDl.DireccionLocalId)
-                                       orderby rm.Parametro.ClaveParametro ascending
-                                       select new ResultadosValidadosPorOCDLDTO
-                                       {
-                                           Resultado = rm.Resultado,
-                                           //checar el valor de observaciones OCDL y SECAIA
-                                           Observaciones = (rm.ObservacionesOcdlid == null || rm.ObservacionesOcdlid == 11) ? rm.ObservacionesOcdl : rm.ObservacionesOcdlNavigation.Descripcion,
-                                           NoEntregaOCDL = rm.Muestreo.NumeroEntrega.ToString() ?? "0",
-                                           ClaveUnica = $"{vcm.ClaveMuestreo}{rm.Parametro.ClaveParametro}" ?? string.Empty,
-                                           ClaveSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
-                                           ClaveMonitoreo = $"{vcm.ClaveMuestreo}",
-                                           NombreSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
-                                           ClaveParametro = rm.Parametro.ClaveParametro,
-                                           Laboratorio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
-                                           TipoCuerpoAgua = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                           TipoCuerpoAguaOriginal = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                           NombreUsuario = isOCDL ? $"{usr.Nombre} {usr.ApellidoPaterno} {usr.ApellidoMaterno}" : $"{rm.Muestreo.UsuarioRevisionSecaia.Nombre} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoPaterno} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoMaterno}",
-                                           EstatusResultado = isOCDL ? rm.Muestreo.EstatusOcdlNavigation.Descripcion : rm.Muestreo.EstatusSecaiaNavigation.Descripcion,
-                                           TipoAprobacion = rm.Muestreo.TipoAprobacion != null ? rm.Muestreo.TipoAprobacion.Descripcion.ToString() : string.Empty,
-                                           EstatusId = rm.Muestreo.EstatusId,
-                                           EsCorrectoResultado = (rm.EsCorrectoOcdl == true) ? "SI" : "NO",
-                                           FechaRealizacion = rm.Muestreo.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                           FechaLimiteRevision = rm.Muestreo.FechaLimiteRevision.Value.ToString("dd/MM/yyyy"),
-                                           EstatusOCDL = rm.Muestreo.EstatusOcdl,
-                                           EstatusSECAIA = rm.Muestreo.EstatusSecaia
-                                       }).ToList();
-            }
-
-            return resultadosMuestreos;
-        }
     }
 }

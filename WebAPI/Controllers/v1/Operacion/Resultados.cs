@@ -7,6 +7,7 @@ using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Comands.Acumulacion;
 using Application.Features.Operacion.Resultados.Queries;
+using Application.Features.Operacion.RevisionOCDL.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
 using Application.Features.Resultados.Comands;
@@ -105,7 +106,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> Get(int estatusId, bool isOCDL, int page, int pageSize, string? filter = "", string? order = "")
+        public async Task<IActionResult> Get(bool isOCDL, int page, int pageSize, string? filter = "", string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -125,10 +126,9 @@ namespace WebAPI.Controllers.v1.Operacion
                 };
             }
 
-            return Ok(await Mediator.Send(new ResultadosValidadosPorOCDL
+            return Ok(await Mediator.Send(new GetResultadosValidadosPorOCDL
             {
-                EstatusId = estatusId,
-                IsOCDL = isOCDL,
+                IsOCDL = isOCDL,             
                 Page = page,
                 PageSize = pageSize,
                 Filter = filters,
@@ -137,7 +137,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetDistinctValuesFromColumnOCDL")]
-        public IActionResult Get(int estatusId, bool isOCDL, string? filter, string column)
+        public IActionResult Get( bool isOCDL, string? filter, string column)
         {
             var filters = new List<Filter>();
 
@@ -146,10 +146,9 @@ namespace WebAPI.Controllers.v1.Operacion
                 filters = QueryParam.GetFilters(filter);
             }
 
-            var data = Mediator.Send(new ResultadosValidadosPorOCDL
+            var data = Mediator.Send(new GetResultadosValidadosPorOCDL
             {
                 Filter = filters,
-                EstatusId = estatusId,
                 IsOCDL = isOCDL
             }).Result.Data;
 
