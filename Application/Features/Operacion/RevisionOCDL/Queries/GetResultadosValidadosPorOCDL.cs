@@ -27,7 +27,7 @@ namespace Application.Features.Operacion.RevisionOCDL.Queries
         {
             var datos = await _repositoryAsync.GetResultadosValidadosPorOCDLAsync(request.IsOCDL);
 
-            if (datos == null || !datos.Any())
+            if (request.IsOCDL == false)
             {
                 throw new KeyNotFoundException("No se encontraron datos asociados a resultados revisados");
             }

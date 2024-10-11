@@ -19,9 +19,8 @@ export class TotalService {
     return this.http.get(environment.apiUrl + '/resultados/MuestreosxFiltro?estatusId=' + idEstatus
       + '&userId=' + localStorage.getItem('idUsuario') + '&isOCDL=' + isOCDL);
   }
-  getMuestreosPorParametro(
-    idEstatus: number,
-    isOCDL: boolean,
+  getResultadosValidadosPorOCDL(
+   isOCDL: boolean,
     page: number,
     pageSize: number,
     filter: string,
@@ -30,8 +29,6 @@ export class TotalService {
     const userId = localStorage.getItem('idUsuario') || '';
     let params = new HttpParams({
       fromObject: {
-        estatusId: idEstatus,
-        userId: userId,
         isOCDL: isOCDL,
         page: page,
         pageSize: pageSize,
@@ -39,27 +36,24 @@ export class TotalService {
         order: order != null ? order.column + '_' + order.type : '',
       },
     });
-    return this.http.get(environment.apiUrl+'/resultados/MuestreosPorFiltroyPaginados', { params });
+    return this.http.get(environment.apiUrl+'/resultados/ResultadosValidadosPorOCDL', { params });
   }
 
   getDistinct(
     column: string,
     filter: string,
-    idEstatus: number,
     isOCDL: boolean,
   ): Observable<Object> {
     let userId = localStorage.getItem('idUsuario') || '';
     const params = new HttpParams({
       fromObject: {
-        estatusId: idEstatus,
         isOCDL: isOCDL,
         column: column,
         filter: filter,
-        userId: userId
       },
     });
     return this.http.get(
-      environment.apiUrl + '/resultados/GetDistinctValuesFromColumnRevisionResultados',
+      environment.apiUrl + '/resultados/GetDistinctValuesFromColumnOCDL',
       { params }
     );
   }

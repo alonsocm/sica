@@ -8,6 +8,8 @@ import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
 import { Resultado } from 'src/app/interfaces/Resultado.interface';
 import { Item } from 'src/app/interfaces/filter/item';
+import { FileService } from 'src/app/shared/services/file.service';
+import { NotificationType } from 'src/app/shared/enums/notification-type';
 @Component({
   selector: 'app-validado',
   templateUrl: './validado.component.html',
@@ -19,14 +21,12 @@ export class ValidadoComponent
 {
   resultados: Array<Resultado> = [];
   resultadosSeleccionados: Array<Resultado> = [];
-  muestreosSeleccionados: Array<Resultado> = [];
-  muestreos: Array<Resultado> = [];
-  firstColumnWidth: number = 75;
+  notificationService: any;
 
   constructor(
     private totalService: TotalService,
     private muestreoService: MuestreoService,
-    private filtroHistorialService: FiltroHistorialService,
+    private filtroHistorialService: FiltroHistorialService
   ) {
     super();
   }
@@ -35,11 +35,11 @@ export class ValidadoComponent
     this.filtroHistorialService.columnName.subscribe((columnName) => {
       if (columnName !== '') {
         this.deleteFilter(columnName);
-        this.consultarMuestreosSeleccionados();
+        this.consultarResultados();
       }
     });
     this.definirColumnas();
-    this.consultarMuestreosSeleccionados();
+    this.consultarResultados();
   }
   definirColumnas() {
     let nombresColumnas: Array<Column> = [
@@ -269,19 +269,19 @@ export class ValidadoComponent
     this.setHeadersList(this.columns);
   }
 
-  consultarMuestreosSeleccionados(
+  consultarResultados(
     page: number = this.page,
     pageSize: number = this.NoPage,
     filter: string = this.cadena
   ): void {
+    let filtroCodificado = encodeURIComponent(filter);
     this.loading = true;
     this.totalService
-      .getMuestreosPorParametro(
-        estatusOcdlSecaia.Validado,
+      .getResultadosValidadosPorOCDL(
         true,
         page,
         pageSize,
-        filter,
+        filtroCodificado,
         this.orderBy
       )
       .subscribe({
@@ -294,7 +294,9 @@ export class ValidadoComponent
             this.resultados,
             this.resultadosSeleccionados
           );
-          this.selectedPage = this.anyUnselected(this.resultados) ? false : true;
+          this.selectedPage = this.anyUnselected(this.resultados)
+            ? false
+            : true;
           this.loading = false;
         },
         error: (error) => {
@@ -302,7 +304,6 @@ export class ValidadoComponent
         },
       });
   }
-
   getPreviousSelected(
     resultados: Array<Resultado>,
     resultadosSeleccionados: Array<Resultado>
@@ -317,12 +318,10 @@ export class ValidadoComponent
       }
     });
   }
-
   sort(column: string, type: string) {
     this.orderBy = { column, type };
     this.totalService
-      .getMuestreosPorParametro(
-        estatusOcdlSecaia.Validado,
+      .getResultadosValidadosPorOCDL(
         true,
         this.page,
         this.NoPage,
@@ -339,8 +338,7 @@ export class ValidadoComponent
         error: (error) => {},
       });
   }
-  onSelectClick(resultados: Resultado)
-  {
+  onSelectClick(resultados: Resultado) {
     if (this.selectedPage) this.selectedPage = false;
     if (this.selectAllOption) this.selectAllOption = false;
     if (this.allSelected) this.allSelected = false;
@@ -358,16 +356,15 @@ export class ValidadoComponent
       }
     }
   }
-
   onFilterClick(columna: Column, isFiltroEspecial: boolean) {
     this.loading = true;
     this.existeFiltrado = true;
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
-      this.consultarMuestreosSeleccionados()
+    this.consultarResultados();
 
-      this.columns
+    this.columns
       .filter((x) => x.isLatestFilter)
       .map((m) => {
         m.isLatestFilter = false;
@@ -391,7 +388,6 @@ export class ValidadoComponent
     );
     this.hideColumnFilter();
   }
-
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions();
 
@@ -412,8 +408,7 @@ export class ValidadoComponent
     }
 
     if (this.requiresToRefreshColumnValues(column)) {
-      this.totalService.getDistinct(column.name, this.cadena, estatusOcdlSecaia.Validado, true)
-      .subscribe({
+      this.totalService.getDistinct(column.name, this.cadena, true).subscribe({
         next: (response: any) => {
           column.data = response.data.map((register: any) => {
             let item: Item = {
@@ -422,32 +417,100 @@ export class ValidadoComponent
             };
             return item;
           });
-            column.filteredData = column.data;
-            this.ordenarAscedente(column.filteredData);
-            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-          },
-          error: (error) => {},
-        });
+          column.filteredData = column.data;
+          this.ordenarAscedente(column.filteredData);
+          this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+        },
+        error: (error) => {},
+      });
     }
     if (esFiltroEspecial) {
       column.selectAll = false;
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
   }
-
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
     this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
-    this.consultarMuestreosSeleccionados();
+    this.consultarResultados();
   }
-
   onPageClick(page: any) {
     this.page = page;
-    this.consultarMuestreosSeleccionados(page);
+    this.consultarResultados(page);
+  }
+  override onSelectPageClick(
+    resultados: Array<Resultado>,
+    resultadosSeleccionados: Array<Resultado>
+  ) {
+    resultados.map((m) => {
+      m.isChecked = this.selectedPage;
+
+      let index = resultadosSeleccionados.findIndex(
+        (d) => d.claveUnica === m.claveUnica
+      );
+
+      if (index == -1) {
+        //No existe en seleccionados, lo agremos
+        resultadosSeleccionados.push(m);
+      } else if (!this.selectedPage) {
+        //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados
+        resultadosSeleccionados.splice(index, 1);
+      }
+    });
+
+    this.showOrHideSelectAllOption();
+  }
+  onExportarResultadosClick(): void {
+    if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay información seleccionada para descargar',
+      });
+    }
+
+    this.loading = true;
+    let registrosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      registrosSeleccionados = this.resultadosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    this.totalService
+      .exportarResultadosValidados(this.resultadosSeleccionados)
+      .subscribe({
+        next: (response: any) => {
+          FileService.download(response, 'RESULTADOS_VALIDADOS.xlsx');
+          this.resetValues();
+          this.unselectMuestreos();
+          this.loading = false;
+        },
+        error: (response: any) => {
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible descargar la información',
+          });
+        },
+      });
+  }
+  resetValues() {
+    this.resultadosSeleccionados = [];
+    this.selectAllOption = false;
+    this.allSelected = false;
+    this.selectedPage = false;
+  }
+  unselectMuestreos() {
+    this.resultados.forEach((m) => (m.isChecked = false));
   }
 
-
-  exportarResultadosValidados() {}
-  consultarMonitoreosmuestreo() {}
   enviarMonitoreos() {}
+  seleccionarTodosmodal() {}
+  seleccionarmodal() {}
+  cambiarEstatusMuestreo() {}
+  consultarMonitoreosmuestreo() {}
 }
