@@ -1,4 +1,5 @@
-﻿using Application.DTOs.EvidenciasMuestreo;
+﻿using Application.DTOs;
+using Application.DTOs.EvidenciasMuestreo;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -65,5 +66,7 @@ namespace Persistence.Repository
 
             return informacionEvidenciaDtos;
         }
+
+        
     }
 }

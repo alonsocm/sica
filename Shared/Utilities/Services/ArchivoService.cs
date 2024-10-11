@@ -47,12 +47,12 @@ namespace Shared.Utilities.Services
         }
 
         //CAMBIAR POR METODO GENERAL
-        public bool GuardarEvidencias(EvidenciasReplicasResultado evidenciasReplicas)
+        public bool GuardarEvidencias(List<IFormFile> evidenciasReplicas)
         {
             var ruta = ObtenerRutaBaseEvidenciaReplica();
-            var directorioMuestreo = Directory.CreateDirectory(Path.Combine(ruta, evidenciasReplicas.ClaveUnica));
+            var directorioMuestreo = Directory.CreateDirectory(Path.Combine(ruta, DateTime.Now.ToShortDateString().Replace('/', '_')));
 
-            foreach (var archivo in evidenciasReplicas.Archivos)
+            foreach (var archivo in evidenciasReplicas)
             {
                 using var stream = File.Create(Path.Combine(directorioMuestreo.FullName, archivo.FileName));
                 archivo.CopyTo(stream);
@@ -249,21 +249,21 @@ namespace Shared.Utilities.Services
             return memoryStream.ToArray();
         }
 
-        public List<EvidenciasReplicasResultado> OrdenarEvidenciasClaveUnica(List<IFormFile> archivos)
-        {
-            var evidencias = new List<EvidenciasReplicasResultado>();
-            foreach (var archivo in archivos)
-            {
-                var claveUnica = archivo.FileName[..archivo.FileName.LastIndexOf("_")];
+        //public List<EvidenciasReplicasResultado> OrdenarEvidenciasClaveUnica(List<IFormFile> archivos)
+        //{
+        //    var evidencias = new List<EvidenciasReplicasResultado>();
+        //    foreach (var archivo in archivos)
+        //    {
+        //        var claveUnica = archivo.FileName[..archivo.FileName.LastIndexOf("_")];
               
-                if (!evidencias.Any(a => a.ClaveUnica == claveUnica))
-                {
-                    evidencias.Add(new EvidenciasReplicasResultado { ClaveUnica = claveUnica });
-                }
-                var evidencia = evidencias.Find(a => a.ClaveUnica == claveUnica);
-                evidencia?.Archivos.Add(archivo);
-            }
-            return evidencias;
-        }
+        //        if (!evidencias.Any(a => a.ClaveUnica == claveUnica))
+        //        {
+        //            evidencias.Add(new EvidenciasReplicasResultado { ClaveUnica = claveUnica });
+        //        }
+        //        var evidencia = evidencias.Find(a => a.ClaveUnica == claveUnica);
+        //        evidencia?.Archivos.Add(archivo);
+        //    }
+        //    return evidencias;
+        //}
     }
 }

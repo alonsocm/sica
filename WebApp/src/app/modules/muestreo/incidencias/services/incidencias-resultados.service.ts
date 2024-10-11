@@ -113,9 +113,7 @@ export class IncidenciasResultadosService {
     });
 
     return this.http.post(
-      environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileEvidencias',
-      formData
-    );
+      environment.apiUrl + '/ReplicasResultadosReglasValidacion/uploadfileEvidencias',formData);
   }
 
   descargarArchivos(replicas: Array<number>) {

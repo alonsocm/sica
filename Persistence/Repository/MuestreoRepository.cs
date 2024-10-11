@@ -3,11 +3,14 @@ using Application.DTOs.Catalogos;
 using Application.DTOs.EvidenciasMuestreo;
 using Application.DTOs.RevisionOCDL;
 using Application.DTOs.Users;
+using Application.Enums;
 using Application.Interfaces.IRepositories;
+using Application.Models;
 using Domain.Entities;
 using FluentValidation.Validators;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
+using System.ComponentModel.DataAnnotations;
 
 namespace Persistence.Repository
 {
@@ -330,7 +333,7 @@ namespace Persistence.Repository
                                        NumParametrosCargados = Convert.ToInt32(resultados.NumDatosReportados),
                                        //muestreoCompletoPorResultados = (resultados.MuestreoCompletoPorResultados == null) ? "SI" : resultados.MuestreoCompletoPorResultados.ToString(),
                                        MuestreoCompletoPorResultados = resultados.MuestreoCompletoPorResultados.ToString(),
-                                       CumpleReglasCondic = resultados.CumpleConLasReglasCondicionantes ??"SI",
+                                       CumpleReglasCondic = resultados.CumpleConLasReglasCondicionantes ?? "SI",
                                        AnioOperacion = resultados.AnioOperacion ?? 0,
                                        NumeroCarga = resultados.NumeroCarga.ToString() + "-" + resultados.AnioOperacion ?? string.Empty,
                                        MuestreoId = resultados.MuestreoId,
@@ -472,14 +475,14 @@ namespace Persistence.Repository
 
         public async Task<IEnumerable<ReplicasResultadosReglasValidacionDto>> GetReplicasResultadosReglaValidacion(List<int> EstatusResultadoId)
         {
-            
+
             var replicasResultados = await (from res in _dbContext.ResultadoMuestreo
                                             join m in _dbContext.Muestreo on res.MuestreoId equals m.Id
                                             join vcm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
                                             join estatus in _dbContext.EstatusResultado on res.EstatusResultadoId equals estatus.Id
                                             where EstatusResultadoId.Contains((int)res.EstatusResultadoId)
                                             select new ReplicasResultadosReglasValidacionDto
-                                            {                                               
+                                            {
                                                 EstatusResultadoId = (int)res.EstatusResultadoId,
                                                 NombreEstatus = estatus.Etiqueta,
                                                 NumeroCarga = m.NumeroCarga.ToString(),
@@ -494,13 +497,7 @@ namespace Persistence.Repository
                                                 Resultado = res.Resultado,
                                                 CorrectoResultadoReglaValidacion = res.ResultadoReglas == "OK" ? true : false,
                                                 ObservacionReglaValidacion = res.ResultadoReglas,
-                                               
-
                                             }).ToListAsync();
-
-
-
-
 
             replicasResultados.ForEach(async replica =>
             {
@@ -511,8 +508,13 @@ namespace Persistence.Repository
 
                 if (!lstEstatus.Contains(replica.EstatusResultadoId))
                 {
-
-                    var dato = _dbContext.ReplicasResultadosReglasValidacion.Where(x => x.ResultadoMuestreoId.Equals(replica.ResultadoMuestreoId)).FirstOrDefault();
+                    var dato = _dbContext.ReplicasResultadosReglasValidacion.Where(x => x.ResultadoMuestreoId.Equals(replica.ResultadoMuestreoId)).FirstOrDefault();                    
+                   
+                        var archivos = (from relReplica in _dbContext.RelacionEvidenciasReplicaResultadosReglas
+                                         join replicaResultados in _dbContext.ReplicasResultadosReglasValidacion on relReplica.ReplicasResultadosReglasValidacionId equals replicaResultados.Id
+                                         join evid in _dbContext.EvidenciasReplicasResultadoReglasValidacion on relReplica.EvidenciasReplicasResultadoReglasValidacionId equals evid.Id
+                                         where replicaResultados.ResultadoMuestreoId == replica.ResultadoMuestreoId
+                                         select evid).ToList();
 
                     if (dato != null)
                     {
@@ -530,15 +532,17 @@ namespace Persistence.Repository
                         replica.FechaEstatusFinal = dato.FechaEstatusFinal;
                         replica.UsuarioIdReviso = dato.UsuarioIdReviso;
 
+                        if (archivos.Any())
+                        {
+                            archivos.Select(x => x.NombreArchivo).ToList().ForEach(archivo => replica.NombreEvidencias += archivo + '/');
+                            replica.NombreEvidencias = replica.NombreEvidencias.TrimEnd('/');
+                        }
+
                         if (dato.UsuarioIdReviso != 0)
                         {
                             var usuarioValido = _dbContext.Usuario.Where(x => x.Id.Equals(replica.UsuarioIdReviso)).FirstOrDefault();
                             replica.UsuarioReviso = usuarioValido.Nombre + ' ' + usuarioValido.ApellidoPaterno + ' ' + usuarioValido.ApellidoPaterno;
                         }
-
-                        //var evidenciasReplicas = _dbContext.EvidenciasReplicasResultadoReglasValidacion.Where(x => x.ReplicasResultadoReglasValidacionId.Equals(replica.Id)).ToList();
-                        //evidenciasReplicas.ForEach(nombre => replica.NombreEvidencias += nombre.NombreArchivo + " ");
-                        //replica.Evidencias.AddRange(evidenciasReplicas.Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo , Sufijo = s.NombreArchivo.Substring(s.NombreArchivo.LastIndexOf('.'), s.NombreArchivo.Length - s.NombreArchivo.LastIndexOf('.'))}));
                     }
 
                 }
@@ -600,7 +604,7 @@ namespace Persistence.Repository
                             {
                                 MonitoreoId = m.Id,
                                 NumeroEntrega = m.NumeroEntrega.ToString() + "-" + m.AnioOperacion.ToString(),
-                                OCDL =  m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal != null ?
+                                OCDL = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal != null ?
                                         m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Descripcion :
                                         m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Descripcion,
                                 ClaveSitio = m.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,

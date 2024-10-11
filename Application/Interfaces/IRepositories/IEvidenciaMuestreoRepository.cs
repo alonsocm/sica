@@ -7,5 +7,7 @@ namespace Application.Interfaces.IRepositories
     {
         public Task<IEnumerable<InformacionEvidenciaDto>> GetInformacionEvidenciasAsync();
         public bool EliminarEvidenciasMuestreo(long idMuestreo);
+
+        
     }
 }
