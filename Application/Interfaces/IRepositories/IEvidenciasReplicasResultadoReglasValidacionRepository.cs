@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Application.Interfaces.IRepositories
 {
     public interface IEvidenciasReplicasResultadoReglasValidacionRepository: IRepository<EvidenciasReplicasResultadoReglasValidacion>
-    {
+    {        
     }
  
 }

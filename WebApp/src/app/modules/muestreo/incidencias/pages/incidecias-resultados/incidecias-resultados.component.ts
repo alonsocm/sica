@@ -351,6 +351,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         color: '#FF66FF',
         width: 75.79,
       },
+
       {
         name: 'observacionSrenameca',
         label: 'OBSERVACIÓN SRENAMECA',
@@ -766,7 +767,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         this.orderBy
       )
       .subscribe({
-        next: (response: any) => {          
+        next: (response: any) => {
           this.selectedPage = false;
           this.replicasResultados = response.data;
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
@@ -1051,7 +1052,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     nombreEvidencia: string = ''
   ) {
     let evidencias = (event.target as HTMLInputElement).files ?? new FileList();
-    let errores = this.validarTamanoArchivos(evidencias);   
+    let errores = this.validarTamanoArchivos(evidencias);
 
     if (errores !== '') {
       return this.notificationService.updateNotification({
@@ -1077,7 +1078,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         this.resetInputFile(this.fileUpload);        
         this.loading = !this.loading;
         let archivo = this.generarArchivoDeErrores(
-          response.error.Errors.toString()
+          response.error.Message.toString()
         );
         FileService.download(archivo, 'errores.txt');
       },

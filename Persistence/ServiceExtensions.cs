@@ -126,7 +126,7 @@ namespace Persistence
             services.AddTransient<IReplicasResultadosReglasValidacionRepository, ReplicasResultadosReglasValidacionRepository>();
             services.AddTransient<IEvidenciasReplicasResultadoReglasValidacionRepository, EvidenciasReplicasResultadoReglasValidacionRepository>();
             services.AddTransient<IRelacionEvidenciasReplicaResultadosReglasRepository, RelacionEvidenciasReplicaResultadosReglasRepository>();
-
+            services.AddTransient<IRepository<RelacionEvidenciasReplicaResultadosReglas>, RelacionEvidenciasReplicaResultadosReglasRepository>();
 
 
 
