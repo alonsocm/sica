@@ -2,7 +2,6 @@ import { HttpClient, HttpParams} from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 
 
 
@@ -18,44 +17,7 @@ export class TotalService {
   getResumenRevisionResultados(idEstatus: number, isOCDL: boolean) {
     return this.http.get(environment.apiUrl + '/resultados/MuestreosxFiltro?estatusId=' + idEstatus
       + '&userId=' + localStorage.getItem('idUsuario') + '&isOCDL=' + isOCDL);
-  }
-  getResultadosValidadosPorOCDL(
-   isOCDL: boolean,
-    page: number,
-    pageSize: number,
-    filter: string,
-    order?: { column: string; type: string }
-  ): Observable<any> {
-    const userId = localStorage.getItem('idUsuario') || '';
-    let params = new HttpParams({
-      fromObject: {
-        isOCDL: isOCDL,
-        page: page,
-        pageSize: pageSize,
-        filter: filter,
-        order: order != null ? order.column + '_' + order.type : '',
-      },
-    });
-    return this.http.get(environment.apiUrl+'/resultados/ResultadosValidadosPorOCDL', { params });
-  }
 
-  getDistinct(
-    column: string,
-    filter: string,
-    isOCDL: boolean,
-  ): Observable<Object> {
-    let userId = localStorage.getItem('idUsuario') || '';
-    const params = new HttpParams({
-      fromObject: {
-        isOCDL: isOCDL,
-        column: column,
-        filter: filter,
-      },
-    });
-    return this.http.get(
-      environment.apiUrl + '/resultados/GetDistinctValuesFromColumnOCDL',
-      { params }
-    );
   }
   exportarResultadosExcel(muestreos: Array<any> = []) {
     return this.http.post(environment.apiUrl + '/Resultados/ExportarExcelResultados', muestreos, { responseType: 'blob' });

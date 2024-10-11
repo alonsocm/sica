@@ -320,7 +320,7 @@ namespace Persistence.Repository
                                    join vcm in _dbContext.VwClaveMuestreo on rm.Muestreo.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
                                    join users in _dbContext.Usuario on rm.Muestreo.UsuarioRevisionOcdlid equals users.Id into usuario
                                    from usr in usuario.DefaultIfEmpty()
-                                   where rm.Muestreo.EstatusId == (int)EstatusMuestreo.RevisiónOCDLSECAIA &&
+                                   where rm.Muestreo.EstatusId == (int)EstatusMuestreo.ResumenValidaciónReglas &&
                                    rm.EsCorrectoOcdl != null && rm.Muestreo.EstatusOcdl == (int)EstatusOcdlSEcaia.Validado
                                    orderby rm.Parametro.ClaveParametro ascending
                                    select new ResultadosValidadosPorOCDLDTO
