@@ -3,7 +3,7 @@
   <app-loading></app-loading>
 </div>
 <div class="container-fluid">
-  <h1>Resultados validados por OC/DL</h1>
+  <h1 class="row col">Resultados validados por OC/DL</h1>
   <hr class="red">
   <div class="message-container">
     <app-notification></app-notification>
@@ -56,7 +56,7 @@
           <tr>
             <th class="no-border-top td-center">
               <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-                (change)="onSelectPageClick(this.resultados,this.resultadosSeleccionados);"
+                (change)="onSelectPageClick(this.resultadosSeleccionados);"
                 title="Selecciona la página actual" />
             </th>
             <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">

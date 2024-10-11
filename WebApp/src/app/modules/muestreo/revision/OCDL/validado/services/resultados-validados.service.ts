@@ -42,4 +42,7 @@ export class ResultadosValidadosService {
       { params }
     );
   }
+  exportarResultadosValidados(muestreos: Array<any> = []) {
+    return this.http.post(environment.apiUrl + '/Resultados/ExportarResultadosValidados', muestreos, { responseType: 'blob' });
+  }
 }
