@@ -9,7 +9,6 @@ namespace Application.Features.Operacion.RevisionOCDL.Queries
 {
     public class GetResultadosValidadosPorOCDL : IRequest<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>>
     {
-        public bool IsOCDL { get; set; } = false;
         public int Page { get; set; }
         public int PageSize { get; set; }
         public List<Filter>? Filter { get; set; }
@@ -25,13 +24,8 @@ namespace Application.Features.Operacion.RevisionOCDL.Queries
         }
         public async Task<PagedResponse<IEnumerable<ResultadosValidadosPorOCDLDTO>>> Handle(GetResultadosValidadosPorOCDL request, CancellationToken cancellationToken)
         {
-            var datos = await _repositoryAsync.GetResultadosValidadosPorOCDLAsync(request.IsOCDL);
-
-            if (request.IsOCDL == false)
-            {
-                throw new KeyNotFoundException("No se encontraron datos asociados a resultados revisados");
-            }
-
+            var datos = await _repositoryAsync.GetResultadosValidadosPorOCDLAsync();
+            
             if (request.Filter != null && request.Filter.Any())
             {
                 var filteredDatos = datos.AsQueryable();

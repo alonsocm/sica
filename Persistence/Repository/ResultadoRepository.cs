@@ -312,7 +312,7 @@ namespace Persistence.Repository
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
         }
-        public Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync(bool isOCDL)
+        public Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync()
         {
             IEnumerable<ResultadosValidadosPorOCDLDTO> resultadosMuestreos = Enumerable.Empty<ResultadosValidadosPorOCDLDTO>();
 
@@ -320,7 +320,7 @@ namespace Persistence.Repository
                                    join vcm in _dbContext.VwClaveMuestreo on rm.Muestreo.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
                                    join users in _dbContext.Usuario on rm.Muestreo.UsuarioRevisionOcdlid equals users.Id into usuario
                                    from usr in usuario.DefaultIfEmpty()
-                                   where rm.Muestreo.EstatusId == (int)EstatusMuestreo.ResumenValidaciónReglas &&
+                                   where rm.Muestreo.EstatusId == (int)EstatusMuestreo.RevisiónOCDLSECAIA &&
                                    rm.EsCorrectoOcdl != null && rm.Muestreo.EstatusOcdl == (int)EstatusOcdlSEcaia.Validado
                                    orderby rm.Parametro.ClaveParametro ascending
                                    select new ResultadosValidadosPorOCDLDTO
@@ -336,8 +336,8 @@ namespace Persistence.Repository
                                        Laboratorio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
                                        TipoCuerpoAgua = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
                                        TipoCuerpoAguaOriginal = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                       NombreUsuario = isOCDL ? $"{usr.Nombre} {usr.ApellidoPaterno} {usr.ApellidoMaterno}" : $"{rm.Muestreo.UsuarioRevisionSecaia.Nombre} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoPaterno} {rm.Muestreo.UsuarioRevisionSecaia.ApellidoMaterno}",
-                                       EstatusResultado = isOCDL ? rm.Muestreo.EstatusOcdlNavigation.Descripcion : rm.Muestreo.EstatusSecaiaNavigation.Descripcion,
+                                       NombreUsuario =$"{usr.Nombre} {usr.ApellidoPaterno} {usr.ApellidoMaterno}",
+                                       EstatusResultado = rm.Muestreo.EstatusOcdlNavigation.Descripcion ,
                                        TipoAprobacion = rm.Muestreo.TipoAprobacion != null ? rm.Muestreo.TipoAprobacion.Descripcion.ToString() : string.Empty,
                                        EstatusId = rm.Muestreo.EstatusId,
                                        EsCorrectoResultado = (rm.EsCorrectoOcdl == true) ? "SI" : "NO",

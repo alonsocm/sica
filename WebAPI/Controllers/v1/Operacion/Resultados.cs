@@ -106,7 +106,7 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> Get(bool isOCDL, int page, int pageSize, string? filter = "", string? order = "")
+        public async Task<IActionResult> Get(int page, int pageSize, string? filter = "", string? order = "")
         {
             var filters = new List<Filter>();
 
@@ -128,7 +128,6 @@ namespace WebAPI.Controllers.v1.Operacion
 
             return Ok(await Mediator.Send(new GetResultadosValidadosPorOCDL
             {
-                IsOCDL = isOCDL,             
                 Page = page,
                 PageSize = pageSize,
                 Filter = filters,
@@ -149,7 +148,6 @@ namespace WebAPI.Controllers.v1.Operacion
             var data = Mediator.Send(new GetResultadosValidadosPorOCDL
             {
                 Filter = filters,
-                IsOCDL = isOCDL
             }).Result.Data;
 
             return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));

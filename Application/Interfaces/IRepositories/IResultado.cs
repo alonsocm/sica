@@ -18,7 +18,7 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorAnios(List<int> anios);
         Task<int> EnviarResultadoAIncidencias(IEnumerable<long> resultados);
         Task<int> LiberarResultados(IEnumerable<long> resultados);
-        Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync(bool isOCDL);
+        Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync();
 
     }
 }
