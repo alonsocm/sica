@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Contexts;
@@ -213,7 +211,7 @@ public partial class SicaContext : DbContext
     public virtual DbSet<VwValidacionEvidenciaTotales> VwValidacionEvidenciaTotales { get; set; }
 
     public virtual DbSet<VwValidacionEviencias> VwValidacionEviencias { get; set; }
-    
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DbConnection");
 
@@ -370,7 +368,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .HasComment("Descripción de la Brigada");
-            entity.Property(e => e.LaboratorioId).HasComment("Llave foranea que hace relación al catalogo de Laboratorios para indicar que laboratorio tiene la brigada");
+            entity.Property(e => e.LaboratorioId).HasComment("Llave foránea que hace relación al catálogo de Laboratorios para indicar que laboratorio tiene la brigada");
             entity.Property(e => e.Lider)
                 .HasMaxLength(100)
                 .HasComment("Campo que describe el nombre del lider");
@@ -382,7 +380,7 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.LaboratorioId)
                 .HasConstraintName("FK_BrigadaMuestreo_Laboratorios");
         });
-        
+
         modelBuilder.Entity<ClasificacionCriterio>(entity =>
         {
             entity.ToTable("ClasificacionCriterio", "cat");
@@ -563,7 +561,7 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.PuestoId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Directorio_Puestos");
-        });       
+        });
 
         modelBuilder.Entity<Emergencia>(entity =>
         {
@@ -1480,7 +1478,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Anio)
                 .HasMaxLength(4)
                 .HasComment("Campo que describe el año");
-        });        
+        });
 
         modelBuilder.Entity<ProgramaMuestreo>(entity =>
         {
@@ -1655,10 +1653,10 @@ public partial class SicaContext : DbContext
                 .HasComment("Campo que describe la clave de la regla");
             entity.Property(e => e.Leyenda)
                 .HasMaxLength(110)
-                .HasComment("Campo que describe a leenda que se mostrara en caso de que no se cumple la regla");
+                .HasComment("Campo que describe a leyenda que se mostrará en caso de que no se cumpla la regla");
             entity.Property(e => e.RelacionRegla)
                 .HasMaxLength(200)
-                .HasComment("Campo que describe la formula de la regla");
+                .HasComment("Campo que describe la fórmula de la regla");
             entity.Property(e => e.TipoReglaId).HasComment("Llave foránea que hace referencia al catálogo TipoRegla");
         });
 
@@ -1831,6 +1829,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.FechaEstatusFinal)
                 .HasComment("Campo que indica la fecha del estatus final")
                 .HasColumnType("datetime");
+            entity.Property(e => e.FechaLimiteRevision).HasColumnType("datetime");
             entity.Property(e => e.FechaObservacionSrenameca)
                 .HasComment("Campo que indica la fecha en la que se realizaron las observaciones por parte de SRENAMECA")
                 .HasColumnType("datetime")
@@ -1999,7 +1998,7 @@ public partial class SicaContext : DbContext
                 .HasForeignKey(d => d.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Sitios_Municipio1");
-        });        
+        });
 
         modelBuilder.Entity<SubgrupoAnalitico>(entity =>
         {
@@ -2208,7 +2207,7 @@ public partial class SicaContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(30)
                 .HasComment("Campo que describe la unidad de medida");
-        });       
+        });
 
         modelBuilder.Entity<Usuario>(entity =>
         {
@@ -2780,7 +2779,7 @@ public partial class SicaContext : DbContext
                 .HasMaxLength(30)
                 .HasColumnName("Tipo Supervision");
             entity.Property(e => e.TotalEvidencias).HasColumnName("Total evidencias");
-        });        
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
