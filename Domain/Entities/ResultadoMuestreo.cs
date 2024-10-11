@@ -176,6 +176,10 @@ public partial class ResultadoMuestreo
     /// </summary>
     public string? ObservacionFinal { get; set; }
 
+    public int NumeroEntrega { get; set; }
+
+    public DateTime? FechaLimiteRevision { get; set; }
+
     public virtual ICollection<AprobacionResultadoMuestreo> AprobacionResultadoMuestreo { get; set; } = new List<AprobacionResultadoMuestreo>();
 
     public virtual EstatusResultado? EstatusResultado1 { get; set; }
