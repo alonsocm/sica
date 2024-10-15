@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Application.Expressions
 {
-    static internal class QueryExpression<T>
+    static public class QueryExpression<T>
     {
         public static List<Expression<Func<T, bool>>> GetExpressionList(List<Filter> filters)
         {
