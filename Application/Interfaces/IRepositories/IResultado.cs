@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.RevisionOCDL;
+using Application.DTOs.LiberacionResultados;
 using Application.DTOs.Users;
 using Domain.Entities;
 
@@ -20,5 +21,6 @@ namespace Application.Interfaces.IRepositories
         Task<int> LiberarResultados(IEnumerable<long> resultados);
         Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync();
 
+        Task<IEnumerable<ResultadoLiberacionDTO>> GetResultadosLiberacion();
     }
 }
