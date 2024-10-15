@@ -2,6 +2,7 @@
 using Application.Enums;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
+using Application.Features.Operacion.LiberacionResultados.Queries;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Resultados.Comands;
@@ -1143,6 +1144,21 @@ namespace WebAPI.Controllers.v1.Operacion
             }
 
             return Ok(await Mediator.Send(new EnviarIncidenciasCommand { ResultadosId = resultadosId }));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetResultados([FromQuery] List<Filter> filters, [FromQuery] int pageSize, [FromQuery] int page)
+        {
+            var request = new GetResultados
+            {
+                Filters = filters,
+                PageSize = pageSize,
+                Page = page
+            };
+
+            var response = await Mediator.Send(request);
+
+            return Ok(response);
         }
     }
 }
