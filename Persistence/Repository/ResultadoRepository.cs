@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.LiberacionResultados;
 using Application.DTOs.Users;
 using Application.Interfaces.IRepositories;
 using Domain.Entities;
@@ -297,15 +298,43 @@ namespace Persistence.Repository
 
             return resultados;
         }
+
         public async Task<int> EnviarResultadoAIncidencias(IEnumerable<long> resultados)
         {
             return await _dbContext.ResultadoMuestreo.Where(b => resultados.Contains(b.Id) && b.ValidacionFinal == false)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
         }
+
         public async Task<int> LiberarResultados(IEnumerable<long> resultados)
         {
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos));
+        }
+
+        public async Task<IEnumerable<ResultadoLiberacionDTO>> GetResultadosLiberacion()
+        {
+            var registros = await (from r in _dbContext.ResultadoMuestreo
+                                   join vpm in _dbContext.VwClaveMuestreo on r.Muestreo.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
+                                   where r.EstatusResultado == (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos
+                                   select new ResultadoLiberacionDTO
+                                   {
+                                       OCDL = (r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal == null ?
+                                              r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave :
+                                              r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Clave) ?? string.Empty,
+                                       ClaveSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                                       ClaveMuestreo = vpm.ClaveMuestreo ?? string.Empty,
+                                       ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo}{r.Parametro.ClaveParametro}",
+                                       Estado = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre ?? string.Empty,
+                                       TipoCuerpoAgua = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                                       Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
+                                       FechaRealizacion = r.Muestreo.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                                       FechaLimiteRevision = r.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                                       NumeroEntrega = r.NumeroEntrega.ToString(),
+                                       Estatus = r.EstatusResultadoNavigation.Descripcion,
+                                       TipoCarga = r.Muestreo.TipoCarga.Descripcion,
+                                   }).ToListAsync();
+
+            return registros;
         }
     }
 }
