@@ -1089,14 +1089,28 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(await Mediator.Send(new EnviarIncidenciasCommand { ResultadosId = resultadosId }));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetResultados([FromQuery] List<Filter> filters, [FromQuery] int pageSize, [FromQuery] int page)
+        [HttpGet("GetResultadosLiberacion")]
+        public async Task<IActionResult> GetResultadosLiberacion([FromQuery] List<Filter> filters, [FromQuery] int pageSize, [FromQuery] int page)
         {
             var request = new GetResultados
             {
                 Filters = filters,
                 PageSize = pageSize,
                 Page = page
+            };
+
+            var response = await Mediator.Send(request);
+
+            return Ok(response);
+        }
+
+        [HttpGet("GetDistinctResultadosLiberacionProperty")]
+        public async Task<IActionResult> GetDistinctResultadosLiberacionProperty([FromQuery] List<Filter> filters, string selector)
+        {
+            var request = new GetDistinctResultadosLiberacionProperty
+            {
+                Filters = filters,
+                Selector = selector
             };
 
             var response = await Mediator.Send(request);
