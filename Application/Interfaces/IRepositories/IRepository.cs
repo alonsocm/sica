@@ -19,5 +19,6 @@ namespace Application.Interfaces.IRepositories
         Task<bool> ExisteElementoAsync(Expression<Func<T, bool>> predicado);
         IQueryable<T> ObtenerElementoConInclusiones(Expression<Func<T, bool>> predicado, params Expression<Func<T, object>>[] propiedades);
         IEnumerable<object> GetDistinctValuesFromColumn<T>(string column, IEnumerable<T> data);
+        Task<IEnumerable<object>> GetDistinctFromColumnAsync<T>(string column, IQueryable<T> data);
     }
 }

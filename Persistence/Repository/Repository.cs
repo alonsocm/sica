@@ -143,12 +143,20 @@ namespace Persistence.Repository
             return queryable;
         }
 
+        [Obsolete("This method is deprecated. Use GetDistinctFromColumnAsync instead.")]
         public IEnumerable<object> GetDistinctValuesFromColumn<T>(string column, IEnumerable<T> data)
         {
             var muestreos = data.AsQueryable();
             var select = GenerateDynamicSelect<T>(column);
 
             return muestreos.Select(select).Distinct();
+        }
+
+        public async Task<IEnumerable<object>> GetDistinctFromColumnAsync<T>(string column, IQueryable<T> data)
+        {
+            var select = GenerateDynamicSelect<T>(column);
+
+            return await data.Select(select).Distinct().ToListAsync();
         }
 
         public static Expression<Func<T, object>> GenerateDynamicSelect<T>(string propertyName)
