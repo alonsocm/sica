@@ -4,6 +4,7 @@ namespace Application.DTOs.RevisionOCDL
 {
     public class ResultadosValidadosPorOCDLDTO
     {
+        public long MuestreoId { get; set; }
         public string NoEntregaOCDL { get; set; } = string.Empty;
         public string ClaveUnica { get; set; } = string.Empty;
         public string ClaveSitio { get; set; } = string.Empty;

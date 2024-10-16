@@ -1,3 +1,4 @@
+import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Component, OnInit } from '@angular/core';
 import { Column } from 'src/app/interfaces/filter/column';
 import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
@@ -9,8 +10,12 @@ import { Item } from 'src/app/interfaces/filter/item';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from 'src/app/shared/enums/notification-type';
 import { FileService } from 'src/app/shared/services/file.service';
-
-
+import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
+import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+interface MuestreoAgrupado {
+  muestreoId: number;
+  resultados: Resultado[];
+}
 @Component({
   selector: 'app-validado',
   templateUrl: './validado.component.html',
@@ -22,12 +27,20 @@ export class ValidadoComponent
 {
   resultados: Array<Resultado> = [];
   resultadosSeleccionados: Array<Resultado> = [];
+  estatusAprobacionFinal: estatusOcdlSecaia;
+  estatusEnviado: estatusMuestreo;
+  muestreosagrupados: Array<any> = [];
+  seleccionarTodosChckmodal: boolean = false;
+  isModal: boolean = false;
+
   constructor(
     private filtroHistorialService: FiltroHistorialService,
     private resultadosService: ResultadosValidadosService,
     private notificationService: NotificationService
   ) {
     super();
+    this.estatusAprobacionFinal = estatusOcdlSecaia.AprobacionFinal;
+    this.estatusEnviado = estatusMuestreo.RevisiónOCDLSECAIA;
   }
 
   ngOnInit(): void {
@@ -393,22 +406,22 @@ export class ValidadoComponent
     }
     if (this.requiresToRefreshColumnValues(column)) {
       this.resultadosService
-      .getDistinctOCDL(column.name, this.cadena)
-      .subscribe({
-        next: (response: any) => {
-          column.data = response.data.map((register: any) => {
-            let item: Item = {
-              value: register,
-              checked: true,
-            };
-            return item;
-          });
-          column.filteredData = column.data;
-          this.ordenarAscedente(column.filteredData);
-          this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
-        },
-        error: (error) => {},
-      });
+        .getDistinctOCDL(column.name, this.cadena)
+        .subscribe({
+          next: (response: any) => {
+            column.data = response.data.map((register: any) => {
+              let item: Item = {
+                value: register,
+                checked: true,
+              };
+              return item;
+            });
+            column.filteredData = column.data;
+            this.ordenarAscedente(column.filteredData);
+            this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
+          },
+          error: (error) => {},
+        });
     }
     if (esFiltroEspecial) {
       column.selectAll = false;
@@ -423,9 +436,7 @@ export class ValidadoComponent
     this.page = page;
     this.consultarResultados(page);
   }
-  override onSelectPageClick(
-    resultadosSeleccionados: Array<Resultado>
-  ) {
+  override onSelectPageClick(resultadosSeleccionados: Array<Resultado>) {
     this.resultados.map((m) => {
       m.isChecked = this.selectedPage;
 
@@ -486,5 +497,148 @@ export class ValidadoComponent
   }
   unselectMuestreos() {
     this.resultados.forEach((m) => (m.isChecked = false));
+  }
+
+  onEnviarResultadosValidadosPorOCDL(): void {
+    if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un monitoreo para enviar.',
+      });
+    }
+
+    this.loading = true;
+    let muestreosIds: Array<number> = [];
+    if (!this.allSelected) {
+      muestreosIds = this.resultadosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    let request = {
+      EstatusOCDLId: this.estatusAprobacionFinal,
+      MuestreoId: muestreosIds,
+      IdUsuario: localStorage.getItem('idUsuario'),
+    };
+
+    this.resultadosService
+      .actualizarResultadosValidadosPorOCDL(request)
+      .subscribe({
+        next: (response: any) => {
+          this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Monitoreos enviados correctamente.',
+          });
+          this.resetValues();
+          this.consultarResultados();
+          this.loading = false;
+        },
+        error: (error: any) => {
+          this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible enviar los resultados.',
+          });
+          this.loading = false;
+          this.hacerScroll();
+        },
+      });
+  }
+  onRegresarResultadosValidadosPorOCDL(): void {
+    if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un muestreo para regresar a total de resultados.',
+      });
+    }
+
+    this.loading = true;
+    let muestreosIds: Array<number> = [];
+    if (!this.allSelected) {
+      muestreosIds = this.resultadosSeleccionados.map((s) => {
+        return s.muestreoId;
+      });
+    }
+
+    let request = {
+      estatusId: this.estatusEnviado,
+      MuestreoId: muestreosIds,
+      IdUsuario: localStorage.getItem('idUsuario'),
+    };
+
+    this.resultadosService
+      .actualizarResultadosValidadosPorOCDL(request)
+      .subscribe({
+        next: (response: any) => {
+          this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Monitoreos enviados correctamente.',
+          });
+          this.resetValues();
+          this.consultarResultados(); // Refresh the results
+          this.loading = false;
+        },
+        error: (error: any) => {
+          this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible enviar los resultados.',
+          });
+          this.loading = false;
+          this.hacerScroll();
+        },
+      });
+  }
+  onConsultarMonitoreosmuestreo(): void {
+    if (this.resultadosSeleccionados.length === 0 && !this.allSelected) {
+      this.isModal = false;
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un muestreo para regresar a total de resultados.',
+      });
+    }
+
+    if (this.resultadosSeleccionados.length > 0) {
+      this.isModal = true;
+      let muestreosmodal = this.resultadosSeleccionados.map((m) => ({
+        muestreo: m.muestreoId,
+        clavemonitoreo: m.claveMonitoreo,
+        clavesitio: m.claveSitio,
+        noEntregaOCDL: m.noEntregaOCDL,
+        nomnresitio: m.nombreSitio,
+        tipocuerpoagua: m.tipoCuerpoAgua,
+        fecharealizacion: m.fechaRealizacion,
+        nombreusuario: m.nombreUsuario,
+        muestreoId: m.muestreoId,
+      }));
+      this.muestreosagrupados = [
+        ...new Map(muestreosmodal.map((m) => [m.muestreo, m])).values(),
+      ];
+    }
+
+    this.hacerScroll();
+  }
+  onSeleccionarTodosmodal(): void {
+    this.muestreosagrupados.map((m) => {
+      if (this.seleccionarTodosChckmodal) {
+        m.isCheckedmodal ? true : (m.isCheckedmodal = true);
+      } else {
+        m.isCheckedmodal ? (m.isCheckedmodal = false) : true;
+      }
+    });
+    this.resultadosSeleccionados = this.Seleccionados(
+      this.resultadosFiltradosn
+    );
+  }
+  onSeleccionarmodal(): void {
+    if (this.seleccionarTodosChckmodal) this.seleccionarTodosChckmodal = false;
   }
 }

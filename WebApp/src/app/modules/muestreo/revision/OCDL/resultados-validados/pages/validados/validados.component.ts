@@ -34,7 +34,7 @@ export class ValidadosComponent extends BaseService implements OnInit {
   ) {
     super();
     this.estatusAprobacionFinal = estatusOcdlSecaia.AprobacionFinal;
-    this.estatusEnviado = estatusMuestreo.RevisiónOCDLSECAIA;
+    this.estatusEnviado = estatusMuestreo.ResumenValidaciónReglas;
   }
   ngOnInit(): void {
     this.consultarMonitoreos();

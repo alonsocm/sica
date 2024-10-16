@@ -325,6 +325,7 @@ namespace Persistence.Repository
                                    orderby rm.Parametro.ClaveParametro ascending
                                    select new ResultadosValidadosPorOCDLDTO
                                    {
+                                       MuestreoId = rm.MuestreoId,
                                        Resultado = rm.Resultado,
                                        Observaciones = (rm.ObservacionesOcdlid == null || rm.ObservacionesOcdlid == 11) ? rm.ObservacionesOcdl : rm.ObservacionesOcdlNavigation.Descripcion,
                                        NoEntregaOCDL = rm.Muestreo.NumeroEntrega.ToString() ?? "0",

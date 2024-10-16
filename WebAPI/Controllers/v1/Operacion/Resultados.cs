@@ -7,6 +7,7 @@ using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Resultados.Comands;
 using Application.Features.Operacion.Resultados.Comands.Acumulacion;
 using Application.Features.Operacion.Resultados.Queries;
+using Application.Features.Operacion.RevisionOCDL.Commands;
 using Application.Features.Operacion.RevisionOCDL.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
@@ -151,6 +152,12 @@ namespace WebAPI.Controllers.v1.Operacion
             }).Result.Data;
 
             return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
+        }
+
+        [HttpPut("ActualizarResultadosValidadosPorOCDL")]
+        public async Task<IActionResult> Put (ResultadoDto resultado)
+        {
+            return Ok(await Mediator.Send(new ActualizarResultadoOSCDL { Resultados = resultado }));
         }
 
         [HttpGet("ResultadosMuestreoParametros")]
@@ -552,11 +559,11 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok();
         }
 
-        [HttpPut]
+      /* [HttpPut]
         public async Task<IActionResult> Put(ResultadoDto resultados)
         {
             return Ok(await Mediator.Send(new ActualizarResultadoCommand { Resultados = resultados }));
-        }
+        }*/
 
         [HttpPut("updateParametros")]
         public async Task<IActionResult> Put(List<ResultadoMuestreoDto> request)

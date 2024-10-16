@@ -44,5 +44,8 @@ export class ResultadosValidadosService {
   }
   exportarResultadosValidados(muestreos: Array<any> = []) {
     return this.http.post(environment.apiUrl + '/Resultados/ExportarResultadosValidados', muestreos, { responseType: 'blob' });
-  }
+}
+actualizarResultadosValidadosPorOCDL(resultados: any): Observable<any> {
+  return this.http.put(environment.apiUrl + '/resultados/ActualizarResultadosValidadosPorOCDL', resultados);
+}
 }
