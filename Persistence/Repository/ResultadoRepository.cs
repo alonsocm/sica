@@ -356,6 +356,18 @@ namespace Persistence.Repository
 
         public async Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize)
         {
+            IQueryable<ResultadoLiberacionDTO> query = QueryResultadosLiberacion(filters);
+            return PagedResponse<ResultadoLiberacionDTO>.GetPagedReponse(await query.ToListAsync(), pageNumber, pageSize);
+        }
+
+        public async Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector)
+        {
+            IQueryable<ResultadoLiberacionDTO> data = QueryResultadosLiberacion(filters);
+            return await GetDistinctFromColumn(selector, data);
+        }
+
+        private IQueryable<ResultadoLiberacionDTO> QueryResultadosLiberacion(List<Filter> filters)
+        {
             var expressions = QueryExpression<ResultadoLiberacionDTO>.GetExpressionList(filters);
 
             var query = from r in _dbContext.ResultadoMuestreo
@@ -384,7 +396,7 @@ namespace Persistence.Repository
                 query = query.Where(expression);
             }
 
-            return PagedResponse<ResultadoLiberacionDTO>.GetPagedReponse(await query.ToListAsync(), pageNumber, pageSize);
+            return query;
         }
     }
 }
