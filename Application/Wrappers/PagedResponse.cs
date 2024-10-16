@@ -19,6 +19,7 @@
         public bool HasNextPage => Page * PageSize < TotalRecords;
         public bool HasPreviousPage => Page > 1;
 
+        [Obsolete("This method is deprecated. Use GetPagedReponse instead.")]
         public static PagedResponse<IEnumerable<T>> CreatePagedReponse(IEnumerable<T> data, int page, int pageSize)
         {
             var items = data;
@@ -43,6 +44,33 @@
             else
             {
                 return new PagedResponse<IEnumerable<T>>(items, page, pageSize);
+            }
+        }
+
+        public static PagedResponse<List<T>> GetPagedReponse(List<T> data, int page, int pageSize)
+        {
+            var items = data;
+
+            if (page >= 1)
+            {
+                var totalRecords = data.Count();
+                var totalPages = (double)totalRecords / pageSize;
+                int roundedTotalPages = Convert.ToInt32(Math.Ceiling(totalPages));
+
+                if (totalRecords > pageSize)
+                {
+                    items = data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                }
+
+                return new PagedResponse<List<T>>(items, page, pageSize)
+                {
+                    TotalPages = roundedTotalPages,
+                    TotalRecords = totalRecords
+                };
+            }
+            else
+            {
+                return new PagedResponse<List<T>>(items, page, pageSize);
             }
         }
     }

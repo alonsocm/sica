@@ -1,5 +1,7 @@
 ﻿using Application.DTOs;
+using Application.DTOs.LiberacionResultados;
 using Application.DTOs.Users;
+using Application.Wrappers;
 using Domain.Entities;
 
 namespace Application.Interfaces.IRepositories
@@ -17,5 +19,7 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<ResultadoParaSustitucionLimitesDto>> ObtenerResultadosParaSustitucionPorAnios(List<int> anios);
         Task<int> EnviarResultadoAIncidencias(IEnumerable<long> resultados);
         Task<int> LiberarResultados(IEnumerable<long> resultados);
+        Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize);
+        Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector);
     }
 }

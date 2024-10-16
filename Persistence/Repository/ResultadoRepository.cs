@@ -1,6 +1,9 @@
 ﻿using Application.DTOs;
+using Application.DTOs.LiberacionResultados;
 using Application.DTOs.Users;
+using Application.Expressions;
 using Application.Interfaces.IRepositories;
+using Application.Wrappers;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
@@ -297,16 +300,62 @@ namespace Persistence.Repository
 
             return resultados;
         }
+
         public async Task<int> EnviarResultadoAIncidencias(IEnumerable<long> resultados)
         {
             return await _dbContext.ResultadoMuestreo.Where(b => resultados.Contains(b.Id) && b.ValidacionFinal == false)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
         }
+
         public async Task<int> LiberarResultados(IEnumerable<long> resultados)
         {
-            //TODO: Cambiar el estatus. Falta agregar uno en la tabla EstatusResultado, aquí no aplica el IncidenciasResultados
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
-                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.IncidenciasResultados));
+                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos));
+        }
+
+        public async Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize)
+        {
+            IQueryable<ResultadoLiberacionDTO> query = QueryResultadosLiberacion(filters);
+            return PagedResponse<ResultadoLiberacionDTO>.GetPagedReponse(await query.ToListAsync(), pageNumber, pageSize);
+        }
+
+        public async Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector)
+        {
+            IQueryable<ResultadoLiberacionDTO> data = QueryResultadosLiberacion(filters);
+            return await GetDistinctFromColumnAsync(selector, data);
+        }
+
+        private IQueryable<ResultadoLiberacionDTO> QueryResultadosLiberacion(List<Filter> filters)
+        {
+            var expressions = QueryExpression<ResultadoLiberacionDTO>.GetExpressionList(filters);
+
+            var query = from r in _dbContext.ResultadoMuestreo
+                        join vpm in _dbContext.VwClaveMuestreo on r.Muestreo.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
+                        where r.EstatusResultadoId == (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos
+                        select new ResultadoLiberacionDTO
+                        {
+                            OCDL = (r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal == null ?
+                                   r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave :
+                                   r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Dlocal.Clave) ?? string.Empty,
+                            ClaveSitio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                            ClaveMuestreo = vpm.ClaveMuestreo ?? string.Empty,
+                            ClaveUnica = $"{r.Muestreo.ProgramaMuestreo.NombreCorrectoArchivo}{r.Parametro.ClaveParametro}",
+                            Estado = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.Estado.Nombre ?? string.Empty,
+                            TipoCuerpoAgua = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.Descripcion ?? string.Empty,
+                            Laboratorio = r.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Nomenclatura ?? string.Empty,
+                            FechaRealizacion = r.Muestreo.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                            FechaLimiteRevision = r.FechaLimiteRevision.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                            NumeroEntrega = r.NumeroEntrega.ToString(),
+                            Estatus = r.EstatusResultadoNavigation.Descripcion,
+                            TipoCarga = r.Muestreo.TipoCarga.Descripcion,
+                        };
+
+            foreach (var expression in expressions)
+            {
+                query = query.Where(expression);
+            }
+
+            return query;
         }
     }
 }

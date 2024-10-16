@@ -563,15 +563,15 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
   }
 
   getPreviousSelected(
-    muestreos: Array<acumuladosMuestreo>,
-    muestreosSeleccionados: Array<acumuladosMuestreo>
+    registros: Array<acumuladosMuestreo>,
+    registrosSeleccionados: Array<acumuladosMuestreo>
   ) {
-    muestreos.forEach((f) => {
-      let muestreoSeleccionado = muestreosSeleccionados.find(
+    registros.forEach((f) => {
+      let registroSeleccionado = registrosSeleccionados.find(
         (x) => f.resultadoMuestreoId === x.resultadoMuestreoId
       );
 
-      if (muestreoSeleccionado != undefined) {
+      if (registroSeleccionado != undefined) {
         f.selected = true;
       }
     });
