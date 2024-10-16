@@ -322,7 +322,7 @@ namespace Persistence.Repository
         public async Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector)
         {
             IQueryable<ResultadoLiberacionDTO> data = QueryResultadosLiberacion(filters);
-            return await GetDistinctFromColumn(selector, data);
+            return await GetDistinctFromColumnAsync(selector, data);
         }
 
         private IQueryable<ResultadoLiberacionDTO> QueryResultadosLiberacion(List<Filter> filters)
