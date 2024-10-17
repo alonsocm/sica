@@ -57,9 +57,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
 
   ngOnInit(): void {
     this.definirColumnas();
-    this.consultarReplicas();
-
-   
+    this.consultarReplicas();   
   }
 
   definirColumnas() {
@@ -1096,7 +1094,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
 
     this.loading = true;
     this.IncidenciasResultadoService
-      .descargarArchivos(this.resultadosFiltrados.map((m) => m.id))
+      /* .descargarArchivos(this.resultadosFiltrados.map((m) => m.resultadoMuestreoId))*/
+      .descargarArchivos(this.resultadosFiltrados.filter(x => x.evidencias).map((m) => m.id))
       .subscribe({
         next: (response: any) => {
           this.loading = !this.loading;

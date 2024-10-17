@@ -49,12 +49,11 @@ namespace Shared.Utilities.Services
         //CAMBIAR POR METODO GENERAL
         public bool GuardarEvidencias(List<IFormFile> evidenciasReplicas)
         {
-            var ruta = ObtenerRutaBaseEvidenciaReplica();
-            var directorioMuestreo = Directory.CreateDirectory(Path.Combine(ruta, DateTime.Now.ToShortDateString().Replace('/', '_')));
+            var ruta = ObtenerRutaBaseEvidenciaReplica();          
 
             foreach (var archivo in evidenciasReplicas)
             {
-                using var stream = File.Create(Path.Combine(directorioMuestreo.FullName, archivo.FileName));
+                using var stream = File.Create(Path.Combine(ruta, archivo.FileName));
                 archivo.CopyTo(stream);
             }
 
@@ -173,11 +172,10 @@ namespace Shared.Utilities.Services
         }
 
        //Se puede realizar un metodo general para descargar conforme al nombre de la carpeta
-        public List<ArchivoDto> ObtenerEvidenciasPorReplica(string nombreCarpeta)
+        public List<ArchivoDto> ObtenerEvidenciasPorReplica()
         {
-            var rutaBase = ObtenerRutaBaseEvidenciaReplica();
-            var rutaEvidenciasReplicas = Path.Combine(rutaBase, nombreCarpeta);
-            DirectoryInfo carpetaEvidenciasMuestreo = new(rutaEvidenciasReplicas);
+            
+            DirectoryInfo carpetaEvidenciasMuestreo = new(ObtenerRutaBaseEvidenciaReplica());            
             List<ArchivoDto> archivos = new();
 
             if (carpetaEvidenciasMuestreo.Exists)

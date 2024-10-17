@@ -41,6 +41,7 @@ export interface Muestreo extends Row {
   cumpleNumeroEvidencias: string;
   usuarioValido: string;
   porcentajePago: string;
+  esReplica: boolean;
 }
 
 export interface Evidencia {

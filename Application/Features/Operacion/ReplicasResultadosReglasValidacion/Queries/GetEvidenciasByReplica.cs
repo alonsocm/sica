@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Queries
 {
@@ -30,22 +31,13 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Quer
 
         public async Task<Response<List<ArchivoDto>>> Handle(GetEvidenciasByReplica request, CancellationToken cancellationToken)
         {
-            //    var evidencias = await _evidenciaReplicaRepository.ObtenerElementosPorCriterioAsync(x => request.lstReplicasResultadosId.Contains((int)x.ReplicasResultadoReglasValidacionId));
-
             var evidencias = await _evidenciaReplicaRepository.ObtenerElementosPorCriterioAsync(x => request.lstReplicasResultadosId.Contains((int)x.Id));
             if (!evidencias.Any())
             {
                 throw new KeyNotFoundException($"No se encontraron evidencias para las replicas solicitadas");
             }
-
             var evidenciasDto = new List<ArchivoDto>();
-            var nameCarpeta = evidencias.Select(s => s.NombreArchivo[..s.NombreArchivo.LastIndexOf('_')]).Distinct();
-
-            foreach (var name in nameCarpeta)
-            {
-                evidenciasDto.AddRange(_archivoService.ObtenerEvidenciasPorReplica(name));
-            }
-
+            evidenciasDto.AddRange(_archivoService.ObtenerEvidenciasPorReplica());
             return new Response<List<ArchivoDto>>(evidenciasDto);
         }
     }

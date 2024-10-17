@@ -51,6 +51,8 @@
         public int EvidenciasEsperadas { get; set; }
         public string? CumpleNumeroEvidencias { get; set; }
 
+        public bool? esReplica { get; set; }
+
         public MuestreoDto()
         {
             DiaProgramado = string.Empty;

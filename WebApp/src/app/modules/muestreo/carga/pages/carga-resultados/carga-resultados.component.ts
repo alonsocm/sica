@@ -77,7 +77,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         selectedData: '',
       },
       {
-        name: 'esreplica',
+        name: 'esReplica',
         label: 'ES REPLICA',
         order: 2,
         selectAll: true,
@@ -86,7 +86,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'string',
+        dataType: 'bolean',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',

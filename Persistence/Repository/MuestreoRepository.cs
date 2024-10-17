@@ -21,7 +21,7 @@ namespace Persistence.Repository
         }
 
         public async Task<IEnumerable<MuestreoDto>> GetResumenMuestreosAsync(IEnumerable<int> estatus)
-        {
+        {            
             var muestreos = await (from m in _dbContext.Muestreo
                                    join vpm in _dbContext.VwClaveMuestreo on m.ProgramaMuestreoId equals vpm.ProgramaMuestreoId
                                    where estatus.Contains(m.EstatusId)
@@ -58,7 +58,9 @@ namespace Persistence.Repository
                                        OrganismoCuenca = m.ProgramaMuestreo.ProgramaSitio.Sitio.CuencaDireccionesLocales.Ocuenca.Clave ?? string.Empty,
                                        FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty,
                                        TipoCargaResultados = m.TipoCarga.Descripcion,
-                                       EvidenciasEsperadas = (int)m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.EvidenciasEsperadas
+                                       EvidenciasEsperadas = (int)m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.EvidenciasEsperadas,
+                                       esReplica = false,
+                                       EstatusId = m.EstatusId
                                    })
                                    .ToListAsync();
 
@@ -82,7 +84,7 @@ namespace Persistence.Repository
                                        where muestreos.Select(s => s.MuestreoId).Contains(resultado.MuestreoId)
                                        select new { resultado.FechaEntrega, resultado.MuestreoId }).Distinct().ToListAsync();
 
-            muestreos.ForEach(f =>
+            muestreos.ForEach(async f =>
             {
                 var laboratorioSubrogado = laboratoriosubrogado.Where(s => s.MuestreoId == f.MuestreoId).ToList().Select(s => s.Nomenclatura).Distinct().ToList();
                 var fechaEntrega = fechasEntrega.Where(s => s.MuestreoId == f.MuestreoId).OrderBy(x => x.FechaEntrega).Select(s => s.FechaEntrega).Distinct();
@@ -98,6 +100,16 @@ namespace Persistence.Repository
                 f.CumpleNumeroEvidencias = f.Evidencias.Count == f.EvidenciasEsperadas ? "SI" : "NO";
             });
 
+            var lstIncidencias = muestreos.Where(x => x.EstatusId == (int)Application.Enums.EstatusMuestreo.ResumenValidaciónReglas).ToList();
+            lstIncidencias.ForEach(g => {
+
+                var existeREplica =  (from resultado in _dbContext.ResultadoMuestreo
+                                           where resultado.MuestreoId == g.MuestreoId &&
+                                           resultado.EstatusResultadoId == (int)Application.Enums.EstatusResultado.CargaRéplicasLaboratorioExterno
+                                           select resultado).ToList();
+
+                if (existeREplica.Any()) { g.esReplica = true; } else { muestreos.Remove(g); }
+            });
             return muestreos;
         }
 
@@ -515,6 +527,9 @@ namespace Persistence.Repository
                                          join evid in _dbContext.EvidenciasReplicasResultadoReglasValidacion on relReplica.EvidenciasReplicasResultadoReglasValidacionId equals evid.Id
                                          where replicaResultados.ResultadoMuestreoId == replica.ResultadoMuestreoId
                                          select evid).ToList();
+
+                    replica.Evidencias.AddRange(archivos.Select(s => new EvidenciaDto { NombreArchivo = s.NombreArchivo, Sufijo = s.NombreArchivo.Substring(s.NombreArchivo.LastIndexOf('.'), s.NombreArchivo.Length - s.NombreArchivo.LastIndexOf('.')) }));
+
 
                     if (dato != null)
                     {

@@ -10,7 +10,7 @@ namespace Application.Interfaces
         List<EvidenciasMuestreo> OrdenarEvidenciasPorMuestreo(List<IFormFile> archivos);
         ArchivoDto ObtenerEvidencia(string nombreArchivo);
         List<ArchivoDto> ObtenerEvidenciasPorMuestreo(string muestreo);
-        List<ArchivoDto> ObtenerEvidenciasPorReplica(string nombreCarpeta);
+        List<ArchivoDto> ObtenerEvidenciasPorReplica();
         public ArchivoDto ObtenerArchivoSupervisionMuestreo(string nombreArchivo, string supervision);
         public bool GuardarInformeSupervision(string informe, IFormFile archivo);
         bool GuardarEvidencias(EvidenciasMuestreo evidenciasMuestreo);
