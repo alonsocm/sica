@@ -1,4 +1,3 @@
-import { Muestreo } from 'src/app/interfaces/Muestreo.interface';
 import { Component, OnInit } from '@angular/core';
 import { Column } from 'src/app/interfaces/filter/column';
 import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
@@ -12,10 +11,7 @@ import { NotificationType } from 'src/app/shared/enums/notification-type';
 import { FileService } from 'src/app/shared/services/file.service';
 import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
-interface MuestreoAgrupado {
-  muestreoId: number;
-  resultados: Resultado[];
-}
+
 @Component({
   selector: 'app-validado',
   templateUrl: './validado.component.html',
@@ -452,6 +448,26 @@ export class ValidadoComponent
     });
     this.showOrHideSelectAllOption();
   }
+
+  override onSelectAllPagesClick() {
+    this.allSelected = true;
+    this.resultadosService
+      .getResultadosValidadosPorOCDL(1, 999999, this.cadena, this.orderBy)
+      .subscribe((todosLosResultados: any) => {
+        this.resultadosSeleccionados = todosLosResultados.data;
+        this.resultadosSeleccionados.forEach((m) => (m.isChecked = true));
+        this.resultados.forEach((r) => {
+          const found = this.resultadosSeleccionados.some(
+            (rs) => rs.claveUnica === r.claveUnica
+          );
+          if (!found) {
+            r.isChecked = false;
+          }
+        });
+        this.showOrHideSelectAllOption();
+      });
+  }
+
   onExportarResultadosClick(): void {
     if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
@@ -463,13 +479,6 @@ export class ValidadoComponent
     }
 
     this.loading = true;
-    let registrosSeleccionados: Array<any> = [];
-    if (!this.allSelected) {
-      registrosSeleccionados = this.resultadosSeleccionados.map((s) => {
-        return s.claveUnica;
-      });
-    }
-
     this.resultadosService
       .exportarResultadosValidados(this.resultadosSeleccionados)
       .subscribe({
@@ -489,12 +498,14 @@ export class ValidadoComponent
         },
       });
   }
+
   resetValues() {
     this.resultadosSeleccionados = [];
     this.selectAllOption = false;
     this.allSelected = false;
     this.selectedPage = false;
   }
+
   unselectMuestreos() {
     this.resultados.forEach((m) => (m.isChecked = false));
   }
@@ -510,11 +521,14 @@ export class ValidadoComponent
     }
 
     this.loading = true;
+
     let muestreosIds: Array<number> = [];
-    if (!this.allSelected) {
-      muestreosIds = this.resultadosSeleccionados.map((s) => {
-        return s.muestreoId;
+    if (this.allSelected) {
+      this.resultados.forEach((resultado) => {
+        muestreosIds.push(resultado.muestreoId);
       });
+    } else {
+      muestreosIds = this.resultadosSeleccionados.map((s) => s.muestreoId);
     }
 
     let request = {
@@ -547,6 +561,7 @@ export class ValidadoComponent
         },
       });
   }
+
   onRegresarResultadosValidadosPorOCDL(): void {
     if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
       this.hacerScroll();
@@ -556,13 +571,12 @@ export class ValidadoComponent
         text: 'Debe seleccionar al menos un muestreo para regresar a total de resultados.',
       });
     }
-
     this.loading = true;
     let muestreosIds: Array<number> = [];
-    if (!this.allSelected) {
-      muestreosIds = this.resultadosSeleccionados.map((s) => {
-        return s.muestreoId;
-      });
+    if (this.allSelected) {
+      muestreosIds = this.resultados.map((s) => s.muestreoId);
+    } else {
+      muestreosIds = this.resultadosSeleccionados.map((s) => s.muestreoId);
     }
 
     let request = {
@@ -581,7 +595,7 @@ export class ValidadoComponent
             text: 'Monitoreos enviados correctamente.',
           });
           this.resetValues();
-          this.consultarResultados(); // Refresh the results
+          this.consultarResultados();
           this.loading = false;
         },
         error: (error: any) => {
@@ -595,50 +609,45 @@ export class ValidadoComponent
         },
       });
   }
+
   onConsultarMonitoreosmuestreo(): void {
     if (this.resultadosSeleccionados.length === 0 && !this.allSelected) {
-      this.isModal = false;
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un muestreo para regresar a total de resultados.',
+        text: 'Debe seleccionar al menos un resultado para consultar sus monitoreos.',
       });
     }
 
-    if (this.resultadosSeleccionados.length > 0) {
-      this.isModal = true;
-      let muestreosmodal = this.resultadosSeleccionados.map((m) => ({
-        muestreo: m.muestreoId,
-        clavemonitoreo: m.claveMonitoreo,
-        clavesitio: m.claveSitio,
-        noEntregaOCDL: m.noEntregaOCDL,
-        nomnresitio: m.nombreSitio,
-        tipocuerpoagua: m.tipoCuerpoAgua,
-        fecharealizacion: m.fechaRealizacion,
-        nombreusuario: m.nombreUsuario,
-        muestreoId: m.muestreoId,
-      }));
-      this.muestreosagrupados = [
-        ...new Map(muestreosmodal.map((m) => [m.muestreo, m])).values(),
-      ];
-    }
-
+    this.isModal = true;
+    let muestreosmodal = (
+      this.allSelected ? this.resultados : this.resultadosSeleccionados
+    ).map((m) => ({
+      muestreo: m.muestreoId,
+      clavemonitoreo: m.claveMonitoreo,
+      clavesitio: m.claveSitio,
+      noEntregaOCDL: m.noEntregaOCDL,
+      nomnresitio: m.nombreSitio,
+      tipocuerpoagua: m.tipoCuerpoAgua,
+      fecharealizacion: m.fechaRealizacion,
+      nombreusuario: m.nombreUsuario,
+      muestreoId: m.muestreoId,
+    }));
+    this.muestreosagrupados = [
+      ...new Map(muestreosmodal.map((m) => [m.muestreo, m])).values(),
+    ];
     this.hacerScroll();
   }
-  onSeleccionarTodosmodal(): void {
-    this.muestreosagrupados.map((m) => {
-      if (this.seleccionarTodosChckmodal) {
-        m.isCheckedmodal ? true : (m.isCheckedmodal = true);
-      } else {
-        m.isCheckedmodal ? (m.isCheckedmodal = false) : true;
-      }
+
+  onSeleccionarTodosModal(): void {
+    this.muestreosagrupados.forEach((m) => {
+      m.isChecked = this.seleccionarTodosChckmodal;
     });
-    this.resultadosSeleccionados = this.Seleccionados(
-      this.resultadosFiltradosn
-    );
   }
-  onSeleccionarmodal(): void {
-    if (this.seleccionarTodosChckmodal) this.seleccionarTodosChckmodal = false;
+  onSeleccionarModal(): void {
+    this.seleccionarTodosChckmodal = this.muestreosagrupados.every(
+      (m) => m.isChecked
+    );
   }
 }

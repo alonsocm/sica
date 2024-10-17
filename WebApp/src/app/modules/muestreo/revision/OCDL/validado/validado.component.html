@@ -35,7 +35,7 @@
     </div>
     <app-historial></app-historial>
     <div class="alert alert-secondary" role="alert"
-      *ngIf="this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
+      *ngIf=" this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
       Los {{this.resultadosSeleccionados.length}} registros de esta página están seleccionados. <button type="button"
         (click)="onSelectAllPagesClick()" class="btn btn-link">
         Seleccionar los {{this.totalItems}} registros
@@ -63,7 +63,7 @@
           <tr>
             <th class="no-border-top td-center">
               <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-                (change)="onSelectPageClick(this.resultadosSeleccionados);" title="Selecciona la página actual" />
+                (change)="onSelectPageClick(resultadosSeleccionados);" title="Selecciona la página actual" />
             </th>
             <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
               <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
@@ -232,7 +232,7 @@
                 <th class="checkBox-center">
                   <label for="chckAllmodal">Seleccionar todos</label>
                   <input type="checkbox" id="chckAllmodal" [(ngModel)]="this.seleccionarTodosChckmodal"
-                    (change)="onSeleccionarTodosmodal()" />
+                    (change)="onSeleccionarTodosModal()" />
                 </th>
                 <th class="text-center">
                   No.Entrega OC/DL
@@ -261,7 +261,7 @@
               <tr
                 *ngFor="let validados of this.muestreosagrupados| paginate: { itemsPerPage:NoPage, currentPage: page }">
                 <td class="checkBox-center">
-                  <input type="checkbox" [(ngModel)]="validados.isChecked" (change)="onSeleccionarmodal()"
+                  <input type="checkbox" [(ngModel)]="validados.isChecked" (change)="onSeleccionarModal()"
                     title="Seleccionar">
                 </td>
                 <td>{{validados.noEntregaOCDL}}</td>
@@ -272,8 +272,8 @@
                 <td>{{validados.fecharealizacion}}</td>
                 <td>{{validados.nombreusuario}}</td>
               </tr>
-              <tr *ngIf="this.resultadosSeleccionados.length==0">
-                <td class="td-center" colspan="18">{{noRegistro}}</td>
+              <tr *ngIf="this.muestreosagrupados.length==0">
+                <td class="td-center" colspan="7">{{noRegistro}}</td>
               </tr>
             </tbody>
           </table>
