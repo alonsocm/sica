@@ -5,11 +5,11 @@ using MediatR;
 
 namespace Application.Features.Operacion.RevisionOCDL.Commands
 {
-    public class ActualizarResultadoOSCDL : IRequest<Response<bool>>
+    public class ActualizarResultadoOCDL : IRequest<Response<bool>>
     {
         public ResultadoDto Resultados { get; set; }
     }
-    public class ActualizarResultadoOSCDLHandler : IRequestHandler<ActualizarResultadoOSCDL, Response<bool>>
+    public class ActualizarResultadoOSCDLHandler : IRequestHandler<ActualizarResultadoOCDL, Response<bool>>
     {
         private readonly IResultado _repository;
         private readonly IMuestreoRepository _repositoryMuestreo;
@@ -18,7 +18,7 @@ namespace Application.Features.Operacion.RevisionOCDL.Commands
             _repository = repository;
             _repositoryMuestreo = muestreoRepository;
         }
-        public async Task<Response<bool>> Handle(ActualizarResultadoOSCDL request, CancellationToken cancellationToken)
+        public async Task<Response<bool>> Handle(ActualizarResultadoOCDL request, CancellationToken cancellationToken)
         {
             bool isEstatusEnviado = (request.Resultados.EstatusId == (int)Enums.EstatusMuestreo.RevisiónOCDLSECAIA);
 
