@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
-using Application.DTOs.RevisionOCDL;
 using Application.DTOs.LiberacionResultados;
+using Application.DTOs.RevisionOCDL;
 using Application.DTOs.Users;
 using Application.Wrappers;
 using Domain.Entities;
@@ -21,9 +21,8 @@ namespace Application.Interfaces.IRepositories
         Task<int> EnviarResultadoAIncidencias(IEnumerable<long> resultados);
         Task<int> LiberarResultados(IEnumerable<long> resultados);
         Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize);
-        Task<PagedResponse<List<ResultadosValidadosPorOCDLDTO>>> GetResultadosValidadosPorOCDLAsync(List<Filter> filters, int pageNumber, int pageSize);
         Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector);
+        Task<PagedResponse<List<ResultadosValidadosPorOCDLDTO>>> GetResultadosValidadosPorOCDLAsync(List<Filter> filters, int pageNumber, int pageSize);
         Task<IEnumerable<object>> GetDistinctResultadosValidadosAsync(List<Filter> filters, string selector);
-
     }
 }

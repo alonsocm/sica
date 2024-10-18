@@ -367,7 +367,6 @@ namespace Persistence.Repository
 
             return query;
         }
-
         public async Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize)
         {
             IQueryable<ResultadoLiberacionDTO> query = QueryResultadosLiberacion(filters);

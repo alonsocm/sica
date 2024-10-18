@@ -12,7 +12,6 @@ using Application.Features.Operacion.RevisionOCDL.Commands;
 using Application.Features.Operacion.RevisionOCDL.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
-using Application.Features.Resultados.Comands;
 using Application.Features.ResumenResultados.Queries;
 using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
@@ -21,7 +20,6 @@ using Application.Wrappers;
 using Domain.Settings;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Shared.Utilities.Services;
 using System.Reflection;
 using WebAPI.Shared;
@@ -108,57 +106,36 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> Get(int page, int pageSize, string? filter = "", string? order = "")
+        public async Task<IActionResult> GetResultadosValidadosPorOCDLAsync([FromQuery] List<Filter> filters, [FromQuery] int pageSize, [FromQuery] int page)
         {
-            var filters = new List<Filter>();
-
-            if (!string.IsNullOrEmpty(filter))
+            var request = new GetResultadosValidadosPorOCDL
             {
-                filters = QueryParam.GetFilters(filter);
-            }
-
-            OrderBy orderBy = null;
-
-            if (!string.IsNullOrEmpty(order) && order.Split('_').Length == 2)
-            {
-                orderBy = new OrderBy
-                {
-                    Column = order.Split('_')[0],
-                    Type = order.Split('_')[1]
-                };
-            }
-
-            return Ok(await Mediator.Send(new GetResultadosValidadosPorOCDL
-            {
-                Page = page,
+                Filters = filters,
                 PageSize = pageSize,
-                Filter = filters,
-                OrderBy = orderBy
-            }));
+                Page = page
+            };
+
+            var response = await Mediator.Send(request);
+
+            return Ok(response);
         }
 
-        [HttpGet("GetDistinctValuesFromColumnOCDL")]
-        public IActionResult Get( bool isOCDL, string? filter, string column)
+        [HttpGet("GetDistinctResultadosValidados")]
+        public async Task<IActionResult> GetDistinctResultadosValidados([FromQuery] List<Filter> filters, string selector)
         {
-            var filters = new List<Filter>();
-
-            if (!string.IsNullOrEmpty(filter))
+            var request = new GetDistinctResultadosValidados
             {
-                filters = QueryParam.GetFilters(filter);
-            }
-
-            var data = Mediator.Send(new GetResultadosValidadosPorOCDL
-            {
-                Filter = filters,
-            }).Result.Data;
-
-            return Ok(new Response<object>(AuxQuery.GetDistinctValuesFromColumn(column, data)));
+                Filters = filters,
+                Selector = selector
+            };
+            var response = await Mediator.Send(request);
+            return Ok(response);
         }
 
         [HttpPut("ActualizarResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> Put (ResultadoDto resultado)
+        public async Task<IActionResult> Put(ResultadoDto resultado)
         {
-            return Ok(await Mediator.Send(new ActualizarResultadoOSCDL { Resultados = resultado }));
+            return Ok(await Mediator.Send(new ActualizarResultadoOCDL { Resultados = resultado }));
         }
 
         [HttpGet("ResultadosMuestreoParametros")]
@@ -560,11 +537,11 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok();
         }
 
-      /* [HttpPut]
-        public async Task<IActionResult> Put(ResultadoDto resultados)
-        {
-            return Ok(await Mediator.Send(new ActualizarResultadoCommand { Resultados = resultados }));
-        }*/
+        /* [HttpPut]
+          public async Task<IActionResult> Put(ResultadoDto resultados)
+          {
+              return Ok(await Mediator.Send(new ActualizarResultadoCommand { Resultados = resultados }));
+          }*/
 
         [HttpPut("updateParametros")]
         public async Task<IActionResult> Put(List<ResultadoMuestreoDto> request)
