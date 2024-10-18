@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
-using Application.DTOs.RevisionOCDL;
 using Application.DTOs.LiberacionResultados;
+using Application.DTOs.RevisionOCDL;
 using Application.DTOs.Users;
 using Application.Enums;
 using Application.Expressions;
@@ -316,42 +316,56 @@ namespace Persistence.Repository
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos));
         }
-        public Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync()
+        public async Task<PagedResponse<List<ResultadosValidadosPorOCDLDTO>>> GetResultadosValidadosPorOCDLAsync(List<Filter> filters, int pageNumber, int pageSize)
         {
-            IEnumerable<ResultadosValidadosPorOCDLDTO> resultadosMuestreos = Enumerable.Empty<ResultadosValidadosPorOCDLDTO>();
+            IQueryable<ResultadosValidadosPorOCDLDTO> query = QueryResultadosValidadosPorOCDLAsync(filters);
+            return PagedResponse<ResultadosValidadosPorOCDLDTO>.GetPagedReponse(await query.ToListAsync(), pageNumber, pageSize);
+        }
+        public async Task<IEnumerable<object>> GetDistinctResultadosValidadosAsync(List<Filter> filters, string selector)
+        {
+            IQueryable<ResultadosValidadosPorOCDLDTO> data = QueryResultadosValidadosPorOCDLAsync(filters);
+            return await GetDistinctFromColumnAsync(selector, data);
+        }
+        private IQueryable<ResultadosValidadosPorOCDLDTO> QueryResultadosValidadosPorOCDLAsync(List<Filter> filters)
+        {
+            var expressions = QueryExpression<ResultadosValidadosPorOCDLDTO>.GetExpressionList(filters);
 
-            resultadosMuestreos = (from rm in _dbContext.ResultadoMuestreo
-                                   join vcm in _dbContext.VwClaveMuestreo on rm.Muestreo.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
-                                   join users in _dbContext.Usuario on rm.Muestreo.UsuarioRevisionOcdlid equals users.Id into usuario
-                                   from usr in usuario.DefaultIfEmpty()
-                                   where rm.Muestreo.EstatusId == (int)EstatusMuestreo.ResumenValidaciónReglas &&
-                                   rm.EsCorrectoOcdl != null && rm.Muestreo.EstatusOcdl == (int)EstatusOcdlSEcaia.Validado
-                                   orderby rm.Parametro.ClaveParametro ascending
-                                   select new ResultadosValidadosPorOCDLDTO
-                                   {
-                                       MuestreoId = rm.MuestreoId,
-                                       Resultado = rm.Resultado,
-                                       Observaciones = (rm.ObservacionesOcdlid == null || rm.ObservacionesOcdlid == 11) ? rm.ObservacionesOcdl : rm.ObservacionesOcdlNavigation.Descripcion,
-                                       NoEntregaOCDL = rm.Muestreo.NumeroEntrega.ToString() ?? "0",
-                                       ClaveUnica = $"{vcm.ClaveMuestreo}{rm.Parametro.ClaveParametro}" ?? string.Empty,
-                                       ClaveSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
-                                       ClaveMonitoreo = $"{vcm.ClaveMuestreo}",
-                                       NombreSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
-                                       ClaveParametro = rm.Parametro.ClaveParametro,
-                                       Laboratorio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
-                                       TipoCuerpoAgua = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                       TipoCuerpoAguaOriginal = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
-                                       NombreUsuario =$"{usr.Nombre} {usr.ApellidoPaterno} {usr.ApellidoMaterno}",
-                                       EstatusResultado = rm.Muestreo.EstatusOcdlNavigation.Descripcion ,
-                                       TipoAprobacion = rm.Muestreo.TipoAprobacion != null ? rm.Muestreo.TipoAprobacion.Descripcion.ToString() : string.Empty,
-                                       EstatusId = rm.Muestreo.EstatusId,
-                                       EsCorrectoResultado = (rm.EsCorrectoOcdl == true) ? "SI" : "NO",
-                                       FechaRealizacion = rm.Muestreo.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
-                                       FechaLimiteRevision = rm.Muestreo.FechaLimiteRevision.Value.ToString("dd/MM/yyyy"),
-                                       EstatusOCDL = rm.Muestreo.EstatusOcdl,
-                                       EstatusSECAIA = rm.Muestreo.EstatusSecaia
-                                   });
-            return Task.FromResult(resultadosMuestreos);
+            var query = (from rm in _dbContext.ResultadoMuestreo
+                         join vcm in _dbContext.VwClaveMuestreo on rm.Muestreo.ProgramaMuestreoId equals vcm.ProgramaMuestreoId
+                         join users in _dbContext.Usuario on rm.Muestreo.UsuarioRevisionOcdlid equals users.Id into usuario
+                         from usr in usuario.DefaultIfEmpty()
+                         where rm.Muestreo.EstatusId == (int)EstatusMuestreo.ResumenValidaciónReglas &&
+                         rm.EsCorrectoOcdl != null && rm.Muestreo.EstatusOcdl == (int)EstatusOcdlSEcaia.Validado
+                         orderby rm.Parametro.ClaveParametro ascending
+                         select new ResultadosValidadosPorOCDLDTO
+                         {
+                             MuestreoId = rm.MuestreoId,
+                             Resultado = rm.Resultado,
+                             Observaciones = (rm.ObservacionesOcdlid == null || rm.ObservacionesOcdlid == 11) ? rm.ObservacionesOcdl : rm.ObservacionesOcdlNavigation.Descripcion,
+                             NoEntregaOCDL = rm.Muestreo.NumeroEntrega.ToString() ?? "0",
+                             ClaveUnica = $"{vcm.ClaveMuestreo}{rm.Parametro.ClaveParametro}" ?? string.Empty,
+                             ClaveSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.ClaveSitio,
+                             ClaveMonitoreo = $"{vcm.ClaveMuestreo}",
+                             NombreSitio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.NombreSitio,
+                             ClaveParametro = rm.Parametro.ClaveParametro,
+                             Laboratorio = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Laboratorio.Descripcion ?? "Sin laboratorio asignado",
+                             TipoCuerpoAgua = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                             TipoCuerpoAguaOriginal = rm.Muestreo.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.CuerpoAgua.Descripcion,
+                             NombreUsuario = $"{usr.Nombre} {usr.ApellidoPaterno} {usr.ApellidoMaterno}",
+                             EstatusResultado = rm.Muestreo.EstatusOcdlNavigation.Descripcion,
+                             TipoAprobacion = rm.Muestreo.TipoAprobacion != null ? rm.Muestreo.TipoAprobacion.Descripcion.ToString() : string.Empty,
+                             EstatusId = rm.Muestreo.EstatusId,
+                             EsCorrectoResultado = (rm.EsCorrectoOcdl == true) ? "SI" : "NO",
+                             FechaRealizacion = rm.Muestreo.FechaRealVisita.Value.ToString("dd/MM/yyyy") ?? string.Empty,
+                             FechaLimiteRevision = rm.Muestreo.FechaLimiteRevision.Value.ToString("dd/MM/yyyy"),
+                             EstatusOCDL = rm.Muestreo.EstatusOcdl,
+                         });
+            foreach (var expression in expressions)
+            {
+                query = query.Where(expression);
+            }
+
+            return query;
         }
 
         public async Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize)

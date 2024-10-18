@@ -21,8 +21,9 @@ namespace Application.Interfaces.IRepositories
         Task<int> EnviarResultadoAIncidencias(IEnumerable<long> resultados);
         Task<int> LiberarResultados(IEnumerable<long> resultados);
         Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize);
-        Task<IEnumerable<ResultadosValidadosPorOCDLDTO>> GetResultadosValidadosPorOCDLAsync();
-
+        Task<PagedResponse<List<ResultadosValidadosPorOCDLDTO>>> GetResultadosValidadosPorOCDLAsync(List<Filter> filters, int pageNumber, int pageSize);
         Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector);
+        Task<IEnumerable<object>> GetDistinctResultadosValidadosAsync(List<Filter> filters, string selector);
+
     }
 }
