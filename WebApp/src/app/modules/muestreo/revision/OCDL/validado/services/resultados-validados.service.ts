@@ -1,7 +1,9 @@
+import { Column } from './../../../../../../interfaces/columna-inferface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ResultadoValidado } from '../models/resultado-validado';
 
 @Injectable({
   providedIn: 'root',
@@ -28,20 +30,21 @@ export class ResultadosValidadosService {
   }
 
   getDistinctOCDL(
-    column: string,
-    filter: string,
-  ): Observable<Object> {
+    selector: string,
+    filters: string = '',
+  ): Observable<any> {
     const params = new HttpParams({
       fromObject: {
-        column: column,
-        filter: filter,
+        selector : selector,
+        filters: filters,
       },
     });
     return this.http.get(
-      environment.apiUrl + '/resultados/GetDistinctValuesFromColumnOCDL',
+      environment.apiUrl + '/resultados/GetDistinctResultadosValidados',
       { params }
     );
   }
+
   exportarResultadosValidados(muestreos: Array<any> = []) {
     return this.http.post(environment.apiUrl + '/Resultados/ExportarResultadosValidados', muestreos, { responseType: 'blob' });
 }
