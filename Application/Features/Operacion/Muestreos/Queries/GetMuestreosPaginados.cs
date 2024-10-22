@@ -32,6 +32,7 @@ namespace Application.Features.Muestreos.Queries
             {
                 estatus.Add((int)Enums.EstatusMuestreo.CargaResultados);
                 estatus.Add((int)Enums.EstatusMuestreo.EvidenciasCargadas);
+                estatus.Add((int)Enums.EstatusMuestreo.ResumenValidaciónReglas);
             }
             else
             {

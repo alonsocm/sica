@@ -49,8 +49,11 @@ namespace Application.Features.Operacion.ReplicasResultadosReglasValidacion.Comm
             try
             {
                 _archivos.GuardarEvidencias(request.Archivos);
-                muestreosProcesados.Add(DateTime.Now.ToShortDateString());
-                evidencias.ToList().ForEach(evidencia => { evidencia.Cargado = true; evidencia.FechaCarga = DateTime.Now; });
+                muestreosProcesados.Add(DateTime.Now.ToShortDateString());               
+                evidencias.ToList().Where(y => request.Archivos.Select(x => x.FileName).Contains(y.NombreArchivo) && !y.Cargado).ToList().
+                    ForEach(evidencia => { evidencia.Cargado = true; evidencia.FechaCarga = DateTime.Now; });
+
+
                 await _repositoryEvidencias.ActualizarAsync(evidencias.ToList());
             }
             catch (Exception ex)
