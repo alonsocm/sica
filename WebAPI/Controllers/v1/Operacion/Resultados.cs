@@ -1090,8 +1090,10 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetResultadosLiberacion")]
-        public async Task<IActionResult> GetResultadosLiberacion([FromQuery] List<Filter> filters, [FromQuery] int pageSize, [FromQuery] int page)
+        public async Task<IActionResult> GetResultadosLiberacion(int pageSize, int page, string? filter)
         {
+            var filters = !string.IsNullOrEmpty(filter) ? QueryParam.GetFilters(filter) : new List<Filter>();
+
             var request = new GetResultados
             {
                 Filters = filters,
@@ -1105,8 +1107,10 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("GetDistinctResultadosLiberacionProperty")]
-        public async Task<IActionResult> GetDistinctResultadosLiberacionProperty([FromQuery] List<Filter> filters, string selector)
+        public async Task<IActionResult> GetDistinctResultadosLiberacionProperty(string selector, string? filter)
         {
+            var filters = !string.IsNullOrEmpty(filter) ? QueryParam.GetFilters(filter) : new List<Filter>();
+
             var request = new GetDistinctResultadosLiberacionProperty
             {
                 Filters = filters,
