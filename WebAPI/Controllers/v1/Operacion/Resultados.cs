@@ -3,6 +3,7 @@ using Application.Enums;
 using Application.Features.Catalogos.ParametrosGrupo.Queries;
 using Application.Features.ObservacionesOCDL.Queries;
 using Application.Features.Operacion.LiberacionResultados.Queries;
+using Application.Features.Operacion.Muestreos.Commands.Actualizar;
 using Application.Features.Operacion.Muestreos.Commands.Carga;
 using Application.Features.Operacion.Muestreos.Commands.Liberacion;
 using Application.Features.Operacion.Resultados.Comands;
@@ -1120,6 +1121,13 @@ namespace WebAPI.Controllers.v1.Operacion
             var response = await Mediator.Send(request);
 
             return Ok(response);
+        }
+
+
+        [HttpPut("SendResultadosNextEtapa")]
+        public async Task<IActionResult> SendResultadosNextEtapa(UpdateEstatusResultadosById datos)
+        {
+            return Ok(await Mediator.Send(new UpdateEstatusResultadosById { EstatusId = datos.EstatusId, lstResultados = datos.lstResultados }));
         }
     }
 }

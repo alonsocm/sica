@@ -59,7 +59,7 @@ namespace Persistence.Repository
                                        FechaCargaEvidencias = m.FechaCargaEvidencias == null ? string.Empty : m.FechaCargaEvidencias.ToString() ?? string.Empty,
                                        TipoCargaResultados = m.TipoCarga.Descripcion,
                                        EvidenciasEsperadas = (int)m.ProgramaMuestreo.ProgramaSitio.Sitio.CuerpoTipoSubtipoAgua.TipoCuerpoAgua.EvidenciasEsperadas,
-                                       esReplica = false,
+                                       esReplica = "NO",
                                        EstatusId = m.EstatusId
                                    })
                                    .ToListAsync();
@@ -108,7 +108,7 @@ namespace Persistence.Repository
                                            resultado.EstatusResultadoId == (int)Application.Enums.EstatusResultado.CargaRéplicasLaboratorioExterno
                                            select resultado).ToList();
 
-                if (existeREplica.Any()) { g.esReplica = true; } else { muestreos.Remove(g); }
+                if (existeREplica.Any()) { g.esReplica = "SI"; } else { muestreos.Remove(g); }
             });
             return muestreos;
         }

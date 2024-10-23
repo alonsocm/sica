@@ -12,6 +12,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { NotificationType } from '../../../../../shared/enums/notification-type';
 import { Notificacion } from '../../../../../shared/models/notification-model';
 import { Item } from 'src/app/interfaces/filter/item';
+import { estatusResultado } from '../../../../../shared/enums/estatusResultado';
 
 @Component({
   selector: 'app-carga-resultados',
@@ -23,6 +24,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   muestreos: Array<Muestreo> = []; //Contiene los registros consultados a la API*/
   muestreosSeleccionados: Array<Muestreo> = []; //Contiene los registros que se van seleccionando*/
   resultadosEnviados: Array<number> = [];
+  resultadosEnviadosReplicas: Array<number> = [];
   reemplazarResultados: boolean = false;
   archivo: any;
   filtroHistorialServiceSub: Subscription;
@@ -31,6 +33,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     text: '¿Está seguro de eliminar los monitoreos seleccionados y los resultados correspondientes?',
     id: 'mdlConfirmacion',
   };
+  mensajeReplica: string = '';
 
   @ViewChild('inputExcelMonitoreos') inputExcelMonitoreos: ElementRef =
     {} as ElementRef;
@@ -86,7 +89,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
         desc: false,
         data: [],
         filteredData: [],
-        dataType: 'bolean',
+        dataType: 'string',
         specialFilter: '',
         secondSpecialFilter: '',
         selectedData: '',
@@ -391,7 +394,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.selectedPage = false;
-          this.muestreos = response.data;
+          this.muestreos = response.data;          
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
           this.getPreviousSelected(this.muestreos, this.muestreosSeleccionados);
@@ -511,7 +514,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
-    this.consultarMonitoreos();
+     this.consultarMonitoreos();
 
     this.columns
       .filter((x) => x.isLatestFilter)
@@ -646,7 +649,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
   //Cambiar cuando selecciona todos
   enviarMonitoreos(): void {
     //Si todos los registros están seleccionados, vamos a utlizar otra función, donde pasamos el filtro actual
-    this.loading = true;
+    
     if (this.allSelected) {
       this.muestreoService
         .enviarTodosMuestreosAcumulados(
@@ -682,12 +685,13 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           },
         });
     } else {
-      //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
-      this.resultadosEnviados = this.muestreosSeleccionados.map((m) => {
+
+      this.resultadosEnviados = this.muestreosSeleccionados.filter(x => x.esReplica == "NO").map((m) => {
         return m.muestreoId;
       });
+      this.resultadosEnviadosReplicas = this.muestreosSeleccionados.filter(x => x.esReplica == "SI").map((m) => { return m.muestreoId });
 
-      if (this.resultadosEnviados.length == 0) {
+      if (this.resultadosEnviados.length == 0 && this.resultadosEnviadosReplicas.length == 0) {
         this.hacerScroll();
         return this.notificationService.updateNotification({
           show: true,
@@ -695,8 +699,21 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           text: 'Debes de seleccionar al menos un muestreo con evidencias cargadas para ser enviado a la etapa de "Acumulación resultados"',
         });
       }
+      else {
 
-      this.loading = true;
+        this.sendNextEtapaReplica();
+        this.sendNextEtapaMonitoreos();
+      }
+    }
+  }
+
+
+  sendNextEtapaMonitoreos() {
+    //se hace pequeño cambio paraque pueda enviarlos aunque no este la carga de evidencias
+    //Solo se envian los muestreos que no son replica a nivel muestreo  
+
+    if (this.resultadosEnviados.length > 0) {
+
       this.muestreoService
         .enviarMuestreoaSiguienteEtapa(
           estatusMuestreo.AcumulacionResultados,
@@ -715,7 +732,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
                 text:
                   'Se enviaron ' +
                   this.resultadosEnviados.length +
-                  ' muestreos a la etapa de "Acumulación resultados" correctamente',
+                  ' muestreos a la etapa de "Acumulación resultados" correctamente' + this.mensajeReplica,
               });
             }
           },
@@ -730,6 +747,19 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
           },
         });
     }
+
+  }
+
+  sendNextEtapaReplica() {
+    //Los que si son replicas se avanza el estatus a nivel resultado a Acumulacion de resulados replica
+   
+    if (this.resultadosEnviadosReplicas.length > 0) {
+      this.muestreoService.enviarResultadosSiguienteEtapa(estatusResultado.AcumulaciónResultadosReplica, this.resultadosEnviadosReplicas).
+        subscribe({
+          next: (response: any) => { if (response.succeded) this.mensajeReplica = " y" + this.resultadosEnviadosReplicas.length + " muestreos a 'Acumulación de resultados replica'" }
+        });
+    }
+
   }
 
   private resetValues() {

@@ -348,4 +348,13 @@ export class MuestreoService {
       { params, responseType: 'blob' }
     );
   }
+
+
+  enviarResultadosSiguienteEtapa(estatusId: number, lstResultados: Array<number>) {
+    let datos = { EstatusId: estatusId, lstResultados: lstResultados };
+    return this.http.put(
+      environment.apiUrl + '/Resultados/SendResultadosNextEtapa',
+      datos
+    );
+  }
 }

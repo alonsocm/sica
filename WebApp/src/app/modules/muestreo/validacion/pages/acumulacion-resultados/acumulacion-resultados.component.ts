@@ -747,7 +747,7 @@ export class AcumulacionResultadosComponent
 
     this.loading = true;
 
-    if (this.allSelected) {
+   
       this.validacionService
         .deleteResultados(
           estatusMuestreo.AcumulacionResultados,
@@ -776,7 +776,7 @@ export class AcumulacionResultadosComponent
             });
           },
         });
-    }
+    
   }
 
   confirmacionCarga() {

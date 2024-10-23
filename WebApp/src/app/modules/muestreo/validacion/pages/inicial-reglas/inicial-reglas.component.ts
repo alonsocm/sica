@@ -417,7 +417,7 @@ export class InicialReglasComponent
       )
       .subscribe({
         next: (response: any) => {
-          this.registros = response.data;
+          this.registros = response.data;         
           this.page = response.totalRecords !== this.totalItems ? 1 : this.page;
           this.totalItems = response.totalRecords;
         },
@@ -619,7 +619,7 @@ export class InicialReglasComponent
 
     this.loading = true;
 
-    if (this.allSelected) {
+ 
       this.validacionService
         .deleteResultados(
           estatusMuestreo.MóduloInicialReglas,
@@ -648,7 +648,7 @@ export class InicialReglasComponent
             });
           },
         });
-    }
+    
   }
 
   onFilterIconClick(column: Column) {
