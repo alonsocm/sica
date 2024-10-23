@@ -316,6 +316,16 @@ namespace Persistence.Repository
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos));
         }
+        public async Task<int> EnviarResultados(IEnumerable<long> resultados)
+        {
+            return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id))
+                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Aprobaciónderesultados));
+        }
+        public async Task<int> RegresarResultado(IEnumerable<long> resultados)
+        {
+            return await _dbContext.ResultadoMuestreo.Where(b => resultados.Contains(b.Id) && b.EsCorrectoOcdl == true)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreosconextencióndefecha));
+        }
         public async Task<PagedResponse<List<ResultadosValidadosPorOCDLDTO>>> GetResultadosValidadosPorOCDLAsync(List<Filter> filters, int pageNumber, int pageSize)
         {
             IQueryable<ResultadosValidadosPorOCDLDTO> query = QueryResultadosValidadosPorOCDLAsync(filters);
@@ -335,10 +345,11 @@ namespace Persistence.Repository
                          join users in _dbContext.Usuario on rm.Muestreo.UsuarioRevisionOcdlid equals users.Id into usuario
                          from usr in usuario.DefaultIfEmpty()
                          where rm.Muestreo.EstatusId == (int)EstatusMuestreo.ResumenValidaciónReglas &&
-                         rm.EsCorrectoOcdl != null && rm.Muestreo.EstatusOcdl == (int)EstatusOcdlSEcaia.Validado
+                         rm.EsCorrectoOcdl != null && rm.Muestreo.EstatusOcdl == (int)EstatusOcdlSEcaia.Validado && rm.EstatusResultadoId == (int)Application.Enums.EstatusResultado.RevisiónOCDLSECAIA
                          orderby rm.Parametro.ClaveParametro ascending
                          select new ResultadosValidadosPorOCDLDTO
                          {
+                             Id = rm.Id,
                              MuestreoId = rm.MuestreoId,
                              Resultado = rm.Resultado,
                              Observaciones = (rm.ObservacionesOcdlid == null || rm.ObservacionesOcdlid == 11) ? rm.ObservacionesOcdl : rm.ObservacionesOcdlNavigation.Descripcion,

@@ -12,6 +12,7 @@ using Application.Features.Operacion.RevisionOCDL.Commands;
 using Application.Features.Operacion.RevisionOCDL.Queries;
 using Application.Features.Operacion.RevisionResultados.Commands;
 using Application.Features.Operacion.RevisionResultados.Queries;
+using Application.Features.Resultados.Comands;
 using Application.Features.ResumenResultados.Queries;
 using Application.Features.RevisionResultados.Queries;
 using Application.Features.Validados.Queries;
@@ -114,10 +115,30 @@ namespace WebAPI.Controllers.v1.Operacion
                 PageSize = pageSize,
                 Page = page
             };
-
             var response = await Mediator.Send(request);
-
             return Ok(response);
+        }
+
+        [HttpPost("ExportarResultadosValidadosPorOCDL")]
+        public async Task<IActionResult> ExportarResultadosValidadosPorOCDL([FromBody] List<long> muestreos)
+        {
+            var data = Mediator.Send(new GetResultadosValidadosPorOCDL
+            {
+                Filters = new List<Filter>(),
+
+            }).Result.Data;
+
+            if (muestreos.Any())
+            {
+                data = data.Where(w => muestreos.Contains(w.Id)).ToList();
+            }
+
+            var plantilla = new Plantilla(_configuration, _env);
+            string templatePath = plantilla.ObtenerRutaPlantilla("ResultadosValidados");
+            var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
+            ExcelService.ExportToExcel(data, fileInfo, true);
+            var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
+            return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
 
         [HttpGet("GetDistinctResultadosValidados")]
@@ -132,10 +153,36 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok(response);
         }
 
-        [HttpPut("ActualizarResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> Put(ResultadoDto resultado)
+        [HttpPut("EnviarResultadosValidadosPorOCDL")]
+        public async Task<IActionResult> EnviarResultadosValidadosPorOCDL([FromBody] IEnumerable<long> resultados)
         {
-            return Ok(await Mediator.Send(new ActualizarResultadoOCDL { Resultados = resultado }));
+
+            if (!resultados.Any())
+            {
+                var mediatorResponse = await Mediator.Send(new GetResultadosValidadosPorOCDL
+                {
+                    Filters = new List<Filter>(),
+                });
+                resultados = mediatorResponse.Data.Select(s => s.Id);
+            }
+
+            return Ok(await Mediator.Send(new ActualizarResultadoOCDL { Resultados = resultados }));
+        }
+
+        [HttpPut("regresarResultadosValidadosPorOCDL")]
+        public async Task<IActionResult> regresarResultadosValidadosPorOCDL([FromBody] IEnumerable<long> resultados)
+        {
+
+            if (!resultados.Any())
+            {
+                var mediatorResponse = await Mediator.Send(new GetResultadosValidadosPorOCDL
+                {
+                    Filters = new List<Filter>(),
+                });
+                resultados = mediatorResponse.Data.Select(s => s.Id);
+            }
+
+            return Ok(await Mediator.Send(new RegresarResultadosValidadosPorOCDL { Resultados = resultados }));
         }
 
         [HttpGet("ResultadosMuestreoParametros")]
@@ -537,11 +584,11 @@ namespace WebAPI.Controllers.v1.Operacion
             return Ok();
         }
 
-        /* [HttpPut]
-          public async Task<IActionResult> Put(ResultadoDto resultados)
-          {
-              return Ok(await Mediator.Send(new ActualizarResultadoCommand { Resultados = resultados }));
-          }*/
+        [HttpPut("regresar")]
+        public async Task<IActionResult> Put(ResultadoDto resultados)
+        {
+            return Ok(await Mediator.Send(new ActualizarResultadoCommand { Resultados = resultados }));
+        }
 
         [HttpPut("updateParametros")]
         public async Task<IActionResult> Put(List<ResultadoMuestreoDto> request)
