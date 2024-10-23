@@ -1,5 +1,4 @@
-﻿using Application.DTOs;
-using Application.Interfaces.IRepositories;
+﻿using Application.Interfaces.IRepositories;
 using Application.Wrappers;
 using MediatR;
 
@@ -7,48 +6,32 @@ namespace Application.Features.Operacion.RevisionOCDL.Commands
 {
     public class ActualizarResultadoOCDL : IRequest<Response<bool>>
     {
-        public ResultadoDto Resultados { get; set; }
+        public IEnumerable<long> Resultados { get; set; } = new List<long>();
     }
     public class ActualizarResultadoOSCDLHandler : IRequestHandler<ActualizarResultadoOCDL, Response<bool>>
     {
         private readonly IResultado _repository;
-        private readonly IMuestreoRepository _repositoryMuestreo;
-        public ActualizarResultadoOSCDLHandler(IResultado repository, IMuestreoRepository muestreoRepository)
+        public ActualizarResultadoOSCDLHandler(IResultado repository)
         {
             _repository = repository;
-            _repositoryMuestreo = muestreoRepository;
         }
         public async Task<Response<bool>> Handle(ActualizarResultadoOCDL request, CancellationToken cancellationToken)
         {
-            bool isEstatusEnviado = (request.Resultados.EstatusId == (int)Enums.EstatusMuestreo.RevisiónOCDLSECAIA);
-
-            if (isEstatusEnviado)
+            if (request.Resultados.Any())
             {
-                var resultados = _repository.ObtenerElementosPorCriterio(c => request.Resultados.MuestreoId.Contains(Convert.ToInt32(c.MuestreoId))).ToList();
+                var resultadosEnviados = await _repository.EnviarResultados(request.Resultados);
 
-                resultados.ForEach(resultado =>
+                if (resultadosEnviados == 0)
                 {
-                    resultado.ObservacionesOcdlid = null;
-                    resultado.ObservacionesOcdl = null;
-                    resultado.EsCorrectoOcdl = null;
-                    _repository.Actualizar(resultado);
-                });
+                    throw new ArgumentException("Los resultados no cumplen con el valor \"OK\", en el campo validación final.");
+                }
+
+                return new Response<bool>(true);
             }
-
-            var muestreos = _repositoryMuestreo.ObtenerElementosPorCriterio(c => request.Resultados.MuestreoId.Contains(Convert.ToInt32(c.Id))).ToList();
-
-            if (muestreos.Any())
+            else
             {
-                muestreos.ForEach(muestreo =>
-                {
-                    muestreo.EstatusOcdl = (isEstatusEnviado) ? null : ((request.Resultados.EstatusOCDLId != null) ? request.Resultados.EstatusOCDLId : muestreo.EstatusOcdl);
-                    muestreo.FechaRevisionOcdl = (isEstatusEnviado) ? null : ((request.Resultados.EstatusOCDLId != null) ? DateTime.Now : muestreo.FechaRevisionOcdl);
-                    muestreo.UsuarioRevisionOcdlid = (isEstatusEnviado) ? null : ((request.Resultados.EstatusOCDLId != null) ? request.Resultados.IdUsuario : muestreo.UsuarioRevisionOcdlid);
-                    _repositoryMuestreo.Actualizar(muestreo);
-                });
+                throw new ArgumentException("No se encontraron resultados para liberar.");
             }
-
-            return new Response<bool>(true);
         }
     }
 }
