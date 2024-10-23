@@ -1,9 +1,7 @@
-import { Column } from './../../../../../../interfaces/columna-inferface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ResultadoValidado } from '../models/resultado-validado';
 
 @Injectable({
   providedIn: 'root',
@@ -26,16 +24,16 @@ export class ResultadosValidadosService {
         order: order != null ? order.column + '_' + order.type : '',
       },
     });
-    return this.http.get(environment.apiUrl+'/resultados/ResultadosValidadosPorOCDL', { params });
+    return this.http.get(
+      environment.apiUrl + '/resultados/ResultadosValidadosPorOCDL',
+      { params }
+    );
   }
 
-  getDistinctOCDL(
-    selector: string,
-    filters: string = '',
-  ): Observable<any> {
+  getDistinctOCDL(selector: string, filters: string = ''): Observable<any> {
     const params = new HttpParams({
       fromObject: {
-        selector : selector,
+        selector: selector,
         filters: filters,
       },
     });
@@ -46,9 +44,24 @@ export class ResultadosValidadosService {
   }
 
   exportarResultadosValidados(muestreos: Array<any> = []) {
-    return this.http.post(environment.apiUrl + '/Resultados/ExportarResultadosValidados', muestreos, { responseType: 'blob' });
-}
-actualizarResultadosValidadosPorOCDL(resultados: any): Observable<any> {
-  return this.http.put(environment.apiUrl + '/resultados/ActualizarResultadosValidadosPorOCDL', resultados);
-}
+    return this.http.post(
+      environment.apiUrl + '/Resultados/ExportarResultadosValidadosPorOCDL',
+      muestreos,
+      { responseType: 'blob' }
+    );
+  }
+
+  enviarResultadosValidadosPorOCDL(resultados: any): Observable<any> {
+    return this.http.put(
+      environment.apiUrl + '/resultados/EnviarResultadosValidadosPorOCDL',
+      resultados
+    );
+  }
+  
+  actualizarResultado(resultados: any): Observable<any> {
+    return this.http.put(
+      environment.apiUrl + '/resultados/regresarResultadosValidadosPorOCDL',
+      resultados
+    );
+  }
 }

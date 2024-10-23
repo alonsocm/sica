@@ -16,7 +16,7 @@
     </div>
     <div class="clearfix">
       <div class="float-right">
-        <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregreso" (click)="onConsultarMonitoreosmuestreo()">
+        <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal" data-target="#modalregreso">
           <i class="bi bi-send"></i>&nbsp;Regresar a total de resultados a revisar
         </button>
         <button class="btn btn-primary btn-sm mr-1" type="button" data-toggle="modal"
@@ -36,11 +36,11 @@
     <app-historial></app-historial>
     <div class="alert alert-secondary" role="alert"
       *ngIf=" this.selectAllOption && !this.allSelected && this.totalItems > this.NoPage ">
-      Los {{this.resultadosSeleccionados.length}} registros de esta página están seleccionados. <button type="button"
-        (click)="onSelectAllPagesClick()" class="btn btn-link">
+      Los {{this.resultados.length}} registros de esta página están seleccionados. <button type="button"
+        (click)="onSelectAllPagesClick();" class="btn btn-link">
         Seleccionar los {{this.totalItems}} registros
-      </button>
-    </div>
+    </button>
+  </div>
     <div class="alert alert-secondary" role="alert" *ngIf="this.allSelected">
       Los {{this.totalItems}} registros están seleccionados. <button type="button" class="btn btn-link"
         (click)="onUnselectAllClick()">
@@ -63,7 +63,7 @@
           <tr>
             <th class="no-border-top td-center">
               <input class="cursor-pointer" type="checkbox" id="chckAll" [(ngModel)]="this.selectedPage"
-                (change)="onSelectPageClick(resultadosSeleccionados);" title="Selecciona la página actual" />
+                (change)="onSelectPageClick(resultados,resultadosSeleccionados);" title="Selecciona la página actual" />
             </th>
             <th class="no-border-top" *ngFor="let columna of this.columns let i = index" id="filter-{{columna.name}}">
               <div class="dropdown" style="width:max-content" id="dd-{{columna.name}}">
@@ -151,7 +151,7 @@
           <tr
             *ngFor="let resultado of this.resultados| paginate: { itemsPerPage:NoPage, currentPage: page, totalItems: totalItems}">
             <td class="checkBox-center">
-              <input type="checkbox" [(ngModel)]="resultado.isChecked" (change)="onSelectClick(resultado)"
+              <input type="checkbox" [(ngModel)]="resultado.selected" (change)="onSelectClick(resultado)"
                 title="Seleccionar">
             </td>
             <td>{{resultado.noEntregaOCDL}}</td>
@@ -174,7 +174,7 @@
             <td></td>
           </tr>
           <tr *ngIf="this.resultados.length==0">
-            <td class="td-center" colspan="18">No se encontraron registros</td>
+            <td class="td-center" colspan="17">No se encontraron registros</td>
           </tr>
         </tbody>
       </table>
@@ -205,12 +205,12 @@
         <h4 class="modal-title" id="confirmarEnvioModalLabel">Confirmar envío</h4>
       </div>
       <div class="modal-body">
-        <p>¿Está seguro de enviar los monitoreos seleccionados a la aprobación final?</p>
+        <p>¿Está seguro de enviar los resultados seleccionados a la aprobación final?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
         <button id="btnAceptar" type="button" class="btn btn-primary" data-dismiss="modal"
-          (click)="onEnviarResultadosValidadosPorOCDL()">
+          (click)="onEnviarResultadosValidadosPorOCDLClick()">
           Aceptar
         </button>
       </div>
@@ -218,80 +218,21 @@
   </div>
 </div>
 <!-- Modal de regreso -->
-<div *ngIf="this.isModal==true" class="modal fade modal-dialog-centered" id="modalregreso" data-bs-backdrop="static" data-toggle="modal">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade modal-dialog-centered" id="modalregreso" data-bs-backdrop="static" data-toggle="modal">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="confirmarEnvioModalLabel">Confirmar envío</h4>
+        <h4 class="modal-title" id="modalregreso">Confirmar envío</h4>
       </div>
-      <div class="row-group">
-        <div class="col-md-12 table-responsive  dvTable">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th class="checkBox-center">
-                  <label for="chckAllmodal">Seleccionar todos</label>
-                  <input type="checkbox" id="chckAllmodal" [(ngModel)]="this.seleccionarTodosChckmodal"
-                    (change)="onSeleccionarTodosModal()" />
-                </th>
-                <th class="text-center">
-                  No.Entrega OC/DL
-                </th>
-                <th class="text-center">
-                  Clave Sitio
-                </th>
-                <th class="text-center">
-                  Clave Monitoreo
-                </th>
-                <th class="text-center">
-                  Nombre Sitio
-                </th>
-                <th class="text-center">
-                  Tipo Cuerpo deAgua
-                </th>
-                <th class="text-center">
-                  Fecha de Realización
-                </th>
-                <th class="text-center">
-                  Nombre del trabajador
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="let validados of this.muestreosagrupados| paginate: { itemsPerPage:NoPage, currentPage: page }">
-                <td class="checkBox-center">
-                  <input type="checkbox" [(ngModel)]="validados.isChecked" (change)="onSeleccionarModal()"
-                    title="Seleccionar">
-                </td>
-                <td>{{validados.noEntregaOCDL}}</td>
-                <td>{{validados.clavesitio}}</td>
-                <td>{{validados.clavemonitoreo}}</td>
-                <td>{{validados.nomnresitio}}</td>
-                <td>{{validados.tipocuerpoagua}}</td>
-                <td>{{validados.fecharealizacion}}</td>
-                <td>{{validados.nombreusuario}}</td>
-              </tr>
-              <tr *ngIf="this.muestreosagrupados.length==0">
-                <td class="td-center" colspan="7">{{noRegistro}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <br />
-        <div class="row-group">
-          <div>
-            <pagination-controls (pageChange)="page= $event" previousLabel="Anterior" nextLabel="Siguiente">
-            </pagination-controls>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-            <button id="btnAceptar" type="button" class="btn btn-primary" data-dismiss="modal"
-              (click)="onEnviarResultadosValidadosPorOCDL()">
-              Aceptar
-            </button>
-          </div>
-        </div>
+      <div class="modal-body">
+        <p>¿Está seguro de regresar los resultados seleccionados?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button id="btnAceptar" type="button" class="btn btn-primary" data-dismiss="modal"
+          (click)="onRegresarResultadosValidadosPorOCDLClick()">
+          Aceptar
+        </button>
       </div>
     </div>
   </div>

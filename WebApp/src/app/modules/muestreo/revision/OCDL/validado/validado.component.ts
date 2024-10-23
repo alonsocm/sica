@@ -3,7 +3,6 @@ import { Column } from 'src/app/interfaces/filter/column';
 import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
 import { BaseService } from 'src/app/shared/services/base.service';
 import { ResultadosValidadosService } from './services/resultados-validados.service';
-import { Resultado } from 'src/app/interfaces/Resultado.interface';
 import { FiltroHistorialService } from 'src/app/shared/services/filtro-historial.service';
 import { Item } from 'src/app/interfaces/filter/item';
 import { NotificationService } from 'src/app/shared/services/notification.service';
@@ -11,6 +10,8 @@ import { NotificationType } from 'src/app/shared/enums/notification-type';
 import { FileService } from 'src/app/shared/services/file.service';
 import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
+import { ResultadoValidado } from './models/resultado-validado';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-validado',
@@ -21,13 +22,12 @@ export class ValidadoComponent
   extends BaseService
   implements OnInit, ICommonMethods
 {
-  resultados: Array<Resultado> = [];
-  resultadosSeleccionados: Array<Resultado> = [];
   estatusAprobacionFinal: estatusOcdlSecaia;
   estatusEnviado: estatusMuestreo;
   muestreosagrupados: Array<any> = [];
   seleccionarTodosChckmodal: boolean = false;
   isModal: boolean = false;
+  filtroHistorialServiceSub: Subscription;
 
   constructor(
     private filtroHistorialService: FiltroHistorialService,
@@ -36,18 +36,19 @@ export class ValidadoComponent
   ) {
     super();
     this.estatusAprobacionFinal = estatusOcdlSecaia.AprobacionFinal;
-    this.estatusEnviado = estatusMuestreo.RevisiónOCDLSECAIA;
+    this.estatusEnviado = estatusMuestreo.ResumenValidaciónReglas;
+    this.filtroHistorialServiceSub =
+      this.filtroHistorialService.columnName.subscribe((columnName) => {
+        this.deleteFilter(columnName);
+        this.consultarResultados();
+      });
   }
+  resultados: Array<ResultadoValidado> = [];
+  resultadosSeleccionados: Array<ResultadoValidado> = [];
 
   ngOnInit(): void {
     this.definirColumnas();
     this.consultarResultados();
-    this.filtroHistorialService.columnName.subscribe((columnName) => {
-      if (columnName !== '') {
-        this.deleteFilter(columnName);
-        this.consultarResultados();
-      }
-    });
   }
 
   definirColumnas() {
@@ -308,16 +309,16 @@ export class ValidadoComponent
   }
 
   getPreviousSelected(
-    resultados: Array<Resultado>,
-    resultadosSeleccionados: Array<Resultado>
+    resultados: Array<ResultadoValidado>,
+    resultadosSeleccionados: Array<ResultadoValidado>
   ) {
     resultados.forEach((f) => {
       let resultadoSeleccionado = resultadosSeleccionados.find(
-        (x) => f.claveUnica === x.claveUnica
+        (x) => f.id === x.id
       );
 
       if (resultadoSeleccionado != undefined) {
-        f.isChecked = true;
+        f.selected = true;
       }
     });
   }
@@ -336,27 +337,10 @@ export class ValidadoComponent
         error: (error) => {},
       });
   }
-  onSelectClick(resultados: Resultado) {
-    if (this.selectedPage) this.selectedPage = false;
-    if (this.selectAllOption) this.selectAllOption = false;
-    if (this.allSelected) this.allSelected = false;
 
-    if (resultados.isChecked) {
-      this.resultados.push(resultados);
-      this.selectedPage = this.anyUnselected(this.resultados) ? false : true;
-    } else {
-      let index = this.resultados.findIndex(
-        (m) => m.claveUnica === resultados.claveUnica
-      );
-
-      if (index > -1) {
-        this.resultados.splice(index, 1);
-      }
-    }
-  }
   onFilterClick(columna: Column, isFiltroEspecial: boolean) {
-    this.loading = true;
     this.existeFiltrado = true;
+    this.loading = true;
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
@@ -367,7 +351,6 @@ export class ValidadoComponent
       .map((m) => {
         m.isLatestFilter = false;
       });
-
     if (!isFiltroEspecial) {
       columna.filtered = true;
       columna.isLatestFilter = true;
@@ -386,9 +369,9 @@ export class ValidadoComponent
     );
     this.hideColumnFilter();
   }
+
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions();
-
     let filteredColumns = this.getFilteredColumns();
     this.filtros = filteredColumns;
     this.obtenerLeyendaFiltroEspecial(column.dataType);
@@ -424,21 +407,26 @@ export class ValidadoComponent
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
   }
+
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
     this.consultarResultados();
   }
-  onPageClick(page: any) {
-    this.page = page;
-    this.consultarResultados(page);
-  }
-  override onSelectPageClick(resultadosSeleccionados: Array<Resultado>) {
-    this.resultados.map((m) => {
-      m.isChecked = this.selectedPage;
 
-      let index = resultadosSeleccionados.findIndex(
-        (d) => d.claveUnica === m.claveUnica
-      );
+  onPageClick(page: any) {
+    this.loading = true;
+    this.consultarResultados(page, this.NoPage, this.cadena);
+    this.page = page;
+  }
+
+  override onSelectPageClick(
+    resultados: Array<ResultadoValidado>,
+    resultadosSeleccionados: Array<ResultadoValidado>
+  ) {
+    resultados.map((m) => {
+      m.selected = this.selectedPage;
+
+      let index = resultadosSeleccionados.findIndex((d) => d.id === m.id);
 
       if (index == -1) {
         resultadosSeleccionados.push(m);
@@ -449,54 +437,62 @@ export class ValidadoComponent
     this.showOrHideSelectAllOption();
   }
 
-  override onSelectAllPagesClick() {
-    this.allSelected = true;
-    this.resultadosService
-      .getResultadosValidadosPorOCDL(1, 999999, this.cadena, this.orderBy)
-      .subscribe((todosLosResultados: any) => {
-        this.resultadosSeleccionados = todosLosResultados.data;
-        this.resultadosSeleccionados.forEach((m) => (m.isChecked = true));
-        this.resultados.forEach((r) => {
-          const found = this.resultadosSeleccionados.some(
-            (rs) => rs.claveUnica === r.claveUnica
-          );
-          if (!found) {
-            r.isChecked = false;
-          }
-        });
-        this.showOrHideSelectAllOption();
-      });
+  onSelectClick(resultado: ResultadoValidado) {
+    if (this.selectedPage) this.selectedPage = false;
+    if (this.selectAllOption) this.selectAllOption = false;
+    if (this.allSelected) this.allSelected = false;
+
+    if (resultado.selected) {
+      this.resultadosSeleccionados.push(resultado);
+    } else {
+      let index = this.resultadosSeleccionados.findIndex(
+        (m) => m.id === resultado.id
+      );
+
+      if (index > -1) {
+        this.resultadosSeleccionados.splice(index, 1);
+      }
+    }
+
+    this.selectedPage = this.anyUnselected(this.resultados) ? false : true;
+    this.showOrHideSelectAllOption();
   }
 
   onExportarResultadosClick(): void {
-    if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
+    if (this.resultadosSeleccionados.length === 0) {
       this.hacerScroll();
-      return this.notificationService.updateNotification({
+      this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
         text: 'No hay información seleccionada para descargar',
       });
+      return;
     }
 
     this.loading = true;
-    this.resultadosService
-      .exportarResultadosValidados(this.resultadosSeleccionados)
-      .subscribe({
-        next: (response: any) => {
-          FileService.download(response, 'RESULTADOS_VALIDADOS.xlsx');
-          this.resetValues();
-          this.unselectMuestreos();
-          this.loading = false;
-        },
-        error: (response: any) => {
-          this.hacerScroll();
-          return this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.danger,
-            text: 'No fue posible descargar la información',
-          });
-        },
-      });
+    let muestreos: Array<number> = [];
+
+    if (!this.allSelected) {
+      muestreos = this.resultadosSeleccionados.map((r) => r.id);
+    }
+
+    this.resultadosService.exportarResultadosValidados(muestreos).subscribe({
+      next: (response: Blob) => {
+        FileService.download(response, 'RESULTADOS_VALIDADOS.xlsx');
+        this.resetValues();
+        this.unselectResultados();
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.hacerScroll();
+        this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.danger,
+          text: 'No fue posible descargar la información',
+        });
+        this.loading = false;
+      },
+    });
   }
 
   resetValues() {
@@ -506,45 +502,34 @@ export class ValidadoComponent
     this.selectedPage = false;
   }
 
-  unselectMuestreos() {
-    this.resultados.forEach((m) => (m.isChecked = false));
+  unselectResultados() {
+    this.resultados.forEach((m) => (m.selected = false));
   }
 
-  onEnviarResultadosValidadosPorOCDL(): void {
-    if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
+  onEnviarResultadosValidadosPorOCDLClick(): void {
+    if (this.resultadosSeleccionados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un monitoreo para enviar.',
+        text: 'Debe seleccionar al menos un resultado para enviar.',
       });
     }
 
     this.loading = true;
+    let resultadosEnviados: Array<number> = [];
 
-    let muestreosIds: Array<number> = [];
-    if (this.allSelected) {
-      this.resultados.forEach((resultado) => {
-        muestreosIds.push(resultado.muestreoId);
-      });
-    } else {
-      muestreosIds = this.resultadosSeleccionados.map((s) => s.muestreoId);
+    if (!this.allSelected) {
+      resultadosEnviados = this.resultadosSeleccionados.map((r) => r.id);
     }
-
-    let request = {
-      EstatusOCDLId: this.estatusAprobacionFinal,
-      MuestreoId: muestreosIds,
-      IdUsuario: localStorage.getItem('idUsuario'),
-    };
-
     this.resultadosService
-      .actualizarResultadosValidadosPorOCDL(request)
+      .enviarResultadosValidadosPorOCDL(resultadosEnviados)
       .subscribe({
         next: (response: any) => {
           this.notificationService.updateNotification({
             show: true,
             type: NotificationType.success,
-            text: 'Monitoreos enviados correctamente.',
+            text: 'Resultados enviados correctamente.',
           });
           this.resetValues();
           this.consultarResultados();
@@ -562,92 +547,42 @@ export class ValidadoComponent
       });
   }
 
-  onRegresarResultadosValidadosPorOCDL(): void {
-    if (this.resultadosSeleccionados.length == 0 && !this.allSelected) {
+  onRegresarResultadosValidadosPorOCDLClick(): void {
+    if (this.resultadosSeleccionados.length == 0) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
         type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un muestreo para regresar a total de resultados.',
+        text: 'Debe seleccionar al menos un resultado para enviar.',
       });
     }
+
     this.loading = true;
-    let muestreosIds: Array<number> = [];
-    if (this.allSelected) {
-      muestreosIds = this.resultados.map((s) => s.muestreoId);
-    } else {
-      muestreosIds = this.resultadosSeleccionados.map((s) => s.muestreoId);
+    let resultadosEnviados: Array<number> = [];
+
+    if (!this.allSelected) {
+      resultadosEnviados = this.resultadosSeleccionados.map((r) => r.id);
     }
-
-    let request = {
-      estatusId: this.estatusEnviado,
-      MuestreoId: muestreosIds,
-      IdUsuario: localStorage.getItem('idUsuario'),
-    };
-
-    this.resultadosService
-      .actualizarResultadosValidadosPorOCDL(request)
-      .subscribe({
-        next: (response: any) => {
-          this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.success,
-            text: 'Monitoreos enviados correctamente.',
-          });
-          this.resetValues();
-          this.consultarResultados();
-          this.loading = false;
-        },
-        error: (error: any) => {
-          this.notificationService.updateNotification({
-            show: true,
-            type: NotificationType.danger,
-            text: 'No fue posible enviar los resultados.',
-          });
-          this.loading = false;
-          this.hacerScroll();
-        },
-      });
-  }
-
-  onConsultarMonitoreosmuestreo(): void {
-    if (this.resultadosSeleccionados.length === 0 && !this.allSelected) {
-      this.hacerScroll();
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un resultado para consultar sus monitoreos.',
-      });
-    }
-
-    this.isModal = true;
-    let muestreosmodal = (
-      this.allSelected ? this.resultados : this.resultadosSeleccionados
-    ).map((m) => ({
-      muestreo: m.muestreoId,
-      clavemonitoreo: m.claveMonitoreo,
-      clavesitio: m.claveSitio,
-      noEntregaOCDL: m.noEntregaOCDL,
-      nomnresitio: m.nombreSitio,
-      tipocuerpoagua: m.tipoCuerpoAgua,
-      fecharealizacion: m.fechaRealizacion,
-      nombreusuario: m.nombreUsuario,
-      muestreoId: m.muestreoId,
-    }));
-    this.muestreosagrupados = [
-      ...new Map(muestreosmodal.map((m) => [m.muestreo, m])).values(),
-    ];
-    this.hacerScroll();
-  }
-
-  onSeleccionarTodosModal(): void {
-    this.muestreosagrupados.forEach((m) => {
-      m.isChecked = this.seleccionarTodosChckmodal;
+    this.resultadosService.actualizarResultado(resultadosEnviados).subscribe({
+      next: (response: any) => {
+        this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.success,
+          text: 'Resultados enviados correctamente.',
+        });
+        this.resetValues();
+        this.consultarResultados();
+        this.loading = false;
+      },
+      error: (error: any) => {
+        this.notificationService.updateNotification({
+          show: true,
+          type: NotificationType.danger,
+          text: 'No fue posible enviar los resultados.',
+        });
+        this.loading = false;
+        this.hacerScroll();
+      },
     });
-  }
-  onSeleccionarModal(): void {
-    this.seleccionarTodosChckmodal = this.muestreosagrupados.every(
-      (m) => m.isChecked
-    );
   }
 }

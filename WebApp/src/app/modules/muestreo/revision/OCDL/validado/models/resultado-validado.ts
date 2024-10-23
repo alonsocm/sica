@@ -1,6 +1,7 @@
 import { Row } from "src/app/modules/muestreo/formatoResultado/models/row";
 
 export interface ResultadoValidado extends Row {
+  id : number;
   noEntregaOCDL: string;
   claveUnica: string;
   claveSitio: string;
