@@ -21,5 +21,6 @@ namespace Application.Interfaces.IRepositories
         Task<int> LiberarResultados(IEnumerable<long> resultados);
         Task<PagedResponse<List<ResultadoLiberacionDTO>>> GetResultadosLiberacion(List<Filter> filters, int pageNumber, int pageSize);
         Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector);
+        Task<bool> CambiarEstatusAsync(Enums.EstatusResultado estatus, IEnumerable<long> reultadosIds);
     }
 }

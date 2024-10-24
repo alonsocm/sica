@@ -357,5 +357,29 @@ namespace Persistence.Repository
 
             return query;
         }
+
+        public async Task<bool> CambiarEstatusAsync(Application.Enums.EstatusResultado estatus, IEnumerable<long> resultadosIds)
+        {
+            var resultados = await _dbContext.ResultadoMuestreo.Where(m => resultadosIds.Contains(m.Id)).ToListAsync();
+
+            if (resultados == null || !resultados.Any())
+            {
+                return false;
+            }
+
+            resultados.ForEach(x => x.EstatusResultadoId = (int)estatus);
+
+            try
+            {
+                _dbContext.UpdateRange(resultados);
+                await _dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Ocurrió un error al actualizar el estatus de los resultados: {ex.Message}");
+            }
+        }
     }
 }

@@ -30,7 +30,8 @@ export interface ReplicasResultadosReglaVal extends Row {
   observacionReglaValidacion: string,
   nombreEstatus: string,
   nombreEvidencias: string,
-  usuarioReviso: string
+  usuarioReviso: string,
+  estatusResultadoId: number
 
 
 }

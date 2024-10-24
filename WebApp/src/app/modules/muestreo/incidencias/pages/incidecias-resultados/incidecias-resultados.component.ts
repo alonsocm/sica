@@ -48,7 +48,9 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
     {} as ElementRef;
 
   estatusReplicas: Array<number> = [estatusResultado.IncidenciasResultados, estatusResultado.EnvíoLaboratorioExterno, estatusResultado.CargaRéplicasLaboratorioExterno,
-  estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA, estatusResultado.EnviadoResumenResultados];
+    estatusResultado.AcumulaciónResultadosReplica, estatusResultado.MóduloInicialReglasReplica, estatusResultado.MóduloReglasReplica,
+    estatusResultado.ResumenValidaciónReglasReplica, estatusResultado.EnvíoaSRENAMECA, estatusResultado.CargaValidaciónSRENAMECA, estatusResultado.EnviadoResumenResultados,
+    estatusResultado.LiberaciónResultadosReplica, estatusResultado.EnviadoaPenalizaciónReplica];
 
   constructor(private IncidenciasResultadoService: IncidenciasResultadosService,
     private notificationService: NotificationService,
@@ -77,7 +79,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#C9C9C9',
-        width: 50.68,
+        width: 50.66,       
       },
       {
         name: 'claveUnica',
@@ -94,7 +96,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F5B084',
-        width: 61.96,
+        width: 178.09,
+        
       },
       {
         name: 'claveSitio',
@@ -111,7 +114,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F5B084',
-        width: 66.95,
+        width: 123.55,
+        
       },
       {
         name: 'claveMonitoreo',
@@ -128,7 +132,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F5B084',
-        width: 63.53,
+        width: 93.04,
+        
       },
       {
         name: 'nombreParametro',
@@ -145,7 +150,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F5B084',
-        width: 244.76,
+        width: 244.75,
+        
       },
       {
         name: 'claveParametro',
@@ -162,7 +168,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F5B084',
-        width: 65.79,
+        width: 97.61,
+        
       },
       {
         name: 'laboratorio',
@@ -180,6 +187,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#F5B084',
         width: 75.79,
+        
       },
       {
         name: 'tipoCuerpoAgua',
@@ -196,7 +204,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F5B084',
-        width: 104.93,
+        width: 106.91,
+        
       },
       {
         name: 'tipoCuerpoAguaOriginal',
@@ -214,6 +223,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#F5B084',
         width: 104.94,
+        
       },
       {
         name: 'resultado',
@@ -230,7 +240,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F5B084',
-        width: 85.96,
+        width: 85.95,
+        
       },
       {
         name: 'esCorrecto',
@@ -248,6 +259,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#8EA9DB',
         width: 127.93,
+        
       },
       {
         name: 'observacionReglasValidacion',
@@ -265,6 +277,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#8EA9DB',
         width: 151.9,
+        
       },
       {
         name: 'aceptaRechazo',
@@ -282,6 +295,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#FF66FF',
         width: 51.24,
+        
       },
       {
         name: 'resultadoReplica',
@@ -298,7 +312,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FF66FF',
-        width: 62.76,
+        width: 62.75,
+        
       },
       {
         name: 'mismoResultado',
@@ -315,7 +330,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FF66FF',
-        width: 62.76,
+        width: 62.75,
+        
       },
       {
         name: 'observacionLaboratorio',
@@ -330,7 +346,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FF66FF',
-        width: 75.81,
+        width: 219.78,
+        
       },
       {
         name: 'fechaReplicaLaboratorio',
@@ -348,6 +365,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#FF66FF',
         width: 75.79,
+        
       },
 
       {
@@ -365,7 +383,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#00B0F0',
-        width: 75.81,
+        width: 219.78,
+        
       },
       {
         name: 'esCorrectoDato',
@@ -383,6 +402,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#00B0F0',
         width: 65.21,
+        
       },
       {
         name: 'fechaObservacionSrenameca',
@@ -400,6 +420,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#00B0F0',
         width: 75.81,
+        
       },
       {
         name: 'observacionReglasReplica',
@@ -416,7 +437,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F8CBAD',
-        width: 211.8,
+        width: 219.78,
+        
       },
       {
         name: 'aprobacíonResultado',
@@ -433,7 +455,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#9966FF',
-        width: 225.89
+        width: 225.89,
+        
       },
       {
         name: 'fechaEstatusFinal',
@@ -451,6 +474,7 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         selectedData: '',
         color: '#A9D08E',
         width: 87.93,
+        
       },
       {
         name: 'usuarioReviso',
@@ -467,7 +491,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#A9D08E',
-        width: 89.93,
+        width: 286.33,
+        
       },
       {
         name: 'estatusResultado',
@@ -484,7 +509,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FFFF00',
-        width: 453.43
+        width: 453.43,
+          
       },
       {
         name: 'arcivo',
@@ -501,7 +527,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FF66FF',
-        width: 92.95,
+        width: 250.86,
+        
       },
       {
         name: 'evidenciasReplica',
@@ -518,7 +545,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FF66FF',
-        width: 98.94
+        width: 98.94,
+        
       }
     ];
 
@@ -538,7 +566,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#F4B084',
-        width: 168.8,
+        width: 178.09,
+        
       },
       {
         name: '',
@@ -555,7 +584,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#8EA9DB',
-        width: 110.94,
+        width: 97.39,
+        
       },
       {
         name: '',
@@ -572,7 +602,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FF66FF',
-        width: 214.8,
+        width: 129.57,
+        
       },
       {
         name: '',
@@ -589,41 +620,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FF66FF',
-        width: 252.74,
-      },
-      {
-        name: '',
-        label: '4.RECHAZADO POR REGLAS DE VALIDACIÓN - ENVIADO A LABORATORIO (CONALAB) - CARGA RÉPLICAS LAB EXTERNO Y ENVIADO A EBASECA - ENVIADO A SRENAMECA',
-        order: 5,
-        selectAll: true,
-        filtered: false,
-        asc: false,
-        desc: false,
-        data: [],
-        filteredData: [],
-        dataType: 'string',
-        specialFilter: '',
-        secondSpecialFilter: '',
-        selectedData: '',
-        color: '#00B0F0',
-        width: 313.65
-      },
-      {
-        name: '',
-        label: '5.RECHAZADO POR REGLAS DE VALIDACIÓN - ENVIADO A LABORATORIO (CONALAB) - CARGA RÉPLICAS LAB EXTERNO Y ENVIADO A EBASECA - ENVIADO A SRENAMECA - CARGA VALIDACIÓN SRENAMECA',
-        order: 6,
-        selectAll: true,
-        filtered: false,
-        asc: false,
-        desc: false,
-        data: [],
-        filteredData: [],
-        dataType: 'string',
-        specialFilter: '',
-        secondSpecialFilter: '',
-        selectedData: '',
-        color: '#00B0F0',
-        width: 387.55,
+        width: 176.34,
+        
       },
       {
         name: '',
@@ -640,7 +638,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#99FFCC',
-        width: 161.88,
+        width: 79.94,
+        
       },
       {
         name: '',
@@ -657,7 +656,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#99FFCC',
-        width: 188.84,
+        width: 101.38,
+        
       },
       {
         name: '',
@@ -674,7 +674,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#99FFCC',
-        width: 214.8
+        width: 121.08,
+        
       },
       {
         name: '',
@@ -691,7 +692,44 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#99FFCC',
-        width: 184.84,
+        width: 143.26,
+        
+      },
+      {
+        name: '',
+        label: '4.RECHAZADO POR REGLAS DE VALIDACIÓN - ENVIADO A LABORATORIO (CONALAB) - CARGA RÉPLICAS LAB EXTERNO Y ENVIADO A EBASECA - ENVIADO A SRENAMECA',
+        order: 5,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        color: '#00B0F0',
+        width: 178.29,
+        
+      },
+      {
+        name: '',
+        label: '5.RECHAZADO POR REGLAS DE VALIDACIÓN - ENVIADO A LABORATORIO (CONALAB) - CARGA RÉPLICAS LAB EXTERNO Y ENVIADO A EBASECA - ENVIADO A SRENAMECA - CARGA VALIDACIÓN SRENAMECA',
+        order: 6,
+        selectAll: true,
+        filtered: false,
+        asc: false,
+        desc: false,
+        data: [],
+        filteredData: [],
+        dataType: 'string',
+        specialFilter: '',
+        secondSpecialFilter: '',
+        selectedData: '',
+        color: '#00B0F0',
+        width: 201.68,
+        
       },
       {
         name: '',
@@ -708,7 +746,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#AA7EEA',
-        width: 363.59
+        width: 243.56,
+        
       },
       {
         name: '',
@@ -725,7 +764,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FFC000',
-        width: 404.53,
+        width: 304.94,
+        
       },
       {
         name: '',
@@ -742,7 +782,8 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         secondSpecialFilter: '',
         selectedData: '',
         color: '#FFC000',
-        width: 420.69
+        width: 273.94,
+        
       }
     ];
 
@@ -1157,5 +1198,18 @@ export class IncideciasResultadosComponent extends BaseService implements OnInit
         },
       });
 
+  }
+  mostrarAvance(estatusResultado: number, claveUnica: string) {
+   
+    let headerEtapaActual = document.getElementById("tdEstatus" + estatusResultado + claveUnica) as HTMLElement
+    headerEtapaActual.style.backgroundColor = "yellow";
+    let estatus = this.estatusReplicas.slice(0, this.estatusReplicas.indexOf(estatusResultado));
+
+    if (estatus.length > 0) {
+      for (var i = 0; i < estatus.length; i++) {      
+        let header = document.getElementById("tdEstatus" + estatus[i] + claveUnica) as HTMLElement;
+        header.style.backgroundColor = "yellow";
+      }
+    }
   }
 }

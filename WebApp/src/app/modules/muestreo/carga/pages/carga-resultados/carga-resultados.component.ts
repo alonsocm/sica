@@ -754,7 +754,7 @@ export class CargaResultadosComponent extends BaseService implements OnInit {
     //Los que si son replicas se avanza el estatus a nivel resultado a Acumulacion de resulados replica
    
     if (this.resultadosEnviadosReplicas.length > 0) {
-      this.muestreoService.enviarResultadosSiguienteEtapa(estatusResultado.AcumulaciónResultadosReplica, this.resultadosEnviadosReplicas).
+      this.muestreoService.enviarResultadosSiguienteEtapa(this.resultadosEnviadosReplicas).
         subscribe({
           next: (response: any) => { if (response.succeded) this.mensajeReplica = " y" + this.resultadosEnviadosReplicas.length + " muestreos a 'Acumulación de resultados replica'" }
         });

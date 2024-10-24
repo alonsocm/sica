@@ -350,8 +350,8 @@ export class MuestreoService {
   }
 
 
-  enviarResultadosSiguienteEtapa(estatusId: number, lstResultados: Array<number>) {
-    let datos = { EstatusId: estatusId, lstResultados: lstResultados };
+  enviarResultadosSiguienteEtapa(lstResultados: Array<number>) {
+    let datos = { lstResultados: lstResultados };
     return this.http.put(
       environment.apiUrl + '/Resultados/SendResultadosNextEtapa',
       datos

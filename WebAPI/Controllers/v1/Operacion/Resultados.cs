@@ -1125,9 +1125,9 @@ namespace WebAPI.Controllers.v1.Operacion
 
 
         [HttpPut("SendResultadosNextEtapa")]
-        public async Task<IActionResult> SendResultadosNextEtapa(UpdateEstatusResultadosById datos)
+        public async Task<IActionResult> SendResultadosNextEtapa(EnviarAcumuladosReplica datos)
         {
-            return Ok(await Mediator.Send(new UpdateEstatusResultadosById { EstatusId = datos.EstatusId, lstResultados = datos.lstResultados }));
+            return Ok(await Mediator.Send(new EnviarAcumuladosReplica { lstResultados = datos.lstResultados }));
         }
     }
 }
