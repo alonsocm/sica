@@ -8,10 +8,10 @@ namespace Application.Features.Operacion.RevisionOCDL.Commands
     {
         public IEnumerable<long> Resultados { get; set; } = new List<long>();
     }
-    public class ActualizarResultadoOSCDLHandler : IRequestHandler<ActualizarResultadoOCDL, Response<bool>>
+    public class ActualizarResultadoOCDLHandler : IRequestHandler<ActualizarResultadoOCDL, Response<bool>>
     {
         private readonly IResultado _repository;
-        public ActualizarResultadoOSCDLHandler(IResultado repository)
+        public ActualizarResultadoOCDLHandler(IResultado repository)
         {
             _repository = repository;
         }
@@ -19,7 +19,7 @@ namespace Application.Features.Operacion.RevisionOCDL.Commands
         {
             if (request.Resultados.Any())
             {
-                var resultadosEnviados = await _repository.EnviarResultados(request.Resultados);
+                var resultadosEnviados = await _repository.ActualizarResultadosValidadosPorOCDL(request.Resultados);
 
                 if (resultadosEnviados == 0)
                 {
@@ -30,7 +30,7 @@ namespace Application.Features.Operacion.RevisionOCDL.Commands
             }
             else
             {
-                throw new ArgumentException("No se encontraron resultados para liberar.");
+                throw new ArgumentException("No se encontraron resultados para enviar.");
             }
         }
     }

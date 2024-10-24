@@ -316,12 +316,12 @@ namespace Persistence.Repository
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id) && r.ValidacionFinal == true)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreos));
         }
-        public async Task<int> EnviarResultados(IEnumerable<long> resultados)
+        public async Task<int> ActualizarResultadosValidadosPorOCDL(IEnumerable<long> resultados)
         {
             return await _dbContext.ResultadoMuestreo.Where(r => resultados.Contains(r.Id))
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Aprobaciónderesultados));
         }
-        public async Task<int> RegresarResultado(IEnumerable<long> resultados)
+        public async Task<int> RegresarResultadosValidadosPorOCDL(IEnumerable<long> resultados)
         {
             return await _dbContext.ResultadoMuestreo.Where(b => resultados.Contains(b.Id) && b.EsCorrectoOcdl == true)
                 .ExecuteUpdateAsync(setters => setters.SetProperty(b => b.EstatusResultadoId, (int)Application.Enums.EstatusResultado.Liberaciondemonitoreosconextencióndefecha));
@@ -349,7 +349,7 @@ namespace Persistence.Repository
                          orderby rm.Parametro.ClaveParametro ascending
                          select new ResultadosValidadosPorOCDLDTO
                          {
-                             Id = rm.Id,
+                             ResultadoId = rm.Id,
                              MuestreoId = rm.MuestreoId,
                              Resultado = rm.Resultado,
                              Observaciones = (rm.ObservacionesOcdlid == null || rm.ObservacionesOcdlid == 11) ? rm.ObservacionesOcdl : rm.ObservacionesOcdlNavigation.Descripcion,

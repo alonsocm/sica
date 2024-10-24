@@ -1,3 +1,4 @@
+import { MuestreoService } from 'src/app/modules/muestreo/liberacion/services/muestreo.service';
 import { Component, OnInit } from '@angular/core';
 import { Column } from 'src/app/interfaces/filter/column';
 import { ICommonMethods } from 'src/app/shared/interfaces/ICommonMethods';
@@ -8,11 +9,9 @@ import { Item } from 'src/app/interfaces/filter/item';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { NotificationType } from 'src/app/shared/enums/notification-type';
 import { FileService } from 'src/app/shared/services/file.service';
-import { estatusOcdlSecaia } from 'src/app/shared/enums/estatusOcdlSecaia';
 import { estatusMuestreo } from 'src/app/shared/enums/estatusMuestreo';
-import { ResultadoValidado } from './models/resultado-validado';
 import { Subscription } from 'rxjs';
-
+import { ResultadoValidado } from './models/resultado-validado';
 @Component({
   selector: 'app-validado',
   templateUrl: './validado.component.html',
@@ -22,20 +21,18 @@ export class ValidadoComponent
   extends BaseService
   implements OnInit, ICommonMethods
 {
-  estatusAprobacionFinal: estatusOcdlSecaia;
   estatusEnviado: estatusMuestreo;
-  muestreosagrupados: Array<any> = [];
-  seleccionarTodosChckmodal: boolean = false;
-  isModal: boolean = false;
   filtroHistorialServiceSub: Subscription;
+  resultados: Array<ResultadoValidado> = [];
+  resultadosSeleccionados: Array<ResultadoValidado> = [];
 
   constructor(
     private filtroHistorialService: FiltroHistorialService,
+    public muestreoService: MuestreoService,
     private resultadosService: ResultadosValidadosService,
     private notificationService: NotificationService
   ) {
     super();
-    this.estatusAprobacionFinal = estatusOcdlSecaia.AprobacionFinal;
     this.estatusEnviado = estatusMuestreo.ResumenValidaciónReglas;
     this.filtroHistorialServiceSub =
       this.filtroHistorialService.columnName.subscribe((columnName) => {
@@ -43,10 +40,9 @@ export class ValidadoComponent
         this.consultarResultados();
       });
   }
-  resultados: Array<ResultadoValidado> = [];
-  resultadosSeleccionados: Array<ResultadoValidado> = [];
 
   ngOnInit(): void {
+    this.muestreoService.filtrosSeleccionados = [];
     this.definirColumnas();
     this.consultarResultados();
   }
@@ -314,13 +310,53 @@ export class ValidadoComponent
   ) {
     resultados.forEach((f) => {
       let resultadoSeleccionado = resultadosSeleccionados.find(
-        (x) => f.id === x.id
+        (x) => f.resultadoId === x.resultadoId
       );
 
       if (resultadoSeleccionado != undefined) {
         f.selected = true;
       }
     });
+  }
+
+  onExportarResultadosClick(): void {
+    if (this.resultadosSeleccionados.length === 0 && !this.allSelected) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'No hay información seleccionada para descargar',
+      });
+    }
+
+    this.loading = true;
+    let resultadosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      resultadosSeleccionados = this.resultadosSeleccionados.map((s) => {
+        return s.resultadoId;
+      });
+    }
+
+    this.resultadosService
+      .exportarResultadosValidados(resultadosSeleccionados, this.cadena)
+      .subscribe({
+        next: (response: any) => {
+          FileService.download(response, 'RESULTADOS_VALIDADOS.xlsx');
+          this.resetValues();
+          this.unselectResultados();
+          this.loading = false;
+        },
+        error: (response: any) => {
+          this.loading = false;
+          this.hacerScroll();
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible descargar la información',
+          });
+        },
+      });
   }
 
   sort(column: string, type: string) {
@@ -340,7 +376,6 @@ export class ValidadoComponent
 
   onFilterClick(columna: Column, isFiltroEspecial: boolean) {
     this.existeFiltrado = true;
-    this.loading = true;
     this.cadena = !isFiltroEspecial
       ? this.obtenerCadena(columna, false)
       : this.obtenerCadena(this.columnaFiltroEspecial, true);
@@ -351,6 +386,7 @@ export class ValidadoComponent
       .map((m) => {
         m.isLatestFilter = false;
       });
+
     if (!isFiltroEspecial) {
       columna.filtered = true;
       columna.isLatestFilter = true;
@@ -363,19 +399,20 @@ export class ValidadoComponent
             (m.isLatestFilter = true);
         });
     }
+
     this.esHistorial = true;
-    this.filtroHistorialService.updateFilteredColumns(
-      this.getFilteredColumns()
-    );
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.hideColumnFilter();
   }
 
   onFilterIconClick(column: Column) {
     this.collapseFilterOptions();
     let filteredColumns = this.getFilteredColumns();
+    this.muestreoService.filtrosSeleccionados = filteredColumns;
     this.filtros = filteredColumns;
     this.obtenerLeyendaFiltroEspecial(column.dataType);
     let esFiltroEspecial = this.IsCustomFilter(column);
+
     if (
       (!column.filtered && !this.existeFiltrado) ||
       (column.isLatestFilter && this.filtros.length == 1)
@@ -383,6 +420,7 @@ export class ValidadoComponent
       this.cadena = '';
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
     }
+
     if (this.requiresToRefreshColumnValues(column)) {
       this.resultadosService
         .getDistinctOCDL(column.name, this.cadena)
@@ -402,6 +440,7 @@ export class ValidadoComponent
           error: (error) => {},
         });
     }
+
     if (esFiltroEspecial) {
       column.selectAll = false;
       this.getPreseleccionFiltradoColumna(column, esFiltroEspecial);
@@ -410,11 +449,11 @@ export class ValidadoComponent
 
   onDeleteFilterClick(columName: string) {
     this.deleteFilter(columName);
+    this.muestreoService.filtrosSeleccionados = this.getFilteredColumns();
     this.consultarResultados();
   }
 
   onPageClick(page: any) {
-    this.loading = true;
     this.consultarResultados(page, this.NoPage, this.cadena);
     this.page = page;
   }
@@ -425,8 +464,9 @@ export class ValidadoComponent
   ) {
     resultados.map((m) => {
       m.selected = this.selectedPage;
-
-      let index = resultadosSeleccionados.findIndex((d) => d.id === m.id);
+      let index = resultadosSeleccionados.findIndex(
+        (d) => d.resultadoId === m.resultadoId
+      );
 
       if (index == -1) {
         resultadosSeleccionados.push(m);
@@ -434,6 +474,7 @@ export class ValidadoComponent
         resultadosSeleccionados.splice(index, 1);
       }
     });
+
     this.showOrHideSelectAllOption();
   }
 
@@ -444,70 +485,31 @@ export class ValidadoComponent
 
     if (resultado.selected) {
       this.resultadosSeleccionados.push(resultado);
+      this.selectedPage = this.anyUnselected(this.resultados) ? false : true;
     } else {
       let index = this.resultadosSeleccionados.findIndex(
-        (m) => m.id === resultado.id
+        (m) => m.resultadoId === resultado.resultadoId
       );
 
       if (index > -1) {
         this.resultadosSeleccionados.splice(index, 1);
       }
     }
-
-    this.selectedPage = this.anyUnselected(this.resultados) ? false : true;
-    this.showOrHideSelectAllOption();
   }
 
-  onExportarResultadosClick(): void {
-    if (this.resultadosSeleccionados.length === 0) {
-      this.hacerScroll();
-      this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'No hay información seleccionada para descargar',
-      });
-      return;
-    }
-
-    this.loading = true;
-    let muestreos: Array<number> = [];
-
-    if (!this.allSelected) {
-      muestreos = this.resultadosSeleccionados.map((r) => r.id);
-    }
-
-    this.resultadosService.exportarResultadosValidados(muestreos).subscribe({
-      next: (response: Blob) => {
-        FileService.download(response, 'RESULTADOS_VALIDADOS.xlsx');
-        this.resetValues();
-        this.unselectResultados();
-        this.loading = false;
-      },
-      error: (error: any) => {
-        this.hacerScroll();
-        this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.danger,
-          text: 'No fue posible descargar la información',
-        });
-        this.loading = false;
-      },
-    });
-  }
-
-  resetValues() {
+  private resetValues() {
     this.resultadosSeleccionados = [];
     this.selectAllOption = false;
     this.allSelected = false;
     this.selectedPage = false;
   }
 
-  unselectResultados() {
+  private unselectResultados() {
     this.resultados.forEach((m) => (m.selected = false));
   }
 
   onEnviarResultadosValidadosPorOCDLClick(): void {
-    if (this.resultadosSeleccionados.length == 0) {
+    if (this.resultadosSeleccionados.length === 0 && !this.allSelected) {
       this.hacerScroll();
       return this.notificationService.updateNotification({
         show: true,
@@ -517,13 +519,60 @@ export class ValidadoComponent
     }
 
     this.loading = true;
-    let resultadosEnviados: Array<number> = [];
+    let resultadosSeleccionados: Array<number> = [];
 
     if (!this.allSelected) {
-      resultadosEnviados = this.resultadosSeleccionados.map((r) => r.id);
+      resultadosSeleccionados = this.resultadosSeleccionados.map((r) => {
+        return r.resultadoId;
+      });
+    }
+
+    this.resultadosService
+      .enviarResultadosValidadosPorOCDL(resultadosSeleccionados, this.cadena)
+      .subscribe({
+        next: (response: any) => {
+          this.consultarResultados();
+          this.loading = false;
+          this.resetValues();
+          this.hacerScroll();
+          this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.success,
+            text: 'Resultados enviados correctamente.',
+          });
+        },
+        error: (response: any) => {
+          this.hacerScroll();
+          this.loading = false;
+          return this.notificationService.updateNotification({
+            show: true,
+            type: NotificationType.danger,
+            text: 'No fue posible enviar los resultados.',
+          });
+        },
+      });
+  }
+
+  onRegresarResultadosValidadosPorOCDLClick(): void {
+    if (this.resultadosSeleccionados.length == 0 && !this.allSelected ) {
+      this.hacerScroll();
+      return this.notificationService.updateNotification({
+        show: true,
+        type: NotificationType.warning,
+        text: 'Debe seleccionar al menos un resultado para enviar.',
+      });
+    }
+
+    this.loading = true;
+    let resultadosSeleccionados: Array<number> = [];
+
+    if (!this.allSelected) {
+      resultadosSeleccionados = this.resultadosSeleccionados.map((r) => {
+        return r.resultadoId;
+      });
     }
     this.resultadosService
-      .enviarResultadosValidadosPorOCDL(resultadosEnviados)
+      .regresarResultadosValidadosPorOCDL(resultadosSeleccionados, this.cadena)
       .subscribe({
         next: (response: any) => {
           this.notificationService.updateNotification({
@@ -547,42 +596,7 @@ export class ValidadoComponent
       });
   }
 
-  onRegresarResultadosValidadosPorOCDLClick(): void {
-    if (this.resultadosSeleccionados.length == 0) {
-      this.hacerScroll();
-      return this.notificationService.updateNotification({
-        show: true,
-        type: NotificationType.warning,
-        text: 'Debe seleccionar al menos un resultado para enviar.',
-      });
-    }
-
-    this.loading = true;
-    let resultadosEnviados: Array<number> = [];
-
-    if (!this.allSelected) {
-      resultadosEnviados = this.resultadosSeleccionados.map((r) => r.id);
-    }
-    this.resultadosService.actualizarResultado(resultadosEnviados).subscribe({
-      next: (response: any) => {
-        this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.success,
-          text: 'Resultados enviados correctamente.',
-        });
-        this.resetValues();
-        this.consultarResultados();
-        this.loading = false;
-      },
-      error: (error: any) => {
-        this.notificationService.updateNotification({
-          show: true,
-          type: NotificationType.danger,
-          text: 'No fue posible enviar los resultados.',
-        });
-        this.loading = false;
-        this.hacerScroll();
-      },
-    });
+  ngOnDestroy() {
+    this.filtroHistorialServiceSub.unsubscribe();
   }
 }

@@ -43,25 +43,41 @@ export class ResultadosValidadosService {
     );
   }
 
-  exportarResultadosValidados(muestreos: Array<any> = []) {
+  exportarResultadosValidados(
+    registros: Array<any> = [],
+    filtro: string
+  ) {
     return this.http.post(
-      environment.apiUrl + '/Resultados/ExportarResultadosValidadosPorOCDL',
-      muestreos,
+      environment.apiUrl +
+        '/Resultados/ExportarResultadosValidadosPorOCDL?' +
+        '&filter=' +
+        filtro,
+      registros,
       { responseType: 'blob' }
     );
   }
 
-  enviarResultadosValidadosPorOCDL(resultados: any): Observable<any> {
+  enviarResultadosValidadosPorOCDL(
+    resultados: Array<any> = [],
+    filtro: string
+  ){
     return this.http.put(
-      environment.apiUrl + '/resultados/EnviarResultadosValidadosPorOCDL',
-      resultados
+      environment.apiUrl + '/resultados/EnviarResultadosValidadosPorOCDL?'+
+      '&filter=' +
+        filtro,
+      resultados , { responseType: 'blob' }
     );
   }
-  
-  actualizarResultado(resultados: any): Observable<any> {
+
+  regresarResultadosValidadosPorOCDL(
+    resultados: Array<any> = [],
+    filtro: string
+  ){
     return this.http.put(
-      environment.apiUrl + '/resultados/regresarResultadosValidadosPorOCDL',
-      resultados
+      environment.apiUrl + '/resultados/regresarResultadosValidadosPorOCDL?'+
+      '&filter=' +
+        filtro,
+      resultados , { responseType: 'blob' }
     );
   }
 }

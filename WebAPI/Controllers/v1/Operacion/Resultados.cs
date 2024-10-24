@@ -107,8 +107,15 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpGet("ResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> GetResultadosValidadosPorOCDLAsync([FromQuery] List<Filter> filters, [FromQuery] int pageSize, [FromQuery] int page)
+        public async Task<IActionResult> GetResultadosValidadosPorOCDLAsync([FromQuery] int pageSize, [FromQuery] int page, [FromQuery] string? filter = "")
         {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
+
             var request = new GetResultadosValidadosPorOCDL
             {
                 Filters = filters,
@@ -120,23 +127,53 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPost("ExportarResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> ExportarResultadosValidadosPorOCDL([FromBody] List<long> muestreos)
+        public async Task<IActionResult> ExportarResultadosValidadosPorOCDL(List<long> resultado, string? filter = "")
         {
-            var data = Mediator.Send(new GetResultadosValidadosPorOCDL
-            {
-                Filters = new List<Filter>(),
+            var filters = new List<Filter>();
 
-            }).Result.Data;
-
-            if (muestreos.Any())
+            if (!string.IsNullOrEmpty(filter))
             {
-                data = data.Where(w => muestreos.Contains(w.Id)).ToList();
+                filters = QueryParam.GetFilters(filter);
             }
+
+            var data = await Mediator.Send(new GetResultadosValidadosPorOCDL
+            {
+                Filters = filters
+            });
+
+            var resultados = data.Data.ToList();
+
+            if (resultado.Any())
+            {
+                resultados = resultados.Where(w => resultado.Contains(w.ResultadoId)).ToList();
+            }
+
+            var muestreosExcel = resultados.OrderBy(x => x.ClaveUnica)
+                .Select(datomuestreo => new ExcelValidadosOCDL
+                {
+                    NumeroEntrega = datomuestreo.NoEntregaOCDL,
+                    ClaveUnica = datomuestreo.ClaveUnica ?? string.Empty,
+                    ClaveSitio = datomuestreo.ClaveSitio ?? string.Empty,
+                    ClaveMonitoreo = datomuestreo.ClaveMonitoreo ?? string.Empty,
+                    Nombre = datomuestreo.NombreSitio,
+                    ClaveParametro = datomuestreo.ClaveParametro ?? string.Empty,
+                    Laboratorio = datomuestreo.Laboratorio ?? string.Empty,
+                    TipoCuerpoAgua = datomuestreo.TipoCuerpoAgua,
+                    TipoCuerpoAguaOriginal = datomuestreo.TipoCuerpoAguaOriginal,
+                    Resultado = datomuestreo.Resultado ?? string.Empty,
+                    TipoAprobacion = datomuestreo.TipoAprobacion,
+                    ResultadoCorrecto = datomuestreo.EsCorrectoResultado ?? string.Empty,
+                    ObservacionOCDL = datomuestreo.Observaciones,
+                    FechaLimite = datomuestreo.FechaLimiteRevision ?? string.Empty,
+                    Usuario = datomuestreo.NombreUsuario,
+                    FechaRealizacion = datomuestreo.FechaRealizacion ?? string.Empty,
+                    Estatus = datomuestreo.EstatusResultado
+                }).ToList();
 
             var plantilla = new Plantilla(_configuration, _env);
             string templatePath = plantilla.ObtenerRutaPlantilla("ResultadosValidados");
             var fileInfo = plantilla.GenerarArchivoTemporal(templatePath, out string temporalFilePath);
-            ExcelService.ExportToExcel(data, fileInfo, true);
+            ExcelService.ExportToExcel(muestreosExcel, fileInfo, true);
             var bytes = plantilla.GenerarArchivoDescarga(temporalFilePath, out var contentType);
             return File(bytes, contentType, Path.GetFileName(temporalFilePath));
         }
@@ -154,32 +191,44 @@ namespace WebAPI.Controllers.v1.Operacion
         }
 
         [HttpPut("EnviarResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> EnviarResultadosValidadosPorOCDL([FromBody] IEnumerable<long> resultados)
+        public async Task<IActionResult> EnviarResultadosValidadosPorOCDL(IEnumerable<long> resultados, string? filter = "")
         {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
 
             if (!resultados.Any())
             {
                 var mediatorResponse = await Mediator.Send(new GetResultadosValidadosPorOCDL
                 {
-                    Filters = new List<Filter>(),
+                    Filters = filters,
                 });
-                resultados = mediatorResponse.Data.Select(s => s.Id);
+                resultados = mediatorResponse.Data.Select(s => s.ResultadoId);
             }
 
             return Ok(await Mediator.Send(new ActualizarResultadoOCDL { Resultados = resultados }));
         }
 
         [HttpPut("regresarResultadosValidadosPorOCDL")]
-        public async Task<IActionResult> regresarResultadosValidadosPorOCDL([FromBody] IEnumerable<long> resultados)
+        public async Task<IActionResult> regresarResultadosValidadosPorOCDL([FromBody] IEnumerable<long> resultados, string? filter = "")
         {
+            var filters = new List<Filter>();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                filters = QueryParam.GetFilters(filter);
+            }
 
             if (!resultados.Any())
             {
                 var mediatorResponse = await Mediator.Send(new GetResultadosValidadosPorOCDL
                 {
-                    Filters = new List<Filter>(),
+                    Filters = filters,
                 });
-                resultados = mediatorResponse.Data.Select(s => s.Id);
+                resultados = mediatorResponse.Data.Select(s => s.ResultadoId);
             }
 
             return Ok(await Mediator.Send(new RegresarResultadosValidadosPorOCDL { Resultados = resultados }));

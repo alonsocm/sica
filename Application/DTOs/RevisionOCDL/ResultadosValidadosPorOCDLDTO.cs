@@ -2,8 +2,7 @@
 {
     public class ResultadosValidadosPorOCDLDTO
     {
-        public long Id { get; set; }
-
+        public long ResultadoId { get; set; }
         public long MuestreoId { get; set; }
         public string NoEntregaOCDL { get; set; } = string.Empty;
         public string ClaveUnica { get; set; } = string.Empty;
@@ -25,6 +24,5 @@
         public int EstatusId { get; set; }
         public int? EstatusOCDL { get; set; }
         public int? EstatusSECAIA { get; set; }
-
     }
 }

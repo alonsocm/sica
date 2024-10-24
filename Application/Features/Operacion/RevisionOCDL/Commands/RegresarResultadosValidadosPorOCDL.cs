@@ -19,7 +19,7 @@ namespace Application.Features.Operacion.RevisionOCDL.Commands
         {
             if (request.Resultados.Any())
             {
-                var resultadosEnviados = await _repository.RegresarResultado(request.Resultados);
+                var resultadosEnviados = await _repository.RegresarResultadosValidadosPorOCDL(request.Resultados);
                 return new Response<bool>(true);
             }
             else

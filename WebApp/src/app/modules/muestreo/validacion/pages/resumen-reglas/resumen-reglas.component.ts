@@ -625,13 +625,11 @@ export class ResumenReglasComponent extends BaseService implements OnInit {
     registros.map((m) => {
       m.selected = this.selectedPage;
 
-      //Buscamos el registro en los seleccionados
       let index = registrosSeleccionados.findIndex(
         (d) => d.resultadoMuestreoId === m.resultadoMuestreoId
       );
 
       if (index == -1) {
-        //No existe en seleccionados, lo agremos
         registrosSeleccionados.push(m);
       } else if (!this.selectedPage) {
         //Existe y el seleccionar página está deshabilitado, lo eliminamos, de los seleccionados

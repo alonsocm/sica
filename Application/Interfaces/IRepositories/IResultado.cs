@@ -24,10 +24,7 @@ namespace Application.Interfaces.IRepositories
         Task<IEnumerable<object>> GetDistinctResultadosLiberacionPropertyAsync(List<Filter> filters, string selector);
         Task<PagedResponse<List<ResultadosValidadosPorOCDLDTO>>> GetResultadosValidadosPorOCDLAsync(List<Filter> filters, int pageNumber, int pageSize);
         Task<IEnumerable<object>> GetDistinctResultadosValidadosAsync(List<Filter> filters, string selector);
-        Task<int> EnviarResultados(IEnumerable<long> resultados);
-        Task<int> RegresarResultado(IEnumerable<long> resultados);
-
-
-
+        Task<int> ActualizarResultadosValidadosPorOCDL(IEnumerable<long> resultados);
+        Task<int> RegresarResultadosValidadosPorOCDL(IEnumerable<long> resultados);
     }
 }
